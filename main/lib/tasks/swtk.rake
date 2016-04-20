@@ -29,4 +29,14 @@ namespace :swtk do
 
   end
 
+  desc "create super administrator"
+  task create_super_admin: :environment do
+    Role.new({:name => "super_administrator", 
+              :desc => "this role is for who has all permissions", 
+              :permissions => Permission.all}).save
+    User.new({:email=>"admin@swtk.com", 
+              :password=>"welcome1", 
+              :role => Role.where(:name => "super_administrator")[0]}).save
+  end
+
 end
