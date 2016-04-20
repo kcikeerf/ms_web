@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   belongs_to :role
 
-#  def role?(r)
-#    role.include? r.to_s
-#  end
+  def role?(r)
+    role.name.include? r.to_s
+  end
 end
