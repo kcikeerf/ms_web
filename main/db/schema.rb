@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419162326) do
+ActiveRecord::Schema.define(version: 20160420082258) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -27,6 +27,83 @@ ActiveRecord::Schema.define(version: 20160419162326) do
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+
+  create_table "bank_checkpoint_ckps", id: false, force: true do |t|
+    t.string   "uid",        limit: 36
+    t.string   "dimesion",   limit: 50
+    t.string   "rid",        limit: 36
+    t.string   "checkpoint", limit: 200
+    t.integer  "is_entity"
+    t.text     "desc"
+    t.datetime "dt_add"
+    t.datetime "dt_updated"
+  end
+
+  create_table "bank_ckp_comments", id: false, force: true do |t|
+    t.string   "uid",       limit: 36
+    t.string   "ckp_uid",   limit: 36
+    t.string   "ban_uid",   limit: 36
+    t.string   "target",    limit: 36
+    t.text     "template"
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_ckp_cubes", primary_key: "nid", force: true do |t|
+    t.string   "ckp_uid_k", limit: 36
+    t.string   "ckp_uid_s", limit: 36
+    t.string   "ckp_uid_a", limit: 36
+    t.integer  "crosstype"
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_dic_items", id: false, force: true do |t|
+    t.string   "sid",       limit: 50
+    t.string   "dic_sid",   limit: 50
+    t.string   "caption",   limit: 200
+    t.text     "desc"
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_dics", id: false, force: true do |t|
+    t.string   "sid",       limit: 50
+    t.string   "caption",   limit: 200
+    t.text     "desc"
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_nodestructures", id: false, force: true do |t|
+    t.string   "uid",       limit: 36
+    t.string   "subject",   limit: 50
+    t.string   "version",   limit: 50
+    t.string   "grade",     limit: 50
+    t.string   "rid",       limit: 128
+    t.string   "node",      limit: 200
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_papertag_ptgs", id: false, force: true do |t|
+    t.string   "sid",       limit: 200
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_quiztag_qtgs", id: false, force: true do |t|
+    t.string   "sid",       limit: 200
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "bank_tbc_ckps", primary_key: "nid", force: true do |t|
+    t.string   "tbs_uid",   limit: 36
+    t.string   "ckp_uid3",  limit: 36
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
 
   create_table "items", force: true do |t|
     t.string   "name"

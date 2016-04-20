@@ -14,7 +14,9 @@ class BankCheckpointCkp < ActiveRecord::Base
   has_many :bank_ckp_comments, foreign_key: "ban_uid"
 
   has_many :bank_tbc_ckps
-  has_many :bank_nodestructures, through: bank_tbc_ckps
+  has_many :bank_nodestructures, through: :bank_tbc_ckps
+
+#  accepts_nested_attributes_for :bank_ckp_comments,:bank_tbc_ckps,:bank_nodestructures
 
   private
   def init_uid
