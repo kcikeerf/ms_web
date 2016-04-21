@@ -2,7 +2,7 @@ class Mongodb::BankQizQtg
   include Mongoid::Document
 
   validates :qtg_sid, length: {maximum: 200}
-  validates ::qiz_uid, length: {maximum: 36}
+  validates :qiz_uid, length: {maximum: 36}
 
   belongs_to :bank_quiz_qiz
 

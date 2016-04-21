@@ -1,5 +1,16 @@
 Rails.application.routes.draw do
-  get 'items/index', to: "items#index"
+
+  # routes for quiz_paper controller
+
+  resource :quiz_papers do
+    member do
+      post 'save'
+      get 'quiz_list'
+      get 'quiz_get'
+    end
+  end
+   
+  # defined routes for user authentication
   devise_for :users,
     controllers: { sessions: 'users/sessions',
                    registrations: 'users/registrations',

@@ -1,7 +1,7 @@
 class Mongodb::BankQuizQiz
   include Mongoid::Document
 
-  include MongodbPatch
+  include Mongodb::MongodbPatch
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
 

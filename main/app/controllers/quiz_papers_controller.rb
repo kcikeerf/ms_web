@@ -57,7 +57,7 @@ class QuizPapersController < ApplicationController
     begin
       target_quiz_paper = Mongodb::BankPaperPap.find_by(_id: params[:str_id])
       result[:str_id] = params[:str_id]
-      result[:obj_quizprop] = target_quiz
+      result[:obj_quizprop] = target_quiz_paper
       result[:arr_items] = target_quiz_paper.bank_quiz_qizs
     rescue Exception => ex
       # do nothing for current 
