@@ -7,8 +7,10 @@ class BankNodestructure < ActiveRecord::Base
 
   before_create :init_uid
 
-  has_many :bank_tbc_ckps
+  has_many :bank_tbc_ckps, foreign_key: "tbs_uid"
   has_many :bank_checkpoint_ckps, through: :bank_tbc_ckps
+
+  accepts_nested_attributes_for :bank_checkpoint_ckps
 
   private
   def init_uid

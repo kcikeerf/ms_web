@@ -14,5 +14,13 @@ ActiveAdmin.register BankQuiztagQtg do
   #   permitted
   # end
 
+  permit_params :sid
+
+  form do |f|
+      f.inputs "BankQuiztagQtg Detail" do
+      f.input :sid
+    end
+    f.actions
+  end
 
 end

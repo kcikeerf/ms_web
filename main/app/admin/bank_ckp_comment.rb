@@ -13,6 +13,28 @@ ActiveAdmin.register BankCkpComment do
   #   permitted << :other if resource.something?
   #   permitted
   # end
+  
+  permit_params :uid, :target, :template, :bank_checkpoint_ckp
 
+  index do
+    column :uid
+    column :target
+    column :template
+    column :bank_checkpoint_ckp
+    column :dt_add
+    column :dt_update
+
+    actions
+  end
+ 
+  form do |f|
+      f.inputs "BankCkpComment Detail" do
+      f.input :uid
+      f.input :target
+      f.input :template
+      f.input :bank_checkpoint_ckp, as: :select, collection: BankCheckpointCkp.all.map{|bcc| bcc.checkpoint}
+    end
+    f.actions
+  end  
 
 end

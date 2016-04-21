@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 20160420082258) do
     t.integer  "is_entity"
     t.text     "desc"
     t.datetime "dt_add"
-    t.datetime "dt_updated"
+    t.datetime "dt_update"
   end
 
   create_table "bank_ckp_comments", id: false, force: true do |t|
@@ -103,12 +103,6 @@ ActiveRecord::Schema.define(version: 20160420082258) do
     t.string   "ckp_uid3",  limit: 36
     t.datetime "dt_add"
     t.datetime "dt_update"
-  end
-
-  create_table "items", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "permissions", force: true do |t|

@@ -14,5 +14,27 @@ ActiveAdmin.register BankDicItem do
   #   permitted
   # end
 
+  permit_params :sid, :caption, :desc,:bank_dic, :bank_dic_ids => []
+
+  index do
+    column :sid
+    column :caption
+    column :desc
+    column :bank_dic
+    column :dt_add
+    column :dt_update
+
+    actions
+  end
+
+  form do |f|
+      f.inputs "BankDicItem Detail" do
+      f.input :sid
+      f.input :caption
+      f.input :desc
+      f.input :bank_dic, as: :select, collection: BankDic.all.map{|bd| bd.caption}
+    end
+    f.actions
+  end
 
 end

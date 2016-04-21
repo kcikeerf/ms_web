@@ -9,7 +9,7 @@ class CreateBankCheckpointCkps < ActiveRecord::Migration
       t.text :desc, limit: 500
 #      t.timestamps
       t.datetime :dt_add
-      t.datetime :dt_updated
+      t.datetime :dt_update
     end
   end
 end

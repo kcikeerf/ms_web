@@ -14,5 +14,26 @@ ActiveAdmin.register BankCkpCube do
   #   permitted
   # end
 
+  permit_params :ckp_uid_k, :ckp_uid_s, :ckp_uid_a, :crosstype
+
+  index do
+    column :id
+    column :ckp_uid_k
+    column :ckp_uid_s
+    column :ckp_uid_a
+    column :crosstype
+
+    actions
+  end
+
+  form do |f|
+      f.inputs "BankCkpCube Detail" do
+      f.input :ckp_uid_k
+      f.input :ckp_uid_s
+      f.input :ckp_uid_a
+      f.input :crosstype
+    end
+    f.actions
+  end
 
 end

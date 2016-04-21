@@ -15,6 +15,17 @@ ActiveAdmin.register Role do
   # end
 
   permit_params :name, :desc, :permissions,:permission_ids => []
+
+  index do
+    column :name
+    column :desc
+    column :permissions
+    column :created_at
+    column :updated_at
+
+    actions
+  end
+
   form do |f|
      f.inputs "Role Details" do
        f.input :name
