@@ -1,2 +1,0 @@
-module QuizPapersHelper
-end
