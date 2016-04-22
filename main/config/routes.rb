@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   # routes for quiz_paper controller
 
-  resource :quiz_papers do
+  resource :quizs do
     member do
       post 'save'
       get 'quiz_list'
