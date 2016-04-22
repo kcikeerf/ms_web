@@ -1,5 +1,27 @@
 module Common
 
+  module SwtkConstants
+    file_upload_location = ""
+  end
+
+  module File
+
+    # Upload files 
+    def upload files
+      result = []
+      files.each{|file|
+        p file
+        fu = FileUpload.new(:name => file.original_filename)
+        fu.file = file
+        fu.save!
+        result << fu
+      }
+      return result
+    end    
+    module_function :upload
+
+  end
+
   module Response
 
     # Analyze the params to check callback type

@@ -4,7 +4,8 @@ Rails.application.routes.draw do
 
   resource :quizs do
     member do
-      post 'save'
+      post 'quiz_create_type1upload'
+      post 'quiz_create_type1save'
       get 'quiz_list'
       get 'quiz_get'
     end
