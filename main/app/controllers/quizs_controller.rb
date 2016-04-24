@@ -41,7 +41,7 @@ class QuizsController < ApplicationController
     params.permit!
 
     # response format pre-defined
-    result = { :str_tempid => nil }
+    result = { :str_id => nil }
 
     current_quiz_paper = Mongodb::BankPaperPap.new(params["obj_quizprop"])
     current_quiz_paper.save!
@@ -55,7 +55,7 @@ class QuizsController < ApplicationController
     # need to consider other related collections 
     ######
 
-    result = { :str_tempid => current_quiz_paper._id.to_s }
+    result = { :str_id => current_quiz_paper._id.to_s }
     result_json = Common::Response.exchange_record_id(result.to_json)
     render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
