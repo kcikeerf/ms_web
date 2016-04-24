@@ -52,6 +52,9 @@ gem 'snowflake-id'
 
 # xml parser
 gem 'ox'
+# excel parser
+gem 'roo'
 
 #file upload
 gem 'carrierwave'
+

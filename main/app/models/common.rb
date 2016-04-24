@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# 
+
 module Common
 
   module SwtkConstants
@@ -7,18 +10,55 @@ module Common
   module File
 
     # Upload files 
-    def upload files
-      result = []
-      files.each{|file|
-        p file
-        fu = FileUpload.new(:name => file.original_filename)
-        fu.file = file
-        fu.save!
-        result << fu
-      }
-      return result
+    def upload files_h
+      fu = FileUpload.new
+      fu.paper = files_h[:paper]
+      fu.answer = files_h[:answer]
+      fu.analysis = files_h[:analysis] 
+      fu.save!
+      return fu
     end    
     module_function :upload
+
+    # Get excel file content
+    def get_excel_file_content file_path
+      result = []
+      file = nil
+      case file_path.split('.').last.downcase
+      when 'xlsx', 'xlsm'
+        file = Roo::Excelx.new(file_path)
+      when 'xls'
+        file = Roo::Excel.new(file_path)
+      end
+      sheet = file.sheet('试题分析') if file
+      sheet.each{|row|
+        result << row
+      } if sheet
+      return result
+    end
+    module_function :get_excel_file_content
+
+    # Convert doc file content
+    def get_doc_file_content_as_html file_path
+      return "" if file_path.blank?
+      result = ""
+      location = file_path.split('/')[0..-2].join('/')
+      html_name = file_path.split('/').last.split('.')[0] + '_converted.html' 
+
+      begin
+        word_cleaner_folder = Rails.root.to_s.split('/')[0..-2].join('/') + "/tools/WordCleaner7ComponentMono"
+        cmd_str = "#{word_cleaner_folder}/WordCleaner7ComponentMono.exe /t '#{word_cleaner_folder}/Templates/Convert\ to\ HTML\ embed\ images.wc' /f #{file_path} /o #{location} /of #{html_name}"
+        #exec cmd_str
+        #if not use popen, rails app will be interrupted
+        IO.popen(cmd_str){|f| f.gets}
+      rescue Exception => ex
+        p ex.message
+      end
+      arr = IO.readlines(location + '/' + html_name)
+      result = arr.join('')
+      return result
+    end
+    module_function :get_doc_file_content_as_html
 
   end
 

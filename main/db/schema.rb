@@ -106,8 +106,9 @@ ActiveRecord::Schema.define(version: 20160422083804) do
   end
 
   create_table "file_uploads", force: true do |t|
-    t.string   "name"
-    t.string   "file"
+    t.string   "paper"
+    t.string   "answer"
+    t.string   "analysis"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

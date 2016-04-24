@@ -17,8 +17,12 @@ class QuizsController < ApplicationController
      :obj_analysis => nil
     }
 
-    paper, answer, analysis = Common::File.upload([params[:file_paper], params[:file_answer], params[:file_analysis]])
-    result = { :items => [paper.file.current_path, answer.file.current_path, analysis.file.current_path]}
+    f_uploaded = Common::File.upload({:paper => params[:file_paper], :answer => params[:file_answer], :analysis => params[:file_analysis]})
+    result[:str_tempid] = f_uploaded.id
+    result[:str_quiz] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    result[:str_answer] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
+    result[:obj_analysis] = Common::File.get_excel_file_content(f_uploaded.analysis.current_path) 
+
 #    respond_to do |format|
 #      format.json { render json: result.to_json }
 #    end
