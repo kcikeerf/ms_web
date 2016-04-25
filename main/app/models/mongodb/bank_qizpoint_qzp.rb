@@ -8,7 +8,7 @@ class Mongodb::BankQizpointQzp
   before_save :format_score
 
 #  field :uid, type: String
-  field :quiz_uid, type: String
+  field :quz_uid, type: String
   field :pap_uid, type: String
   field :tbs_sid, type: String
   field :type, type: String

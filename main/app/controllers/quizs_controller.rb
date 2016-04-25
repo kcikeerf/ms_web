@@ -41,16 +41,18 @@ class QuizsController < ApplicationController
     params.permit!
 
     # response format pre-defined
-    result = { :str_id => nil }
+    result = { :str_tempid => nil }
 
-    current_quiz_paper = Mongodb::BankPaperPap.new(params["obj_quizprop"])
+    current_quiz_paper = Mongodb::Bank.new(params["obj_quizprop"])
     current_quiz_paper.save!
 
-    params["arr_items"].each{|item|
-      current_quiz_paper.bank_quiz_qizs.build(item)
-    }
-    current_quiz_paper.bank_quiz_qizs.each{|bqq| bqq.save!}
-    
+    #params["arr_items"].each{|item|
+    #  current_quiz_paper.bank_quiz_qizs.build(item)
+    #}
+    #current_quiz_paper.bank_quiz_qizs.each{|bqq| bqq.save!}
+
+        
+
     ######
     # need to consider other related collections 
     ######
@@ -59,6 +61,56 @@ class QuizsController < ApplicationController
     result_json = Common::Response.exchange_record_id(result.to_json)
     render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
+
+  # type2 save a single quiz
+  # params: 
+  #
+  def quiz_create_type2save
+    # allow receiving all parameters  
+    params.permit!
+
+    # response format pre-defined
+    result = { :str_id => nil }
+
+    current_quiz = Mongodb::BankQuizQiz.new
+=begin
+({
+      :pap_uid => params[:pap_uid],
+      :tbs_uid => params[:tbs_uid],
+      :tpl_id => params[:tpl_id],
+      :ext1 => params[:ext1],
+      :ext2 => params[:ext2],
+      :cat => params[:cat],
+      :type => params[:type],
+      :text => params[:text],
+      :answer => params[:answer],
+      :desc => params[:desc],
+      :score => params[:score],
+      :time => params[:time],
+      :levelword2 => params[:levelword2],
+      :level => params[:level],
+      :levelword => params[:levelword],
+      :levelorder => params[:levelorder]
+    })
+=end
+    current_quiz.save_quiz(params)
+
+    #params["arr_items"].each{|item|
+    #  current_quiz_paper.bank_quiz_qizs.build(item)
+    #}
+    #current_quiz_paper.bank_quiz_qizs.each{|bqq| bqq.save!}
+
+
+
+    ######
+    # need to consider other related collections 
+    ######
+
+    result = { :str_id => current_quiz._id.to_s }
+    result_json = Common::Response.exchange_record_id(result.to_json)
+    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+  end
+
 
   # get quiz paper list
   #

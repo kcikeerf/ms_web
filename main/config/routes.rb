@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     member do
       post 'quiz_create_type1upload'
       post 'quiz_create_type1save'
+      post 'quiz_create_type2save'
       get 'quiz_list'
       get 'quiz_get'
     end
