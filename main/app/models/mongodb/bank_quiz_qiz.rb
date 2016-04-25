@@ -63,7 +63,7 @@ class Mongodb::BankQuizQiz
     self.save!
 
     params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
-      p bqq, index
+=begin
       self.bank_qizpoint_qzps.build({
         :quz_uid => bqq["quz_uid"].nil?? nil:bqq["quz_uid"],
         :pap_uid => bqq["pap_uid"].nil?? nil:bqq["pap_uid"],
@@ -73,14 +73,23 @@ class Mongodb::BankQuizQiz
         :desc => bqq["desc"].nil?? nil:bqq["desc"],
         :score => bqq["score"].nil?? nil:bqq["score"]
       }).save!
-      p self.bank_qizpoint_qzps[index]
+=end
+      qiz_point = Mongodb::BankQizpointQzp.new
+      qiz_point.save_qizpoint bqq
+      self.bank_qizpoint_qzps.push(qiz_point)
+      if bqq[""bank_ckp_qzp]
+        ckp = Mongodb::BankCkpQzp.new
+        ckp.save_ckp bqq["bank_ckp_qzp"]
+        self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
+      end
+=begin
       self.bank_qizpoint_qzps[index].bank_ckp_qzp = Mongodb::BankCkpQzp.new({
         :ckp_uid => bqq["bank_ckp_qzp"]["ckp_uid"].nil?? nil:bqq["bank_ckp_qzp"]["ckp_uid"],
         :qzp_uid => bqq["bank_ckp_qzp"]["qzp_uid"].nil?? nil:bqq["bank_ckp_qzp"]["qzp_uid"], 
         :weights => bqq["bank_ckp_qzp"]["weights"].nil?? nil:bqq["bank_ckp_qzp"]["weights"]  
       })
+=end
     }
-      
     return true
   end
 

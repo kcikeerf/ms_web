@@ -21,6 +21,18 @@ class Mongodb::BankQizpointQzp
   belongs_to :bank_quiz_qiz
   belongs_to :bank_paper_pap
 
+  def save_qizpoint params
+     self.quz_uid = params["quz_uid"].nil?? nil:params["quz_uid"]
+     self.pap_uid = params["pap_uid"].nil?? nil:params["pap_uid"]
+     self.tbs_sid = params["tbs_sid"].nil?? nil:params["tbs_sid"]
+     self.type = params["type"].nil?? nil:params["type"]
+     self.answer = params["answer"].nil?? nil:params["answer"]
+     self.desc = params["desc"].nil?? nil:params["desc"]
+     self.score = params["score"].nil?? nil:params["score"]
+     self.save!
+     return true
+  end
+
   private
   def format_score
     self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
