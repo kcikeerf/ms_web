@@ -1,6 +1,7 @@
 class Mongodb::BankCkpQzp
   include Mongoid::Document
 #  include MongoMapper::Document
+  include Tenacity
 
 #  auto_increment!
 
@@ -17,6 +18,7 @@ class Mongodb::BankCkpQzp
   field :weights, type: Float
 
   belongs_to :bank_qizpoint_qzp
+  t_belongs_to :bank_checkpoint_ckp , class_name: "BankCheckpointCkp", foreign_key: "ckp_uid"
 
   def save_ckp params
     self.ckp_uid = params["ckp_uid"].nil?? nil:params["ckp_uid"]

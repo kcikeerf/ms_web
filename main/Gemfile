@@ -49,6 +49,7 @@ gem 'cancan'
 gem 'mongoid', '~> 4.0.0.rc1'
 #gem 'bson_ext'
 gem 'snowflake-id'
+gem 'tenacity'
 
 # xml parser
 gem 'ox'

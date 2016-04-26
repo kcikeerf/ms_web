@@ -77,7 +77,7 @@ class Mongodb::BankQuizQiz
       qiz_point = Mongodb::BankQizpointQzp.new
       qiz_point.save_qizpoint bqq
       self.bank_qizpoint_qzps.push(qiz_point)
-      if bqq[""bank_ckp_qzp]
+      if bqq["bank_ckp_qzp"]
         ckp = Mongodb::BankCkpQzp.new
         ckp.save_ckp bqq["bank_ckp_qzp"]
         self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
