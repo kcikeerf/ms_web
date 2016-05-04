@@ -1,0 +1,199 @@
+zh:
+  time:
+    formats:
+      long: "%Y-%m-%d %H:%M:%S"
+
+#定义active record表及属性的中文标示
+  activerecord:
+    models:
+      bank_checkpoint_ckp: "测评点表"
+      bank_ckp_comment: "测评点评价模版表"
+      bank_ckp_cube: "测评点立体交叉表"
+      bank_dic: "字典表"
+      bank_dic_item: "字典条目表"
+      bank_nodestructure: "课本结构树形表"
+      bank_papertag_ptg: "试卷标签"
+      bank_quiztag_qtg: "试题标签"
+      comment: "评论"
+      role: "角色"
+      user: "用户"
+    attributes:
+      bank_checkpoint_ckp:
+        uid: "ID"
+        dimesion: "测评方面"
+        rid: "分组级别"
+        checkpoint: "测评点"
+        is_entity: "实体测评点"
+        desc: "测评内容"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_ckp_comment:
+        uid: "ID"
+        ckp_uid: "实体测评点"
+        ban_uid: "测评点_ID"
+        target: "考察对象"
+        template: "评价模板"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_ckp_cube:
+        nid: "ID"
+        ckp_uid_k: "知识点测评点"
+        ckp_uid_s: "技能测评点"
+        ckp_uid_a: "能力测评点"
+        crosstype: "交叉类型（0-10）" 
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_dic:
+        sid: "ID"
+        caption: "字典显示字"
+        desc: "描述"
+        bank_dic_item: "字典条目表"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_dic_item:
+        sid: "ID"
+        bank_dic: "字典表"
+        caption: "条目显示字"
+        desc: "描述"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_nodestructure:
+        uid: "ID"
+        subject: "学科"
+        version: "版本"
+        grade: "年级"
+        rid: "节点序号"
+        node: "单元／章节"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_papertag_ptg:
+        sid: "ID"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_quiztag_qtg:
+        sid: "ID"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      role:
+        name: "名字"
+        desc: "描述"
+        permissions: "权限"
+        created_at: "生成时间"
+        updated_at: "更新时间"
+      user:
+        email: "邮箱"
+        password: "密码"
+        password_confirmation: "密码确认"
+        role: "角色" 
+        current_sign_in_at: "当前登录时间" 
+        last_sign_in_at: "最后登录时间"
+        sign_in_count: "登录次数"
+        created_at: "生成时间"
+        updated_at: "更新时间"
+   
+# active admin使用的默认标示
+  active_admin:
+    dashboard: "控制面板"
+    dashboard_welcome:
+      welcome: "欢迎使用Active Admin. 这是默认的控制面板页."
+      call_to_action: "若要添加新的面板内容, 请修改 'app/admin/dashboard.rb'"
+    view: "查看"
+    edit: "编辑"
+    delete: "删除"
+    delete_confirmation: "确定删除?"
+    new_model: "新建%{model}"
+    edit_model: "编辑%{model}"
+    delete_model: "删除%{model}"
+    details: "%{model}详情"
+    cancel: "取消"
+    empty: "清空"
+    previous: "上一个"
+    next: "下一个"
+    download: "下载:"
+    has_many_new: "新建一个%{model}"
+    has_many_delete: "删除"
+    has_many_remove: "清除"
+    filters:
+      buttons:
+        filter: "过滤"
+        clear: "清除条件"
+      predicates:
+        contains: "包含"
+        equals: "等于"
+        starts_with: "开头"
+        ends_with: "完与"
+        greater_than: "大于"
+        less_than: "小于"
+    status_tag:
+      "yes": "是的"
+      "no": "无"
+    main_content: "请执行 %{model}#main_content 来显示内容."
+    logout: "退出"
+    powered_by: "Powered by %{active_admin} %{version}"
+    sidebars:
+      filters: "所有条件"
+    pagination:
+      empty: "暂时没有%{model}"
+      one: "显示 <b>1</b> %{model}"
+      one_page: "显示 <b>所有 %{n}</b> %{model}"
+      multiple: "显示所有 <b>%{total}</b> %{model}中的<b>%{from}&nbsp;-&nbsp;%{to}</b> 条"
+      multiple_without_total: "%{model}中的<b>%{from}&nbsp;-&nbsp;%{to}</b> 条"
+      entry:
+        one: "条目"
+        other: "条目"
+    any: "任何"
+    blank_slate:
+      content: "暂时还没有%{resource_name}."
+      link: "新建一个"
+    dropdown_actions:
+      button_label: "行动"
+    batch_actions:
+      button_label: "批处理"
+      default_confirmation: "你确定你要这样做？"
+      delete_confirmation: "你确定要删除所有%{plural_model}?"
+      succesfully_destroyed:
+        one: "成功删除 1 %{model}"
+        other: "成功删除 %{count} %{plural_model}"
+      selection_toggle_explanation: "(切换选择)"
+      link: "新建一个"
+      action_label: "%{title} 被选中"
+      labels:
+        destroy: "删除"
+    comments:
+      body: "内容"
+      author: "作者"
+      title: "评论"
+      add: "添加评论"
+      resource: "资源"
+      no_comments_yet: "暂时没有评论"
+      title_content: "(%{count})条评论"
+      errors:
+        empty_text: "评论保存失败，内空不能为空."
+    devise:
+      username:
+        title: "用户名"
+      email:
+        title: "邮箱"
+      subdomain:
+        title: "子域"
+      password:
+        title: "密码"
+      login:
+        title: "登录"
+        remember_me: "记住我"
+        submit: "登录"
+      reset_password:
+        title: "忘记了密码？"
+        submit: "重置我的密码"
+      unlock:
+        title: "重新发送送解锁命令"
+        submit: "重新发送送解锁命令"
+      resend_confirmation_instructions:
+        title: " 重新发送确认指示"
+        submit: " 重新发送确认指示"
+      links:
+        sign_in: "登录"
+        forgot_your_password: "忘记了密码？"
+        sign_in_with_omniauth_provider: "登入%{provider}"
+    access_denied:
+      message: "您无权处理此操作"

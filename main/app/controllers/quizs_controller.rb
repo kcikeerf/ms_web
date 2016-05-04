@@ -65,7 +65,7 @@ class QuizsController < ApplicationController
   # type2 save a single quiz
   # params: 
   #
-  def quiz_create_type2save
+  def single_quiz_save
     # allow receiving all parameters  
     params.permit!
 

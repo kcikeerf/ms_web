@@ -40,7 +40,7 @@ ActiveAdmin.register BankNodestructure do
       f.input :grade
       f.input :rid
       f.input :node
-      f.input :bank_checkpoint_ckps, as: :check_boxes, colletion: BankCheckpointCkp.all.map{|bcc| bcc.uid + '>' + bcc.checkpoint}
+      f.input :bank_checkpoint_ckps, as: :check_boxes, colletion: BankCheckpointCkp.all.map{|bcc| bcc.uid.to_s + '>' + bcc.checkpoint.to_s}
     end
     f.actions
   end
