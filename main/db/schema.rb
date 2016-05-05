@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160422083804) do
+ActiveRecord::Schema.define(version: 20160505135013) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -67,6 +67,22 @@ ActiveRecord::Schema.define(version: 20160422083804) do
     t.datetime "dt_update"
   end
 
+  create_table "bank_dic_quiz_subjects", primary_key: "nid", force: true do |t|
+    t.string   "subject",    limit: 50
+    t.string   "caption",    limit: 200
+    t.string   "desc",       limit: 500
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "bank_dic_quiztypes", id: false, force: true do |t|
+    t.string   "sid",        limit: 50
+    t.string   "caption",    limit: 200
+    t.string   "desc",       limit: 500
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "bank_dics", id: false, force: true do |t|
     t.string   "sid",       limit: 50
     t.string   "caption",   limit: 200
@@ -96,6 +112,13 @@ ActiveRecord::Schema.define(version: 20160422083804) do
     t.string   "sid",       limit: 200
     t.datetime "dt_add"
     t.datetime "dt_update"
+  end
+
+  create_table "bank_subject_qiztype_links", force: true do |t|
+    t.string   "subj_nid",    limit: 50
+    t.string   "qiztype_sid", limit: 50
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "bank_tbc_ckps", primary_key: "nid", force: true do |t|

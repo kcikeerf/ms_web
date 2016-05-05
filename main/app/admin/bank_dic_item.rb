@@ -27,8 +27,25 @@ ActiveAdmin.register BankDicItem do
     actions
   end
 
+=begin
+  show do
+    attributes_table do
+    row :sid
+    row :caption
+    row :desc
+    row :dt_add
+    row :dt_update
+#    default_main_content
+    table_for bank_dic_item.bank_dic do
+      column "Parent #{I18n.t 'activerecord.models.bank_dic'}" do |item|
+        link_to item, [:admin, item]
+      end
+    end
+    end
+  end
+=end
   form do |f|
-      f.inputs "BankDicItem Detail" do
+    f.inputs "BankDicItem Detail" do
       f.input :sid
       f.input :caption
       f.input :desc

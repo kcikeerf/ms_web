@@ -1,0 +1,63 @@
+<dictionaries>
+<dictionary sid="grade" caption="grade" desc="年级">
+  <item sid="grade1" caption="grade1" desc="一年级" />
+  <item sid="grade2" caption="grade2" desc="二年级" />
+  <item sid="grade3" caption="grade3" desc="三年级" />
+  <item sid="grade4" caption="grade4" desc="四年级" />
+  <item sid="grade5" caption="grade5" desc="五年级" />
+  <item sid="grade6" caption="grade6" desc="六年级" />
+  <item sid="grade7" caption="grade7" desc="七年级" />
+  <item sid="grade8" caption="grade8" desc="八年级" />
+  <item sid="grade9" caption="grade9" desc="九年级" />
+  <item sid="high1" caption="high1" desc="高一年级" />
+  <item sid="high2" caption="high2" desc="高二年级" />
+  <item sid="high3" caption="high3" desc="高三年级" />
+</dictionary>
+<dictionary sid="volume" caption="volume" desc="课本分册">
+  <item sid="volumea" caption="volumea" desc="上册" />
+  <item sid="volumeb" caption="volumeb" desc="上册" />
+  <item sid="obligatory1" caption="obligatory1" desc="必修1" />
+  <item sid="obligatory2" caption="obligatory2" desc="必修2" />
+  <item sid="obligatory3" caption="obligatory3" desc="必修3" />
+  <item sid="obligatory4" caption="obligatory4" desc="必修4" />
+  <item sid="obligatory5" caption="obligatory5" desc="必修5" />
+  <item sid="elective1" caption="elective1" desc="选修1" />
+  <item sid="elective2" caption="elective2" desc="选修2" />
+  <item sid="elective3" caption="elective3" desc="选修3" />
+  <item sid="elective4" caption="elective4" desc="选修4" />
+  <item sid="elective5" caption="elective5" desc="选修5" />
+  <item sid="elective6" caption="elective6" desc="选修6" />
+  <item sid="elective7" caption="elective7" desc="选修7" />
+  <item sid="elective8" caption="elective8" desc="选修8" />
+</dictionary>
+<dictionary sid="difficulty" caption="difficulty" desc="难度系数">
+  <item sid="easyplus" caption="easyplus" desc="容易" />
+  <item sid="easy" caption="easy" desc="较易" />
+  <item sid="normal" caption="normal" desc="中等" />
+  <item sid="hard" caption="hard" desc="较难" />
+  <item sid="hardplus" caption="hardplus" desc="困难" />
+</dictionary>
+<dictionary sid="paper_type" caption="paper_type" desc="试卷类型">
+  <item sid="term_begin" caption="term_begin" desc="期初" />
+  <item sid="term_middle" caption="term_middle" desc="期中" />
+  <item sid="term_end" caption="term_end" desc="期末" />
+  <item sid="month_test" caption="month_test" desc="月考" />
+  <item sid="unit_test" caption="unit_test" desc="单元测试" />
+</dictionary>
+<dictionary sid="report_type" caption="report_type" desc="报告类型">
+  <item sid="student_report" caption="student_report" desc="学生报告" />
+  <item sid="class_report" caption="class_report" desc="班级报告" />
+  <item sid="grade_report" caption="grade_report" desc="年级报告" />
+  <item sid="area_report" caption="area_report" desc="区域报告" />
+</dictionary>
+<dictionary sid="year" caption="year" desc="年份">
+  <item sid="2010" caption="2010" desc="2010年" />
+  <item sid="2011" caption="2011" desc="2011年" />
+  <item sid="2012" caption="2012" desc="2012年" />
+  <item sid="2013" caption="2013" desc="2013年" />
+  <item sid="2014" caption="2014" desc="2014年" />
+  <item sid="2015" caption="2015" desc="2015年" />
+  <item sid="2016" caption="2016" desc="2016年" />
+</dictionary>
+</dictionaries>
+

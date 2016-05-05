@@ -1,0 +1,35 @@
+<dictionaries>
+<dictionary subject="chinese" caption="chinese" desc="语文">
+  <item sid="danxiang_xuanze" caption="danxuan_xuanze" desc="单项选择" />
+</dictionary>
+<dictionary subject="mathematics" caption="mathematics" desc="数学">
+  <item sid="danxiang_xuanze" caption="danxuan_xuanze" desc="单项选择" />
+</dictionary>
+<dictionary subject="english" caption="english" desc="英语">
+  <item sid="tingli_lijie" caption="tingli_lijie" desc="听力理解" />
+  <item sid="danxiang_xuanze" caption="danxuan_xuanze" desc="单项选择" />
+  <item sid="wanxing_tiankong" caption="wanxing_tiankong" desc="完形填空" />
+  <item sid="yuedu_lijie" caption="yuedu_lijie" desc="阅读理解" />
+  <item sid="ciyu_yunyong" caption="ciyu_yunyong" desc="词语运用" />
+  <item sid="buquan_duihua" caption="buquan_duihua" desc="补全对话" />
+  <item sid="shumian_biaoda" caption="shumian_biaoda" desc="书面表达" />
+</dictionary>
+<dictionary subject="history" caption="history" desc="历史">
+</dictionary>
+<dictionary subject="geography" caption="geography" desc="地理">
+</dictionary>
+<dictionary subject="physical" caption="physical" desc="物理">
+</dictionary>
+<dictionary subject="chemistry" caption="chemistry" desc="化学">
+</dictionary>
+<dictionary subject="biography" caption="biography" desc="生物">
+</dictionary>
+<dictionary subject="moral" caption="moral" desc="思想品德">
+</dictionary>
+<dictionary subject="politics" caption="politics" desc="政治">
+</dictionary>
+<dictionary subject="infotech" caption="infotech" desc="信息技术">
+</dictionary>
+<dictionary subject="technology" caption="technology" desc="技术">
+</dictionary>
+</dictionaries>

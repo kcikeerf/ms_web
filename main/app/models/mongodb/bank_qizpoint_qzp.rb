@@ -19,7 +19,8 @@ class Mongodb::BankQizpointQzp
   has_one :bank_ckp_qzp, class_name: "Mongodb::BankCkpQzp"
 
   belongs_to :bank_quiz_qiz
-  belongs_to :bank_paper_pap
+  has_and_belongs_to_many :bank_paper_paps, classs_name: "Mongodb::BankPaperPap"
+  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
 
   def save_qizpoint params
      self.quz_uid = params["quz_uid"].nil?? nil:params["quz_uid"]

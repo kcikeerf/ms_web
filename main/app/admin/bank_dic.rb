@@ -33,8 +33,8 @@ ActiveAdmin.register BankDic do
     row :caption
     row :desc
     table_for bank_dic.bank_dic_items.order('caption ASC') do
-      column 'Related BankDicItems' do |item|
-        link_to item.sid, [:admin, item]
+      column "Child #{I18n.t 'activerecord.models.bank_dic_item'}" do |item|
+        link_to item.desc, [:admin, item]
       end
     end
     end
