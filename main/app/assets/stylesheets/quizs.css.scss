@@ -1,3 +1,64 @@
-// Place all the styles related to the quizs controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+@charset "utf-8";
+/* CSS Document */
+
+body {background:#ebebed;font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJhengHei",华文细黑,STHeiti,MingLiu;}
+textarea {resize: none;}
+
+/* 试题入库 */
+.container {background:#fff;margin:30px auto;font-size:14px;border-radius:5px;padding:0;}
+.container h1 {font-size:18px;text-align:center;border-bottom:1px solid #f1f1f1;padding:30px;margin-top:10px;}
+.container section {border-bottom:1px solid #f1f1f1;padding:50px 50px 10px 50px;}
+.container section dl dt {float:left;width:10%;text-align:right;padding:5px 10px 0 0;font-size:16px;}
+.container section dl dd {float:left;width:88%;}
+.container section dl dd ul li {margin-bottom:10px;}
+.container section dl dd ul li label {display:inline-block;width:80px;font-weight:normal;}
+.container section dl dd ul li .form-control {display:inline-block;width:60%;}
+
+.analyserow {border:1px solid #e5e5e5;border-radius:5px;margin:0 0 15px 0;height:155px;position:relative;}
+.analyserow li {padding:15px;height:100%;}
+.container section dl dd ul.analyserow li {margin:0;}
+.analyserow li label {vertical-align:top;}
+.analyserow li.first {border-right:1px solid #e5e5e5;}
+.analyserow li.first textarea.form-control {background:#f9f9f9;border:0 none;width:68%;}
+.analyserow li.first select.form-control {width:80px;margin-right:10px;}
+.analyserow li.first label.checkbox-inline {width:65px;margin-top:6px;}
+.analyserow li.last {padding-left:25px;}
+.analyserow li.last label.title {border-right:1px dotted #e5e5e5;height:90px;margin:15px 0;padding-top:35px;}
+.analyserow li.last p {display:inline-block;padding:0 0 0 15px;width:240px}
+.analyserow li.last p label {width:50px;vertical-align:middle;}
+.analyserow li.last p span {display:block;margin-bottom:10px;}
+.analyserow li.last p span input.form-control {background:#f9f9f9;border:0 none;width:170px;}
+.analyserow li.del {position:absolute;right:-5px;top:45px;width:24px;height:24px;display:none}
+.analyserow li.del a {display:block;width:24px;text-align:center;height:24px;line-height:24px;background:#efefef;color:#424242;border-radius:100%;text-decoration:none;}
+.analyserow:hover li.del {display:block;}
+
+.add {margin:15px 0;}
+.add button {width:110px;text-align:center;}
+.add button i {font-style:normal;font-size:18px;}
+
+footer.confirm {padding:25px;text-align:right;}
+footer.confirm input.btn {width:110px;}
+footer.confirm input.btn-cyan {color:#fff;background:#15a993;}
+footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-color:#15a993}
+
+/* 弹出层 */
+.modal-dialog button.close {margin:15px;}
+#inspect {padding:25px;}
+#inspect h2 {font-size:16px;text-align:center;margin:10px auto 20px auto;}
+#inspect .bootstrap-table {float:left;margin:0 11px;width:260px;}
+#inspect .bootstrap-table th {background:#f9f9f9;color:#878787;text-align:center;font-weight:normal;}
+
+#inspect .tabel {float:left;margin:0 11px;width:240px;}
+.tree {min-height:20px;padding:10px;margin-bottom:20px;background-color:#fbfbfb;border:1px solid #999;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;-webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);-moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)}
+.icon-minus-sign {display:inline-block;background:image-url('icon-minus-sign.png') no-repeat center center;width:10px;height:10px;}
+.icon-plus-sign {display:inline-block;background:image-url('icon-plus-sign.png') no-repeat center center;width:10px;height:10px;}
+.tree > ul {padding:0;}
+.tree li {list-style-type:none;margin:0;padding:5px 5px 0 5px;position:relative}
+.tree li::before, .tree li::after {content:'';left:-20px;position:absolute;right:auto}
+.tree li::before {border-left:1px solid #999; bottom:50px;height:100%;top:0;width:1px}
+.tree li::after {border-top:1px solid #999;height:20px;top:25px;width:25px}
+.tree li span {-moz-border-radius:5px;-webkit-border-radius:5px;border:1px solid #999;border-radius:5px;display:inline-block;padding:3px 8px;text-decoration:none}
+.tree li.parent_li>span {cursor:pointer}
+.tree>ul>li::before, .tree>ul>li::after {border:0}
+.tree li:last-child::before {height:25px}
+.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {background:#eee;border:1px solid #94a0b4;color:#000}

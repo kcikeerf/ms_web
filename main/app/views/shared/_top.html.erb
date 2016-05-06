@@ -1,0 +1,62 @@
+<div class="bank_top">
+	<div class="top_center bc ">
+		<div class="top_logo fl">
+			<a href="/">
+				<%= image_tag 'logo.png' %>
+			</a>
+		</div>
+		<ul class="top_nav fr f14 tc">
+			<li class="<%= 'top_active' if controller_name == 'welcomes' %>">
+				<%= link_to t('page.menu.home'), '/' %>
+			</li>
+
+			<% if current_user %>
+				<li class="<%= 'top_active' if current_page?('/librarys') %>">
+					<%= link_to t('page.menu.librarys'), '/librarys' %>
+				</li>
+
+				<li class="<%= 'top_active' if ['edit_auto_papers', 'auto_papers'].include?(action_name) %>">
+					<%= link_to t('page.menu.auto_paper'), '/librarys/edit_auto_papers' %>
+				</li>
+				<li class="pr">
+					<a href="javascript:"><%= t('page.menu.score_report') %></a>
+					<div class="popup pa">
+						<%= link_to t('page.menu.simple_report'), simple_score_reports_path %>
+						<%= link_to t('page.menu.professional_report'), profession_score_reports_path %>
+					</div>
+				</li>
+				<li class="<%= 'top_active' if action_name == 'edit_test' %>">
+					<%= link_to t('page.menu.online_test'), online_tests_path %>
+				</li>			
+				<li class="login_active pr">
+					<%= link_to image_tag('head_img.png'), root_path %>				
+					<span></span>
+					<div class='perList pa'>
+						<% %w(users exam_papers questions pupils online_tests sys_msgs users/logout|logout).each do |page| %>
+							<% 
+								link, name = page.split('|') 
+								name ||= link
+							%>
+						<a href="/<%= link %>"><%= t("page.user_left_menu.#{name}") %></a>
+						<% end %>
+					</div>
+				</li>
+			<% else %>
+				<% %w(librarys|/librarys auto_paper|/librarys/edit_auto_papers score_report online_test|/online_tests/edit_test).each do |m| %>
+					<% name, link = m.split('|') %>
+					<li>
+							<%= link_to t("page.menu.#{name}"), new_user_session_path(url: link) %>
+					</li>
+				<% end %>
+
+				<li>				
+					<%= link_to t('page.login'), new_user_session_path %>
+					<span>
+						/
+					</span>
+					<%= link_to t('page.register'), new_user_registration_path %>
+				</li>
+			<% end %>
+		</ul>		
+	</div>
+</div>

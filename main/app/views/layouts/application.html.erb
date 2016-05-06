@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Main</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-
-<%= yield %>
-
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title><%= @page_title ? "#{@page_title}-#{t('page.site_name')}" : t('page.site_name') %></title>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%#= favicon_link_tag '/common/zy_logo.png' %>
+    <%= yield(:header) %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <%= render 'shared/top' %>
+    <%= yield %>
+    <%#= render 'common/footer' %>
+  </body>
 </html>

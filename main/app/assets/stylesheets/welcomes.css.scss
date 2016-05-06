@@ -1,0 +1,261 @@
+.index_banner{
+	width:100%;
+	height:637px;
+}
+.banner{
+	width:1000px;
+}
+.banner_btn_list{
+	height:71px;
+	padding-top:23px;
+}
+.banner_btn{
+	width:326px;
+	height:50px;
+	background:#f9f9f9;line-height:50px;
+	border-radius: 5px;
+	margin-right:10px;
+	color:#333;
+}
+.banner_btn::after{
+	content: '';
+	width:6px;
+	height:8px;
+	position:absolute;
+	top:21px;
+	right:18px;
+	background:image-url('banner-btn.png') no-repeat;
+}
+.banner_btn:last-child{
+	margin-right:0;
+}
+.banner_btn:hover .alertBox{
+	display:block;
+}
+/*弹出框*/
+.alertBox{
+	display:none;
+	width:326px;
+	height:326px;
+	border-radius: 4px;
+	background:#fff;
+	box-shadow: 2px 2px 10px #ccc,-2px -2px 10px #ccc;
+	top:-340px;
+}
+.alertBox li{
+	width:108px;
+	height:28px;
+	float:left;
+	text-align:center;
+	padding-top:80px;
+	line-height:0;
+	border-right:1px solid #f9f9f9;
+	border-bottom:1px solid #f9f9f9;
+}
+.alertBox li{
+	background-position:center 27px;
+	background-repeat: no-repeat;
+	font-size:14px;
+}
+.alertBox li:nth-child(1){
+	background-image:image-url('1_03.jpg') ;
+}
+.alertBox li:nth-child(2){
+	background-image:image-url('1_05.jpg') ;
+}
+.alertBox li:nth-child(3){
+	background-image:image-url('1_07.jpg') ;
+}
+.alertBox li:nth-child(4){
+	background-image:image-url('1_13.jpg') ;
+}
+.alertBox li:nth-child(5){
+	background-image:image-url('1_16.jpg') ;
+}
+.alertBox li:nth-child(6){
+	background-image:image-url('1_18.jpg') ;
+}
+.alertBox li:nth-child(7){
+	background-image:image-url('1_24.jpg') ;
+}
+.alertBox li:nth-child(8){
+	background-image:image-url('1_27.jpg') ;
+}
+.alertBox li:nth-child(9){
+	background-image:image-url('1_30.jpg') ;
+}
+.alertBox li:nth-child(3),.alertBox li:nth-child(6),.alertBox li:nth-child(9){
+	border-right:none;
+}
+.alertBox::after{
+	content: '';
+	width:17px;
+	height:9px;
+	position:absolute;
+	left:156px;
+	bottom:-9px;
+	background:image-url('down.png') no-repeat;
+}
+/*register*/
+.re_bottom{
+	width:280px;
+}
+.re_bottom p{
+	margin-bottom:20px;
+}
+.re_bottom input[type=text], .re_bottom input[type=password]{
+	border:none;
+	width:264px;
+	height:38px;
+	padding-left:16px;
+	background:#f9f9f9;
+	color:#c1c1c1;
+	border-radius:4px;
+}
+.re_bottom .re_note input[type=text]{
+	width:120px;
+}
+.re_bottom .re_note input[type=button]{
+	width:134px;
+	height:36px;
+	border:1px solid #15a892;
+	background:#fff;
+	color:#3aa58e;
+	border-radius: 4px;
+}
+.re_btn_list input{
+	width:86px;height:36px;
+	float:left;
+	border:1px solid #efefef;
+	border-radius: 4px;
+	background:#fff;
+	color:#666;
+	cursor: pointer;
+	margin-right:10px;
+}
+.re_btn_list input:last-child{
+	margin-right:0;
+}
+.re_btn input{
+	width:280px;
+	height:36px;
+	background:#15a892;
+	border:none;
+	color:#fff;
+	border-radius: 4px;
+}
+.email a{
+	color:#6ec0b1;
+}
+/*.re_bottom p:last-child{
+	margin-top:40px;
+	margin-bottom:0;
+	}*/
+	.re_bottom p:last-child a{
+		color:#209e85;
+	}
+	.phone_block{display: none;}
+	.sy_login_sign_up_block{
+		background:rgba(0,0,0,0.7);
+		position: fixed;
+		top:0px;
+		right:0px;
+		bottom:0px;
+		left:0px;
+		z-index: 4;
+		.close{
+			position: absolute;
+			right:80px;
+			top:40px;
+			width:60px;
+			height:60px;
+			line-height: 60px;
+			font-size: 35px;
+			background:#eee;
+		}
+	}
+
+	/*login page start*/
+	@charset "utf-8";
+	.re_panel{
+		height:760px;
+	}
+	.lo_con{
+		width:280px;
+		min-height:220px;
+	}
+	.lo_con p{
+		margin-bottom:18px;
+	}
+	.lo_con div{
+		margin-bottom:18px;
+	}
+	.lo_con div b input{
+		margin-right:5px;
+	}
+	.lo_con div a{
+		color:#33ae9a;
+	}
+	.lo_con input{
+		width:280px;
+		height:38px;
+		border-radius: 5px;
+		border:none;
+		background:#f9f9f9;
+	}
+	.lo_con input[type="text"], .lo_con input[type="password"]{
+		padding-left:15px;
+		width:265px;
+		line-height:38px;
+	}
+	.lo_con input[type="checkbox"]{
+		width:14px;
+		height:14px;
+	}
+	.lo_con input[type="button"]{
+		background:#15a892;
+		color:#fff;
+	}
+
+	.openID{
+		height:101px;
+		border-top:1px dashed #f4f4f4;
+		border-bottom: 1px dashed #f4f4f4;
+	}
+	.openID h2{
+		margin-top:-9px;
+		color:#cecece;
+	}
+	.IDbox{
+		display:inline-block;
+		margin-top:20px;
+	}
+	.IDbox a{
+		float:left;
+		background-position:top center;
+		background-repeat: no-repeat;
+		width:78px;
+		padding-top:38px;
+		height:16px;
+		color:#c5c5c5;
+	}
+	.IDbox a:nth-child(1){
+		background-image: image-url('QQ.png');
+	}
+	.IDbox a:nth-child(2){
+		background-image: image-url('weixin.png');
+	}
+	.IDbox a:nth-child(3){
+		background-image: image-url('sina.png');
+	}
+
+	.login_footer{
+		padding-top:65px;
+		color:#bcbcbc;
+	}
+	.login_footer a{
+		color:#72b9a9;
+	}
+	/*login page end*/
+
+	form{margin:0;}
