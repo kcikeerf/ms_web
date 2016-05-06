@@ -15,7 +15,7 @@ class Mongodb::BankCkpQzp
 
   field :ckp_uid, type: String
   field :qzp_uid, type: String
-  field :weights, type: Float
+#  field :weights, type: Float
 
   belongs_to :bank_qizpoint_qzp
   t_belongs_to :bank_checkpoint_ckp , class_name: "BankCheckpointCkp", foreign_key: "ckp_uid"
@@ -23,13 +23,13 @@ class Mongodb::BankCkpQzp
   def save_ckp params
     self.ckp_uid = params["ckp_uid"].nil?? nil:params["ckp_uid"]
     self.qzp_uid = params["qzp_uid"].nil?? nil:params["qzp_uid"]
-    self.weights = params["weights"].nil?? nil:params["weights"]
+ #   self.weights = params["weights"].nil?? nil:params["weights"]
     self.save!
     return true
   end 
 
-  private 
-  def format_weights
-    self.weights = self.weights.nil?? 0.0:("%.2f" % self.weights).to_f
-  end
+#  private 
+#  def format_weights
+#    self.weights = self.weights.nil?? 0.0:("%.2f" % self.weights).to_f
+#  end
 end

@@ -5,6 +5,7 @@ class CreateBankNodestructures < ActiveRecord::Migration
       t.string :subject, limit: 50
       t.string :version, limit: 50
       t.string :grade, limit: 50
+      t.string :volume, limit: 50
       t.string :rid, limit: 128
       t.string :node, limit: 200
 #      t.timestamps
