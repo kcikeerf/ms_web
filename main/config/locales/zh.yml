@@ -173,6 +173,30 @@ zh:
         sign_in_count: "登录次数"
         created_at: "生成时间"
         updated_at: "更新时间"
+
+    errors:
+      messages:        
+        inclusion: "不包含于列表中"
+        exclusion: "是保留关键字"
+        invalid: "是无效的"
+        confirmation: "与确认值不匹配"
+        accepted: "必须是可被接受的"
+        empty: "不能留空"
+        blank: "不能为空字符"
+        too_long: "过长（最长为 %{count} 个字符）"
+        too_short: "过短（最短为 %{count} 个字符）"
+        wrong_length: "长度非法（必须为 %{count} 个字符）"
+        taken: "已经被使用"
+        not_a_number: "不是数字"
+        not_an_integer: "必须是整数"
+        greater_than: "必须大于 %{count}"
+        greater_than_or_equal_to: "必须大于或等于 %{count}"
+        equal_to: "必须等于 %{count}"
+        less_than: "必须小于 %{count}"
+        less_than_or_equal_to: "必须小于或等于 %{count}"
+        odd: "必须为单数"
+        even: "必须为双数"
+        record_invalid: "校验失败: %{errors}"
    
 # active admin使用的默认标示
   active_admin:
@@ -280,3 +304,39 @@ zh:
         sign_in_with_omniauth_provider: "登入%{provider}"
     access_denied:
       message: "您无权处理此操作"
+  page:
+    site_name: '三维题库系统'
+    login: '登录'
+    register: '注册'
+    menu:
+      home: '首页'
+      librarys: '三维题库'
+      auto_paper: '智能组卷'
+      score_report: '成绩报告'
+      online_test: '在线测试'
+      simple_report: '简化版'
+      professional_report: '专业版'
+    sign_up:
+      name: '创见教育未来'
+      email_placeholder: '请输入邮箱地址'
+      password_placeholder: '请输入8位以上密码'
+      nickname: '昵称'
+      register_button: '立即注册'
+      direct_login: '如果您已经有账号，请直接'
+    sign_in:
+      login_placeholder: '请输入邮箱/电话'
+      remember_me: '记住密码'
+      forgot_password: '找回密码'
+      other: '其他方式登录'
+      qq: 'QQ登录'
+      weixin: '微信登录'
+      sian: '新浪微博登录'
+      direct_register: '如果您没有账号，请'
+    user_left_menu:
+      users: '个人主页'
+      exam_papers: '我的卷库'
+      questions: '我的题库'
+      online_tests: '在线测试'
+      pupils: '我的学生'
+      sys_msgs: '系统消息'
+      logout: '退出登录'   

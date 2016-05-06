@@ -1,26 +1,40 @@
-<h2>Log in</h2>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-  </div>
-
-  <% if devise_mapping.rememberable? -%>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+<div class="re_content w100 sy_login_block">
+  <div class="re_panel bc">
+    <div class="re_top bc">
+      <div class="re_logo bc"></div>
+      <p class="tc f16"><%= t('page.sign_up.name') %></p>
     </div>
-  <% end -%>
+    <div class="lo_con bc">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <%= hidden_field_tag :url, '' %>
+        <p><%= f.text_field :login, placeholder: t('page.sign_in.login_placeholder'), class: 'ff' %></p>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
+        <p><%= f.password_field :password, placeholder: t('page.sign_up.password_placeholder') , class: 'ff' %></p>
+
+        <div class="ohidden f12">
+          <b class="fl ohidden ">
+            <input id="check" class="fl" type="checkbox" checked="checked" />
+            <label class="cp" for="check" class="fl"><%= t('page.sign_in.remember_me') %></label>
+          </b>
+          <%= link_to t('page.sign_in.forgot_password'), '' %>
+        </div>
+        <p>
+          <%= submit_tag t('page.login'), class: 'cp f16 ff' %>
+        </p>
+      <% end %>
+    </div>
+    <div class="openID tc">
+      <h2 class="f12"><span><%= t('page.sign_in.other') %></span></h2>
+      <div class="IDbox ohidden  f12">
+        <%= link_to t('page.sign_in.qq'), '' %>
+        <%= link_to t('page.sign_in.weixin'), '' %>
+        <%= link_to t('page.sign_in.weibo'), '' %>
+      </div>
+    </div>
+    <div class="login_footer tc f12">
+      <%= t('page.sign_in.direct_register') %>
+      <%= link_to t('page.register'), new_user_registration_path %>
+    </div>
   </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

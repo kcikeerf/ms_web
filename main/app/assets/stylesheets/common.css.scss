@@ -1,0 +1,306 @@
+@charset "utf-8";
+/*登录注册页面公共样式*/
+.re_content{
+	min-height:742px;
+	background:image-url('register_bg.png');
+}
+.re_panel{
+	width:422px;
+	height:680px;
+	border:1px solid #e9e9e9;
+	border-radius: 4px;
+	background:#fff;
+	-webkit-box-shadow: 2px 2px 18px #ccc,-2px -2px 18px #ccc;
+	box-shadow:2px 2px 18px #ccc,-2px -2px 18px #ccc;
+}
+.re_top{
+	padding-top:38px;
+	color:#080808;
+	padding-bottom:52px;
+}
+.re_logo{
+	width:72px;
+	height:82px;
+	background:image-url('re_logo.png') no-repeat;
+	margin-bottom:16px;
+}
+
+
+/*头部*/
+.bank_top{
+	width:100%;
+	height:72px;
+	border-bottom:1px solid #f5f5f5;
+}
+.top_center{
+	width:1000px;
+	height:70px;
+}
+.top_logo{
+	padding-top:17px;
+}
+.top_nav{
+	min-width:656px;
+	height:70px;
+}
+.top_nav li{
+	float:left;
+	width:60px;
+	margin-right:56px;
+	line-height:72px;
+	position:relative;
+}
+.top_nav li:last-child{
+	width:82px;
+	margin-right:0;
+}
+.top_nav li:last-child span{
+	margin:0 5px;
+	color:#e6e6e6;
+}
+.top_nav li a{
+	color:#333;
+}
+.top_nav li a:hover{
+	color:#4ca795;
+}
+.top_nav .top_active a{
+	color:#4ca795;
+}
+.top_nav .top_active::after{
+	content: "";
+	width:100%;
+	height:4px;
+	background:#50a592;
+	position:absolute;
+	left:0;
+	bottom:0;
+}
+.top_nav li:nth-child(4):hover .popup{
+	display:block;
+}
+.top_nav .popup a:hover{
+	background:#15A792;
+	color:#fff;
+}
+/*成绩报告弹出*/
+.popup{
+	display:none;
+	width:140px;
+	height:82px;
+	border-radius: 5px;
+	left:-40px;
+	top:67px;
+	background:#fff;
+	z-index: 999;
+	box-shadow:2px 2px 18px #ccc,-2px -2px 18px #ccc;
+}
+.popup a{
+	display:block;
+	line-height:41px;
+}
+.popup a:first-child{
+	border-bottom:1px solid #f9f9f9;
+}
+.popup::before{
+	content: '';
+	position:absolute;
+	top:-9px;
+	left:62px;
+	width:17px;
+	height:9px;
+	background:image-url('xiaojian.png') no-repeat;
+}
+
+/*登录之后划过头像的下拉*/
+
+.perList{
+	display:none;
+	width:140px;
+	height:285px;
+	background:#fff;
+	border-radius: 5px;
+	right:0;
+	top:70px;
+	z-index: 999;
+	box-shadow:2px 2px 18px #ccc,-2px -2px 18px #ccc;
+}
+.login_active:hover .perList{
+	
+	display:block;
+}
+.perList::before{
+	content: '';
+	position:absolute;
+	top:-9px;
+	right:45px;
+	width:17px;
+	height:9px;
+	background:image-url('xiaojian.png') no-repeat;
+}
+.perList a{
+	display:block;
+	line-height:40px;
+}
+.top_nav .perList a:hover{
+	background:#15a892;
+	color:#fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*登录之后的样式*/
+.login_active{
+	padding-top:16px;
+	height:56px;
+	cursor: pointer;
+	line-height:72px;
+}
+.login_active img{
+	float:left;
+}
+.login_active span{
+	float:right;
+	display:block;
+	width:12px;
+	height:12px;
+	padding-top:12px;
+	background:image-url('pull_down.png') no-repeat left 12px;
+}
+
+/*主体*/
+.marinBody{
+	background:image-url('register_bg.png');
+	padding-top:10px;
+}
+.mainCenter{
+	width:1000px;
+}
+
+
+/*个人主页部分的公共样式*/
+.mainLeft{
+	width:210px;
+}
+
+.perInfor{
+	height:64px;
+	border:5px;
+	background:#fff;
+	padding:18px 0 18px 30px;
+	margin-bottom:4px;
+	border-radius: 4px;
+}
+.perInfor img{
+	width:62px;
+	height:62px;
+	border:1px solid #f2f2f2;
+	border-radius: 2px;
+}
+.perInfor span{
+	line-height:64px;
+	margin-left:12px;
+}
+
+.module_list{
+	padding-top:21px;
+	background:#fff;
+	border-radius: 4px;
+	min-height:590px;
+	
+}
+.module_list li{
+	padding-left:27px;
+	height:40px;
+	line-height:40px;
+	border-bottom:1px solid #f8f8f8;
+	cursor: pointer;
+}
+
+.module_list a{
+	color:#323232;
+}
+.per_active{
+	background:#15a993;
+	border-bottom: none;
+}
+.per_active a{
+	color:#fff;	
+}
+
+.mainRight{
+	width:786px;
+	min-height:714px;
+}
+
+.footer{
+	margin-top:30px;
+	background:image-url('footer_border.png') repeat-x 0 0;
+}
+.footer_center{
+	width:1000px;
+	padding-top:38px;
+}
+.footer_center ul:nth-child(1){
+	width:592px;
+}
+.footer_center ul:nth-child(1) li{
+	margin-right:74px;
+}
+
+.footer_center ul li{
+	float:left;
+}
+.footer_center ul li:last-child{
+	margin-right:0;
+}
+.footer_center ul:nth-child(1) li a{
+	color:#3e3e40;
+}
+.footer_center ul:nth-child(2){
+	margin-top:40px;
+	width:415px;
+	line-height:40px;
+}
+.footer_center ul:nth-child(2) li{
+	margin-right:22px;
+	color:#9e9e9e;
+}
+
+
+
+.radioList{
+	padding-top:10px;
+	width:429px;
+}
+.radioList p{
+	float:left;
+	margin-right:24px;
+	color:#383838;
+}
+.radioList p:first-child{
+	margin-right:16px;
+	color:#a9a9a9;
+}
+.radioList p input[type=radio]{
+	margin-right:8px;
+}
+
+.close{
+    font-size:22px;background:#bbb;border-radius:30px;
+    display:block;width:30px;height:30px;
+    text-align:center;line-height:30px;
+    margin:5px;
+} 

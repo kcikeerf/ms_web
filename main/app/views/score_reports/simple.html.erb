@@ -1,0 +1,559 @@
+<div id="simplereport" class="clearfix">
+
+        <header>
+            <h2><a href="/"></a></h2>
+            <h1>英语<i>.</i>学习诊断报告</h1>
+            <p><span>王晓明</span><span>男</span><span>西安交通大学附中</span><span>七年级八班</span><br><span>七年级英语***在线测试</span></p>
+        </header>
+
+        <section>
+            <div id="diagnosis">
+                <h3>诊断</h3>
+                <div class="wrap clearfix">
+                    <h4>最佳表现</h4>
+                    <p class="text-muted pull-left">
+                        <b>与自身相比，表现最佳的方面有：</b>
+                        <span>知识：对话<br>
+                        技能：理解（听）<br>
+                        能力：语言理解</span>
+                    </p>
+                    <p class="text-muted pull-left">
+                        <b>与群体相比，表现最佳的方面有：</b>
+                        <span>知识：对话<br>
+                        技能：理解（听）<br>
+                        能力：语言理解</span>
+                    </p>
+                </div>
+                <i></i>
+            </div>
+        </section>
+
+        <section>
+        <h3>问题发现</h3>
+
+        <!-- Large modal -->
+        <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" id="practice">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close glyphicon glyphicon-remove-circle" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                        <h4 class="modal-title">针对词法中的薄弱项，以下视频内容的学习和专项练习会有助于你的提高：</h4>
+                    </div>
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">视频学习</a><i></i></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">专项练习</a><i></i></li>
+                        <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">拓展阅读</a><i></i></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior.vipabc.com</a>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic1.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior.vipabc.com</a>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic2.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior.vipabc.com</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="profile">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior1.vipabc.com</a>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic1.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior1.vipabc.com</a>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic2.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior1.vipabc.com</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="messages">
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior2.vipabc.com</a>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic1.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior2.vipabc.com</a>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <a href="#" class="thumbnail">
+                                        <img src="/assets/score_reports/pic2.jpg" alt="...">
+                                    </a>
+                                    <a href="#">http://junior2.vipabc.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="knowledge_line" style="width:800px;height:540px;padding:0 15px" class="container"></div>
+
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                color: ['#333'],
+                textStyle:{fontSize:16},
+                title: {
+                    text: '知识',
+                    textStyle: {fontWeight:'normal',fontSize:16},
+                    top: '20',
+                },
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: {
+                    data:['个人得分率'],
+                    show:false,
+                },
+                // toolbox: {
+                //     feature: {
+                //         saveAsImage: {}
+                //     }
+                // },
+                grid: {
+                    left: '70',
+                    right: '0',
+                    bottom: '3%',
+                    containLabel: true,
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        name: '高于平均水平\n\n低于平均水平',
+                        nameLocation: 'start',
+                        splitLine: {show:false},
+                        axisLabel: {show:false},
+                        axisTick: {show:false},
+                        // axisLine: {show:true,onZero:true,lineStyle:{width:5,opacity:0.2}},
+                        boundaryGap : true,
+                        data : ['','词音','词义','','词法','句','','地点','价格','态度','频率','家庭','个人','','记叙文','说明文','议论文','','非连续','']
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        axisLine: {show:false},
+                        axisTick: {show:false},
+                        axisLabel: {formatter:'{value}%'},
+                        splitNumber:5,
+                        interval:10,
+                    }
+                ],
+                series : [
+                    {
+                        name:'个人得分率-高于平均水平',
+                        type:'line',
+                        stack: '百分比',
+                        symbol:'image:///assets/score_reports/circle_blue.png',
+                        showSymbol:true,
+                        showAllSymbol: true,
+                        symbolSize:10,
+                        lineStyle: {normal: {width:0}},
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: '#3dacff'
+                                }, {
+                                    offset: 1,
+                                    color: '#b1deff'
+                                }])
+                            }},
+                        data:[
+                            {value:0,symbolSize:0},
+                            {value:0.8,label:{normal:{show:true}}},
+                            {value:4.5,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:32,label:{normal:{show:true}}},
+                            {value:2.0,label:{normal:{show:true}}},
+                            {value:4.2,label:{normal:{show:true}}},
+                            {value:12.0,label:{normal:{show:true}}},
+                            {value:25.0,label:{normal:{show:true}}},
+                            {value:6.0,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:2.0,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0},
+                        ],
+                        hoverAnimation: false,
+                        LegendHoverLink: true,
+                        label: {normal:{show:true,formatter:'{b}'}},
+                    },
+                    {
+                        name:'个人得分率-低于平均水平',
+                        type:'line',
+                        stack: '百分比',
+                        symbol:'image:///assets/score_reports/circle_red.png',
+                        showSymbol:true,
+                        showAllSymbol: true,
+                        symbolSize:0,
+                        lineStyle: {normal: {width:0}},
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0,0, 0,1, [{
+                                    offset: 0,
+                                    color: '#fff'
+                                }, {
+                                    offset: 1,
+                                    color: '#f7726f'
+                                }])
+                            }},
+                        data:[
+                            {value:0,symbolSize:0},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,symbolSize:0},
+                            {value:-25.8,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:-7.5,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:0,symbolSize:0},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,symbolSize:0},
+                            {value:-29.2,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:-35.8,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:-21,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:0,symbolSize:0},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,symbolSize:0}
+                        ],
+                        hoverAnimation: false,
+                        LegendHoverLink: true,
+                        label: {normal:{show:true,formatter:'{b}'}}
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+//            myChart.showLoading();
+//            $.get('json/data.json').done(function (data) {
+//                myChart.hideLoading();
+//                myChart.setOption(option);
+//            });
+
+            myChart.on('click', function (params) {
+                // window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+                $('.bs-example-modal-lg').modal('show');
+            })
+        </script>
+
+        <div id="skill_line" style="width:800px;height:540px;margin:15px 0;padding:15px 0;border-top:1px solid #e9e9e9;border-bottom:1px solid #e9e9e9" class="container"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('skill_line'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                color: ['#333'],
+                textStyle:{fontSize:16},
+                title: {
+                    text: '技能',
+                    textStyle: {fontWeight:'normal',fontSize:16},
+                    top: '20',
+                },
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: {
+                    data:['个人得分率'],
+                    show:false,
+                },
+                // toolbox: {
+                //     feature: {
+                //         saveAsImage: {}
+                //     }
+                // },
+                grid: {
+                    left: '70',
+                    right: '0',
+                    bottom: '3%',
+                    containLabel: true,
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        name: '高于平均水平\n\n低于平均水平',
+                        nameLocation: 'start',
+                        splitLine: {show:false},
+                        axisLabel: {show:false},
+                        axisTick: {show:false},
+                        boundaryGap : true,
+                        data : ['','(理解-听)\n匹配','信息提取','推理','(理解-读)\n匹配','','信息提取','推理','组织','归因','','表达','']
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        axisLine: {show:false},
+                        axisTick: {show:false},
+                        axisLabel: {formatter:'{value}%'},
+                        splitNumber:5,
+                        interval:10,
+                    }
+                ],
+                series : [
+                    {
+                        name:'个人得分率-高于平均水平',
+                        type:'line',
+                        stack: '百分比',
+                        symbol:'image:///assets/score_reports/circle_blue.png',
+                        showSymbol:true,
+                        showAllSymbol:true,
+                        symbolSize:10,
+                        lineStyle: {normal: {width:0}},
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: '#3dacff'
+                                }, {
+                                    offset: 1,
+                                    color: '#b1deff'
+                                }])
+                            }},
+                        data:[
+                            {value:0,symbolSize:0},
+                            {value:0.8,label:{normal:{show:true}}},
+                            {value:0.2,label:{normal:{show:true}}},
+                            {value:23.3,label:{normal:{show:true}}},
+                            {value:4.7,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:25.5,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0}
+                        ],
+                        label: {normal:{show:true,formatter:'{b}'}},
+                    },
+                    {
+                        name:'个人得分率-低于平均水平',
+                        type:'line',
+                        stack: '百分比',
+                        symbol:'image:///assets/score_reports/circle_red.png',
+                        showSymbol:true,
+                        showAllSymbol:true,
+                        symbolSize:0,
+                        lineStyle: {normal: {width:0}},
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0,0, 0,1, [{
+                                    offset: 0,
+                                    color: '#fff'
+                                }, {
+                                    offset: 1,
+                                    color: '#f7726f'
+                                }])
+                            }},
+                        data:[
+                            {value:0,symbolSize:0},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,symbolSize:0},
+                            {value:-0.9,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:-30.6,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:-24.4,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:-35.2,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0}
+                        ],
+                        label: {normal:{show:true,formatter:'{b}'}}
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.on('click', function (params) {
+                // window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+                $('.bs-example-modal-lg').modal('show');
+            })
+        </script>
+
+        <div id="capacity_line" style="width:800px;height:540px;padding:0 15px" class="container"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('capacity_line'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                color: ['#333'],
+                textStyle:{fontSize:16},
+                title: {
+                    text: '能力',
+                    textStyle: {fontWeight:'normal',fontSize:16},
+                    top: '20',
+                },
+                tooltip : {
+                    trigger: 'item'
+                },
+                legend: {
+                    data:['个人得分率'],
+                    show:false,
+                },
+                // toolbox: {
+                //     feature: {
+                //         saveAsImage: {}
+                //     }
+                // },
+                grid: {
+                    left: '70',
+                    right: '0',
+                    bottom: '3%',
+                    containLabel: true,
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        name: '高于平均水平\n\n低于平均水平',
+                        nameLocation: 'start',
+                        splitLine: {show:false},
+                        axisLabel: {show:false},
+                        axisTick: {show:false},
+                        boundaryGap : true,
+                        data : ['','匹配性','','推理性','','结构性','','作者理解','']
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        axisLine: {show:false},
+                        axisTick: {show:false},
+                        axisLabel: {formatter:'{value}%'},
+                        splitNumber:5,
+                        interval:10,
+                    }
+                ],
+                series : [
+                    {
+                        name:'个人得分率-高于平均水平',
+                        type:'line',
+                        stack: '百分比',
+                        symbol:'image:///assets/score_reports/circle_blue.png',
+                        showSymbol:true,
+                        showAllSymbol:true,
+                        symbolSize:10,
+                        lineStyle: {normal: {width:0}},
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: '#3dacff'
+                                }, {
+                                    offset: 1,
+                                    color: '#b1deff'
+                                }])
+                            }},
+                        label: {normal:{show:true,formatter:'{b}'}},
+                        data:[
+
+                            {value:0,symbolSize:0},
+                            {value:13,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:26,label:{normal:{show:true}}},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0},
+                            {value:0,symbolSize:0}
+                        ]
+                    },
+                    {
+                        name:'个人得分率-低于平均水平',
+                        type:'line',
+                        stack: '百分比',
+                        symbol:'image:///assets/score_reports/circle_red.png',
+                        showSymbol:true,
+                        showAllSymbol:true,
+                        symbolSize:0,
+                        lineStyle: {normal: {width:0}},
+                        areaStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(0,0, 0,1, [{
+                                    offset: 0,
+                                    color: '#fff'
+                                }, {
+                                    offset: 1,
+                                    color: '#f7726f'
+                                }])
+                            }},
+                        label: {normal:{show:true,formatter:'{b}'}},
+                        data:[
+                            {value:0,symbolSize:0},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,symbolSize:0},
+                            {value:-14,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:0,symbolSize:0},
+                            {value:0,label:{normal:{show:false}}},
+                            {value:0,symbolSize:0},
+                            {value:-14,symbolSize:10,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+                            {value:0,symbolSize:0}
+                        ]
+                    }
+                ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.on('click', function (params) {
+                // window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+                $('.bs-example-modal-lg').modal('show');
+            })
+        </script>
+    </section>
+
+</div>
+
+<footer class="vernav"><a href="/score_reports/profession" class="btn btn-primary">专业版</a></footer>

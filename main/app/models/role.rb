@@ -4,4 +4,8 @@ class Role < ActiveRecord::Base
   has_many :roles_permissions_links
   has_many :permissions, :through => :roles_permissions_links
   accepts_nested_attributes_for :permissions
+
+  def self.get_role_id(name)
+  	find_by(name: name).try(:id) || 0
+  end
 end

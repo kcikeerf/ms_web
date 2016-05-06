@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)http://www.jmc-motion.com/ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title></title>
+<style type="text/css">
+	*{padding: 0;margin:0;}
+	.text1{font-size: 14px;margin-bottom: 10px;}
+	.wordUpload{cursor: pointer;}
+	.submit{display: block;    width: 69px;height: 24px;margin-top: 12px;}
+</style>
+</head>
+<body>
+<form id="saveReportForm" enctype="multipart/form-data" method="POST" lang="zh-cn" action="http://member.wqdian.net/article/file/upload2.html" onsubmit="return saveReport();">
+	<p class="text1">上传到服务器</p>
+	<input class="wordUpload" type="file" name="wordUpload">
+	<input class="submit" type="submit" value="上传">
+</form>
+
+<script type="text/javascript" src="../../../js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript">
+	window.top.CKEDITOR && $("#saveReportForm").attr("action",window.top.CKEDITOR.config.wordUploadUrl);
+	
+    function saveReport() {
+		var element = $("input.wordUpload"),
+			format = fileVerify(element),
+			size = sizeVerify(element);
+		if(format && size){
+			$("#saveReportForm").submit(function() {});
+		}else{
+			alert("您上传的文件不是word文件或者文件大于1M!");
+		}
+		
+		//后台解析成功后执行 window.top.CKEDITOR.wordContentCallback(html)函数，参数html为转换后的字符串
+		//window.top.CKEDITOR.wordContentCallback('<div><p>我是返回的数据</p></div>');
+		return false;
+	}
+  	//校验格式
+  	function fileVerify(elem){
+  		var bool = false,
+  		str = elem.val();
+  		if(str.length!=0){
+  			var reg = ".*\.(doc|docx|DOC|DOCX)";
+  			if(str.match(reg)) bool = true;
+  		}
+  		return bool;
+  	}
+
+  	//校验文件大小
+  	function sizeVerify(elem){
+  		var bool = false,
+  			fileSize = 0,
+  			isIE = /msie/i.test(navigator.userAgent) && !window.opera;
+  		if (isIE && !elem.get(0).files) {
+  			var filePath = elem.get(0).value;      
+      		var fileSystem = new ActiveXObject("Scripting.FileSystemObject");         
+      		var file = fileSystem.GetFile (filePath);      
+      		fileSize = file.Size;     
+  		}else{
+  			fileSize = elem.get(0).files[0].size;
+  		}
+  		fileSize = fileSize /1024;
+  		if(fileSize > 0 && fileSize < 1000){
+  			bool = true;
+  		}
+  		return bool;
+  	}
+</script>
+</body>
+</html>

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  root 'welcomes#index'
+
   # routes for quiz_paper controller
 
   resource :quizs do
@@ -10,8 +12,17 @@ Rails.application.routes.draw do
       get 'quiz_list'
       get 'quiz_get'
     end
+    get 'single_quiz'
   end
-   
+  
+  resources :score_reports do 
+    collection do 
+      get 'simple'
+      get 'profession'
+    end
+  end
+
+  resources :librarys, :online_tests
   # defined routes for user authentication
   devise_for :users,
     controllers: { sessions: 'users/sessions',
