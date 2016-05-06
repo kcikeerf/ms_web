@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.string   "checkpoint", limit: 200
     t.integer  "is_entity"
     t.text     "desc"
+    t.decimal  "weights",                precision: 5, scale: 2
     t.datetime "dt_add"
     t.datetime "dt_update"
   end
@@ -96,6 +97,7 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.string   "subject",   limit: 50
     t.string   "version",   limit: 50
     t.string   "grade",     limit: 50
+    t.string   "volume",    limit: 50
     t.string   "rid",       limit: 128
     t.string   "node",      limit: 200
     t.datetime "dt_add"
