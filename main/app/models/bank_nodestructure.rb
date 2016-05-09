@@ -15,15 +15,15 @@ class BankNodestructure < ActiveRecord::Base
   def self.list_structures
     result = {}
     self.all.each{|bn|
-      if bn.subject && !result.keys.include?(I18n.t("dict.#{bn.subject}"))
-        result[I18n.t("dict.#{bn.subject}")] = {}
+      if bn.subject && !result.keys.include?(bn.subject)
+        result[bn.subject)] = {}
       end
-      if bn.grade && !result[I18n.t("dict.#{bn.subject}")].keys.include?(I18n.t("dict.#{bn.grade}"))
-        result[I18n.t("dict.#{bn.subject}")][I18n.t("dict.#{bn.grade}")] = {}
+      if bn.grade && !result[bn.subject].keys.include?(bn.grade)
+        result[bn.subject][bn.grade] = {}
       end
       if bn.version && bn.volume && 
-         !result[I18n.t("dict.#{bn.subject}")][I18n.t("dict.#{bn.grade}")].keys.include?(I18n.t("dict.#{bn.version}")+"("+I18n.t("dict.#{bn.volume}")+")")
-        result[I18n.t("dict.#{bn.subject}")][I18n.t("dict.#{bn.grade}")][I18n.t("dict.#{bn.version}")+"("+I18n.t("dict.#{bn.volume}")+")"] = {}
+         !result[bn.subject][bn.grade].keys.include?(bn.version+"("+bn.volume+")")
+        result[bn.subject][bn.grade][bn.version+"("+bn.volume+")"] = {}
       end
     }
     return result

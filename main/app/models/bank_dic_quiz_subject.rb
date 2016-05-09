@@ -8,7 +8,7 @@ class BankDicQuizSubject < ActiveRecord::Base
   def self.list_quiztypes
     result = {}
     self.all.each{|item|
-      result[I18n.t("dict.#{item.subject}")] = item.bank_dic_quiztypes.map{|type| I18n.t("dict.#{type.sid}")}  
+      result[item.subject] = item.bank_dic_quiztypes.map{|type| type.sid}  
     }
     return result
   end
