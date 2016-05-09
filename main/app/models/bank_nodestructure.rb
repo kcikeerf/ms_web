@@ -16,7 +16,7 @@ class BankNodestructure < ActiveRecord::Base
     result = {}
     self.all.each{|bn|
       if bn.subject && !result.keys.include?(bn.subject)
-        result[bn.subject)] = {}
+        result[bn.subject] = {}
       end
       if bn.grade && !result[bn.subject].keys.include?(bn.grade)
         result[bn.subject][bn.grade] = {}

@@ -1,6 +1,34 @@
 class QuizsController < ApplicationController
   #load_and_authorize_resource
 
+  # single file upload
+  #
+  def single_quiz_file_upload
+    # allow receiving all parameters  
+    params.permit!
+
+    # response format pre-defined
+    result = {
+     :str_tempid => nil,
+     :result_str => nil
+    }
+
+    f_uploaded = Common::File.single_upload({:str_tempid => params[:str_tempid], :type=>params[:type], :file => params[:file]})
+    result[:str_tempid] = f_uploaded.id
+    case params[:type]
+    when "question"
+      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    when "answer"
+      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
+    end
+
+#    respond_to do |format|
+#      format.json { render json: result.to_json }
+#    end
+    result_json = Common::Response.exchange_record_id(result.to_json)
+    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+  end
+
   # type1 upload a quiz
   # params: file_paper:[file]
   # params: file_answer:[file]
@@ -17,7 +45,7 @@ class QuizsController < ApplicationController
      :obj_analysis => nil
     }
 
-    f_uploaded = Common::File.upload({:paper => params[:file_paper], :answer => params[:file_answer], :analysis => params[:file_analysis]})
+    f_uploaded = Common::File.multiple_upload({:paper => params[:file_paper], :answer => params[:file_answer], :analysis => params[:file_analysis]})
     result[:str_tempid] = f_uploaded.id
     result[:str_quiz] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
     result[:str_answer] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)

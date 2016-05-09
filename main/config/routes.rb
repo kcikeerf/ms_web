@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resource :quizs do
     member do
+      post 'single_quiz_file_upload' 
       post 'quiz_create_type1upload'
       post 'quiz_create_type1save'
       post 'single_quiz_save'

@@ -9,8 +9,27 @@ module Common
 
   module File
 
+    # Upload one file 
+    def single_upload params
+      if params[:str_tempid].blank?
+        fu = FileUpload.new
+      else
+        fu = FileUpload.where("id = ?", params[:str_tempid]).first
+      end 
+      
+      case params[:type]
+      when "question"
+        fu.paper = params[:file]
+      when "answer"
+        fu.answer = params[:file]
+      end
+      fu.save!
+      return fu
+    end
+    module_function :single_upload
+ 
     # Upload files 
-    def upload files_h
+    def multiple_upload files_h
       fu = FileUpload.new
       fu.paper = files_h[:paper]
       fu.answer = files_h[:answer]
@@ -18,7 +37,7 @@ module Common
       fu.save!
       return fu
     end    
-    module_function :upload
+    module_function :multiple_upload
 
     # Get excel file content
     def get_excel_file_content file_path

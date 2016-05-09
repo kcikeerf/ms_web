@@ -49,6 +49,6 @@ class AnalysisUploader < CarrierWave::Uploader::Base
   # end
 
   def filename
-    "analysis.#{file.path.split('.').last.downcase}"
+    "analysis.#{file.path.split('.').last.downcase}" if file
   end
 end

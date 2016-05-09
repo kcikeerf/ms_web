@@ -49,6 +49,6 @@ class AnswerUploader < CarrierWave::Uploader::Base
   # end
 
   def filename
-    "answer.#{file.path.split('.').last.downcase}"
+    "answer.#{file.path.split('.').last.downcase}" if file
   end
 end

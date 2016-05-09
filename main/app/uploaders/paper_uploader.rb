@@ -50,6 +50,6 @@ class PaperUploader < CarrierWave::Uploader::Base
   # end
 
   def filename
-    "paper.#{file.path.split('.').last.downcase}"
+    "paper.#{file.path.split('.').last.downcase}" if file
   end
 end
