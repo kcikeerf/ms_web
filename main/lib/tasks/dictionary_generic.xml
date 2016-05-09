@@ -1,4 +1,9 @@
 <dictionaries>
+<dictionary sid="text_book" caption="text_book" desc="教材版本">
+  <item sid="renjiaoban" caption="renjiaoban" desc="人教版" />
+  <item sid="beishidaban" caption="beishidaban" desc="北师大版" />
+  <item sid="sujiaoban" caption="sujiaoban" desc="苏教版" />
+</dictionary>
 <dictionary sid="grade" caption="grade" desc="年级">
   <item sid="grade1" caption="grade1" desc="一年级" />
   <item sid="grade2" caption="grade2" desc="二年级" />
