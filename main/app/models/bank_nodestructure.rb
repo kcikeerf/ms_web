@@ -16,14 +16,15 @@ class BankNodestructure < ActiveRecord::Base
     result = {}
     self.all.each{|bn|
       if bn.subject && !result.keys.include?(bn.subject)
-        result[bn.subject] = {}
+        result[bn.subject] = {"label" => I18n.t("dict.#{bn.subject}"), "items" =>{}}
       end
-      if bn.grade && !result[bn.subject].keys.include?(bn.grade)
-        result[bn.subject][bn.grade] = {}
+      keys_arr = result[bn.subject]["items"].keys
+      if bn.grade && !keys_arr.include?(bn.grade)
+        result[bn.subject]["items"][bn.grade] = {"label" => I18n.t("dict.#{bn.grade}"), "items" =>{}}
       end
-      if bn.version && bn.volume && 
-         !result[bn.subject][bn.grade].keys.include?(bn.version+"("+bn.volume+")")
-        result[bn.subject][bn.grade][bn.version+"("+bn.volume+")"] = {}
+      keys_arr = result[bn.subject]["items"][bn.grade]["items"].keys
+      if bn.version && bn.volume && !keys_arr.include?(bn.version+"("+bn.volume+")")
+        result[bn.subject]["items"][bn.grade]["items"][bn.version+"("+bn.volume+")"] = {"label" => I18n.t("dict.#{bn.version}") + "("+I18n.t("dict.#{bn.volume}")+")", "items"=>{}}
       end
     }
     return result
