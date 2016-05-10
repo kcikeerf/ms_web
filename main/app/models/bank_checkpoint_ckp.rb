@@ -25,6 +25,38 @@ class BankCheckpointCkp < ActiveRecord::Base
 
   accepts_nested_attributes_for :bank_ckp_comments,:bank_nodestructures
 
+  # will change in the future
+  def self.get_ckps params={}
+    result = {"knowledge" => { "label" => I18n.t("dict.knowledge"), "children"=>{}}, 
+              "skill"=>{"label"=> I18n.t("dict.skill"), "children" => {}}, 
+              "ability" => {"label" => I18n.t("dict.ability"), "children"=>{}}}
+    arr = [self.where("LENGTH(rid) = ?", 3), self.where("LENGTH(rid) = ?", 6), self.where("LENGTH(rid) = ?", 9)]
+    arr.each{|level|
+      level.each{|item|
+        current_item = {
+          "uid" => item.uid,
+          "rid" => item.rid,
+          "dimesion" => item.dimesion,
+          "checkpoint" => item.checkpoint,
+          "is_entity" => item.is_entity
+        }
+        case item.rid.length
+        when 3
+          result[item.dimesion]["children"][item.rid] = current_item
+          result[item.dimesion]["children"][item.rid]["children"] = {}
+        when 6
+          result[item.dimesion]["children"][item.rid.slice(0,3)]["is_entity"] = false
+          result[item.dimesion]["children"][item.rid.slice(0,3)]["children"][item.rid] = current_item
+          result[item.dimesion]["children"][item.rid.slice(0,3)]["children"][item.rid]["children"] = {}
+        when 9
+          result[item.dimesion]["children"][item.rid.slice(0,3)]["children"][item.rid.slice(0,6)]["is_entity"] = false
+          result[item.dimesion]["children"][item.rid.slice(0,3)]["children"][item.rid.slice(0,6)]["children"][item.rid] = current_item
+        end 
+      }
+    }
+    return result
+  end
+
   def bank_qizpoint_qzps
     result_arr =[]
     qzps = Mongodb::BankCkpQzp.where(ckp_uid: self.uid).to_a
