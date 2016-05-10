@@ -48,6 +48,8 @@ module Common
         file = Roo::Excelx.new(file_path)
       when 'xls'
         file = Roo::Excel.new(file_path)
+#      else:
+#        file = Roo::Excelx.new(file_path)
       end
       sheet = file.sheet('试题分析') if file
       sheet.each{|row|

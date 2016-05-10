@@ -19,6 +19,8 @@ module Main
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :zh
+    # config/application.rb
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
 
     config.generators do |g|
       g.orm :active_record
@@ -26,8 +28,8 @@ module Main
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
 
-    I18n.load_path += Dir[Rails.root.join('lib', 'locale', '*.{rb, yml}')]
-    I18n.default_locale = :zh
+#    I18n.load_path += Dir[Rails.root.join('lib', 'locale', '*.{rb, yml}')]
+#    I18n.default_locale = :zh
 
   end
 end

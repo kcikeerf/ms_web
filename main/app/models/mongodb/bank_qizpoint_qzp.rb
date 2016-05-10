@@ -1,5 +1,7 @@
 class Mongodb::BankQizpointQzp
   include Mongoid::Document
+#  include Tenacity
+#  include MongoMysqlRelations
 
   validates :quz_uid,:pap_uid, length: {maximum: 36}
   validates :tbs_sid,:type, length: {maximum: 50}
@@ -16,11 +18,23 @@ class Mongodb::BankQizpointQzp
   field :desc, type: String
   field :score, type: Float
 
-  has_one :bank_ckp_qzp, class_name: "Mongodb::BankCkpQzp"
+#  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid"
+#  t_has_many :bank_checkpoint_ckps, through: :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp"#, foreign_key: "ckp_uid" 
+#  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid"
+#  to_mysql_has_many :bank_checkpoint_ckps, class_name: "BankCheckpointCkp", through: "Mongodb::BankCkpQzp"
 
   belongs_to :bank_quiz_qiz
-  has_and_belongs_to_many :bank_paper_paps, classs_name: "Mongodb::BankPaperPap"
+  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
+
+  def bank_checkpoint_ckps
+    result_arr =[]
+    ckps = Mongodb::BankCkpQzp.where(qzp_uid: self._id.to_s).to_a
+    ckps.each{|ckp|
+      result_arr << BankCheckpointCkp.where(uid: ckp.ckp_uid).first
+    }
+    return result_arr
+  end
 
   def save_qizpoint params
      self.quz_uid = params["quz_uid"].nil?? nil:params["quz_uid"]

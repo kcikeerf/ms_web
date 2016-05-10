@@ -1,6 +1,11 @@
 class QuizsController < ApplicationController
   #load_and_authorize_resource
 
+  def new
+    data = BankNodestructure.list_structures
+    @data = data
+  end
+
   # single file upload
   #
   def single_quiz_file_upload
@@ -45,7 +50,7 @@ class QuizsController < ApplicationController
      :obj_analysis => nil
     }
 
-    f_uploaded = Common::File.multiple_upload({:paper => params[:file_paper], :answer => params[:file_answer], :analysis => params[:file_analysis]})
+    f_uploaded = Common::File.multiple_upload({:paper => params[:doc_path], :answer => params[:answer_path], :analysis => params[:xls_path]})
     result[:str_tempid] = f_uploaded.id
     result[:str_quiz] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
     result[:str_answer] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
@@ -71,7 +76,7 @@ class QuizsController < ApplicationController
     # response format pre-defined
     result = { :str_tempid => nil }
 
-    current_quiz_paper = Mongodb::Bank.new(params["obj_quizprop"])
+    current_quiz_paper = Mongodb::BankQuizQiz.new(params["obj_quizprop"])
     current_quiz_paper.save!
 
     #params["arr_items"].each{|item|
