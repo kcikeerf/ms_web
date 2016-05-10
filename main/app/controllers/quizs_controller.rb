@@ -1,5 +1,6 @@
 class QuizsController < ApplicationController
   #load_and_authorize_resource
+  layout 'bootstrap', only: [:single_quiz]
 
   def new
     data = BankNodestructure.list_structures
@@ -95,10 +96,27 @@ class QuizsController < ApplicationController
     render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
+  #single quiz
+  def single_quiz
+    @subjects_related_data = BankNodestructure.list_structures
+    @quize_types = BankDicQuizSubject.list_quiztypes
+    @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
+  end
+
+  def subject_related_data
+    name = params[:name]
+    subjects_related_data = BankNodestructure.list_structures
+    quize_types = BankDicQuizSubject.list_quiztypes 
+
+    render json: {grades: subjects_related_data[name].keys, quiz_types: quize_types[name]}.to_json
+    # render json: params[:subject] ? {related_data: subjects_related_data[name].keys, quiz_types: quize_types}.to_json : subjects_related_data[name].keys.to_json
+  end
+
   # type2 save a single quiz
   # params: 
   #
   def single_quiz_save
+    return render json: {}
     # allow receiving all parameters  
     params.permit!
 

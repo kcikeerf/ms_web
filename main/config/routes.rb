@@ -9,11 +9,13 @@ Rails.application.routes.draw do
       post 'single_quiz_file_upload' 
       post 'quiz_create_type1upload'
       post 'quiz_create_type1save'
-      post 'single_quiz_save'
+      # post 'single_quiz_save'
       get 'quiz_list'
       get 'quiz_get'
     end
     get 'single_quiz'
+    post 'subject_related_data'
+    post 'single_quiz_save'
   end
   
   resources :score_reports do 

@@ -10,9 +10,26 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require editor/ckeditor/ckeditor
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
-//= require editor/ckeditor/ckeditor
 //= require editor/js/main
 //= require_tree .
+//= require_self
+$.fn.serializeObject = function()  
+{  
+   var o = {};  
+   var a = this.serializeArray();  
+   $.each(a, function() {  
+       if (o[this.name]) {  
+           if (!o[this.name].push) {  
+               o[this.name] = [o[this.name]];  
+           }  
+           o[this.name].push(this.value || '');  
+       } else {  
+           o[this.name] = this.value || '';  
+       }  
+   });  
+   return o;  
+};  

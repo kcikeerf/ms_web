@@ -52,7 +52,7 @@
                         {
                             id: 'word_upload',
                             type: 'html',
-                            html:'<iframe class="word_iframe" frameborder="0" allowtransparency="0" role="presentation" title="上传到服务器" src="ckeditor/plugins/wordUpload/upload.html"></iframe>',
+                            html:'<iframe class="word_iframe" frameborder="0" allowtransparency="0" role="presentation" title="上传到服务器" src="/assets/editor/ckeditor/plugins/wordUpload/upload.html"></iframe>',
                             style: 'width: 100%;',
                             'default': '',
                             required: true
