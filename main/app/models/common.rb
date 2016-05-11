@@ -11,11 +11,11 @@ module Common
 
     # Upload one file 
     def single_upload params
-      if params[:str_tempid].blank?
+#      if params[:str_tempid].blank?
         fu = FileUpload.new
-      else
-        fu = FileUpload.where("id = ?", params[:str_tempid]).first
-      end 
+#      else
+#        fu = FileUpload.where("id = ?", params[:str_tempid]).first
+#      end 
       
 #      case params[:type]
 #      when "question"
