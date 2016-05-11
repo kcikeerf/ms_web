@@ -1,5 +1,5 @@
 $(function () {
-	$(function () {
+	// $(function () {
 		// 分析列表添加删除
 		$('.add button').on("click",function(){
 			var num = $('.analyserow').length;
@@ -9,8 +9,9 @@ $(function () {
 				numtext.html(num);
 			}
 			// clone 第一个区块			
-			var $str = $(".analyselist").html();
-			$(".add").before($str); 
+			var $str = $(".analyselist");
+			$str.find("input:hidden").remove();
+			$(".add").before($str.html()); 
 			var $cloned = $(".add").prev();
 			$cloned.find(".del").show();
 			$cloned.find('.num').html(++num);
@@ -32,7 +33,7 @@ $(function () {
 				}
 			});
 		});
-	});
+	// });
 
 	$(function () {
 		// 弹出层树状结构
@@ -72,14 +73,8 @@ $(function () {
 		$popFrom.find("input:hidden").remove();
 		$modal.find('#table_knowledge input:checked').each(function(i){
 			chk_value_knowledge.push($(this).parent().text());
-			if(this.value != ""){				
-				$insert_html.find("input:first").val('knowledge');
-				$insert_html.find("input:eq(1)").val(this.value);
-				$insert_html.find("input:eq(2)").val($(this).attr('uid'));
-				$insert_html.find("input:last").val($(this).parent().text());
-				
-				$popFrom.append($insert_html.html());
-			}
+			add_hidden_input($insert_html, $popFrom, 'knowledge', this.value, $(this).attr('uid'), $(this).parent().text());
+			 
 		});
 		$popFrom.find('input[name="knowledge"]').val(chk_value_knowledge);	
 
@@ -88,14 +83,8 @@ $(function () {
 
 			$modal.find('#table_skill input:checked').each(function(){      
 				chk_value_skill.push($(this).parent().text());
-				if(this.value != ""){				
-					$insert_html.find("input:first").val('skill');
-					$insert_html.find("input:eq(1)").val(this.value);
-					$insert_html.find("input:eq(2)").val($(this).attr('uid'));
-					$insert_html.find("input:last").val($(this).parent().text());
-
-					$popFrom.append($insert_html.html());
-				}
+				add_hidden_input($insert_html, $popFrom, 'skill', this.value, $(this).attr('uid'), $(this).parent().text());
+				
 			});
 			$popFrom.find('input[name="skill"]').val(chk_value_skill);
 
@@ -103,14 +92,7 @@ $(function () {
 		var chk_value_capacity =[];	  
 		$modal.find('#table_capacity input:checked').each(function(){  
 			chk_value_capacity.push($(this).parent().text());
-			if(this.value != ""){				
-				$insert_html.find("input:first").val('capacity');
-				$insert_html.find("input:eq(1)").val(this.value);
-				$insert_html.find("input:eq(2)").val($(this).attr('uid'));				
-				$insert_html.find("input:last").val($(this).parent().text());
-
-				$popFrom.append($insert_html.html());
-			}
+			add_hidden_input($insert_html, $popFrom, 'capacity', this.value, $(this).attr('uid'), $(this).parent().text());
 		});
 		$popFrom.find('input[name="capacity"]').val(chk_value_capacity);
 
@@ -127,7 +109,7 @@ $(function () {
 	};
 
 	// 初始化Modal
-	$("#myModal").on("shown.bs.modal", function() {
+	$("#myModal").on("show.bs.modal", function() {
 
 		var selected_value = [];
 		console.log($popFrom.html());
@@ -141,31 +123,22 @@ $(function () {
 		// console.log(selected_value);
 
 		// TODO: 选中
-		$(this).find('input[type="checkbox"]').attr("checked",false);
-		$(this).find('input[type="checkbox"]').val(selected_value);
-		// 记录选中状态的值
-//		$(function popFromValue(kv){
-//			var knowledge1 =$("#knowledge1").val();
-//			var arr = [];
-//			var chk_value_knowledge = [];
-//			chk_value_knowledge.push(kv);
-//			
-//			$('#table_knowledge').find('input[type="checkbox"]:checked').each(function(){      
-//				
-//			});
-//			$popFrom.find('input[name="knowledge"]').val(chk_value_knowledge);
-//		});
+		$(this).find('input[type="checkbox"]').attr("checked",false).val(selected_value);		
 	
-	});
-	
-	
-	$("#myModal").on("hidden.bs.modal", function() {
-//		$(this).removeData("bs.modal");
-//		$(this).find('input[type="checkbox"]').attr("checked",false);
 	});
 
 	// 第一个块
 	setInputsHandler($('.analyserow:first'));
 });
 
+function add_hidden_input($insert_html, $popFrom, name, rid, uid, label){
+	if(rid != ""){				
+		$insert_html.find("input:first").val(name);
+		$insert_html.find("input:eq(1)").val(rid);
+		$insert_html.find("input:eq(2)").val(uid);
+		$insert_html.find("input:last").val(label);
+
+		$popFrom.append($insert_html.html());
+	}
+}
 
