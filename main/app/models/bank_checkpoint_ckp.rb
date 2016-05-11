@@ -38,7 +38,7 @@ class BankCheckpointCkp < ActiveRecord::Base
           "rid" => item.rid,
           "dimesion" => item.dimesion,
           "checkpoint" => item.checkpoint,
-          "is_entity" => item.is_entity
+          "is_entity" => item.is_entity || true
         }
         case item.rid.length
         when 3

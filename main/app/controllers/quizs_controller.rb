@@ -101,6 +101,7 @@ class QuizsController < ApplicationController
     @subjects_related_data = BankNodestructure.list_structures
     @quize_types = BankDicQuizSubject.list_quiztypes
     @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
+    @tree_data = BankCheckpointCkp.get_ckps
   end
 
   def subject_related_data

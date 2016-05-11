@@ -1,0 +1,214 @@
+<% @page_title = '试题入库' %>
+<div id="testquestions" class="container">
+  <h1>试题入库</h1>
+  <%= form_for :bank_quiz_qiz, url: single_quiz_save_quizs_path, html: {id: 'form'} do |f| %>
+  <section>
+   <dl class="clearfix">
+    <dt>基本信息</dt>
+    <dd class="container-fluid">
+     <ul class="list-inline" id="basic_info">
+       <li class="col-md-4">
+         <label>科目：</label>
+         <%= select_tag :subject, options_for_select(@subjects), include_blank: true, class: 'form-control' %>         
+       </li>
+       <li class="col-md-4">
+         <label>年级：</label>
+         <%= select_tag :grade, '', class: 'form-control' %>
+       </li>
+       <li class="col-md-4">
+         <label>教材版本：</label>
+         <%= select_tag :version, '', class: 'form-control' %>
+       </li>
+       <li class="col-md-4">
+         <label>题型：</label>
+         <%= select_tag :cat, '', class: 'form-control' %>
+       </li>
+       <li class="col-md-4">
+         <label>难度预估：</label>
+         <select class="form-control"><option>3（中等）</option></select>
+       </li>
+       <li class="col-md-12">
+         <label>试题来源：</label>
+         <input class="form-control" type="test" value="七年级英语在线测试_20160306001">
+       </li>
+       </ul>
+     </dd>
+   </dl>
+ </section>
+
+ <section>
+   <dl class="clearfix">
+    <dt>试题</dt>
+    <dd class="container-fluid">
+     <textarea class="form-control" name="text" rows="3" placeholder="请在此输入试题" id="TextArea1"></textarea>
+   </dd>
+ </dl>
+ <dl class="clearfix">
+  <dt>答案</dt>
+  <dd class="container-fluid">
+   <textarea class="form-control" name="answer" rows="3" placeholder="请在此输入答案" id="TextArea2"></textarea><br>
+   <textarea class="form-control" name="desc" rows="2" placeholder="请在此输入答案说明（可选）"></textarea>
+ </dd>
+</dl>
+
+<dl class="clearfix">
+  <dt>分析</dt>
+  <dd class="container-fluid">
+
+    <div class="analyselist">
+      <ul class="analyserow list-inline clearfix">
+        <li class="del" style="display: none;"><a href="javascript:void();">&times;</a></li>
+        <li class="first">
+          <p>
+          <label>得分点<span class="num"></span>：</label>
+          <textarea class="form-control" name="bank_qizpoint_qzps[][answer]" rows="2" placeholder="得分点标准答案"></textarea>
+          </p>
+          <p>
+            <label>小分：</label>
+            <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a), class: 'form-control' %>
+            <label class="checkbox-inline">
+              <input type="checkbox" id="inlineCheckbox1" name='bank_qizpoint_qzps[][type]' value="option1"> 主观题
+            </label>
+            <label class="checkbox-inline">
+              <input type="checkbox" id="inlineCheckbox2" name='bank_qizpoint_qzps[][type]' value="option2"> 客观题
+            </label>
+          </p>
+        </li>
+        <li class="line"></li>
+        <li class="last">
+          <label class="title">三维解析</label>
+          <p>
+            
+
+            <span><label>知识：</label><input readonly  type="text" name="knowledge" class="form-control" placeholder="" data-toggle="modal" data-target=".bs-example-modal-lg"></span>
+            <span><label>技能：</label><input readonly type="text" name="skill" class="form-control" placeholder="" data-toggle="modal" data-target=".bs-example-modal-lg"></span>
+            <span><label>能力：</label><input readonly type="text" name="capacity" class="form-control" placeholder="" data-toggle="modal" data-target=".bs-example-modal-lg"></span>
+          </p>
+        </li>
+      </ul>
+    </div>
+    
+    <p class="add"><button class="btn btn-default" type="button"> <i>+</i> 添加</button></p>
+  </dd>
+</dl>
+</section>
+
+<footer class="confirm">
+  <input class="btn btn-default" type="button" value="取消">
+  <input class="btn btn-primary" type="submit" value="完成" id="submit_form">
+</footer>
+<% end %>
+</div>
+
+<!-- 考察点弹出层 -->
+<div id='myModal' class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <!-- 考察点 -->
+    <div id="inspect" class="clearfix">
+     <h2>考察点</h2>
+     <div id="table_knowledge" class="tabel">
+      <div class="tree well">
+        <ul>
+          <li>
+            <span><i class="icon-folder-open"></i> 知识考察点</span>
+            <ul>
+              <%= raw organization_tree(false, @tree_data['knowledge']['children']) %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="table_skill" class="tabel">
+      <div class="tree well">
+        <ul>
+          <li>
+            <span><i class="icon-folder-open"></i> 技能考察点</span>
+            <ul>
+              <%= raw organization_tree(false, @tree_data['skill']['children']) %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="table_capacity" class="tabel">
+      <div class="tree well">
+        <ul>
+          <li>
+            <span><i class="icon-folder-open"></i> 能力考察点</span>
+            <ul>
+              <%= raw organization_tree(false, @tree_data['ability']['children']) %>              
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" id="button_analysis">完成</button>
+  </div>
+</div>
+</div>
+</div>
+<div id='hidden_analysis' style='display: none'>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][deimesion]' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][rid]', '', class: 'dict_rid' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][checkpoint]' %>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    var json_data = <%= raw @subjects_related_data.to_json %>;
+    var quiz_types_data = <%= raw @quize_types.to_json %>;
+
+    $("#subject").on("change", function(){
+      if(this.value == '') return false;      
+      
+      var $grades = $("#basic_info li:eq(1) select")[0].options;
+      var $versions = $("#basic_info li:eq(2) select")[0].options;
+      var $quiz_types = $("#basic_info li:eq(3) select")[0].options;
+
+      // grade and versions
+      var grades = json_data[this.value], index = 0;
+  
+      $.each(grades.items, function(c, grade){
+
+        $.each(grade.items, function(k, v){
+          if(index == 0) $versions.add(new Option(v.label, k));
+        });
+
+        $grades.add(new Option(grade.label, c));
+        index++;
+      });
+
+      // quize_type
+      $.each(quiz_types_data[this.value], function(i, name) {
+        $quiz_types.add(new Option(name.label, name.type));
+      });
+
+    });
+
+    $("#grade").on("change", function(){
+      var subject = $("#subject").val();
+
+      var $versions = $("#basic_info li:eq(2) select");
+      $versions.html('');
+      
+      $.each(json_data[subject].items[this.value].items, function(k, v){
+        $versions[0].options.add(new Option(v.label, k))
+      })
+    })
+
+    // $("#submit_form").on('click', function(){
+    //   $.post('/quizs/single_quiz_save',
+    //          $("#form").serializeObject(),
+    //          function(){
+    //           alert('提交成功');
+    //          });
+    // });
+
+  }) 
+
+</script>
