@@ -57,6 +57,26 @@ class BankCheckpointCkp < ActiveRecord::Base
     return result
   end
 
+  def self.get_child_ckps params
+    result = {"pid" => params[:str_pid], "nodes"=>[]}
+    pid = params[:str_pid]
+    pid_len = pid.size
+    return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep 
+    target_len = pid_len + Common::SwtkConstants::CkpStep
+    result["nodes"] = self.where("LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ?", pid_len, et_len, pid_len, pid).map{|item|
+      { "uid" => item.uid,
+        "rid" => item.rid,
+        "dimesion" => item.dimesion,
+        "checkpoint" => item.checkpoint,
+        "is_entity" => item.is_entity}
+    }
+    return result
+  end
+
+  def self.create_ckp params
+
+  end
+
   def bank_qizpoint_qzps
     result_arr =[]
     qzps = Mongodb::BankCkpQzp.where(ckp_uid: self.uid).to_a

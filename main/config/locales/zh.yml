@@ -1,4 +1,5 @@
 zh:
+  swtk: "swtk"
   time:
     formats:
       long: "%Y-%m-%d %H:%M:%S"
