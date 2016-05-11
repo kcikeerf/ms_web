@@ -54,46 +54,14 @@ $(function () {
 	// 知识点考察选择
 	$(function checkbox(){
 		$('#table_knowledge, #table_skill, #table_capacity').on("click",function(e){
-			check_length($(this), $(e.target))
-			// if($(e.target).is('input')){
-			// 	var knowledge_length = $(this).find("input:checked").length
-			// 	check_length($(e.target), knowledge_length);
-			// }
-			
- 
- 	// 		var chk_value_knowledge = [], $insert_html = $($("#hidden_analysis").prop("outerHTML"));
- 			
- 	// 		 $(this).find('input[type="checkbox"]:checked').each(function(i){
-
-		// 		chk_value_knowledge.push($(this).parent().text());
-		// 		if(this.value != ""){
-		// 			$insert_html.find("input:first").val('knowledge');
-		// 			$insert_html.find("input:eq(1)").val(this.value);
-		// 			$insert_html.find("input:last").val($(this).parent().text());
-		// 			$insert_html.attr('id', '');
-		// 			$popFrom.append($insert_html.html());
-		// 		}
-			});
-		// 	$popFrom.find('input[name="knowledge"]').val(chk_value_knowledge);			
-	
-		// });
-		
-		// $('#table_skill').on("click",function(){
-		// 	var chk_value_skill =[]; 
-		// 	 $(this).find('input[type="checkbox"]:checked').each(function(){      
-		// 		chk_value_skill.push($(this).val());
-		// 	});
-		// 	$popFrom.find('input[name="skill"]').val(chk_value_skill);
-		// });
-		
-		// $('#table_capacity').on("click",function(){
-		// 	$(this).find('input[type="checkbox"]:checked')
-		// 	var chk_value_capacity =[];	  
-		// 	 $(this).find('input[type="checkbox"]:checked').each(function(){  
-		// 		chk_value_capacity.push($(this).val());
-		// 	});
-		// 	$popFrom.find('input[name="capacity"]').val(chk_value_capacity);
-		// });
+ 			if($(e.target).is('input')){
+				var length = $(this).find("input:checked").length
+				if(length > 2){
+					$(e.target).attr('checked', false);
+					alert('最多选择两个考察点');				
+				}			
+			}
+		});
 	});
 	
 	//知识考察点添加到页面
@@ -107,6 +75,7 @@ $(function () {
 			if(this.value != ""){				
 				$insert_html.find("input:first").val('knowledge');
 				$insert_html.find("input:eq(1)").val(this.value);
+				$insert_html.find("input:eq(2)").val($(this).attr('uid'));
 				$insert_html.find("input:last").val($(this).parent().text());
 				
 				$popFrom.append($insert_html.html());
@@ -122,6 +91,7 @@ $(function () {
 				if(this.value != ""){				
 					$insert_html.find("input:first").val('skill');
 					$insert_html.find("input:eq(1)").val(this.value);
+					$insert_html.find("input:eq(2)").val($(this).attr('uid'));
 					$insert_html.find("input:last").val($(this).parent().text());
 
 					$popFrom.append($insert_html.html());
@@ -136,6 +106,7 @@ $(function () {
 			if(this.value != ""){				
 				$insert_html.find("input:first").val('capacity');
 				$insert_html.find("input:eq(1)").val(this.value);
+				$insert_html.find("input:eq(2)").val($(this).attr('uid'));				
 				$insert_html.find("input:last").val($(this).parent().text());
 
 				$popFrom.append($insert_html.html());
@@ -154,18 +125,6 @@ $(function () {
 			// e.stopPropagation();
 		});
 	};
-	
-	var check_length = function($element, $input_element){
-		if($input_element.is('input')){
-			var length = $element.find("input:checked").length
-			if(length > 2){
-				console.log($input_element);
-				$input_element.attr('checked', false);
-				alert('最多选择两个考察点');				
-			}			
-		}
-
-	}
 
 	// 初始化Modal
 	$("#myModal").on("shown.bs.modal", function() {
@@ -208,64 +167,5 @@ $(function () {
 	// 第一个块
 	setInputsHandler($('.analyserow:first'));
 });
-
-// 分析列表添加删除
-// $(function () {
-// 	$('.add button').bind("click",function(){
-// 		var num = $('.analyserow').length;
-// 		num +=1;
-		
-// 		var $str = $($("#analysis ul:first").prop("outerHTML"));
-// 		$str.find('li:first p:first label').html("得分点<span class='num'>" + num + "</span>");
-// 		$str.find('li:first').before('<li class="del"><a href="javascript:void(0);">&times;</a></li>');
-		
-// 		$(".add").before($str.prop("outerHTML"));
-		
-// 		$(".del").on("click",function(){
-// 			$(this).parent().remove();
-// 			for(i=$(this).parent().index();i<num;i++){
-// 				newnum = i+2;
-// 				$('.analyserow .num').eq(i).html(newnum).attr('id', 'analyser' + newnum); 
-// 			}
-// 		});
-
-// 	});	
-
-
-// 	$(document).on("click", '.analyserow', function(e){
-// 		analyser_id = $(this).attr('id');
-
-// 		var $all_input = $("#" + analyser_id + " li:last input");
-
-// 		var selected_value = "";
-
-// 		$all_input.each(function(){ 
-// 			if(this.value != "")
-// 				selected_value += this.value;
-// 		});
-
-// 		if(selected_value == ""){
-// 					$(".modal input").each(function(){ this.checked = false });//attr('checked', false);
-// 				}else{
-// 					alert(selected_value);
-// 				}
-				
-// 			});
-	
-// 	$("#table_knowledge input").on("click", function(){
-// 		var checked_size = $("#table_knowledge input:checked").size();
-// 		if( checked_size > 2){
-// 			alert('最多选择两个考察点');
-// 			this.checked = false;
-// 		}
-// 		else{
-// 			$knowledge = $("#knowledge");
-// 			$knowledge.val(checked_size == 2 ? $knowledge.val() + ',' + this.value : this.value);
-// 		}
-// 	});
-
-
-
-// });
 
 

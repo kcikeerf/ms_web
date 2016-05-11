@@ -25,6 +25,7 @@
        </li>
        <li class="col-md-4">
          <label>难度预估：</label>
+         <%= select_tag :levelword2, options_for_select([['中等', 3]]), include_blank: true, class: 'form-control' %>
          <select class="form-control"><option>3（中等）</option></select>
        </li>
        <li class="col-md-12">
@@ -155,6 +156,7 @@
 <div id='hidden_analysis' style='display: none'>
   <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][deimesion]' %>
   <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][rid]', '', class: 'dict_rid' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][uid]' %>
   <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][checkpoint]' %>
 </div>
 <script type="text/javascript">
