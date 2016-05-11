@@ -4,6 +4,7 @@ class CreateFileUploads < ActiveRecord::Migration
       t.string :paper
       t.string :answer
       t.string :analysis
+      t.string :single
 
       t.timestamps
     end

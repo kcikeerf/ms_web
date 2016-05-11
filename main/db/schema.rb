@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.string   "paper"
     t.string   "answer"
     t.string   "analysis"
+    t.string   "single"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

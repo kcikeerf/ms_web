@@ -17,12 +17,13 @@ module Common
         fu = FileUpload.where("id = ?", params[:str_tempid]).first
       end 
       
-      case params[:type]
-      when "question"
-        fu.paper = params[:file]
-      when "answer"
-        fu.answer = params[:file]
-      end
+#      case params[:type]
+#      when "question"
+#        fu.paper = params[:file]
+#      when "answer"
+#        fu.answer = params[:file]
+#      end
+      fu.single = params[:file]
       fu.save!
       return fu
     end

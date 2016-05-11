@@ -14,19 +14,23 @@ class QuizsController < ApplicationController
     params.permit!
 
     # response format pre-defined
-    result = {
-     :str_tempid => nil,
-     :result_str => nil
-    }
 
-    f_uploaded = Common::File.single_upload({:str_tempid => params[:str_tempid], :type=>params[:type], :file => params[:file]})
-    result[:str_tempid] = f_uploaded.id
-    case params[:type]
-    when "question"
-      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
-    when "answer"
-      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
-    end
+#    result = {
+#     :str_tempid => nil,
+#     :result_str => nil
+#    }
+
+#    f_uploaded = Common::File.single_upload({:str_tempid => params[:str_tempid], :type=>params[:type], :file => params[:file]})
+    f_uploaded = Common::File.single_upload({:file => params[:file]})
+#    result[:str_tempid] = f_uploaded.id
+#    case params[:type]
+#    when "question"
+#      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+#    when "answer"
+#      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
+#    end
+     result = ""
+     result = Common::File.get_doc_file_content_as_html(f_uploaded.single.current_path)
 
 #    respond_to do |format|
 #      format.json { render json: result.to_json }
@@ -117,10 +121,8 @@ class QuizsController < ApplicationController
   # params: 
   #
   def single_quiz_save
-    return render json: {}
     # allow receiving all parameters  
     params.permit!
-
     # response format pre-defined
     result = { :str_id => nil }
 

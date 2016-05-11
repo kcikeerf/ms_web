@@ -11,7 +11,7 @@ class Mongodb::BankCkpQzp
 #  field :nid, type: Integer
 
   validates :ckp_uid, :qzp_uid, length: {maximum: 36}
-  validates :ckp_uid, uniqueness: {scope: :qzp_uid, message: "already existed."}
+#  validates :ckp_uid, uniqueness: {scope: :qzp_uid, message: "already existed."}
 
 #  before_save :format_weights
 
@@ -24,12 +24,13 @@ class Mongodb::BankCkpQzp
 #  to_mysql_belongs_to :bank_checkpoint_ckp , :foreign_key => "ckp_uid"
 #  belongs_to :bank_qizpoint_qzp, class_name: "Mongodb::BankQizpointQzp", foreign_key: "qzp_uid"
 
-  def save_ckp qzp_uid=nil,params
-    target_ckp = BankCheckpointCkp.where(rid: params[:rid]).first
-    self.ckp_uid = target_ckp.blank?? nil:target_ckp
-    self.qzp_uid = qzp_uid.nil?? nil:qzp_uid
+  def save_ckp qzp_uid=nil, ckp_uid=nil
+#    target_ckp = BankCheckpointCkp.where(rid: params[:rid]).first
+#      self.ckp_uid = target_ckp.blank?? nil:target_ckp.uid
+      self.ckp_uid = ckp_uid.nil?? nil:ckp_uid
+      self.qzp_uid = qzp_uid.nil?? nil:qzp_uid
  #   self.weights = params["weights"].nil?? nil:params["weights"]
-    self.save!
+      self.save!
     return true
   end 
 

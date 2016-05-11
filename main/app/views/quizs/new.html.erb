@@ -1,9 +1,7 @@
+<form action='/quizs/single_quiz_file_upload' method='post' enctype='multipart/form-data'>
+	<%= token_tag form_authenticity_token %>
+	str_tempid: <input type="text" name="str_tempid"><br/>
+	Select a  file: <input type="file" name="file"><br />
 
-<form action='/quizs/quiz_create_type1upload' method='post' enctype='multipart/form-data'>
-<%= token_tag form_authenticity_token %>
-Select a paper file: <input type="file" name="file_paper"><br/>
-Select a answer file: <input type="file" name="file_answer"><br />
-Select a analysis file: <input type="file" name="file_analysis"><br />
-
-<input type="submit" name="submit">
+	<input type="submit" name="submit">
 </form>

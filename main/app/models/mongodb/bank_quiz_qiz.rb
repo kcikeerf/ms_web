@@ -41,8 +41,8 @@ class Mongodb::BankQuizQiz
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
 
   def save_quiz params
-    params = JSON.parse(params["_json"]) if params["_json"]
-    p params.class
+    #params = JSON.parse(params["_json"]) if params["_json"]
+
     self.update_attributes({
       :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
       :tbs_uid => params["tbs_uid"].nil?? nil:params["tbs_uid"],
@@ -78,10 +78,12 @@ class Mongodb::BankQuizQiz
       qiz_point = Mongodb::BankQizpointQzp.new
       qiz_point.save_qizpoint bqq
       self.bank_qizpoint_qzps.push(qiz_point)
-      if bqq["bank_ckp_qzps"]
-        ckp = Mongodb::BankCkpQzp.new
-        ckp.save_ckp qiz_point.uid, bqq["bank_ckp_qzp"]
-        #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
+      if bqq["bank_checkpoint_ckps"]
+        bqq["bank_checkpoint_ckps"].each{|bcc|
+          ckp = Mongodb::BankCkpQzp.new
+	  ckp.save_ckp qiz_point._id, bcc["uid"]
+          #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
+	}
       end
 =begin
       self.bank_qizpoint_qzps[index].bank_ckp_qzp = Mongodb::BankCkpQzp.new({
