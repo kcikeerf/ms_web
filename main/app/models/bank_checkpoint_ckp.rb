@@ -29,6 +29,9 @@ class BankCheckpointCkp < ActiveRecord::Base
   accepts_nested_attributes_for :bank_ckp_comments
 
   # will change in the future
+  # 
+  # node_uid: node structure uid
+  #
   def self.get_ckps params={}
     result = {"knowledge" => { "label" => I18n.t("dict.knowledge"), "children"=>{}}, 
               "skill"=>{"label"=> I18n.t("dict.skill"), "children" => {}}, 
@@ -62,6 +65,10 @@ class BankCheckpointCkp < ActiveRecord::Base
     return result
   end
 
+  # 
+  # str_pid: parent rid
+  # node_uid: node structure uid
+  #
   def self.get_child_ckps params
     result = {"pid" => params["str_pid"], "nodes"=>[]}
     return result if params["node_uid"].blank?
@@ -81,28 +88,62 @@ class BankCheckpointCkp < ActiveRecord::Base
   end
 
   # 
+  # str_pid: parent rid
   # node_uid: node structure uid
-  # pid: parent
   #
   def self.save_ckp params
     return false if params["node_uid"].blank?
     target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
-    new_rid = BankRid.get_new_rid target_objs, params[:pid]
-    self.dimesion = params["dimesion"]
-    self.rid = new_rid
-    self.checkpoint = params["checkpoint"]
-    self.desc = params["desc"]
-    self.is_entity= false
-    self.save!
+    new_rid = BankRid.get_new_rid target_objs, params["str_pid"]
+    new_ckp = self.new({
+      "dimesion" => params["dimesion"],
+      "rid" => new_rid,
+      "checkpoint" => params["checkpoint"],
+      "desc" => params["desc"],
+      "is_entity" => false})
+    new_ckp.save!
     return true
   end
 
+  #
+  # str_uid: current check point uid 
+  # str_pid: parent rid
+  # node_uid: node structure uid
+  #
+  #
   def self.update_ckp params
-
+    return false if params["str_uid"].blank?
+    current_ckp = self.where("uid = ?", params["str_uid"]) if params["str_uid"]
+    if params[str_pid]
+      ActiveRecord::Base.transaction do
+        new_ckp = self.save_ckp params 
+        current_ckp.destroy! if new_ckp
+      end
+    else
+      current_ckp
+    end
   end
 
   def self.delete_ckp params
 
+  end
+
+  # 
+  # str_pid: parent rid
+  # node_uid: node structure uid
+  #
+  def self.get_ckp_count params
+    result = 0
+    
+    if params[str_pid].blank?
+      target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+      result = target_objs.count
+    else
+      BankRid.get_child target_objs, pid  
+    end
+
+    result = target_objs.count if target_objs
+    return result
   end
 
   def bank_qizpoint_qzps

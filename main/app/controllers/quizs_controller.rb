@@ -159,20 +159,20 @@ class QuizsController < ApplicationController
   end
 
 
-  # get quiz paper list
+  # get quiz list
   #
   def quiz_list
     # response format pre-defined
     result = {:arr_list => []}
 
-    @qlist = Mongodb::BankQuizQiz.all()
-    # result[:arr_list] = qlist.to_a
+    qlist = Mongodb::BankQuizQiz.all()
+    result[:arr_list] = qlist.to_a
 
     # result_json = Common::Response.exchange_record_id(result.to_json)
     # render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
-  # get a quiz paper
+  # get a quiz
   # params: str_id
   #
   def quiz_get
@@ -180,13 +180,13 @@ class QuizsController < ApplicationController
     params.permit!
 
     # response format pre-defined
-    result = {:str_id => nil, :obj_quizprop => nil, :arr_items => nil }
+    result = {:str_uid => nil, :obj_quizprop => nil, :arr_items => nil }
 
     begin
-      target_quiz_paper = Mongodb::BankPaperPap.find_by(_id: params[:str_id])
-      result[:str_id] = params[:str_id]
-      result[:obj_quizprop] = target_quiz_paper
-      result[:arr_items] = target_quiz_paper.bank_quiz_qizs
+      target_quiz = Mongodb::BankQuizQiz.find_by(_id: params[:str_uid])
+      result[:str_uid] = params[:str_uid]
+      result[:obj_quizprop] = target_quiz
+      result[:arr_items] = target_quiz.quiz_detail
     rescue Exception => ex
       # do nothing for current 
     end
