@@ -144,6 +144,16 @@ $(function () {
 
 	// 第一个块
 	setInputsHandler($('.analyserow:first'));
+
+	$(".anser_and_analyze").on("click", function(){
+		$.get('/quizs/quiz_get', 'str_uid=' + $(this).attr('str_uid'), function(data){
+			var data_json = jQuery.parseJSON(data);
+			
+			$("#answer").html("答案：" + data_json.data.obj_quizprop.answer);
+			$("#answer_desc").html(data_json.data.obj_quizprop.answer.desc);
+			$("#answerModal").modal('show');
+		})
+	});
 });
 
 function add_hidden_input($insert_html, $popFrom, name, rid, uid, label){

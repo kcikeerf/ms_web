@@ -1,32 +1,53 @@
 <% @page_title = '我的题库' %>
 <div class="myquestionbank ohidden">
-	<h2 class="f16 ohidden"><b class="fl fb">我的题库</b><span class="fr f12 addquesetion block cp">增加试题</span></h2>
+	<h2 class="f16 ohidden"><b class="fl fb">我的题库</b><span class="fr f12 addquesetion block cp" onclick="url_to('/quizs/single_quiz')">增加试题</span></h2>
 	<%#= render 'users/search_block' %>
+	<% @quizs.each_with_index do |quiz, i| %>
 	<div class="questionpage">
-		<h3 class="f14"><b>选择题</b><span>(试题来源)</span></h3>
+		<h3 class="f14"><b><%= quiz.cat %></b><span>(试题来源)</span></h3>
 		<div class="qusetionmate f16">
-			<h4>There is a computer<input type="text"/> the desk.</h4>
+			<%= raw quiz.text %>
+			<!-- <h4>There is a computer<input type="text"/> the desk.</h4>
 			<ul>
 				<li><input type="checkbox" name="mata"/><label>A.on</label></li>
 				<li><input type="checkbox" name="mata"/><label>B.in</label></li>
 				<li><input type="checkbox" name="mata"/><label>C.under</label></li>
 				<li><input type="checkbox" name="mata"/><label>D.for</label></li>
-			</ul>
+			</ul> -->
 		</div>
 		<div class="questionInfor f12">
-			<a class="fl block" href="javascript:">查看答案与解析</a>
+			<a class="fl block anser_and_analyze" href="javascript:" str_uid="<%= quiz._id.to_s %>">查看答案与解析</a>
 			<div class="fl difficulty ohidden">
 				<label class="fl">试题难度:</label>
 				<ul class="ohidden fl">
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
+					<%= raw '<li></li>' * (quiz.levelword2.to_i - 1) || 0 %><li></li>
+					
 				</ul>
 			</div>
 			<p class="fl">浏览次数:<span>1298</span></p>
 		</div>
 	</div>
+
+<% end %>
+
+<!-- Modal -->
+<div class="modal fade" id="answerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">试题答案与解析</h4>
+      </div>
+      <div class="modal-body">
+      	<div id="answer">答案：</div>
+      	<hr />
+      	<div id="answer_desc"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 

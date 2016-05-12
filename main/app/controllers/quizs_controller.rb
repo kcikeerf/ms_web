@@ -155,7 +155,7 @@ class QuizsController < ApplicationController
 
     result = { :str_id => current_quiz._id.to_s }
     result_json = Common::Response.exchange_record_id(result.to_json)
-    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+    render :json => Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
 
@@ -165,8 +165,8 @@ class QuizsController < ApplicationController
     # response format pre-defined
     result = {:arr_list => []}
 
-    qlist = Mongodb::BankQuizQiz.all()
-    result[:arr_list] = qlist.to_a
+    @quizs = Mongodb::BankQuizQiz.all().to_a
+    # result[:arr_list] = qlist.to_a
 
     # result_json = Common::Response.exchange_record_id(result.to_json)
     # render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
