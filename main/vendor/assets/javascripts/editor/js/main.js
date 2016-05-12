@@ -36,7 +36,7 @@ $(function(){
 		    //word文件上传地址
 		    config.wordUploadUrl = "/quizs/single_quiz_file_upload";
 		    //图片转码的固定地址
-		    config.replaceImgcrc = "/assets/editor/test.jpg?src=";
+		    config.replaceImgcrc = "/ckeditors/urlimage?src=";
 		};
 
 		//初始化编辑器

@@ -31,6 +31,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/ckeditors/urlimage'=> "ckeditor#urlimage"
+
   resources :librarys, :online_tests
   # defined routes for user authentication
   devise_for :users,

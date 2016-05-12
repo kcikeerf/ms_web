@@ -31,7 +31,7 @@
                             id: 'wordContent',
                             type: 'html',
                             html:'<div class="word_content"></div>',
-                            style: 'height:150px;overflow:auto;border:1px solid #ccc;padding:3px;',
+                            style: 'position: absolute;right: 6px;left: 6px;top: 80px;bottom: 47px;overflow:auto;border:1px solid #ccc;padding:3px;',
                             'default': '',
                             required: true,
                             commit: function () {
