@@ -108,6 +108,7 @@ class QuizsController < ApplicationController
     @subjects_related_data = BankNodestructure.list_structures
     @quize_types = BankDicQuizSubject.list_quiztypes
     @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
+    @difficulties = BankDic.list_difficulty.map{|item| [item["label"], item["sid"]]}
     @tree_data = {'knowledge' => {}, 'skill' => {}, 'ability' => {}}
   end
 
