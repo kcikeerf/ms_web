@@ -7,16 +7,18 @@ class BankNodestructure < ActiveRecord::Base
 
   before_create :init_uid
 
-  has_many :bank_tbc_ckps, foreign_key: "tbs_uid"
-  has_many :bank_checkpoint_ckps, through: :bank_tbc_ckps
+#  has_many :bank_tbc_ckps, foreign_key: "tbs_uid"
+  has_many :bank_checkpoint_ckps, foreign_key: "node_uid"#, through: :bank_tbc_ckps
 
-  accepts_nested_attributes_for :bank_checkpoint_ckps
+  has_many :bank_node_catalogs, foreign_key: "node_uid"
+
+  accepts_nested_attributes_for :bank_checkpoint_ckps, :bank_node_catalogs
 
   def self.list_structures
     result = {}
     self.all.each{|bn|
       if bn.subject && !result.keys.include?(bn.subject)
-        result[bn.subject] = {"label" => I18n.t("dict.#{bn.subject}"), "items" =>{}}
+        result[bn.subject] = {"label" => I18n.t("dict.#{bn.subject}"), "node_uid" => bn.uid ,"items" =>{}}
       end
       keys_arr = result[bn.subject]["items"].keys
       if bn.grade && !keys_arr.include?(bn.grade)

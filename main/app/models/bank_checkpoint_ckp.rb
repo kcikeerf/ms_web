@@ -15,22 +15,27 @@ class BankCheckpointCkp < ActiveRecord::Base
   before_create :init_uid
 
   has_many :bank_ckp_comments, foreign_key: "ban_uid"
-  has_many :bank_tbc_ckps, foreign_key: "ckp_uid3"
-  has_many :bank_nodestructures, through: :bank_tbc_ckps
+  has_many :bank_ckp_cats, foreign_key: "ckp_uid"
+  has_many :bank_node_catalogs, through: :bank_ckp_cats
+#  has_many :bank_tbc_ckps, foreign_key: "ckp_uid3"
+#  has_many :bank_nodestructures, through: :bank_tbc_ckps
+  belongs_to :bank_nodestructure, foreign_key: "node_uid"
 
 #  t_has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "ckp_uid"
 #  t_has_many :bank_qizpoint_qzps, through: :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp"#, foreign_key: "qzp_uid"
 #  from_mysql_has_many :bank_ckp_qzps, :class => "Mongodb::BankCkpQzp", :foreign_key => "ckp_uid"
 #  from_mysql_has_many :bank_qizpoint_qzps, :class => Mongodb::BankQizpointQzp, :through => Mongodb::BankCkpQzp
 
-  accepts_nested_attributes_for :bank_ckp_comments,:bank_nodestructures
+  accepts_nested_attributes_for :bank_ckp_comments
 
   # will change in the future
   def self.get_ckps params={}
     result = {"knowledge" => { "label" => I18n.t("dict.knowledge"), "children"=>{}}, 
               "skill"=>{"label"=> I18n.t("dict.skill"), "children" => {}}, 
               "ability" => {"label" => I18n.t("dict.ability"), "children"=>{}}}
-    arr = [self.where("LENGTH(rid) = ?", 3), self.where("LENGTH(rid) = ?", 6), self.where("LENGTH(rid) = ?", 9)]
+    cond_str = "LENGTH(rid) = ?"
+    cond_str += " and #{params["node_uid"]}" unless params["node_uid"].blank?
+    arr = [self.where(cond_str, 3), self.where(cond_str, 6), self.where(cond_str, 9)]
     arr.each{|level|
       level.each{|item|
         current_item = {
@@ -60,20 +65,34 @@ class BankCheckpointCkp < ActiveRecord::Base
   def self.get_child_ckps params
     result = {"pid" => params[:str_pid], "nodes"=>[]}
     pid = params[:str_pid]
-    pid_len = pid.size
-    return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep 
-    target_len = pid_len + Common::SwtkConstants::CkpStep
-    result["nodes"] = self.where("LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ?", pid_len, et_len, pid_len, pid).map{|item|
+    result["nodes"] = BankRid.get_child self, pid
+    result["nodes"].map!{|item|
+
       { "uid" => item.uid,
         "rid" => item.rid,
         "dimesion" => item.dimesion,
         "checkpoint" => item.checkpoint,
         "is_entity" => item.is_entity}
+
     }
     return result
   end
 
-  def self.create_ckp params
+  # 
+  # node_uid: node structure uid
+  # pid: parent
+  #
+  def self.save_ckp params
+    new_rid = BankRid.get_new_rid self,params[:pid]
+    self.dimesion = params["dimesion"]
+    self.rid = new_rid
+  end
+
+  def self.update_ckp params
+
+  end
+
+  def self.delete_ckp params
 
   end
 

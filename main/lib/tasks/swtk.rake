@@ -135,6 +135,7 @@ namespace :swtk do
     text_book = ckp_sheet.row(2)[0]
     grade = ckp_sheet.row(3)[0]
     volume = ckp_sheet.row(4)[0]
+    bn = BankNodestructure.where(:subject=> subject, :version=> text_book, :grade=> grade, :volume => volume)
     level1_max_rid = BankCheckpointCkp.where("rid >= 000 and rid <=999 and length(rid) < 4").select("rid").map{|t| t.rid}.max
     level2_max_rid = 0#BankCheckpointCkp.where("substring(rid,3,5)>= 000 and substring(rid,3,5) <=999 and length(rid) >3 and length(rid) < 7").select("rid").map{|t| t.rid.slice(3,5)}.max
     level3_max_rid = 0#BankCheckpointCkp.where("substring(rid,6,8) >= 000 and substring(rid,6,8) <=999 and length(rid) > 6 and length(rid) < 10").select("rid").map{|t| t.rid.slice(6,8)}.max
@@ -160,6 +161,7 @@ namespace :swtk do
          :desc => nil
       })
       ckp_level1.save
+      bn.bank_checkpoint_ckps << ckp_level1
       h[key1].keys.each_with_index{|key2, index2|
         level2_rid = level1_rid + (level2_start + index2).to_s.rjust(3, "0")
         ckp_level2 = BankCheckpointCkp.new({
@@ -169,6 +171,7 @@ namespace :swtk do
           :desc => nil
         })
         ckp_level2.save
+        bn.bank_checkpoint_ckps << ckp_level2
         h[key1][key2].keys.each_with_index{|key3, index3|
           level3_rid = level2_rid + (level3_start + index3).to_s.rjust(3, "0")
           ckp_level3 = BankCheckpointCkp.new({
@@ -178,11 +181,13 @@ namespace :swtk do
             :desc => h[key1][key2][key3][:desc]
           })
           ckp_level3.save
+          bn.bank_checkpoint_ckps << ckp_level3
           unless h[key1][key2][key3][:unit].nil?
             arr = h[key1][key2][key3][:unit].split("#unit#")
             arr.each{|unit|
+              bnc = BankNodeCatalog.where(:node => unit)
               bn = BankNodestructure.where(:subject=> subject, :version=> text_book, :grade=> grade, :volume => volume, :node => unit)
-              bn[0].bank_checkpoint_ckps << ckp_level3 unless bn.blank?
+              bnc[0].bank_checkpoint_ckps << ckp_level3 unless bc.blank?
             }
           end
         }
@@ -206,15 +211,21 @@ namespace :swtk do
     text_book = sheet.row(2)[0]
     grade = sheet.row(3)[0]
     volume = sheet.row(4)[0]
+    bn = BankNodestructure.new({
+      :subject => subject,
+      :version => text_book,
+      :grade => grade,
+      :volume => volume,
+      :node => sheet.row(i)[0]
+    })
+    bn.save
+
     (start_line..total_line).each{|i|
-      bn = BankNodestructure.new({
-        :subject => subject,
-        :version => text_book,
-        :grade => grade,
-        :volume => volume,
+      bc = BankNodeCatalog.new({
         :node => sheet.row(i)[0]
       })
-      bn.save
+      bc.save
+      bn.bank_node_catalogs << bc
     }
   end
 

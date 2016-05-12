@@ -20,7 +20,7 @@ module Main
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :zh
     # config/application.rb
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '{**}', '*.{rb,yml}')]
 
     config.generators do |g|
       g.orm :active_record

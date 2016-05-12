@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160505135013) do
+ActiveRecord::Schema.define(version: 20160512012804) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -33,11 +33,21 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.string   "dimesion",   limit: 50
     t.string   "rid",        limit: 36
     t.string   "checkpoint", limit: 200
+    t.string   "node_uid",   limit: 36
     t.integer  "is_entity"
     t.text     "desc"
     t.decimal  "weights",                precision: 5, scale: 2
     t.datetime "dt_add"
     t.datetime "dt_update"
+  end
+
+  create_table "bank_ckp_cats", primary_key: "nid", force: true do |t|
+    t.string   "cat_uid",    limit: 36
+    t.string   "ckp_uid",    limit: 36
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "bank_ckp_comments", id: false, force: true do |t|
@@ -92,6 +102,14 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.datetime "dt_update"
   end
 
+  create_table "bank_node_catalogs", id: false, force: true do |t|
+    t.string   "uid",       limit: 36
+    t.string   "node",      limit: 200
+    t.string   "node_uid",  limit: 36
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
   create_table "bank_nodestructures", id: false, force: true do |t|
     t.string   "uid",       limit: 36
     t.string   "subject",   limit: 50
@@ -99,7 +117,6 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.string   "grade",     limit: 50
     t.string   "volume",    limit: 50
     t.string   "rid",       limit: 128
-    t.string   "node",      limit: 200
     t.datetime "dt_add"
     t.datetime "dt_update"
   end
@@ -114,6 +131,12 @@ ActiveRecord::Schema.define(version: 20160505135013) do
     t.string   "sid",       limit: 200
     t.datetime "dt_add"
     t.datetime "dt_update"
+  end
+
+  create_table "bank_rids", force: true do |t|
+    t.string   "rid"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "bank_subject_qiztype_links", force: true do |t|
