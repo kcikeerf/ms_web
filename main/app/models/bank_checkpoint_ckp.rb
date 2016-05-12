@@ -92,7 +92,7 @@ class BankCheckpointCkp < ActiveRecord::Base
   # node_uid: node structure uid
   #
   def self.save_ckp params
-    return false if params["node_uid"].blank?
+    return nil if params["node_uid"].blank?
     target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
     new_rid = BankRid.get_new_rid target_objs, params["str_pid"]
     new_ckp = self.new({
@@ -102,7 +102,7 @@ class BankCheckpointCkp < ActiveRecord::Base
       "desc" => params["desc"],
       "is_entity" => false})
     new_ckp.save!
-    return true
+    return new_ckp
   end
 
   #
@@ -112,20 +112,34 @@ class BankCheckpointCkp < ActiveRecord::Base
   #
   #
   def self.update_ckp params
-    return false if params["str_uid"].blank?
-    current_ckp = self.where("uid = ?", params["str_uid"]) if params["str_uid"]
+    return nil if params["str_uid"].blank?
+    target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+    current_ckp = self.where("uid = ?", params["str_uid"]).first if params["str_uid"]
     if params[str_pid]
-      ActiveRecord::Base.transaction do
-        new_ckp = self.save_ckp params 
-        current_ckp.destroy! if new_ckp
-      end
-    else
-      current_ckp
+#      ActiveRecord::Base.transaction do
+#        new_ckp = self.save_ckp params 
+#        current_ckp.destroy! if new_ckp
+#      end
+#    else
+      current_ckp.dimesion = params["dimesion"] if params["dimesion"] 
+      current_pid = current_ckp[0, "-#{Common::SwtkConstants.CkpStep}".to_i + 1]
+      current_ckp.rid = BankRid.get_new_rid target_objs, params["str_pid"] if current_pid!=params["str_pid"]
+      current_ckp.checkpoint = params["checkpoint"] if params["checkpoint"]
+      current_ckp.desc = params["desc"] if params["desc"]
+      current_ckp.save!
     end
+    return current_ckp
   end
 
-  def self.delete_ckp params
 
+  #
+  # str_uid: current check point uid 
+  #
+  def self.delete_ckp params
+    return false if params["str_uid"].blank?
+    current_ckp = self.where("uid = ?", params["str_uid"]).first if params["str_uid"]
+    current_ckp.destroy!
+    return true
   end
 
   # 
@@ -134,15 +148,15 @@ class BankCheckpointCkp < ActiveRecord::Base
   #
   def self.get_ckp_count params
     result = 0
-    
-    if params[str_pid].blank?
-      target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+    return nil if params["node_uid"].blank?
+    target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+    if params["str_pid"].blank?
       result = target_objs.count
     else
-      BankRid.get_child target_objs, pid  
+      arr=BankRid.get_all_child target_objs,params["str_pid"]       
+      result=arr.count
     end
 
-    result = target_objs.count if target_objs
     return result
   end
 

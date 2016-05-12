@@ -6,13 +6,23 @@ class BankRid < ActiveRecord::Base
   # pid: parent node rid
   #
   def self.get_child obj=nil,pid=""
-    resutlt = []
+    result = []
     return result if obj.blank?
     pid_len = pid.size
     return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
     target_len = pid_len + Common::SwtkConstants::CkpStep
     cond_str = "LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ?" 
     result = obj.where(cond_str, pid_len, target_len, pid_len, pid).to_a
+    return result
+  end
+
+  def self.get_all_child obj=nil,pid=""
+    result = []
+    return result if obj.blank?
+    pid_len = pid.size
+    return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
+    cond_str = "SUBSTR(rid, 1, ?) = ?"
+    result = obj.where(cond_str, pid_len, pid).to_a
     return result
   end
 
