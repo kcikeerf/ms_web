@@ -96,6 +96,30 @@ class Mongodb::BankQuizQiz
     return true
   end
 
+  #
+  # get quiz all details 
+  #
+  def quiz_detail
+    result =[]
+    qzps = self.bank_qizpoint_qzps
+    qzps.map{|qzp|
+      { 
+        "type" => qzp.type,
+        "answer" => qzp.answer,
+        "desc" => qzp.desc,
+        "score" => qzp.score,
+        "bank_checkpoint_ckps" => qzp.bank_checkpoint_ckps.map{|bcc|
+           {
+             "dimesion" => bcc.dimesion,
+             "rid" => bcc.rid,
+             "checkpoint" => bcc.checkpoint,
+             "desc" => bcc.desc
+           }
+        }
+      }
+    } 
+ end
+
   private
   def format_float
     self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
