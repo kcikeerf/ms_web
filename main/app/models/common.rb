@@ -4,7 +4,8 @@
 module Common
 
   module SwtkConstants
-    file_upload_location = ""
+    CkpDepth = 3
+    CkpStep = 3
   end
 
   module File
