@@ -37,8 +37,9 @@ class QuizsController < ApplicationController
 #    respond_to do |format|
 #      format.json { render json: result.to_json }
 #    end
-    result_json = Common::Response.exchange_record_id(result.to_json)
-    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+#    result_json = Common::Response.exchange_record_id(result.to_json)
+#    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+     render :text => result
   end
 
   # type1 upload a quiz
