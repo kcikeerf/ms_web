@@ -12,9 +12,9 @@
 </style>
 </head>
 <body>
-<form id="saveReportForm" enctype="multipart/form-data" method="POST" action="http://http://54.222.214.132/swtk/quizs/single_quiz_file_upload">
+<form id="saveReportForm" enctype="multipart/form-data" method="POST" action="/swtk/quizs/single_quiz_file_upload">
   <p class="text1">上传到服务器</p>
-  <input class="wordUpload" type="file" name="wordUpload">
+  <input class="wordUpload" type="file" name="file">
   <input class="submit" type="button" value="上传">
 </form>
 
@@ -1153,7 +1153,8 @@ $(document).ready(function () {
     if(format && size){
       var options={
         success : function(data){
-          alert(data)
+          //alert(data)
+          window.top.CKEDITOR.wordContentCallback(data);
         },    
         dataType : "html" 
       }

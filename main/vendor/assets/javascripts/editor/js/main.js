@@ -34,9 +34,9 @@ $(function(){
 		    //过滤
 		    config.disallowedContent = '*[id]; *[class]; *[href]; *[on*]; script; link; ';
 		    //word文件上传地址
-		    config.wordUploadUrl = "/quizs/single_quiz_file_upload";
+		    config.wordUploadUrl = "/swtk/quizs/single_quiz_file_upload";
 		    //图片转码的固定地址
-		    config.replaceImgcrc = "http://127.0.0.1/editor/test.jpg?src=";
+		    config.replaceImgcrc = "/swtk/editor/test.jpg?src=";
 		};
 
 		//初始化编辑器
