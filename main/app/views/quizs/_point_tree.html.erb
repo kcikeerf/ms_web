@@ -1,0 +1,50 @@
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <!-- 考察点 -->    
+    <div id="inspect" class="clearfix">
+     <h2>考察点</h2>
+     <div id="table_knowledge" class="tabel">
+      <div class="tree well">
+        <ul>
+          <li>
+            <span><i class="icon-folder-open"></i> 知识考察点</span>
+            <ul>
+              <%= raw organization_tree(@tree_data['knowledge']['children']) %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="table_skill" class="tabel">
+      <div class="tree well">
+        <ul>
+          <li>
+            <span><i class="icon-folder-open"></i> 技能考察点</span>
+            <ul>
+              <%= raw organization_tree(@tree_data['skill']['children']) %>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="table_capacity" class="tabel">
+      <div class="tree well">
+        <ul>
+          <li>
+            <span><i class="icon-folder-open"></i> 能力考察点</span>
+            <ul>
+              <%= raw organization_tree(@tree_data['ability']['children']) %>              
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" id="button_analysis">完成</button>
+  </div>
+</div>
+</div>

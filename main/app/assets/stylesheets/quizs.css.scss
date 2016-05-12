@@ -5,11 +5,11 @@ body {background:#ebebed;font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJh
 textarea {resize: none;}
 
 /* 试题入库 */
-.container {background:#fff;margin:30px auto;font-size:14px;border-radius:5px;padding:0;}
+.container {background:#fff;margin:30px auto;font-size:14px;border-radius:5px;padding:0;width:800px;}
 .container h1 {font-size:18px;text-align:center;border-bottom:1px solid #f1f1f1;padding:30px;margin-top:10px;}
 .container section {border-bottom:1px solid #f1f1f1;padding:50px 50px 10px 50px;}
-.container section dl dt {float:left;width:10%;text-align:right;padding:5px 10px 0 0;font-size:16px;}
-.container section dl dd {float:left;width:88%;}
+.container section dl dt {float:left;width:100%;text-align:left;padding:5px 10px 10px 0;margin-bottom:10px;font-size:16px;border-bottom:1px solid #ccc;}
+.container section dl dd {float:left;width:100%;padding-left:0; }
 .container section dl dd ul li {margin-bottom:10px;}
 .container section dl dd ul li label {display:inline-block;width:80px;font-weight:normal;}
 .container section dl dd ul li .form-control {display:inline-block;width:60%;}
@@ -20,14 +20,14 @@ textarea {resize: none;}
 .analyserow li {padding:15px;height:100%;}
 .container section dl dd ul.analyserow li {margin:0;}
 .analyserow li label {vertical-align:top;}
-.analyserow li.first {float:left;width:50%;}
-.analyserow li.first textarea.form-control {background:#f9f9f9;border:0 none;width:68%;}
+.analyserow li.first {float:left;width:45%;}
+.analyserow li.first textarea.form-control {background:#f9f9f9;border:0 none;width:40%;}
 .analyserow li.first select.form-control {width:70px;margin-right:15px;}
 .analyserow li.first label.checkbox-inline {width:65px;margin-top:6px;}
 .analyserow li.line {float:left;width:1px;background:#e5e5e5;padding:0;}
-.analyserow li.last {float:left;width:49%;}
+.analyserow li.last {float:left;width:54%;}
 .analyserow li.last label.title {border-right:1px dotted #e5e5e5;height:90px;margin:15px 0;padding-top:35px;text-align:center;}
-.analyserow li.last p {display:inline-block;padding:0 0 0 15px;width:240px}
+.analyserow li.last p {display:inline-block;padding:0 0 0 5px;width:240px}
 .analyserow li.last p label {width:50px;vertical-align:middle;}
 .analyserow li.last p span {display:block;margin-bottom:10px;}
 .analyserow li.last p span input.form-control {background:#f9f9f9;border:0 none;width:170px;cursor:pointer;}
@@ -65,3 +65,133 @@ footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-
 .tree>ul>li::before, .tree>ul>li::after {border:0}
 .tree li:last-child::before {height:25px}
 .tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {background:#eee;border:1px solid #94a0b4;color:#000}
+/*quiz_list start*/
+@charset "utf-8";
+.myquestionbank{
+	background:#fff;
+	padding:16px 50px 0;
+	border-radius: 4px;
+	min-height:698px;
+}
+.myquestionbank h2{
+	height:50px;
+	
+	border-bottom:1px dashed #f2f2f2;
+	color:#000;
+} 
+.myquestionbank h2 b{
+	line-height:50px;
+}
+.addquesetion{
+	width:68px;
+	height:28px;
+	margin-top:10px;
+	border-radius: 3px;
+	line-height:28px;
+	color:#fff;
+	padding-left:30px;
+	background:#16a895 image-url('add.png') no-repeat 10px center;
+	
+}
+
+.questionbank_search_box{
+	padding:24px 0; 
+	height:38px;
+}
+
+.questionbank_search_box{
+	padding:24px 0; 
+	height:38px;
+}
+
+.questionbank_search_box form{
+	width:254px;
+	height:36px;
+	border:1px solid #f2f2f2;
+	border-radius: 4px;
+}
+.questionbank_search_box form input{
+	border:none;
+	height:36px;
+	float:left;
+}
+.questionbank_search_box form input[type=text]{
+	width:203px;
+	padding-left:15px;
+	color:#ccc;
+}
+.questionbank_search_box form input[type=button]{
+	width:36px;
+	background:#f2f2f2 image-url('searchbtn.png') no-repeat center center;
+}
+
+
+.questionpage{
+	border:1px solid #eee;
+	border-radius: 4px;
+}
+.questionpage h3{
+	line-height:40px;
+	padding-left:35px;
+	background:#f9f9f9;
+	border-bottom:1px solid #eee;
+}
+.questionpage h3 span{
+	color:#868686;
+	margin-left:5px;
+}
+.qusetionmate{
+	padding-left:36px;
+}
+.qusetionmate h4{
+	line-height:60px;
+}
+.qusetionmate h4 input{
+	width:52px;
+	border:none;border-bottom:1px dashed #6a6a6a;
+	text-align:center;
+}
+.qusetionmate ul li{
+	margin-bottom:15px;
+}
+.qusetionmate ul li input{
+	margin-right:16px;
+}
+
+.questionInfor{
+	height:40px;
+	border-top:1px solid #eee;
+	line-height:40px;
+	padding-left:36px;
+}
+.questionInfor a{
+	width:110px;
+	background:image-url('jiantou.png')no-repeat right center;
+	color:#18a696;
+	margin-right:228px;
+}
+.difficulty{
+	width:145px;
+	margin-right:35px;
+}
+.difficulty label{
+	width:65px;
+} 
+.difficulty ul{
+	width:75px;
+	margin-top:14px;
+}
+.difficulty li{
+	float:left;
+	width:14px;
+	height:14px;
+	background:image-url('star.png') no-repeat;
+}
+.questionInfor p{
+	color:#868686;
+}
+.questionInfor p span{
+	color:#333333;
+	margin-left:5px;
+}
+/*quiz_list end*/

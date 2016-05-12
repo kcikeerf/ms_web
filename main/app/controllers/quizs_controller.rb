@@ -1,6 +1,8 @@
 class QuizsController < ApplicationController
   #load_and_authorize_resource
-  layout 'bootstrap', only: [:single_quiz]
+  layout 'user', only: [:quiz_list, :single_quiz]
+
+  before_action :authenticate_user!, only: [:quiz_list]
 
   def new
     data = BankNodestructure.list_structures
@@ -105,16 +107,7 @@ class QuizsController < ApplicationController
     @subjects_related_data = BankNodestructure.list_structures
     @quize_types = BankDicQuizSubject.list_quiztypes
     @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
-    @tree_data = BankCheckpointCkp.get_ckps
-  end
-
-  def subject_related_data
-    name = params[:name]
-    subjects_related_data = BankNodestructure.list_structures
-    quize_types = BankDicQuizSubject.list_quiztypes 
-
-    render json: {grades: subjects_related_data[name].keys, quiz_types: quize_types[name]}.to_json
-    # render json: params[:subject] ? {related_data: subjects_related_data[name].keys, quiz_types: quize_types}.to_json : subjects_related_data[name].keys.to_json
+    @tree_data = {'knowledge' => {}, 'skill' => {}, 'ability' => {}}
   end
 
   # type2 save a single quiz
@@ -172,11 +165,11 @@ class QuizsController < ApplicationController
     # response format pre-defined
     result = {:arr_list => []}
 
-    qlist = Mongodb::BankPaperPap.all()
-    result[:arr_list] = qlist.to_a
+    @qlist = Mongodb::BankQuizQiz.all()
+    # result[:arr_list] = qlist.to_a
 
-    result_json = Common::Response.exchange_record_id(result.to_json)
-    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+    # result_json = Common::Response.exchange_record_id(result.to_json)
+    # render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
   # get a quiz paper

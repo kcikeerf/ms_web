@@ -1,6 +1,7 @@
 $(function () {
 	// $(function () {
 		// 分析列表添加删除
+		var first_analyserow = $(".analyselist").html();
 		$('.add button').on("click",function(){
 			var num = $('.analyserow').length;
 			var numtext = $('.analyserow').find('.num');
@@ -9,9 +10,9 @@ $(function () {
 				numtext.html(num);
 			}
 			// clone 第一个区块			
-			var $str = $(".analyselist");
-			$str.find("input:hidden").remove();
-			$(".add").before($str.html()); 
+			// var $str = $(".analyselist");
+			// $str.find("input:hidden").remove();
+			$(".add").before(first_analyserow); 
 			var $cloned = $(".add").prev();
 			$cloned.find(".del").show();
 			$cloned.find('.num').html(++num);
@@ -54,7 +55,7 @@ $(function () {
 
 	// 知识点考察选择
 	$(function checkbox(){
-		$('#table_knowledge, #table_skill, #table_capacity').on("click",function(e){
+		$(document).on("click", '#table_knowledge, #table_skill, #table_capacity', function(e){
  			if($(e.target).is('input')){
 				var length = $(this).find("input:checked").length
 				if(length > 2){
@@ -66,7 +67,7 @@ $(function () {
 	});
 	
 	//知识考察点添加到页面
-	$("#button_analysis").on("click", function(){
+	$(document).on("click", "#button_analysis", function(){
 		// 知识
 		var chk_value_knowledge = [], $insert_html = $($("#hidden_analysis").prop("outerHTML"));
 		var $modal = $("#myModal")
@@ -112,20 +113,34 @@ $(function () {
 	$("#myModal").on("show.bs.modal", function() {
 
 		var selected_value = [];
-		console.log($popFrom.html());
 		var kv = $popFrom.find('input.dict_rid:hidden');
 		$.each(kv, function(i, v){
 			selected_value.push(v.value);			
 		})
 
-		// selected_value = $.merge(kv.split(','), sv.split(','), cv.split(','));
-
-		// console.log(selected_value);
-
 		// TODO: 选中
 		$(this).find('input[type="checkbox"]').attr("checked",false).val(selected_value);		
 	
 	});
+
+	var prev_version = '';
+	$("#version").on("change", function(){
+		if(this.value == "") return false;
+		var is_data = $('.analyserow:first li.last p input').val();
+		if((is_data != "" && confirm("更换教材版本会清空试题分析，确定更换吗？")) || is_data == ""){
+			$.post('/checkpoints/get_nodes', "uid=" + $(this).find(':selected').attr('uid'), function(data){
+				$("#myModal").html(data);
+		  });
+			prev_version = this.value;
+ 			$('ul.analyserow').remove();
+			$(".analyselist").html(first_analyserow);
+			setInputsHandler($('.analyserow:first'));
+			
+    }
+    else{
+    	this.value = prev_version;
+    }
+    });
 
 	// 第一个块
 	setInputsHandler($('.analyserow:first'));

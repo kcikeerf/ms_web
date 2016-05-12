@@ -1,6 +1,7 @@
 module QuizsHelper
 
-	def organization_tree(is_children, data)
+	def organization_tree(data, is_children=false)
+		return '' unless data
 		html = ''
 		if is_children
 			html << '
@@ -18,7 +19,7 @@ module QuizsHelper
 						<span title="Expand this branch"><i class="icon-plus-sign"></i> ' + need_data['checkpoint'] +'</span>
 					<ul>
 				' unless is_entity
-				html << organization_tree(is_entity, is_entity ? need_data : need_data['children']) 
+				html << organization_tree(is_entity ? need_data : need_data['children'], is_entity) 
 							
 				html << '</ul></li>' unless is_entity
 				

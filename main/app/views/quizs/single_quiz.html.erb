@@ -2,6 +2,7 @@
 <div id="testquestions" class="container">
   <h1>试题入库</h1>
   <%= form_for :bank_quiz_qiz, url: single_quiz_save_quizs_path, html: {id: 'form'} do |f| %>
+  <%= hidden_field_tag :version_uid %>
   <section>
    <dl class="clearfix">
     <dt>基本信息</dt>
@@ -9,19 +10,19 @@
      <ul class="list-inline" id="basic_info">
        <li class="col-md-4">
          <label>科目：</label>
-         <%= select_tag :subject, options_for_select(@subjects), include_blank: true, class: 'form-control' %>         
+         <%= select_tag :subject, options_for_select(@subjects), include_blank: '--', class: 'form-control' %>         
        </li>
        <li class="col-md-4">
          <label>年级：</label>
-         <%= select_tag :grade, '', class: 'form-control' %>
+         <%= select_tag :grade, '', include_blank: '--', class: 'form-control' %>
        </li>
        <li class="col-md-4">
          <label>教材版本：</label>
-         <%= select_tag :version, '', class: 'form-control' %>
+         <%= select_tag :version, '', include_blank: '--', class: 'form-control' %>
        </li>
        <li class="col-md-4">
          <label>题型：</label>
-         <%= select_tag :cat, '', class: 'form-control' %>
+         <%= select_tag :cat, '', include_blank: '--', class: 'form-control', required: true %>
        </li>
        <li class="col-md-4">
          <label>难度预估：</label>
@@ -66,6 +67,8 @@
           <p>
             <label>小分：</label>
             <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a), class: 'form-control' %>
+          </p>
+          <p>
             <label class="checkbox-inline">
               <input type="checkbox" id="inlineCheckbox1" name='bank_qizpoint_qzps[][type]' value="option1"> 主观题
             </label>
@@ -86,9 +89,10 @@
           </p>
         </li>
       </ul>
+
     </div>
-    
     <p class="add"><button class="btn btn-default" type="button"> <i>+</i> 添加</button></p>
+    
   </dd>
 </dl>
 </section>
@@ -102,55 +106,7 @@
 
 <!-- 考察点弹出层 -->
 <div id='myModal' class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
- <div class="modal-dialog modal-lg">
-   <div class="modal-content">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <!-- 考察点 -->
-    <div id="inspect" class="clearfix">
-     <h2>考察点</h2>
-     <div id="table_knowledge" class="tabel">
-      <div class="tree well">
-        <ul>
-          <li>
-            <span><i class="icon-folder-open"></i> 知识考察点</span>
-            <ul>
-              <%= raw organization_tree(false, @tree_data['knowledge']['children']) %>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div id="table_skill" class="tabel">
-      <div class="tree well">
-        <ul>
-          <li>
-            <span><i class="icon-folder-open"></i> 技能考察点</span>
-            <ul>
-              <%= raw organization_tree(false, @tree_data['skill']['children']) %>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div id="table_capacity" class="tabel">
-      <div class="tree well">
-        <ul>
-          <li>
-            <span><i class="icon-folder-open"></i> 能力考察点</span>
-            <ul>
-              <%= raw organization_tree(false, @tree_data['ability']['children']) %>              
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-    <button type="button" class="btn btn-primary" data-dismiss="modal" id="button_analysis">完成</button>
-  </div>
-</div>
-</div>
+   <%= render 'point_tree' %>
 </div>
 <div id='hidden_analysis' style='display: none'>
   <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][deimesion]' %>
@@ -165,20 +121,28 @@
     var quiz_types_data = <%= raw @quize_types.to_json %>;
 
     $("#subject").on("change", function(){
-      if(this.value == '') return false;      
+
+      var $grades = $("#grade")[0];
+      var $versions = $("#version")[0];
+      var $quiz_types = $("#cat")[0];
+
+      if(this.value == ''){
+        $($grades).find('option:gt(0)').remove();
+        $($versions).find('option:gt(0)').remove();
+        $($quiz_types).find('option:gt(0)').remove();
+        return false;
+      }      
       
-      var $grades = $("#basic_info li:eq(1) select")[0].options;
-      var $versions = $("#basic_info li:eq(2) select")[0].options;
-      var $quiz_types = $("#basic_info li:eq(3) select")[0].options;
+
 
       // grade and versions
       var grades = json_data[this.value], index = 0;
   
       $.each(grades.items, function(c, grade){
 
-        $.each(grade.items, function(k, v){
-          if(index == 0) $versions.add(new Option(v.label, k));
-        });
+        // $.each(grade.items, function(k, v){
+        //   if(index == 0) $versions.add(new Option(v.label, k));
+        // });
 
         $grades.add(new Option(grade.label, c));
         index++;
@@ -194,21 +158,20 @@
     $("#grade").on("change", function(){
       var subject = $("#subject").val();
 
-      var $versions = $("#basic_info li:eq(2) select");
-      $versions.html('');
+      var $versions = $("#basic_info select[name='version']");
+
+      if(this.value == ""){
+        $versions.find('option:gt(0)').remove();
+        return false;
+      }
+
+      $versions.find('option:gt(0)').remove();
       
       $.each(json_data[subject].items[this.value].items, function(k, v){
-        $versions[0].options.add(new Option(v.label, k))
+        $versions.append('<option uid="' + v.node_uid + '" value="' + k +  '">' + v.label + '</option>')//new Option(v.label, k))
       })
     })
 
-    // $("#submit_form").on('click', function(){
-    //   $.post('/quizs/single_quiz_save',
-    //          $("#form").serializeObject(),
-    //          function(){
-    //           alert('提交成功');
-    //          });
-    // });
 
   }) 
 

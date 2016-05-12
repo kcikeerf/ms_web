@@ -2,7 +2,7 @@ class CheckpointsController < ApplicationController
   def get_nodes
     params.permit!
    
-    nodes = BankCheckpointCkp.get_ckps   
-    render :json => nodes.to_json
+    @tree_data = BankCheckpointCkp.get_ckps   
+    return render partial: '/quizs/point_tree'
   end  
 end

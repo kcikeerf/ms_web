@@ -17,6 +17,12 @@ Rails.application.routes.draw do
     post 'subject_related_data'
     post 'single_quiz_save'
   end
+
+  resources :checkpoints do 
+    collection do 
+      post 'get_nodes'
+    end
+  end
   
   resources :score_reports do 
     collection do 
