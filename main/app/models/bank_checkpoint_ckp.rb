@@ -34,7 +34,7 @@ class BankCheckpointCkp < ActiveRecord::Base
               "skill"=>{"label"=> I18n.t("dict.skill"), "children" => {}}, 
               "ability" => {"label" => I18n.t("dict.ability"), "children"=>{}}}
     cond_str = "LENGTH(rid) = ?"
-    cond_str += " and #{params["node_uid"]}" unless params["node_uid"].blank?
+    cond_str += " and node_uid = #{params["node_uid"]}" unless params["node_uid"].blank?
     arr = [self.where(cond_str, 3), self.where(cond_str, 6), self.where(cond_str, 9)]
     arr.each{|level|
       level.each{|item|
@@ -63,9 +63,11 @@ class BankCheckpointCkp < ActiveRecord::Base
   end
 
   def self.get_child_ckps params
-    result = {"pid" => params[:str_pid], "nodes"=>[]}
-    pid = params[:str_pid]
-    result["nodes"] = BankRid.get_child self, pid
+    result = {"pid" => params["str_pid"], "nodes"=>[]}
+    return result if params["node_uid"].blank?
+    pid = params["str_pid"]
+    target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+    result["nodes"] = BankRid.get_child target_objs, pid
     result["nodes"].map!{|item|
 
       { "uid" => item.uid,
@@ -83,9 +85,16 @@ class BankCheckpointCkp < ActiveRecord::Base
   # pid: parent
   #
   def self.save_ckp params
-    new_rid = BankRid.get_new_rid self,params[:pid]
+    return false if params["node_uid"].blank?
+    target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+    new_rid = BankRid.get_new_rid target_objs, params[:pid]
     self.dimesion = params["dimesion"]
     self.rid = new_rid
+    self.checkpoint = params["checkpoint"]
+    self.desc = params["desc"]
+    self.is_entity= false
+    self.save!
+    return true
   end
 
   def self.update_ckp params
