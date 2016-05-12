@@ -26,7 +26,7 @@
        </li>
        <li class="col-md-4">
          <label>难度预估：</label>
-         <%= select_tag :levelword2, options_for_select([['中等', 3]]), include_blank: true, class: 'form-control' %>
+         <%= select_tag :levelword2, options_for_select(@difficulties), include_blank: true, class: 'form-control' %>
        </li>
        <li class="col-md-12">
          <label>试题来源：</label>

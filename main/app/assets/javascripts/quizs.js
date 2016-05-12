@@ -150,7 +150,7 @@ $(function () {
 			var data_json = jQuery.parseJSON(data);
 			
 			$("#answer").html("答案：" + data_json.data.obj_quizprop.answer);
-			$("#answer_desc").html(data_json.data.obj_quizprop.answer.desc);
+			$("#answer_desc").html(data_json.data.obj_quizprop.desc);
 			$("#answerModal").modal('show');
 		})
 	});
