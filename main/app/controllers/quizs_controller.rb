@@ -119,46 +119,71 @@ class QuizsController < ApplicationController
     # allow receiving all parameters  
     params.permit!
     # response format pre-defined
-    result = { :str_id => nil }
-    current_quiz = Mongodb::BankQuizQiz.new
-=begin
-({
-      :pap_uid => params[:pap_uid],
-      :tbs_uid => params[:tbs_uid],
-      :tpl_id => params[:tpl_id],
-      :ext1 => params[:ext1],
-      :ext2 => params[:ext2],
-      :cat => params[:cat],
-      :type => params[:type],
-      :text => params[:text],
-      :answer => params[:answer],
-      :desc => params[:desc],
-      :score => params[:score],
-      :time => params[:time],
-      :levelword2 => params[:levelword2],
-      :level => params[:level],
-      :levelword => params[:levelword],
-      :levelorder => params[:levelorder]
-    })
-=end
-    current_quiz.save_quiz(params)
+    result = { :str_id => nil, :status => "", :message => "" }
 
-    #params["arr_items"].each{|item|
-    #  current_quiz_paper.bank_quiz_qizs.build(item)
-    #}
-    #current_quiz_paper.bank_quiz_qizs.each{|bqq| bqq.save!}
-    flash[:notice] = "试题 (id: #{current_quiz._id.to_s}) 入库成功！"
-    render json: {ret: 1}.to_json
-
-    ######
-    # need to consider other related collections 
-    ######
+    begin
+      current_quiz = Mongodb::BankQuizQiz.new
+      current_quiz.save_quiz(params)
+      flash[:notice] = I18n.t("quizs.messages.create.success" , :uid: current_quiz.uid)
+      result[:status] = 200
+      result[:message] = I18n.t("quizs.messages.create.success", :uid : current_quiz.uid)
+    rescue Exception => ex
+      result[:status] = 500
+      result[:message] = I18n.t("quizs.messages.create.success", :uid : current_quiz.uid)
+    ensure
+      render json: result.to_json
+    end
 
     # result = { :str_id => current_quiz._id.to_s }
     # result_json = Common::Response.exchange_record_id(result.to_json)
     # render :json => Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
+  # single quiz update
+  # params:
+  #   uid: selected quiz uid
+  #
+  def single_quiz_update
+    #allow receiving all parameters
+    params.permit!
+    #response format pre-defined
+    result = {"str_uid" => nil, :status => "", :message => "" }
+    begin
+      current_quiz = Mongodb::BankQuizQiz.where("uid = ? ", params["str_rid"]).first
+      current_quiz.save_quiz(params)
+      flash[:notice] = I18n.t("quizs.messages.update.success" , uid: current_quiz.uid)
+      result[:status] = 200
+      result[:message] = I18n.t("quizs.messages.update.success", :uid : current_quiz.uid)
+    rescue Exception => ex
+      result[:status] = 500
+      result[:message] = I18n.t("quizs.messages.update.success", :uid : current_quiz.uid)
+    ensure
+      render json: result.to_json
+    end
+  end
+
+  # single quiz delete
+  # params:
+  #   uid: select quiz uid
+  #
+  def single_quiz_delete
+    #allow receiving all parameters
+    params.permit!
+    #response format pre-defined
+    result = {"str_uid" => nil, :status => "", :message => "" }
+    begin
+      current_quiz = Mongodb::BankQuizQiz.where("uid = ? ", params["str_rid"]).first
+      current_quiz.destroy!
+      flash[:notice] = I18n.t("quizs.messages.delete.success" , uid: current_quiz.uid)
+      result[:status] = 200
+      result[:message] = I18n.t("quizs.messages.delete.success", :uid : current_quiz.uid)
+    rescue Exception => ex
+      result[:status] = 500
+      result[:message] = I18n.t("quizs.messages.delete.success", :uid : current_quiz.uid)
+    ensure
+      render json: result.to_json
+    end
+  end
 
   # get quiz list
   #
