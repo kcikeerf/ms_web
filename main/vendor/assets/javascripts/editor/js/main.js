@@ -6,37 +6,38 @@ $(function(){
 		CKEDITOR.editorConfig = function( config ) {
 			//工具栏配置
 			config.toolbar_Mine =[
-                { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'] },
-                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+                { name: 'document', items: ['Source'] },
+                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', '-', 'Undo', 'Redo'] },
                 { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'] },
-                { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
                 '/',
                 { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
-                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl'] },
-                { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'PageBreak', 'Iframe'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                { name: 'insert', items: ['Table', 'HorizontalRule', 'Smiley'] },
                 '/',
-                { name: 'styles', items: ['Font', 'FontSize', 'lineheight'] },
+                { name: 'styles', items: ['Font', 'FontSize'] },
                 { name: 'colors', items: ['TextColor', 'BGColor'] },
                 { name: 'tools', items: ['Maximize', 'base64image', 'wordUpload'] }
             ];
 		    config.toolbar = 'Mine';
 		    //初始化高度
 		    config.height = 300;
+		    //初始化宽度
+		    //config.width = 1000;
+		    //禁止拖拽
+		    config.resize_enabled = false;
 		    //图片属性预览区域显示内容
 		    config.image_previewText=' ';
 		    //添加中文字体
 		    config.font_names='微软雅黑/微软雅黑;宋体/宋体;黑体/黑体;仿宋/仿宋_GB2312;楷体/楷体_GB2312;隶书/隶书;幼圆/幼圆;'+ config.font_names;
-		    //添加word上传和图片替换模块
+		    //添加word上传模块
 		    config.extraPlugins += (config.extraPlugins ? ',wordUpload' : 'wordUpload');
-		    config.extraPlugins += (config.extraPlugins ? ',replaceImg' : 'replaceImg');
 
 		    //过滤
 		    config.disallowedContent = '*[id]; *[class]; *[href]; *[on*]; script; link; ';
 		    //word文件上传地址
-		    config.wordUploadUrl = "/quizs/single_quiz_file_upload";
-		    //图片转码的固定地址
-		    config.replaceImgcrc = "/ckeditors/urlimage?src=";
+                   config.wordUploadUrl = "/quizs/single_quiz_file_upload";
+                   //图片转码的固定地址
+                   config.replaceImgcrc = "/ckeditors/urlimage?src=";
 		};
 
 		//初始化编辑器
