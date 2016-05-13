@@ -45,6 +45,7 @@ module Common
     def get_excel_file_content file_path
       result = []
       file = nil
+      return result if file_path.blank?
       case file_path.split('.').last.downcase
       when 'xlsx', 'xlsm'
         file = Roo::Excelx.new(file_path)
