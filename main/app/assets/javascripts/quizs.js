@@ -162,6 +162,9 @@ $(function () {
 
 	//提交单题入库
 	$("#form").on("submit", function(e){
+		for ( instance in CKEDITOR.instances ) {
+			CKEDITOR.instances[instance].updateElement();
+		}	 	
 	 	$form = $(this);
 		$.post($form.attr('action'), $form.serialize(), function(data){
 			
