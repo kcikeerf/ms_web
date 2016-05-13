@@ -161,10 +161,10 @@ $(function () {
 	})
 
 	//提交单题入库
-	$("#submit_form").on("click", function(){
-	 
-		$.post('/quizs/single_quiz_save', $("#form").serialize(), function(data){
-			console.log(data);
+	$("#form").on("submit", function(e){
+	 	$form = $(this);
+		$.post($form.attr('action'), $form.serialize(), function(data){
+			
 			if(data.ret == 1){
 				window.location = "/quizs/quiz_list";
 			}
@@ -174,7 +174,9 @@ $(function () {
 			
 		}).error(function(){
 			alert('出现错误信息');
+			
 		})
+		 e.preventDefault();
 	});
 
 });

@@ -120,7 +120,6 @@ class QuizsController < ApplicationController
     params.permit!
     # response format pre-defined
     result = { :str_id => nil }
-
     current_quiz = Mongodb::BankQuizQiz.new
 =begin
 ({
