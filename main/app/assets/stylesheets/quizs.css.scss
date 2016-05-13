@@ -5,9 +5,9 @@ body {background:#ebebed;font-family:"Microsoft YaHei",微软雅黑,"MicrosoftJh
 textarea {resize: none;}
 
 /* 试题入库 */
-.container {background:#fff;margin:30px auto;font-size:14px;border-radius:5px;padding:0;width:800px;}
+.container {background:#fff;margin:0 auto;font-size:14px;border-radius:5px;padding:0;width:800px;}
 .container h1 {font-size:18px;text-align:center;border-bottom:1px solid #f1f1f1;padding:30px;margin-top:10px;}
-.container section {border-bottom:1px solid #f1f1f1;padding:50px 50px 10px 50px;}
+.container section {border-bottom:1px solid #f1f1f1;padding:30px 50px 10px 50px;}
 .container section dl dt {float:left;width:100%;text-align:left;padding:5px 10px 10px 0;margin-bottom:10px;font-size:16px;border-bottom:1px solid #ccc;}
 .container section dl dd {float:left;width:100%;padding-left:0; }
 .container section dl dd ul li {margin-bottom:10px;}
@@ -83,7 +83,7 @@ footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-
 	line-height:50px;
 }
 .addquesetion{
-	width:68px;
+	width:94px;
 	height:28px;
 	margin-top:10px;
 	border-radius: 3px;
@@ -129,6 +129,7 @@ footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-
 .questionpage{
 	border:1px solid #eee;
 	border-radius: 4px;
+	margin-top:15px;
 }
 .questionpage h3{
 	line-height:40px;
@@ -141,7 +142,7 @@ footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-
 	margin-left:5px;
 }
 .qusetionmate{
-	padding-left:36px;
+	padding:10px 10px 10px 36px;
 }
 .qusetionmate h4{
 	line-height:60px;
@@ -168,23 +169,26 @@ footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-
 	width:110px;
 	background:image-url('jiantou.png')no-repeat right center;
 	color:#18a696;
-	margin-right:228px;
+	margin-right:148px;
 }
+
 .difficulty{
-	width:145px;
+	width:185px;
+	height:38px;
 	margin-right:35px;
 }
 .difficulty label{
 	width:65px;
 } 
 .difficulty ul{
-	width:75px;
-	margin-top:14px;
+	width:95px;
+	margin-top:12px;
 }
 .difficulty li{
 	float:left;
 	width:14px;
 	height:14px;
+	list-style: none;
 	background:image-url('star.png') no-repeat;
 }
 .questionInfor p{
