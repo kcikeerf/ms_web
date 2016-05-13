@@ -1,11 +1,11 @@
 Software License Agreement
 ==========================
 
-Base64Image Plugin for CKEditor - Adds images from local client as base64
-string into the source without server side processing. You can also add
-external image urls into the source.
+ImageResize Plugin for CKEditor - This Plugin provides a small image processor.
+You can limit the size of images directly on the client without upload images
+on your server. Big images will be resized automatically on paste.
 
-Created by ALL-INKL.COM - Neue Medien Münnich - 04. Feb 2014
+Created by ALL-INKL.COM - Neue Medien Münnich - 29. Jan 2014
 
 Licensed under the terms of any of the following licenses at your
 choice:
