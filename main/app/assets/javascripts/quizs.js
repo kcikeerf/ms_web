@@ -39,7 +39,7 @@ $(function () {
 	$(function () {
 		// 弹出层树状结构
 		$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
-		$('.tree li.parent_li > span').on('click', function (e) {
+		$(document).on('click', '.tree li.parent_li > span', function (e) {
 			var children = $(this).parent('li.parent_li').find(' > ul > li');
 			if (children.is(":visible")) {
 				children.hide('fast');

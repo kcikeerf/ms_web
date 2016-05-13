@@ -7,8 +7,8 @@
      <div id="table_knowledge" class="tabel">
       <div class="tree well">
         <ul>
-          <li>
-            <span><i class="icon-folder-open"></i> 知识考察点</span>
+          <li class="parent_li">
+            <span><i class="icon-folder-open icon-minus-sign"></i> 知识考察点</span>
             <ul>
               <%= raw organization_tree(@tree_data['knowledge']['children']) %>
             </ul>
@@ -19,8 +19,8 @@
     <div id="table_skill" class="tabel">
       <div class="tree well">
         <ul>
-          <li>
-            <span><i class="icon-folder-open"></i> 技能考察点</span>
+          <li class="parent_li">
+            <span><i class="icon-folder-open icon-minus-sign"></i> 技能考察点</span>
             <ul>
               <%= raw organization_tree(@tree_data['skill']['children']) %>
             </ul>
@@ -31,8 +31,8 @@
     <div id="table_capacity" class="tabel">
       <div class="tree well">
         <ul>
-          <li>
-            <span><i class="icon-folder-open"></i> 能力考察点</span>
+          <li class="parent_li">
+            <span><i class="icon-folder-open icon-minus-sign"></i> 能力考察点</span>
             <ul>
               <%= raw organization_tree(@tree_data['ability']['children']) %>              
             </ul>

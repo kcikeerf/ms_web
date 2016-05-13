@@ -10,15 +10,15 @@
      <ul class="list-inline" id="basic_info">
        <li class="col-md-4">
          <label>科目：</label>
-         <%= select_tag :subject, options_for_select(@subjects), include_blank: '--', class: 'form-control' %>         
+         <%= select_tag :subject, options_for_select(@subjects), include_blank: '--', class: 'form-control', required: true %>         
        </li>
        <li class="col-md-4">
          <label>年级：</label>
-         <%= select_tag :grade, '', include_blank: '--', class: 'form-control' %>
+         <%= select_tag :grade, '', include_blank: '--', class: 'form-control', required: true %>
        </li>
        <li class="col-md-4">
          <label>教材版本：</label>
-         <%= select_tag :version, '', include_blank: '--', class: 'form-control' %>
+         <%= select_tag :version, '', include_blank: '--', class: 'form-control', required: true %>
        </li>
        <li class="col-md-4">
          <label>题型：</label>
@@ -26,7 +26,7 @@
        </li>
        <li class="col-md-4">
          <label>难度预估：</label>
-         <%= select_tag :levelword2, options_for_select(@difficulties), include_blank: true, class: 'form-control' %>
+         <%= select_tag :levelword2, options_for_select(@difficulties), include_blank: true, class: 'form-control', required: true %>
        </li>
        <li class="col-md-12">
          <label>试题来源：</label>
@@ -69,11 +69,11 @@
             <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a), class: 'form-control' %>
           </p>
           <p>
-            <label class="checkbox-inline">
-              <input type="checkbox" id="inlineCheckbox1" name='bank_qizpoint_qzps[][type]' value="option1"> 主观题
+            <label>
+              <input type="radio" id="inlineCheckbox1" name='bank_qizpoint_qzps[][type]' value="option1" required> 主观题
             </label>
-            <label class="checkbox-inline">
-              <input type="checkbox" id="inlineCheckbox2" name='bank_qizpoint_qzps[][type]' value="option2"> 客观题
+            <label>
+              <input type="radio" id="inlineCheckbox2" name='bank_qizpoint_qzps[][type]' value="option2" required> 客观题
             </label>
           </p>
         </li>
