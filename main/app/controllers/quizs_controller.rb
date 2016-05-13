@@ -148,16 +148,16 @@ class QuizsController < ApplicationController
     #  current_quiz_paper.bank_quiz_qizs.build(item)
     #}
     #current_quiz_paper.bank_quiz_qizs.each{|bqq| bqq.save!}
-
-
+    flash[:notice] = "试题 (id: #{current_quiz._id.to_s}) 入库成功！"
+    render json: {ret: 1}.to_json
 
     ######
     # need to consider other related collections 
     ######
 
-    result = { :str_id => current_quiz._id.to_s }
-    result_json = Common::Response.exchange_record_id(result.to_json)
-    render :json => Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+    # result = { :str_id => current_quiz._id.to_s }
+    # result_json = Common::Response.exchange_record_id(result.to_json)
+    # render :json => Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
 
@@ -167,7 +167,7 @@ class QuizsController < ApplicationController
     # response format pre-defined
     result = {:arr_list => []}
 
-    @quizs = Mongodb::BankQuizQiz.all().to_a
+    @quizs = Mongodb::BankQuizQiz.order(id: :desc).to_a
     # result[:arr_list] = qlist.to_a
 
     # result_json = Common::Response.exchange_record_id(result.to_json)

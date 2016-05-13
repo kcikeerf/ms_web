@@ -154,6 +154,29 @@ $(function () {
 			$("#answerModal").modal('show');
 		})
 	});
+
+	//单题入库主、客观题选择处理
+	$(document).on("click", ".qizpoint_type", function(){
+		$(this).next().val(this.checked ? this.value : 'option2');
+	})
+
+	//提交单题入库
+	$("#submit_form").on("click", function(){
+	 
+		$.post('/quizs/single_quiz_save', $("#form").serialize(), function(data){
+			console.log(data);
+			if(data.ret == 1){
+				window.location = "/quizs/quiz_list";
+			}
+			else{
+				alert('提交失败');
+			}
+			
+		}).error(function(){
+			alert('出现错误信息');
+		})
+	});
+
 });
 
 function add_hidden_input($insert_html, $popFrom, name, rid, uid, label){

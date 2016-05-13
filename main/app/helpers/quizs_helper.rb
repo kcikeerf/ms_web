@@ -28,4 +28,22 @@ module QuizsHelper
 		html
 	end
 
+	def trouble_num(name)
+		case name
+
+		when 'easyplus'
+			0
+		when 'easy'
+			1
+		when 'normal'
+			2
+		when 'hard'
+			3
+		when 'hardplus'
+			4
+		else
+			0
+		end
+	end
+
 end

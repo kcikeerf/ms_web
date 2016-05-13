@@ -70,11 +70,10 @@
           </p>
           <p>
             <label>
-              <input type="radio" id="inlineCheckbox1" name='bank_qizpoint_qzps[][type]' value="option1" required> 主观题
+              <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" /> 主观题
+              <input type="hidden" name="bank_qizpoint_qzps[][type]" value="option2" />
             </label>
-            <label>
-              <input type="radio" id="inlineCheckbox2" name='bank_qizpoint_qzps[][type]' value="option2" required> 客观题
-            </label>
+            提示：默认为客观题
           </p>
         </li>
         <li class="line"></li>
@@ -99,7 +98,7 @@
 
 <footer class="confirm">
   <input class="btn btn-default" type="button" value="取消">
-  <input class="btn btn-primary" type="submit" value="完成" id="submit_form">
+  <input class="btn btn-primary" type="button" value="完成" id="submit_form">
 </footer>
 <% end %>
 </div>
