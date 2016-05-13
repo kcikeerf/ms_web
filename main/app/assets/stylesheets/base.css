@@ -94,7 +94,7 @@ em{
 	zoom:1;/*万能清除浮动法*/
 }
 .clearfix:after{
-	content: ".";
+	/*content: ".";*/
     display: block;
     height: 0;
     clear: both;
