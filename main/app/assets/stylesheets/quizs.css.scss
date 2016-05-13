@@ -56,6 +56,7 @@ footer.confirm input.btn-cyan:hover {color:#fff;background-color:#15a993;border-
 .icon-minus-sign {display:inline-block;background:image-url('icon-minus-sign.png') no-repeat center center;width:10px;height:10px;}
 .icon-plus-sign {display:inline-block;background:image-url('icon-plus-sign.png') no-repeat center center;width:10px;height:10px;}
 .tree > ul {padding:0;}
+.tree ul{padding: 3px 0 0 20px;}
 .tree li {list-style-type:none;margin:0;padding:5px 5px 0 5px;position:relative}
 .tree li::before, .tree li::after {content:'';left:-20px;position:absolute;right:auto}
 .tree li::before {border-left:1px solid #999; bottom:50px;height:100%;top:0;width:1px}
