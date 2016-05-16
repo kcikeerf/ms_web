@@ -14,6 +14,7 @@ class Mongodb::BankQuizQiz
 =end
 
   #field :uid, type: String
+  field :node_uid, type: String
   field :pap_uid, type: String
   field :tbs_uid, type: String
   field :tpl_id, type: String
@@ -44,6 +45,7 @@ class Mongodb::BankQuizQiz
     #params = JSON.parse(params["_json"]) if params["_json"]
 
     self.update_attributes({
+      :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
       :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
       :tbs_uid => params["tbs_uid"].nil?? nil:params["tbs_uid"],
       :tpl_id => params["tpl_id"].nil?? nil:params["tpl_id"],
@@ -102,9 +104,13 @@ class Mongodb::BankQuizQiz
   def quiz_detail
     result =[]
     qzps = self.bank_qizpoint_qzps
+    node = BankNodestructure.where(:node_uid => self.node_uid).first
     qzps.map{|qzp|
       { 
-        "type" => qzp.type,
+        "subject" => I18n.t("dict.#{node.subject}"),
+        "grade" => I18n.t("dict.#{node.grade}"),
+        "version" => I18n.t("dict.#{node.subject}") + "("+ I18n.t("dict.#{node.volume}") + ")",        
+        "type" => I18n.t("dict.#{qzp.type}"),
         "answer" => qzp.answer,
         "desc" => qzp.desc,
         "score" => qzp.score,
