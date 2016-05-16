@@ -17,6 +17,17 @@ zh:
           "试题(ID: %{uid})删除成功！"
         fail:
           "试题(ID: %{uid})删除失败！"
+      list:
+        invalid_version:
+          "指定教材版本无效，请选择正确的科目，年级！"  
+        invalid_type:
+          "指定题型无效，请选择正确的科目！"
+        invalid_params:
+          "检索条件无效：\n(%{message})"
+        success:
+          "获取试题列表成功！"
+        fail:
+          "获取试题列表失败！"
   time:
     formats:
       long: "%Y-%m-%d %H:%M:%S"
