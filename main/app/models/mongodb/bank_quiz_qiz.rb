@@ -47,6 +47,7 @@ class Mongodb::BankQuizQiz
    
     begin
       original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
+      self.bank_qizpoint_qzps.destroy_all
       self.update_attributes({
         :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
         :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
@@ -82,8 +83,6 @@ class Mongodb::BankQuizQiz
 
       }
     
-      #delete original qizpoints and ckp_qzp relations
-      delete_all_related_qizpoints original_qzp_ids
     rescue Exception => ex
       return false
     end
