@@ -44,6 +44,8 @@ class Mongodb::BankQuizQiz
   def save_quiz params
     #params = JSON.parse(params["_json"]) if params["_json"]
 
+    original_qzps = self.bank_qizpoint_qzps
+   
     self.update_attributes({
       :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
       :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
@@ -66,35 +68,27 @@ class Mongodb::BankQuizQiz
     self.save!
 
     params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
-=begin
-      self.bank_qizpoint_qzps.build({
-        :quz_uid => bqq["quz_uid"].nil?? nil:bqq["quz_uid"],
-        :pap_uid => bqq["pap_uid"].nil?? nil:bqq["pap_uid"],
-        :tbs_sid => bqq["tbs_sid"].nil?? nil:bqq["tbs_sid"],
-        :type => bqq["type"].nil?? nil:bqq["type"],
-        :answer => bqq["answer"].nil?? nil:bqq["answer"],
-        :desc => bqq["desc"].nil?? nil:bqq["desc"],
-        :score => bqq["score"].nil?? nil:bqq["score"]
-      }).save!
-=end
       qiz_point = Mongodb::BankQizpointQzp.new
       qiz_point.save_qizpoint bqq
       self.bank_qizpoint_qzps.push(qiz_point)
       if bqq["bank_checkpoint_ckps"]
         bqq["bank_checkpoint_ckps"].each{|bcc|
           ckp = Mongodb::BankCkpQzp.new
-	  ckp.save_ckp qiz_point._id, bcc["uid"]
+	  ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
           #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
 	}
       end
-=begin
-      self.bank_qizpoint_qzps[index].bank_ckp_qzp = Mongodb::BankCkpQzp.new({
-        :ckp_uid => bqq["bank_ckp_qzp"]["ckp_uid"].nil?? nil:bqq["bank_ckp_qzp"]["ckp_uid"],
-        :qzp_uid => bqq["bank_ckp_qzp"]["qzp_uid"].nil?? nil:bqq["bank_ckp_qzp"]["qzp_uid"], 
-        :weights => bqq["bank_ckp_qzp"]["weights"].nil?? nil:bqq["bank_ckp_qzp"]["weights"]  
-      })
-=end
+
     }
+    
+    #delete original qizpoints and ckp_qzp relations
+    original_qzps.each{|qzp|
+      ckp_qzps = Mongodb::BankCkpQzp.where(:_id => qzp._id)
+      ckp_qzps.each{|ckp_qzp|
+        ckp_qzp.destroy_ckp_qzp
+      }
+     qzp.destroy!
+    } 
     return true
   end
 

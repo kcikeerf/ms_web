@@ -221,7 +221,7 @@ class QuizsController < ApplicationController
         version = params[:version].sub(/\(.*\)/, "") if params[:version]
         volume = params[:version].sub(/.*\(/, "").split(")") if params[:version]
         cond_s << "version =#{version} and volume = #{volume}" if params[:version]
-        nodes = BankNodestructure.where(cond_s)
+        nodes = BankNodestructure.where(cond_s.join(" and "))
         node_ids = nodes.map{|node| node.uid}
 
         type_re = /.*#{params[:type]}.*/

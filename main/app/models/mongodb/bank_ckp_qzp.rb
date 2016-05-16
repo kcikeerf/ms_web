@@ -24,7 +24,7 @@ class Mongodb::BankCkpQzp
 #  to_mysql_belongs_to :bank_checkpoint_ckp , :foreign_key => "ckp_uid"
 #  belongs_to :bank_qizpoint_qzp, class_name: "Mongodb::BankQizpointQzp", foreign_key: "qzp_uid"
 
-  def save_ckp qzp_uid=nil, ckp_uid=nil
+  def save_ckp_qzp qzp_uid=nil, ckp_uid=nil
 #    target_ckp = BankCheckpointCkp.where(rid: params[:rid]).first
 #      self.ckp_uid = target_ckp.blank?? nil:target_ckp.uid
       self.ckp_uid = ckp_uid.nil?? nil:ckp_uid
@@ -33,6 +33,15 @@ class Mongodb::BankCkpQzp
       self.save!
     return true
   end 
+
+  def destroy_ckp_qzp
+    begin
+      self.destroy!
+    rescue Exception=>ex
+      return false
+    end
+    return true
+  end
 
 #  private 
 #  def format_weights
