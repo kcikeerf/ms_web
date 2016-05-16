@@ -185,7 +185,7 @@ class QuizsController < ApplicationController
     result = {"str_id" => nil, :status => "", :message => "" }
     begin
       current_quiz = Mongodb::BankQuizQiz.where(:_id => params["str_id"]).first
-      cuurent_id = current_quiz._id
+      current_id = current_quiz._id.to_s
       current_quiz.destroy_quiz
       flash[:notice] = I18n.t("quizs.messages.delete.success" , :id => current_id)
       result[:status] = 200

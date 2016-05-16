@@ -1,22 +1,21 @@
-zh:
-  
+zh: 
   quizs:
-    messsages:
+    messages:
       create:
         success:
-          "试题(ID: %{uid})创建成功！"
+          "试题(ID: %{id})创建成功！"
         fail:
-          "试题(ID: %{uid})创建失败！"
+          "试题(ID: %{id})创建失败！"
       update:
         success:
-          "试题(ID: %{uid})更新成功！"
+          "试题(ID: %{id})更新成功！"
         fail:
-          "试题(ID: %{uid})更新失败！"
+          "试题(ID: %{id})更新失败！"
       delete:
         success:
-          "试题(ID: %{uid})删除成功！"
+          "试题(ID: %{id})删除成功！"
         fail:
-          "试题(ID: %{uid})删除失败！"
+          "试题(ID: %{id})删除失败！"
       list:
         invalid_version:
           "指定教材版本无效，请选择正确的科目，年级！"  

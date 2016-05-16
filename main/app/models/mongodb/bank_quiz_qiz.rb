@@ -44,9 +44,9 @@ class Mongodb::BankQuizQiz
   def save_quiz params
     #params = JSON.parse(params["_json"]) if params["_json"]
     result = false
-    original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id}
    
     begin
+      original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
       self.update_attributes({
         :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
         :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
@@ -92,7 +92,7 @@ class Mongodb::BankQuizQiz
 
   def destroy_quiz
     begin
-      delete_all_related_qizpoints self.bank_qizpoint_qzps.map{|qzp| qzp._id}
+      delete_all_related_qizpoints self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
       self.destroy!
     rescue Exception => ex
       return false
