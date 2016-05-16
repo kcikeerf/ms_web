@@ -100,18 +100,6 @@ class Mongodb::BankQuizQiz
     return true
   end
 
-  private 
-  def delete_all_related_qizpoints ids
-    ids.each{|id|
-      qzp = Mongodb::BankQizpointQzp.where(:_id => id)
-      ckp_qzps = Mongodb::BankCkpQzp.where(:_id => qzp._id)
-      ckp_qzps.each{|ckp_qzp|
-        ckp_qzp.destroy_ckp_qzp
-      }
-      qzp.destroy!
-    }
-  end
-
   #
   # get quiz all details 
   #
@@ -145,9 +133,20 @@ class Mongodb::BankQuizQiz
       }
     } 
     result
- end
+  end
 
   private
+  def delete_all_related_qizpoints ids
+    ids.each{|id|
+      qzp = Mongodb::BankQizpointQzp.where(:_id => id)
+      ckp_qzps = Mongodb::BankCkpQzp.where(:_id => qzp._id)
+      ckp_qzps.each{|ckp_qzp|
+        ckp_qzp.destroy_ckp_qzp
+      }
+      qzp.destroy!
+    }
+  end
+
   def format_float
     self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
     self.time = self.time.nil?? 0.0:("%.2f" % self.time).to_f
