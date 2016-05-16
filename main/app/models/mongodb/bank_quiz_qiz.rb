@@ -43,53 +43,73 @@ class Mongodb::BankQuizQiz
 
   def save_quiz params
     #params = JSON.parse(params["_json"]) if params["_json"]
-
-    original_qzps = self.bank_qizpoint_qzps
+    result = false
+    original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id}
    
-    self.update_attributes({
-      :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
-      :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
-      :tbs_uid => params["tbs_uid"].nil?? nil:params["tbs_uid"],
-      :tpl_id => params["tpl_id"].nil?? nil:params["tpl_id"],
-      :ext1 => params["ext1"].nil?? nil:params["ext1"],
-      :ext2 => params["ext2"].nil?? nil:params["ext2"],
-      :cat => params["cat"].nil?? nil:params["cat"],
-      :type => params["type"].nil?? nil:params["type"],
-      :text => params["text"].nil?? nil:params["text"],
-      :answer => params["answer"].nil?? nil:params["answer"],
-      :desc => params["desc"].nil?? nil:params["desc"],
-      :score => params["score"].nil?? nil:params["score"],
-      :time => params["time"].nil?? nil:params["time"],
-      :levelword2 => params["levelword2"].nil?? nil:params["levelword2"],
-      :level => params["level"].nil?? nil:params["level"],
-      :levelword => params["levelword"].nil?? nil:params["levelword"],
-      :levelorder => params["levelorder"].nil?? nil:params["levelorder"]
-    })
-    self.save!
+    begin
+      self.update_attributes({
+        :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
+        :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
+        :tbs_uid => params["tbs_uid"].nil?? nil:params["tbs_uid"],
+        :tpl_id => params["tpl_id"].nil?? nil:params["tpl_id"],
+        :ext1 => params["ext1"].nil?? nil:params["ext1"],
+        :ext2 => params["ext2"].nil?? nil:params["ext2"],
+        :cat => params["cat"].nil?? nil:params["cat"],
+        :type => params["type"].nil?? nil:params["type"],
+        :text => params["text"].nil?? nil:params["text"],
+        :answer => params["answer"].nil?? nil:params["answer"],
+        :desc => params["desc"].nil?? nil:params["desc"],
+        :score => params["score"].nil?? nil:params["score"],
+        :time => params["time"].nil?? nil:params["time"],
+        :levelword2 => params["levelword2"].nil?? nil:params["levelword2"],
+        :level => params["level"].nil?? nil:params["level"],
+        :levelword => params["levelword"].nil?? nil:params["levelword"],
+        :levelorder => params["levelorder"].nil?? nil:params["levelorder"]
+      })
+      self.save!
 
-    params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
-      qiz_point = Mongodb::BankQizpointQzp.new
-      qiz_point.save_qizpoint bqq
-      self.bank_qizpoint_qzps.push(qiz_point)
-      if bqq["bank_checkpoint_ckps"]
-        bqq["bank_checkpoint_ckps"].each{|bcc|
-          ckp = Mongodb::BankCkpQzp.new
-	  ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
-          #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
-	}
-      end
+      params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
+        qiz_point = Mongodb::BankQizpointQzp.new
+        qiz_point.save_qizpoint bqq
+        self.bank_qizpoint_qzps.push(qiz_point)
+        if bqq["bank_checkpoint_ckps"]
+          bqq["bank_checkpoint_ckps"].each{|bcc|
+            ckp = Mongodb::BankCkpQzp.new
+	    ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
+            #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
+	  }
+        end
 
-    }
+      }
     
-    #delete original qizpoints and ckp_qzp relations
-    original_qzps.each{|qzp|
+      #delete original qizpoints and ckp_qzp relations
+      delete_all_related_qizpoints original_qzp_ids
+    rescue Exception => ex
+      return false
+    end
+    return result
+  end
+
+  def destroy_quiz
+    begin
+      delete_all_related_qizpoints self.bank_qizpoint_qzps.map{|qzp| qzp._id}
+      self.destroy!
+    rescue Exception => ex
+      return false
+    end
+    return true
+  end
+
+  private 
+  def delete_all_related_qizpoints ids
+    ids.each{|id|
+      qzp = Mongodb::BankQizpointQzp.where(:_id => id)
       ckp_qzps = Mongodb::BankCkpQzp.where(:_id => qzp._id)
       ckp_qzps.each{|ckp_qzp|
         ckp_qzp.destroy_ckp_qzp
       }
-     qzp.destroy!
-    } 
-    return true
+      qzp.destroy!
+    }
   end
 
   #
