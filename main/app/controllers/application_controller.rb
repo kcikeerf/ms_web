@@ -20,7 +20,6 @@ class ApplicationController < ActionController::Base
   #
   def set_locale
     I18n.locale = extract_locale_from_request
-    p I18n.t "swtk" # for test, will delete in the future
   end
 
   # get locale according to conditions which are ordered by priority

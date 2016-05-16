@@ -1,5 +1,22 @@
 zh:
-  swtk: "swtk"
+  
+  quizs:
+    messsages:
+      create:
+        success:
+          "试题(ID: %{uid})创建成功！"
+        fail:
+          "试题(ID: %{uid})创建失败！"
+      update:
+        success:
+          "试题(ID: %{uid})更新成功！"
+        fail:
+          "试题(ID: %{uid})更新失败！"
+      delete:
+        success:
+          "试题(ID: %{uid})删除成功！"
+        fail:
+          "试题(ID: %{uid})删除失败！"
   time:
     formats:
       long: "%Y-%m-%d %H:%M:%S"
