@@ -32,7 +32,7 @@
 					<%= link_to image_tag('head_img.png'), root_path %>				
 					<span></span>
 					<div class='perList pa'>
-						<% %w(users exam_papers quizs/quiz_list|questions pupils online_tests sys_msgs users/logout|logout).each do |page| %>
+						<% %w(users exam_papers quizs/quiz_list|quizs pupils online_tests sys_msgs users/logout|logout).each do |page| %>
 							<% 
 								link, name = page.split('|') 
 								name ||= link

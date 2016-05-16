@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       # post 'single_quiz_save'
       get 'quiz_list'
       get 'quiz_get'
+      delete 'single_quiz_delete'
     end
     get 'single_quiz'
     post 'subject_related_data'

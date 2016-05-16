@@ -1,0 +1,80 @@
+<div class="testbank_search_box" style='height:70px;'>
+	<div class="radioList fl ohidden">
+		<%= form_tag '', method: :get do %>
+		<p>
+			<%= t('page.quiz.grade') %>：
+			<%= select_tag :grade, '', include_blank: '--' %>
+
+			<%= t('page.quiz.version') %>：
+			<%= select_tag :version, '', include_blank: '--' %>
+
+			<%= t('page.quiz.cat') %>：
+			<%= select_tag :cat, '', include_blank: '--' %>
+
+			<input type="text" name="keywords" id="" placeholder="<%= t('page.quiz.search_placeholder') %>" />
+			<%= submit_tag '提交' %>
+		</p>
+		<% end %>
+</div>
+
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    var json_data = <%= raw @subjects_related_data.to_json %>;
+    var quiz_types_data = <%= raw @quize_types.to_json %>;
+
+    $("#subject").on("change", function(){
+
+      var $grades = $("#grade")[0];
+      var $versions = $("#version")[0];
+      var $quiz_types = $("#cat")[0];
+
+      if(this.value == ''){
+        $($grades).find('option:gt(0)').remove();
+        $($versions).find('option:gt(0)').remove();
+        $($quiz_types).find('option:gt(0)').remove();
+        return false;
+      }      
+      
+      // grade and versions
+      var grades = json_data[this.value], index = 0;
+  
+      $.each(grades.items, function(c, grade){
+
+        // $.each(grade.items, function(k, v){
+        //   if(index == 0) $versions.add(new Option(v.label, k));
+        // });
+
+        $grades.add(new Option(grade.label, c));
+        index++;
+      });
+
+      // quize_type
+      $.each(quiz_types_data[this.value], function(i, name) {
+        $quiz_types.add(new Option(name.label, name.type));
+      });
+
+    });
+
+    $("#grade").on("change", function(){
+      var subject = $("#subject").val();
+
+      var $versions = $("#basic_info select[name='version']");
+
+      if(this.value == ""){
+        $versions.find('option:gt(0)').remove();
+        return false;
+      }
+
+      $versions.find('option:gt(0)').remove();
+      
+      $.each(json_data[subject].items[this.value].items, function(k, v){
+        $versions.append('<option uid="' + v.node_uid + '" value="' + k +  '">' + v.label + '</option>')//new Option(v.label, k))
+      })
+    })
+
+
+  }) 
+
+</script>

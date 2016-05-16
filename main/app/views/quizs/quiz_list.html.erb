@@ -1,11 +1,11 @@
-<% @page_title = '我的题库' %>
+<% @page_title = t('page.user_left_menu.quizs') %>
 <div class="myquestionbank ohidden">
-	<h2 class="f16 ohidden"><b class="fl fb">我的题库</b><span class="fr f12 addquesetion block cp" onclick="url_to('/quizs/single_quiz')">增加试题</span></h2>
+	<h2 class="f16 ohidden"><b class="fl fb"><%= @page_title %></b><span class="fr f12 addquesetion block cp" onclick="url_to('/quizs/single_quiz')"><%= t('page.quiz.add') %></span></h2>
 	 <%= raw success_notice(flash[:notice]) %>
-	<%#= render 'users/search_block' %>
+	<%= render 'search_block' %>
 	<% @quizs.each_with_index do |quiz, i| %>
 	<div class="questionpage">
-		<h3 class="f14"><b><%= quiz.cat %></b><span>(试题来源)</span></h3>
+		<h3 class="f14"><b><%= quiz.cat %></b><span>(<%= t('page.quiz.source') %>)</span></h3>
 		<div class="qusetionmate f16">
 			<%= raw quiz.text %>
 			<!-- <h4>There is a computer<input type="text"/> the desk.</h4>
@@ -17,15 +17,15 @@
 			</ul> -->
 		</div>
 		<div class="questionInfor f12">
-			<a class="fl block anser_and_analyze" href="javascript:" str_uid="<%= quiz._id.to_s %>">查看答案与解析</a>
+			<%= link_to t('page.quiz.view'), 'javascript:', class: 'fl block anser_and_analyze', str_uid: quiz._id %>
 			<div class="fl difficulty ohidden">
-				<label class="fl">试题难度:</label>
+				<label class="fl"><%= t('page.quiz.trouble') %>:</label>
 				<ul class="ohidden fl">
 					<%= raw '<li></li>' * trouble_num(quiz.levelword2) %><li></li>
 					
 				</ul>
 			</div>
-			<p class="fl">浏览次数:<span>1298</span></p>
+			<p class="fl"><%= t('page.quiz.view_count') %>:<span>1298</span><%= link_to t('page.quiz.del'), single_quiz_delete_quizs_path(str_rid: quiz.id), method: :delete, data: {confirm: '你确定要删除么？'}, remote: true %></p>
 		</div>
 	</div>
 
@@ -37,10 +37,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">试题答案与解析</h4>
+        <h4 class="modal-title" id="myModalLabel"><%= t('page.quiz.view') %></h4>
       </div>
       <div class="modal-body">
-      	<div id="answer">答案：</div>
+      	<div id="answer"><%= t('page.quiz.answer') %>：</div>
       	<hr />
       	<div id="answer_desc"></div>
       </div>

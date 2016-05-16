@@ -3,12 +3,12 @@
     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <!-- 考察点 -->    
     <div id="inspect" class="clearfix">
-     <h2>考察点</h2>
+     <h2><%= t('page.quiz.inspect_point') %></h2>
      <div id="table_knowledge" class="tabel">
       <div class="tree well">
         <ul>
           <li class="parent_li">
-            <span><i class="icon-folder-open icon-minus-sign"></i> 知识考察点</span>
+            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('page.quiz.knowledge')}#{t('page.quiz.inspect_point')}" %></span>
             <ul>
               <%= raw organization_tree(@tree_data['knowledge']['children']) %>
             </ul>
@@ -20,7 +20,7 @@
       <div class="tree well">
         <ul>
           <li class="parent_li">
-            <span><i class="icon-folder-open icon-minus-sign"></i> 技能考察点</span>
+            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('page.quiz.skill')}#{t('page.quiz.inspect_point')}" %></span>
             <ul>
               <%= raw organization_tree(@tree_data['skill']['children']) %>
             </ul>
@@ -32,7 +32,7 @@
       <div class="tree well">
         <ul>
           <li class="parent_li">
-            <span><i class="icon-folder-open icon-minus-sign"></i> 能力考察点</span>
+            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('page.quiz.ability')}#{t('page.quiz.inspect_point')}" %></span>
             <ul>
               <%= raw organization_tree(@tree_data['ability']['children']) %>              
             </ul>
@@ -43,8 +43,8 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-    <button type="button" class="btn btn-primary" data-dismiss="modal" id="button_analysis">完成</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('page.quiz.cancel') %></button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal" id="button_analysis"><%= t('page.quiz.complete') %></button>
   </div>
 </div>
 </div>

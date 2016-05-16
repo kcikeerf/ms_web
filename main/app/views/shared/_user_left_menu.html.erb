@@ -6,7 +6,7 @@
 		</p>
 	</div>
 	<ul class="module_list f14">
-		<% %w(users exam_papers quizs/quiz_list|questions pupils online_tests sys_msgs).each do |page| %>
+		<% %w(users exam_papers quizs/quiz_list|quizs pupils online_tests sys_msgs).each do |page| %>
 			<% 
 				link, name = page.split('|') 
 				name ||= link

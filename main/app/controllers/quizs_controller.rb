@@ -200,12 +200,12 @@ class QuizsController < ApplicationController
       if params[:subject].blank? && params[:grade].blank? && params[:version].blank? && params[:type].blank? && params[:keywords].blank?
         @quizs =  Mongodb::BankQuizQiz.order(dt_added: :desc).to_a
       else
-#        cond_str= "this.subject.match(/#{params[:subject]}/) && this.grade.match(/*#{params[:grade]}*/) && this.version.match(/*#{params[:version]}*/) && this.type.match(/*#{params[:type]}*/) && this.text.match(/*#{params[:text]}*/) && this.answer.match(/*#{params[:answer]}*/) && this.desc.match(/*#{params[:desc]}*/)"
-#      @quizs = Mongodb::BankQuizQiz.where(cond_str).order(dt_added: :desc).to_a
+       cond_str= "this.subject.match(/#{params[:subject]}/) && this.grade.match(/*#{params[:grade]}*/) && this.version.match(/*#{params[:version]}*/) && this.type.match(/*#{params[:type]}*/) && this.text.match(/*#{params[:text]}*/) && this.answer.match(/*#{params[:answer]}*/) && this.desc.match(/*#{params[:desc]}*/)"
+       @quizs = Mongodb::BankQuizQiz.where(cond_str).order(dt_added: :desc).to_a
    
       # maybe used in the future
-      #result[:status] = 200
-      #result[:message] = I18n.t("quizs.messages.list.success")
+      result[:status] = 200
+      result[:message] = I18n.t("quizs.messages.list.success")
     rescue ParameterInvalidError => ex
       result[:status] = 500
       result[:message] = I18n.t("quizs.messages.list.invalid_params", :message => ex.message)
@@ -221,7 +221,7 @@ class QuizsController < ApplicationController
          "type_label"=>I18n.t("dict.#{quiz.type}")
         }
       }
-      #render json: result.to_json
+      render json: result.to_json
     end
 
 
