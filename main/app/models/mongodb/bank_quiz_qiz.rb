@@ -102,17 +102,18 @@ class Mongodb::BankQuizQiz
   # get quiz all details 
   #
   def quiz_detail
-    result ={"bank_qizpoint_qzps" => []}
+    result ={}
     qzps = self.bank_qizpoint_qzps
     node = BankNodestructure.where(:uid => self.node_uid).first
     result[:subject] = node.subject
     result[:grade]= node.grade
-    result[:version] = node.subject + "("+ node.volume + ")"
+    result[:version] = node.version + "("+ node.volume + ")"
     result[:text] = self.text
+    result[:node_uid] = node.uid
     result[:answer] = self.answer
     result[:desc] =self.desc
     result[:levelword2]=self.levelword2
-    qzps.map{|qzp|
+    result[:bank_qizpoint_qzps] = qzps.map{|qzp|
       { 
         "type" => qzp.type,
         "answer" => qzp.answer,
@@ -122,12 +123,14 @@ class Mongodb::BankQuizQiz
            {
              "dimesion" => bcc.dimesion,
              "rid" => bcc.rid,
+             "uid" => bcc.uid,
              "checkpoint" => bcc.checkpoint,
              "desc" => bcc.desc
            }
         }
       }
     } 
+    result
  end
 
   private

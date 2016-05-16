@@ -125,21 +125,25 @@ $(function () {
 
 	var prev_version = '';
 	$("#version").on("change", function(){
+		var node_uid = $(this).find(':selected').attr('uid');
+		$("#node_uid").val(node_uid);
 		if(this.value == "") return false;
-		var is_data = $('.analyserow:first li.last p input').val();
-		if((is_data != "" && confirm("更换教材版本会清空试题分析，确定更换吗？")) || is_data == ""){
-			$.post('/checkpoints/get_nodes', "uid=" + $(this).find(':selected').attr('uid'), function(data){
-				$("#myModal").html(data);
-		  });
-			prev_version = this.value;
- 			$('ul.analyserow').remove();
-			$(".analyselist").html(first_analyserow);
-			setInputsHandler($('.analyserow:first'));
-			
-    }
-    else{
-    	this.value = prev_version;
-    }
+			var is_data = $('.analyserow:first li.last p input').val();
+			if(is_data != undefined){
+				if((is_data != "" && confirm("更换教材版本会清空试题分析，确定更换吗？")) || is_data == ""){
+					$.post('/checkpoints/get_nodes', "uid=" + node_uid, function(data){
+						$("#myModal").html(data);
+				  });
+					prev_version = this.value;
+		 			$('ul.analyserow').remove();
+					$(".analyselist").html(first_analyserow);
+					setInputsHandler($('.analyserow:first'));
+					
+		    }
+		    else{
+		    	this.value = prev_version;
+		    }
+   	  }
     });
 
 	// 第一个块
@@ -168,7 +172,7 @@ $(function () {
 	 	$form = $(this);
 		$.post($form.attr('action'), $form.serialize(), function(data){
 			
-			if(data.ret == 1){
+			if(data.status == 200){
 				window.location = "/quizs/quiz_list";
 			}
 			else{

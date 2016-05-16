@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       get 'quiz_list'
       get 'quiz_get'
       delete 'single_quiz_delete'
+      get 'single_quiz_edit'
+      patch 'single_quiz_update'
     end
     get 'single_quiz'
     post 'subject_related_data'

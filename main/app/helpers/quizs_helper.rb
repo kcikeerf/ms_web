@@ -46,4 +46,8 @@ module QuizsHelper
 		end
 	end
 
+	def deal_checkpoint(arr, str)
+		arr.select{|s| s if s['dimesion'] == str }.map{|m| m['checkpoint'] }.join(',')
+	end
+
 end

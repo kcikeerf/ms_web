@@ -8,7 +8,7 @@
       <div class="tree well">
         <ul>
           <li class="parent_li">
-            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('page.quiz.knowledge')}#{t('page.quiz.inspect_point')}" %></span>
+            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('dict.knowledge')}#{t('page.quiz.inspect_point')}" %></span>
             <ul>
               <%= raw organization_tree(@tree_data['knowledge']['children']) %>
             </ul>
@@ -20,7 +20,7 @@
       <div class="tree well">
         <ul>
           <li class="parent_li">
-            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('page.quiz.skill')}#{t('page.quiz.inspect_point')}" %></span>
+            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('dict.skill')}#{t('page.quiz.inspect_point')}" %></span>
             <ul>
               <%= raw organization_tree(@tree_data['skill']['children']) %>
             </ul>
@@ -32,7 +32,7 @@
       <div class="tree well">
         <ul>
           <li class="parent_li">
-            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('page.quiz.ability')}#{t('page.quiz.inspect_point')}" %></span>
+            <span><i class="icon-folder-open icon-minus-sign"></i> <%= "#{t('dict.ability')}#{t('page.quiz.inspect_point')}" %></span>
             <ul>
               <%= raw organization_tree(@tree_data['ability']['children']) %>              
             </ul>

@@ -1,8 +1,10 @@
 class QuizsController < ApplicationController
   #load_and_authorize_resource
-  layout 'user', only: [:quiz_list, :single_quiz]
+  layout 'user', only: [:quiz_list, :single_quiz, :single_quiz_edit]
 
   before_action :authenticate_user!, only: [:quiz_list]
+  before_action :set_quize, only: [:single_quiz, :single_quiz_edit, :quiz_list]
+  before_action :set_quize_difficulty, only: [:single_quiz, :single_quiz_edit]
 
   def new
     data = BankNodestructure.list_structures
@@ -105,10 +107,11 @@ class QuizsController < ApplicationController
 
   #single quiz
   def single_quiz
-    @subjects_related_data = BankNodestructure.list_structures
-    @quize_types = BankDicQuizSubject.list_quiztypes
-    @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
-    @difficulties = BankDic.list_difficulty.map{|item| [item["label"], item["sid"]]}
+    # @subjects_related_data = BankNodestructure.list_structures
+    # @quize_types = BankDicQuizSubject.list_quiztypes
+    # @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
+    # @difficulties = BankDic.list_difficulty.map{|item| [item["label"], item["sid"]]}
+    @quiz = Mongodb::BankQuizQiz.new
     @tree_data = {'knowledge' => {}, 'skill' => {}, 'ability' => {}}
   end
 
@@ -140,6 +143,13 @@ class QuizsController < ApplicationController
     # render :json => Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
+  #single quiz edit
+  def single_quiz_edit    
+    @quiz = Mongodb::BankQuizQiz.find_by(id: params[:str_id])
+    @quiz_hash_data = @quiz.quiz_detail
+    @tree_data = BankCheckpointCkp.get_ckps   
+  end
+
   # single quiz update
   # params:
   #   uid: selected quiz uid
@@ -150,7 +160,7 @@ class QuizsController < ApplicationController
     #response format pre-defined
     result = {"str_id" => nil, :status => "", :message => "" }
     begin
-      current_quiz = Mongodb::BankQuizQiz.where("_id = ? ", params["str_id"]).first
+      current_quiz = Mongodb::BankQuizQiz.find_by(id: params[:str_id])
       current_quiz.save_quiz(params)
       result[:str_id]=current_quiz._id
       flash[:notice] = I18n.t("quizs.messages.update.success" , :id => current_quiz._id)
@@ -246,14 +256,15 @@ class QuizsController < ApplicationController
          "type_label"=>I18n.t("dict.#{quiz.type}")
         }
       }
-      render json: result.to_json
-    end
+      # render json: result.to_json
+    # end
 
 
     # result[:arr_list] = qlist.to_a
 
     # result_json = Common::Response.exchange_record_id(result.to_json)
     # render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+    end
   end
 
   # get a quiz
@@ -267,7 +278,7 @@ class QuizsController < ApplicationController
     result = {:str_uid => nil, :obj_quizprop => nil, :arr_items => nil }
 
     begin
-      target_quiz = Mongodb::BankQuizQiz.find_by(_id: params[:str_uid])
+      target_quiz = Mongodb::BankQuizQiz.find_by(_id: params[:str_rid])
       result[:str_uid] = params[:str_uid]
       result[:obj_quizprop] = target_quiz
       result[:arr_items] = target_quiz.quiz_detail
@@ -277,6 +288,18 @@ class QuizsController < ApplicationController
 
     result_json = Common::Response.exchange_record_id(result.to_json)
     render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
+  end
+
+  private
+
+  def set_quize
+    @subjects_related_data = BankNodestructure.list_structures
+    @quize_types = BankDicQuizSubject.list_quiztypes
+    @subjects = @subjects_related_data.keys.map{|k| [@subjects_related_data[k]['label'], k]}
+  end
+
+  def set_quize_difficulty
+    @difficulties = BankDic.list_difficulty.map{|item| [item["label"], item["sid"]]}
   end
 
 end
