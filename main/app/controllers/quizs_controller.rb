@@ -124,12 +124,13 @@ class QuizsController < ApplicationController
     begin
       current_quiz = Mongodb::BankQuizQiz.new
       current_quiz.save_quiz(params)
-      flash[:notice] = I18n.t("quizs.messages.create.success", :uid =>  current_quiz.uid)
+      result[:str_id]=current_quiz._id
+      flash[:notice] = I18n.t("quizs.messages.create.success", :id =>  current_quiz._id)
       result[:status] = 200
-      result[:message] = I18n.t("quizs.messages.create.success", :uid => current_quiz.uid)
+      result[:message] = I18n.t("quizs.messages.create.success", :id => current_quiz._id)
     rescue Exception => ex
       result[:status] = 500
-      result[:message] = I18n.t("quizs.messages.create.fail", :uid => current_quiz.uid)
+      result[:message] = I18n.t("quizs.messages.create.fail", :id => current_quiz._id)
     ensure
       render json: result.to_json
     end
@@ -147,16 +148,17 @@ class QuizsController < ApplicationController
     #allow receiving all parameters
     params.permit!
     #response format pre-defined
-    result = {"str_uid" => nil, :status => "", :message => "" }
+    result = {"str_id" => nil, :status => "", :message => "" }
     begin
-      current_quiz = Mongodb::BankQuizQiz.where("uid = ? ", params["str_rid"]).first
+      current_quiz = Mongodb::BankQuizQiz.where("_id = ? ", params["str_id"]).first
       current_quiz.save_quiz(params)
-      flash[:notice] = I18n.t("quizs.messages.update.success" , :uid => current_quiz.uid)
+      result[:str_id]=current_quiz._id
+      flash[:notice] = I18n.t("quizs.messages.update.success" , :id => current_quiz._id)
       result[:status] = 200
-      result[:message] = I18n.t("quizs.messages.update.success", :uid => current_quiz.uid)
+      result[:message] = I18n.t("quizs.messages.update.success", :id => current_quiz._id)
     rescue Exception => ex
       result[:status] = 500
-      result[:message] = I18n.t("quizs.messages.update.fail", :uid => current_quiz.uid)
+      result[:message] = I18n.t("quizs.messages.update.fail", :id => current_quiz._id)
     ensure
       render json: result.to_json
     end
@@ -170,16 +172,17 @@ class QuizsController < ApplicationController
     #allow receiving all parameters
     params.permit!
     #response format pre-defined
-    result = {"str_uid" => nil, :status => "", :message => "" }
+    result = {"str_id" => nil, :status => "", :message => "" }
     begin
-      current_quiz = Mongodb::BankQuizQiz.where("uid = ? ", params["str_rid"]).first
+      current_quiz = Mongodb::BankQuizQiz.where("_id = ? ", params["str_id"]).first
+      cuurent_id = current_quiz._id
       current_quiz.destroy!
-      flash[:notice] = I18n.t("quizs.messages.delete.success" , :uid => current_quiz.uid)
+      flash[:notice] = I18n.t("quizs.messages.delete.success" , :id => current_id)
       result[:status] = 200
-      result[:message] = I18n.t("quizs.messages.delete.success", :uid => current_quiz.uid)
+      result[:message] = I18n.t("quizs.messages.delete.success", :id => current_id)
     rescue Exception => ex
       result[:status] = 500
-      result[:message] = I18n.t("quizs.messages.delete.fail", :uid => current_quiz.uid)
+      result[:message] = I18n.t("quizs.messages.delete.fail", :id => current_id)
     ensure
       render json: result.to_json
     end
@@ -194,26 +197,48 @@ class QuizsController < ApplicationController
     result = {:status => "", :message => "", :arr_list => []}
 
     begin
-      raise ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_version")) if params[:version] and ( params[:subject].blank? || params[:grade].blank?)
-      raise ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_type")) if params[:type] and params[:subject].blank?
+      raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_version")) if params[:version] and ( params[:subject].blank? || params[:grade].blank?)
+      raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_type")) if params[:type] and params[:subject].blank?
+
+      order_h = {:dt_add => "desc"}
 
       if params[:subject].blank? && params[:grade].blank? && params[:version].blank? && params[:type].blank? && params[:keywords].blank?
-        @quizs =  Mongodb::BankQuizQiz.order(dt_added: :desc).to_a
+        @quizs =  Mongodb::BankQuizQiz.order(order_h).to_a
       else
-       cond_str= "this.subject.match(/#{params[:subject]}/) && this.grade.match(/*#{params[:grade]}*/) && this.version.match(/*#{params[:version]}*/) && this.type.match(/*#{params[:type]}*/) && this.text.match(/*#{params[:text]}*/) && this.answer.match(/*#{params[:answer]}*/) && this.desc.match(/*#{params[:desc]}*/)"
-       @quizs = Mongodb::BankQuizQiz.where(cond_str).order(dt_added: :desc).to_a
+        cond_s = []
+        cond_s << "subject = #{params[:subject]}" if params[:subject]
+        cond_s << "grade = #{params[:grade]}" if params[:grade]
+        version = params[:version].sub(/\(.*\)/, "") if params[:version]
+        volume = params[:version].sub(/.*\(/, "").split(")") if params[:version]
+        cond_s << "version =#{version} and volume = #{volume}" if params[:version]
+        nodes = BankNodestructure.where(cond_s)
+        node_ids = nodes.map{|node| node.uid}
+
+        type_re = /.*#{params[:type]}.*/
+        text_re = /.*#{params[:text]}.*/
+        answer_re = /.*#{params[:answer]}.*/
+        desc_re = /.*#{params[:desc]}.*/
+        cond_h = {
+          :type => type_re,
+          :text => text_re,
+          :answer => answer_re,
+          :desc => desc_re,
+          :node_uid.in => nodes_ids
+        }
+       @quizs = Mongodb::BankQuizQiz.where(cond_str).order(order_h).to_a
    
       # maybe used in the future
-      result[:status] = 200
-      result[:message] = I18n.t("quizs.messages.list.success")
-    rescue ParameterInvalidError => ex
+      #result[:status] = 200
+      #result[:message] = I18n.t("quizs.messages.list.success")
+      end
+    rescue SwtkErrors::ParameterInvalidError => ex
       result[:status] = 500
       result[:message] = I18n.t("quizs.messages.list.invalid_params", :message => ex.message)
     rescue Exception => ex
       result[:status] = 500
       result[:message] = I18n.t("quizs.messages.list.fail")
     ensure
-      @quizs.map{|quiz| 
+      result[:arr_list] = @quizs.map{|quiz| 
         {"uid"=> quiz._id, 
          "text"=> quiz.text, 
          "levelword2"=>quiz.levelword2, 
