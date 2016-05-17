@@ -1,24 +1,27 @@
 <div class="testbank_search_box" style='height:70px;'>
-	<div class="radioList fl ohidden">
-		<%= form_tag quiz_list_quizs_path, method: :get do %>
+		<%= form_tag quiz_list_quizs_path, method: :get, class: 'form-inline' do %>
 		<p>
-			<%= t('page.quiz.subject') %>：
-			<%= select_tag :subject, options_for_select(@subjects), include_blank: '--' %>
+			<div class="form-group">
+				<label><%= t('page.quiz.subject') %>：</label>
+				<%= select_tag :subject, options_for_select(@subjects), include_blank: '--', class: 'form-control' %>
+			</div>
+			<div class="form-group">
+				<label><%= t('page.quiz.grade') %>：</label>
+				<%= select_tag :grade, '', include_blank: '--', class: 'form-control' %>
+			</div>
+			<div class="form-group">
+				<label><%= t('page.quiz.version') %>：</label>
+				<%= select_tag :version, '', include_blank: '--', class: 'form-control' %>
+			</div>
+			<div class="form-group">
+				<label><%= t('page.quiz.cat') %>：</label>	
+				<%= select_tag :cat, '', include_blank: '--', class: 'form-control' %>
+			</div>
 
-			<%= t('page.quiz.grade') %>：
-			<%= select_tag :grade, '', include_blank: '--' %>
-
-			<%= t('page.quiz.version') %>：
-			<%= select_tag :version, '', include_blank: '--' %>
-
-			<%= t('page.quiz.cat') %>：
-			<%= select_tag :cat, '', include_blank: '--' %>
-
-			<input type="text" name="keywords" id="" placeholder="<%= t('page.quiz.search_placeholder') %>" />
-			<%= submit_tag '提交' %>
+			<input type="text" name="keywords" class='form-control' placeholder="<%= t('page.quiz.search_placeholder') %>" />
+			<%= submit_tag '提交', class: 'btn btn-default' %>
 		</p>
 		<% end %>
-</div>
 
 </div>
 <script type="text/javascript">

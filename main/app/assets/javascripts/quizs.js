@@ -1,7 +1,11 @@
 $(function () {
 	// $(function () {
 		// 分析列表添加删除
-		var first_analyserow = $(".analyselist").html();
+		var $analyserow = $($(".analyserow:first").prop("outerHTML"));
+		$analyserow.find("li.last p input[type='hidden']").remove();
+		$analyserow.find('li.last p input').attr('value', '');
+		var first_analyserow = $analyserow.prop("outerHTML");
+
 		$('.add button').on("click",function(){
 			var num = $('.analyserow').length;
 			var numtext = $('.analyserow').find('.num');
@@ -25,7 +29,12 @@ $(function () {
 			setInputsHandler($cloned);
 
 			// 重新排序
-			$cloned.find(".del").on("click",function(){
+			// $cloned.find(".del").on("click",function(){
+
+		});
+	// });
+
+	$(document).on("click", "li.del", function(){
 				$(this).parent().remove();
 				var rows = $('.analyserow'), l = rows.length;
 				for(var i=0; i<l; i++){
@@ -33,8 +42,6 @@ $(function () {
 					row.find('.num').html(i+1); 
 				}
 			});
-		});
-	// });
 
 	$(function () {
 		// 弹出层树状结构
@@ -71,6 +78,7 @@ $(function () {
 		// 知识
 		var chk_value_knowledge = [], $insert_html = $($("#hidden_analysis").prop("outerHTML"));
 		var $modal = $("#myModal")
+		console.log($popFrom);
 		$popFrom.find("input:hidden").remove();
 		$modal.find('#table_knowledge input:checked').each(function(i){
 			chk_value_knowledge.push($(this).parent().text());
@@ -109,10 +117,15 @@ $(function () {
 		});
 	};
 
+	$(document).on("click", "li.last p input", function(){
+		$popFrom = $(this).parent().parent();
+	});
+
 	// 初始化Modal
-	$("#myModal").on("show.bs.modal", function() {
+	$("#myModal").on("shown.bs.modal", function() {
 
 		var selected_value = [];
+
 		var kv = $popFrom.find('input.dict_rid:hidden');
 		$.each(kv, function(i, v){
 			selected_value.push(v.value);			

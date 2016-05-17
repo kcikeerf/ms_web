@@ -90,11 +90,11 @@
       <% else %>
         <% @quiz_hash_data[:bank_qizpoint_qzps].each_with_index do |qzp, i| %>
           <ul class="analyserow list-inline clearfix">
-          <li class="del" style="display: none;"><a href="javascript:void();">&times;</a></li>
+          <li class="del" style="display: <%= i < 1 ? 'none' : 'list-item' %>"><a href="javascript:;">&times;</a></li>
           <li class="first">
             <p>
             <label><%= t('page.quiz.score_point') %><span class="num"><%= i + 1 %></span>：</label>
-            <textarea class="form-control" name="bank_qizpoint_qzps[][answer]" rows="2" placeholder="得分点标准答案"><%= qzp['answer'] %></textarea>
+            <textarea class="form-control" name="bank_qizpoint_qzps[][answer]" rows="2" placeholder="得分点标准答案"><%= qzp['answer'] %></textarea> 
             </p>
             <p>
               <label><%= t('page.quiz.small_score') %>：</label>

@@ -138,7 +138,8 @@ class Mongodb::BankQuizQiz
     result
   end
 
-  private
+
+  private 
   def delete_all_related_qizpoints ids
     ids.each{|id|
       qzp = Mongodb::BankQizpointQzp.where(:_id => id)
