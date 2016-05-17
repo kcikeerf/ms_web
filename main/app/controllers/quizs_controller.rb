@@ -205,7 +205,7 @@ class QuizsController < ApplicationController
 
     # response format pre-defined
     result = {:status => "", :message => "", :arr_list => []}
-
+    @quizs=[]
     begin
       raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_version")) if params[:version] and ( params[:subject].blank? || params[:grade].blank?)
       raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_type")) if params[:type] and params[:subject].blank?
@@ -256,7 +256,7 @@ class QuizsController < ApplicationController
          "type_label"=>I18n.t("dict.#{quiz.type}")
         }
       }
-      # render json: result.to_json
+      render json: result.to_json
     # end
 
 
