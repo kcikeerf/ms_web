@@ -140,6 +140,7 @@ class Mongodb::BankQuizQiz
 
 
   private 
+
   def delete_all_related_qizpoints ids
     ids.each{|id|
       qzp = Mongodb::BankQizpointQzp.where(:_id => id)
@@ -156,4 +157,5 @@ class Mongodb::BankQuizQiz
     self.time = self.time.nil?? 0.0:("%.2f" % self.time).to_f
     self.level = self.level.nil?? 0.0:("%.2f" % self.level).to_f
   end
+  
 end
