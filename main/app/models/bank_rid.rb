@@ -5,10 +5,11 @@ class BankRid < ActiveRecord::Base
   # obj: model name
   # pid: parent node rid
   #
-  def self.get_child obj=nil,pid=""
+  def self.get_child obj=nil,pid
     result = []
     return result if obj.blank?
     pid_len = pid.size
+    pid="" if pid.blank?
     return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
     target_len = pid_len + Common::SwtkConstants::CkpStep
     cond_str = "LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ?" 
@@ -16,9 +17,10 @@ class BankRid < ActiveRecord::Base
     return result
   end
 
-  def self.get_all_child obj=nil,pid=""
+  def self.get_all_child obj=nil,pid
     result = []
     return result if obj.blank?
+    pid="" if pid.blank?
     pid_len = pid.size
     return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
     cond_str = "SUBSTR(rid, 1, ?) = ?"
@@ -31,9 +33,10 @@ class BankRid < ActiveRecord::Base
   # obj: model name
   # pid: parent node rid
   #
-  def self.get_new_rid obj=nil,pid=""
+  def self.get_new_rid obj=nil,pid
     result =""
     return result if obj.blank?
+    pid="" if pid.blank?
     pid_len = pid.size
     return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
     target_len = pid_len + Common::SwtkConstants::CkpStep

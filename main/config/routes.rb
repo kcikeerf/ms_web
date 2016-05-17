@@ -24,6 +24,12 @@ Rails.application.routes.draw do
   resources :checkpoints do 
     collection do 
       post 'get_nodes'
+      get 'get_node_count'
+#      get 'get_child_nodes'
+#      get 'get_all_nodes'
+#      post 'save_node'
+#      post 'update_node'
+#      post 'delete_node'
     end
   end
   

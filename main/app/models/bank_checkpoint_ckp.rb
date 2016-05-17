@@ -66,6 +66,8 @@ class BankCheckpointCkp < ActiveRecord::Base
   end
 
   # 
+  # get child nodes of pid
+  #
   # str_pid: parent rid
   # node_uid: node structure uid
   #
@@ -73,8 +75,32 @@ class BankCheckpointCkp < ActiveRecord::Base
     result = {"pid" => params["str_pid"], "nodes"=>[]}
     return result if params["node_uid"].blank?
     pid = params["str_pid"]
-    target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+    target_objs = self.where("node_uid = #{params["node_uid"]}")
     result["nodes"] = BankRid.get_child target_objs, pid
+    result["nodes"].map!{|item|
+
+      { "uid" => item.uid,
+        "rid" => item.rid,
+        "dimesion" => item.dimesion,
+        "checkpoint" => item.checkpoint,
+        "is_entity" => item.is_entity}
+
+    }
+    return result
+  end
+
+  #
+  # get all nodes include pid
+  #  
+  # str_pid: parent rid
+  # node_uid: node structure uid
+  #
+  def self.get_all_ckps params
+    result = {"pid" => params["str_pid"], "nodes"=>[]}
+    return result if params["node_uid"].blank?
+    pid = params["str_pid"]
+    target_objs = self.where("node_uid = #{params["node_uid"]}")
+    result["nodes"] = BankRid.get_all_child target_objs, pid
     result["nodes"].map!{|item|
 
       { "uid" => item.uid,
@@ -98,6 +124,7 @@ class BankCheckpointCkp < ActiveRecord::Base
     new_ckp = self.new({
       "dimesion" => params["dimesion"],
       "rid" => new_rid,
+      "node_uid" => params["node_uid"],
       "checkpoint" => params["checkpoint"],
       "desc" => params["desc"],
       "is_entity" => false})
@@ -137,7 +164,7 @@ class BankCheckpointCkp < ActiveRecord::Base
   #
   def self.delete_ckp params
     return false if params["str_uid"].blank?
-    current_ckp = self.where("uid = ?", params["str_uid"]).first if params["str_uid"]
+    current_ckp = self.where("uid = ?", params["str_uid"]).first
     current_ckp.destroy!
     return true
   end
@@ -148,8 +175,10 @@ class BankCheckpointCkp < ActiveRecord::Base
   #
   def self.get_ckp_count params
     result = 0
-    return nil if params["node_uid"].blank?
-    target_objs = self.where("node_uid = #{params["node_uid"]}") if params["node_uid"]
+#    return nil if params["node_uid"].blank?
+    cond_str = ""
+    cond_str = "node_uid = #{params["node_uid"]}" unless params["node_uid"].blank?
+    target_objs = self.where(cond_str)
     if params["str_pid"].blank?
       result = target_objs.count
     else
