@@ -216,26 +216,26 @@ class QuizsController < ApplicationController
         @quizs =  Mongodb::BankQuizQiz.order(order_h).to_a
       else
         cond_s = []
-        cond_s << "subject = #{params[:subject]}" if params[:subject]
-        cond_s << "grade = #{params[:grade]}" if params[:grade]
+        cond_s << "subject = '#{params[:subject]}'" if params[:subject]
+        cond_s << "grade = '#{params[:grade]}'" if params[:grade]
         version = params[:version].sub(/\(.*\)/, "") if params[:version]
-        volume = params[:version].sub(/.*\(/, "").split(")") if params[:version]
-        cond_s << "version =#{version} and volume = #{volume}" if params[:version]
+        volume = params[:version].sub(/.*\(/, "").split(")")[0] if params[:version]
+        cond_s << "version ='#{version}' and volume = '#{volume}'" if params[:version]
         nodes = BankNodestructure.where(cond_s.join(" and "))
         node_ids = nodes.map{|node| node.uid}
 
-        type_re = /.*#{params[:type]}.*/
+        cat_re = /.*#{params[:cat]}.*/
         text_re = /.*#{params[:text]}.*/
         answer_re = /.*#{params[:answer]}.*/
         desc_re = /.*#{params[:desc]}.*/
         cond_h = {
-          :type => type_re,
+          :cat => cat_re,
           :text => text_re,
           :answer => answer_re,
           :desc => desc_re,
-          :node_uid.in => nodes_ids
+          :node_uid.in => node_ids
         }
-       @quizs = Mongodb::BankQuizQiz.where(cond_str).order(order_h).to_a
+       @quizs = Mongodb::BankQuizQiz.where(cond_h).order(order_h).to_a
    
       # maybe used in the future
       #result[:status] = 200
@@ -246,7 +246,7 @@ class QuizsController < ApplicationController
       result[:message] = I18n.t("quizs.messages.list.invalid_params", :message => ex.message)
     rescue Exception => ex
       result[:status] = 500
-      result[:message] = I18n.t("quizs.messages.list.fail")
+      result[:message] = ex.message#I18n.t("quizs.messages.list.fail")
     ensure
       result[:arr_list] = @quizs.map{|quiz| 
         {"uid"=> quiz._id, 
