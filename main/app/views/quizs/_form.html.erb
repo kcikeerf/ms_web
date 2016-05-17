@@ -98,7 +98,7 @@
             </p>
             <p>
               <label><%= t('page.quiz.small_score') %>：</label>
-              <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a, qzp['score']), class: 'form-control' %>
+              <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a, qzp['score'].try(:to_i)), class: 'form-control' %>
             </p>
             <p>
               <label>

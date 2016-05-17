@@ -338,6 +338,12 @@ zh:
     site_name: '三维题库系统'
     login: '登录'
     register: '注册'
+    edit: '编辑'
+    del: '删除'
+    cancel: '取消'
+    complete: '完成'
+    confirm: '确定'
+    warning: '警告'
     menu:
       home: '首页'
       librarys: '三维题库'

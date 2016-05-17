@@ -119,8 +119,8 @@ class Mongodb::BankQuizQiz
     result[:levelword2]=self.levelword2
     result[:bank_qizpoint_qzps] = qzps.map{|qzp|
       { 
-        #"type" => qzp.type,
-        "type" => I18n.t("dict.#{qzp.type}"),
+        "type" => qzp.type,
+        "type_label" => I18n.t("dict.#{qzp.type}"),
         "answer" => qzp.answer,
         "desc" => qzp.desc,
         "score" => qzp.score,

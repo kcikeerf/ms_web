@@ -1,8 +1,9 @@
-$(function () {
-	// $(function () {
+$(document).on('ready page:load', function (){
+
 		// 分析列表添加删除
 		var $analyserow = $($(".analyserow:first").prop("outerHTML"));
 		$analyserow.find("li.last p input[type='hidden']").remove();
+		$analyserow.find('li.first textarea').text('');
 		$analyserow.find('li.last p input').attr('value', '');
 		var first_analyserow = $analyserow.prop("outerHTML");
 
@@ -189,7 +190,7 @@ $(function () {
 				window.location = "/quizs/quiz_list";
 			}
 			else{
-				alert('提交失败');
+				error_show(data.message);
 			}
 			
 		}).error(function(){

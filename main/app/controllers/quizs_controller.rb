@@ -182,19 +182,19 @@ class QuizsController < ApplicationController
     #allow receiving all parameters
     params.permit!
     #response format pre-defined
-    result = {"str_id" => nil, :status => "", :message => "" }
+    @result = {"str_id" => nil, :status => "", :message => "" }
     begin
       current_quiz = Mongodb::BankQuizQiz.where(:_id => params["str_id"]).first
       current_id = current_quiz._id.to_s
       current_quiz.destroy_quiz
       flash[:notice] = I18n.t("quizs.messages.delete.success" , :id => current_id)
-      result[:status] = 200
-      result[:message] = I18n.t("quizs.messages.delete.success", :id => current_id)
+      @result[:status] = 200
+      @result[:message] = I18n.t("quizs.messages.delete.success", :id => current_id)
     rescue Exception => ex
-      result[:status] = 500
-      result[:message] = I18n.t("quizs.messages.delete.fail", :id => current_id)
-    ensure
-      render json: result.to_json
+      @result[:status] = 500
+      @result[:message] = I18n.t("quizs.messages.delete.fail", :id => current_id)
+    # ensure
+    #   render json: result.to_json
     end
   end
 

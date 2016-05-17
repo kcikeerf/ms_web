@@ -1,1 +1,5 @@
-window.location = '<%= quiz_list_quizs_path %>';
+<% if @result[:status] == 200 %>
+	window.location = '<%= quiz_list_quizs_path %>';
+<% else %>
+	error_show('<%= @result[:message] %>');
+<% end %>
