@@ -48,7 +48,7 @@ class Mongodb::BankQuizQiz
     begin
       original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
       delete_all_related_qizpoints original_qzp_ids
-      self.bank_qizpoint_qzps=[]
+#      self.bank_qizpoint_qzps=[]
       self.update_attributes({
         :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
         :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
@@ -93,7 +93,7 @@ class Mongodb::BankQuizQiz
   def destroy_quiz
     begin
       delete_all_related_qizpoints self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
-      self.bank_qizpoint_qzps = []
+#      self.bank_qizpoint_qzps = []
       self.destroy
     rescue Exception => ex
       p ex.message
@@ -143,7 +143,7 @@ class Mongodb::BankQuizQiz
   def delete_all_related_qizpoints ids
     ids.each{|id|
       qzp = Mongodb::BankQizpointQzp.where(:_id => id)
-      ckp_qzps = Mongodb::BankCkpQzp.where(:qzp_id => id)
+      ckp_qzps = Mongodb::BankCkpQzp.where(:qzp_uid => id)
       ckp_qzps.each{|ckp_qzp|
         ckp_qzp.destroy_ckp_qzp
       }

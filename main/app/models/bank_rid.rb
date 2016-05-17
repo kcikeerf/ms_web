@@ -38,9 +38,12 @@ class BankRid < ActiveRecord::Base
     return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
     target_len = pid_len + Common::SwtkConstants::CkpStep
     cond_str = "LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ?"
-    max_child_rid = obj.where(cond_str, pid_len, target_len, pid_len, pid).maximum('rid')
-    if max_child_rid
-      next_rid = self.where("rid > ?", max_child_rid.slice(pid_len, Common::SwtkConstants::CkpStep)).limit(1)
+#    max_child_rid = obj.where(cond_str, pid_len, target_len, pid_len, pid).maximum('rid')
+#    if max_child_rid
+    child_rids = obj.where(cond_str, pid_len, target_len, pid_len, pid).map{|item| item.rid.slice(pid_len, Common::SwtkConstants::CkpStep)}
+    unless child_rids.blank?
+      #next_rid = self.where("rid > ?", max_child_rid.slice(pid_len, Common::SwtkConstants::CkpStep)).limit(1)
+      next_rid = self.where("rid not in (?)", child_rids).limit(1)
       result = next_rid.nil?? pid:(pid+next_rid[0].rid)
     else
       result = pid + self.first.rid
