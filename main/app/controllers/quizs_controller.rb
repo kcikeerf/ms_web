@@ -207,8 +207,8 @@ class QuizsController < ApplicationController
     result = {:status => "", :message => "", :arr_list => []}
     @quizs=[]
     begin
-      raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_version")) if params[:version] and ( params[:subject].blank? || params[:grade].blank?)
-      raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_type")) if params[:type] and params[:subject].blank?
+      raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_version")) if !params[:version].blank? and ( params[:subject].blank? || params[:grade].blank?)
+      raise SwtkErrors::ParameterInvalidError.new(I18n.t("quizs.messages.list.invalid_type")) if !params[:cat].blank? and params[:subject].blank?
 
       order_h = {:dt_add => "desc"}
 
