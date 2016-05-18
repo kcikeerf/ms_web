@@ -216,11 +216,13 @@ class QuizsController < ApplicationController
         @quizs =  Mongodb::BankQuizQiz.order(order_h).to_a
       else
         cond_s = []
-        cond_s << "subject = '#{params[:subject]}'" if params[:subject]
-        cond_s << "grade = '#{params[:grade]}'" if params[:grade]
-        version = params[:version].sub(/\(.*\)/, "") if params[:version]
-        volume = params[:version].sub(/.*\(/, "").split(")")[0] if params[:version]
-        cond_s << "version ='#{version}' and volume = '#{volume}'" if params[:version]
+        cond_s << "subject = '#{params[:subject]}'" unless params[:subject].blank?
+        cond_s << "grade = '#{params[:grade]}'" unless params[:grade].blank?
+        unless params[:version].blank?
+          version = params[:version].sub(/\(.*\)/, "")
+          volume = params[:version].sub(/.*\(/, "").split(")")[0]
+          cond_s << "version ='#{version}' and volume = '#{volume}'"
+        end
         nodes = BankNodestructure.where(cond_s.join(" and "))
         node_ids = nodes.map{|node| node.uid}
 
@@ -228,19 +230,21 @@ class QuizsController < ApplicationController
         #text_re = /.*#{params[:text]}.*/
         #answer_re = /.*#{params[:answer]}.*/
         #desc_re = /.*#{params[:desc]}.*/
-        cat_re = /.*#{params[:keywords]}.*/
+        cat_re = /.*#{params[:cat]}.*/
         text_re = /.*#{params[:keywords]}.*/
         answer_re = /.*#{params[:keywords]}.*/
         desc_re = /.*#{params[:keywords]}.*/
-        cond_h = {
-          :cat => cat_re,
-          :text => text_re,
-          :answer => answer_re,
-          :desc => desc_re,
-          :node_uid.in => node_ids
-        }
-       @quizs = Mongodb::BankQuizQiz.where(cond_h).order(order_h).to_a
-   
+        #cond_h = {
+        cond_h = {:node_uid.in => node_ids, :cat => cat_re}
+        cond_t = {:text => text_re}
+        cond_a = {:answer => answer_re}
+        cond_d = {:desc => desc_re}
+        #}
+        if !node_ids.blank? or !params[:cat].blank?
+          @quizs = Mongodb::BankQuizQiz.where(cond_h).any_of(cond_t,cond_a,cond_d).order(order_h).to_a
+        else
+          @quizs = Mongodb::BankQuizQiz.any_of(cond_t,cond_a,cond_d).order(order_h).to_a
+        end
       # maybe used in the future
       #result[:status] = 200
       #result[:message] = I18n.t("quizs.messages.list.success")
@@ -252,7 +256,8 @@ class QuizsController < ApplicationController
       result[:status] = 500
       result[:message] = ex.message#I18n.t("quizs.messages.list.fail")
     ensure
-      result[:arr_list] = @quizs.map{|quiz| 
+    #  result[:arr_list] = @quizs.map{|quiz| 
+      @quizs.map{|quiz| 
         {"uid"=> quiz._id, 
          "text"=> quiz.text, 
          "levelword2"=>quiz.levelword2, 
@@ -262,7 +267,7 @@ class QuizsController < ApplicationController
          "type_label"=> quiz.type.nil?? "":I18n.t("dict.#{quiz.type}")
         }
       }
-      render json: result.to_json
+      #render json: result.to_json
     # end
 
 
