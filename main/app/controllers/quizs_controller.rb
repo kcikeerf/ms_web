@@ -252,8 +252,10 @@ class QuizsController < ApplicationController
         {"uid"=> quiz._id, 
          "text"=> quiz.text, 
          "levelword2"=>quiz.levelword2, 
+         "cat"=>quiz.cat,
+         "cat_label"=>quiz.cat.nil?? "":I18n.t("dict.#{quiz.cat}"),
          "type"=>quiz.type, 
-         "type_label"=>I18n.t("dict.#{quiz.type}")
+         "type_label"=> quiz.type.nil?? "":I18n.t("dict.#{quiz.type}")
         }
       }
       render json: result.to_json
