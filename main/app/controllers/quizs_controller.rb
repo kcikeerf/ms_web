@@ -257,7 +257,7 @@ class QuizsController < ApplicationController
       result[:message] = ex.message#I18n.t("quizs.messages.list.fail")
     ensure
     #  result[:arr_list] = @quizs.map{|quiz| 
-      @quizs.map{|quiz| 
+      @quizs.map!{|quiz| 
         {"uid"=> quiz._id, 
          "text"=> quiz.text, 
          "levelword2"=>quiz.levelword2, 

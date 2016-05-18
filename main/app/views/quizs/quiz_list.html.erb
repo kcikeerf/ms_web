@@ -3,30 +3,27 @@
 	<h2 class="f16 ohidden"><b class="fl fb"><%= @page_title %></b><span class="fr f12 addquesetion block cp" onclick="url_to('/quizs/single_quiz')"><%= t('page.quiz.add') %></span></h2>
 	 <%= raw success_notice(flash[:notice]) %>
 	<%= render 'search_block' %>
-	<% @quizs.each_with_index do |quiz, i| %>
+	<% @quizs.each do |quiz| %>
 	<div class="questionpage">
-		<h3 class="f14"><b><%= quiz.cat %></b><span>(<%= t('page.quiz.source') %>)</span></h3>
+		<h3 class="f14"><b><%= quiz['cat_label'] %></b><span>(<%= t('page.quiz.source') %>)</span></h3>
 		<div class="qusetionmate f16">
-			<%= raw quiz.text %>
-			<!-- <h4>There is a computer<input type="text"/> the desk.</h4>
-			<ul>
-				<li><input type="checkbox" name="mata"/><label>A.on</label></li>
-				<li><input type="checkbox" name="mata"/><label>B.in</label></li>
-				<li><input type="checkbox" name="mata"/><label>C.under</label></li>
-				<li><input type="checkbox" name="mata"/><label>D.for</label></li>
-			</ul> -->
+			<%= raw quiz['text'] %>
 		</div>
 		<div class="questionInfor f12">
-			<%= link_to t('page.quiz.view'), 'javascript:', class: 'fl block anser_and_analyze', str_uid: quiz._id %>
-			<%= link_to t('page.quiz.edit'), single_quiz_edit_quizs_path(str_id: quiz.id) %>
+			<%= link_to t('page.quiz.view'), 'javascript:', class: 'fl block anser_and_analyze', str_uid: quiz['uid'] %>
 			<div class="fl difficulty ohidden">
 				<label class="fl"><%= t('page.quiz.trouble') %>:</label>
 				<ul class="ohidden fl">
-					<%= raw '<li></li>' * trouble_num(quiz.levelword2) %><li></li>
+					<%= raw '<li></li>' * trouble_num(quiz['levelword2']) %><li></li>
 					
 				</ul>
 			</div>
-			<p class="fl"><%= t('page.quiz.view_count') %>:<span>1298</span><%= link_to t('page.quiz.del'), single_quiz_delete_quizs_path(str_id: quiz.id), method: :delete, data: {confirm: '你确定要删除么？', ok: t('page.confirm'), cancel: t('page.cancel'), img: asset_url('warning.png'), name: t('page.warning')}, remote: true %></p>
+			<p class="fl">
+			<%= t('page.quiz.view_count') %>:
+			<span>1298</span> 
+			<%= link_to t('page.quiz.edit'), single_quiz_edit_quizs_path(str_id: quiz['uid']) %> 
+			<%= link_to t('page.del'), single_quiz_delete_quizs_path(str_id: quiz['uid']), method: :delete, data: {confirm: '你确定要删除么？', ok: t('page.confirm'), cancel: t('page.cancel'), name: t('page.warning')}, remote: true %>
+			</p>
 		</div>
 	</div>
 

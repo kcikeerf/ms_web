@@ -1,5 +1,6 @@
-
+<%= form_for @quiz, url: @quiz.new_record? ? single_quiz_save_quizs_path : single_quiz_update_quizs_path, html: {id: 'form'} do |f| %>
   <%= hidden_field_tag :version_uid %>
+  <%= hidden_field_tag :str_id, @quiz.id unless @quiz.new_record? %>
   <section>
    <dl class="clearfix">
     <dt><%= t('page.quiz.basic_info') %></dt>
@@ -146,12 +147,17 @@
   <input class="btn btn-default" type="button" value="<%= t('page.quiz.cancel') %>" onclick="url_to('<%= quiz_list_quizs_path %>');">
   <input class="btn btn-primary" type="submit" value="<%= t('page.quiz.complete') %>" id="submit_form">
 </footer>
-
+<% end %>
 <!-- 考察点弹出层 -->
 <div id='myModal' class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
    <%= render 'point_tree' %>
 </div>
-
+<div id='hidden_analysis' style='display: none'>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][dimesion]' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][rid]', '', class: 'dict_rid' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][uid]' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][checkpoint]' %>
+</div>
 <script type="text/javascript">
   $(document).ready(function(){
 
@@ -213,7 +219,8 @@
       $("#grade").val('<%= @quiz_hash_data[:grade] %>').trigger('change');
       $("#cat").val("<%= @quiz[:cat] %>");
       $("#version").val("<%= @quiz_hash_data[:version] %>");
-      
+      CKEDITOR.replace('TextArea1');
+      CKEDITOR.replace('TextArea2');
     <% end %>
   }) 
 

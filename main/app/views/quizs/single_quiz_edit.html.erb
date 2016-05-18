@@ -1,14 +1,7 @@
 <% @page_title = t('page.quiz.save') %>
 <div id="testquestions" class="container">
   <h1><%= t('page.quiz.save') %></h1>
-  <%= form_for @quiz, url: single_quiz_update_quizs_path, html: {id: 'form'} do |f| %>
-  	<%= hidden_field_tag :str_id, @quiz.id %>
-  	<%= render 'form' %>
-  <% end %>
-  <div id='hidden_analysis' style='display: none'>
-  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][dimesion]' %>
-  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][rid]', '', class: 'dict_rid' %>
-  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][uid]' %>
-  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][checkpoint]' %>
-</div>
+  	
+  <%= render 'form' %>
+  
 </div>

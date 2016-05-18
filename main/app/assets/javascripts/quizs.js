@@ -164,7 +164,7 @@ $(document).on('ready page:load', function (){
 	setInputsHandler($('.analyserow:first'));
 
 	$(".anser_and_analyze").on("click", function(){
-		$.get('/quizs/quiz_get', 'str_uid=' + $(this).attr('str_uid'), function(data){
+		$.get('/quizs/quiz_get', 'str_rid=' + $(this).attr('str_uid'), function(data){
 			var data_json = jQuery.parseJSON(data);
 			
 			$("#answer").html("答案：" + data_json.data.obj_quizprop.answer);
