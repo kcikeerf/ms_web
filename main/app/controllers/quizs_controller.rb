@@ -224,10 +224,14 @@ class QuizsController < ApplicationController
         nodes = BankNodestructure.where(cond_s.join(" and "))
         node_ids = nodes.map{|node| node.uid}
 
-        cat_re = /.*#{params[:cat]}.*/
-        text_re = /.*#{params[:text]}.*/
-        answer_re = /.*#{params[:answer]}.*/
-        desc_re = /.*#{params[:desc]}.*/
+        #cat_re = /.*#{params[:cat]}.*/
+        #text_re = /.*#{params[:text]}.*/
+        #answer_re = /.*#{params[:answer]}.*/
+        #desc_re = /.*#{params[:desc]}.*/
+        cat_re = /.*#{params[:keywords]}.*/
+        text_re = /.*#{params[:keywords]}.*/
+        answer_re = /.*#{params[:keywords]}.*/
+        desc_re = /.*#{params[:keywords]}.*/
         cond_h = {
           :cat => cat_re,
           :text => text_re,
