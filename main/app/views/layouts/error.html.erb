@@ -1,0 +1,27 @@
+<%= extends :application do %>
+	<% append :header do %>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	<% end %>
+	<% purge :top, :footer %>
+
+	<%= yield %>
+
+	<script>
+		var i = 300;
+		var intervalid;
+		intervalid = setInterval("fun()", 1000);
+		function fun() {
+			if (i == 0) {
+				window.location.href = "/";
+				clearInterval(intervalid);
+			}
+			document.getElementById("num").innerHTML = i;
+			i--;
+		}
+
+		$(document).ready(function(){
+			$('body').addClass('require');
+			$(".require section").center();
+		});	
+	</script>
+<% end %>

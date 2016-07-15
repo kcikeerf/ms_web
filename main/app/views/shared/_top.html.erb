@@ -1,62 +1,78 @@
-<div class="bank_top">
-	<div class="top_center bc ">
-		<div class="top_logo fl">
-			<a href="/">
-				<%= image_tag 'logo.png' %>
-			</a>
-		</div>
-		<ul class="top_nav fr f14 tc">
-			<li class="<%= 'top_active' if controller_name == 'welcomes' %>">
-				<%= link_to t('page.menu.home'), '/' %>
-			</li>
+<% if current_user %>
+  <header>
+    <div class="container-header">
+      <h2><a href="/" title="知引"></a></h2>
+      <nav class="navdrop">
+        <ul>
+          <li><a href="/">首页</a></li>
+          <!--li><a href="/librarys">三维题库</a></li>
+          <li><a href="/profile/message">消息</a></li-->
+        </ul>
+      </nav>
+      <div class="login">
+        <% if current_user.is_analyzer? %>
+        <a class="addtest" href='/papers/new'>
+          <i>&#43;</i>
+          <span><%= t('page.paper.add_paper') %></span>
+        </a>
+        <% end %>
+        <div class="avatar">
+          <%= image_tag(user_avatar(current_user.image_upload, 'icon'), class: 'img-rounded') %>
+        </div>
+        <div class="dropdown">
+          <button id="dropdownMenu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <%= current_user.name %>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+            <li class="arrow"></li>
+            <% user_popup_menus.each do |key, value| %>
+            <li>
+              <a href="<%= value %>"><%= t("page.user_left_menu.#{key}") %></a>
+            </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </header>
+<% else %>
+  <header>
+    <div class="container-header">
 
-			<% if current_user %>
-				<li class="<%= 'top_active' if current_page?('/librarys') %>">
-					<%= link_to t('page.menu.librarys'), '/librarys' %>
-				</li>
+      <nav class="navbar navbar-default navdrop" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse"
+          data-target="#example-navbar-collapse">
+          <span class="sr-only">切换导航</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <h2><a href="/" title="知引"></a></h2>
+      </div>
+      <div class="collapse navbar-collapse" id="example-navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="<%= 'active' if controller_name == 'welcomes' %>"><a href="/">首页</a></li>
+          <!--li class="visible-lg <%= 'active' if current_page?('/librarys') %>"><a href="/librarys">三维题库</a></li>
+          <li class="visible-lg report <%= 'active' if action_name == 'demo' %>">
+            <a href="javascript:void(0);">诊断报告</a>
+            <span>
+              <i></i>
+              <a href="/pupilreport/demo">个人报告</a>
+              <a href="/classreport/demo">班级报告</a>
+              <a href="/gradereport/demo">年级报告</a>
+            </span>
+          </li>
+          <li class="hidden-lg"><a href="http://wx.k12ke.com/simplereport-v2.html">诊断报告</a></li-->
+          
+        </ul>
+      </div>
+      <div class="logout visible-lg">
+        <a href="javascript:void(0);" data-toggle="modal" data-target="#loginModal" class="btn">登录</a>
+      </div>
+    </nav>
 
-				<li class="<%= 'top_active' if ['edit_auto_papers', 'auto_papers'].include?(action_name) %>">
-					<%= link_to t('page.menu.auto_paper'), '/librarys/edit_auto_papers' %>
-				</li>
-				<li class="pr">
-					<a href="javascript:"><%= t('page.menu.score_report') %></a>
-					<div class="popup pa">
-						<%= link_to t('page.menu.simple_report'), simple_score_reports_path %>
-						<%= link_to t('page.menu.professional_report'), profession_score_reports_path %>
-					</div>
-				</li>
-				<li class="<%= 'top_active' if action_name == 'edit_test' %>">
-					<%= link_to t('page.menu.online_test'), online_tests_path %>
-				</li>			
-				<li class="login_active pr">
-					<%= link_to image_tag('head_img.png'), root_path %>				
-					<span></span>
-					<div class='perList pa'>
-						<% %w(users exam_papers quizs/quiz_list|quizs pupils online_tests sys_msgs users/logout|logout).each do |page| %>
-							<% 
-								link, name = page.split('|') 
-								name ||= link
-							%>
-						<a href="/<%= link %>"><%= t("page.user_left_menu.#{name}") %></a>
-						<% end %>
-					</div>
-				</li>
-			<% else %>
-				<% %w(librarys|/librarys auto_paper|/librarys/edit_auto_papers score_report online_test|/online_tests/edit_test).each do |m| %>
-					<% name, link = m.split('|') %>
-					<li>
-							<%= link_to t("page.menu.#{name}"), new_user_session_path(url: link) %>
-					</li>
-				<% end %>
-
-				<li>				
-					<%= link_to t('page.login'), new_user_session_path %>
-					<span>
-						/
-					</span>
-					<%= link_to t('page.register'), new_user_registration_path %>
-				</li>
-			<% end %>
-		</ul>		
-	</div>
-</div>
+  </div>
+  </header>
+<% end %>

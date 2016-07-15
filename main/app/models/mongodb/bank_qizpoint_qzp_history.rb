@@ -9,6 +9,7 @@ class Mongodb::BankQizpointQzpHistory
 #  field :pap_uid, type: String
 #  field :qiz_uid, type: String
 #  field :qiz_his_uid, type: String
+  field :order, type: Integer # use the record the order in the quiz
   field :score, type: Float
 
   belongs_to :bank_paper_pap

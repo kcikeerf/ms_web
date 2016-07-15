@@ -1,0 +1,58 @@
+<!--<script stype="javascript/text">
+$('#refer-btn').on('click',function(){
+	
+});
+</script>-->
+	
+<div id="modal-header">
+<button type="button" class="close" 
+   data-dismiss="modal" aria-hidden="true">
+      &times;
+</button>
+<h4 class="dialog-title">
+  <%= I18n.t("checkpoints.dialog.title")%>
+</h4>
+ </div>
+<div class="modal-body">
+  <%= render 'checkpoints_tree' %>
+</div>
+<div class="modal-footer">
+ <button class="btn" data-dismiss="modal" aria-hidden="true">
+   <%= I18n.t("page.close")%>
+ </button>
+ <button class="btn btn-primary" id="refer-btn">
+  <%= I18n.t("page.confirm")%>
+ </button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

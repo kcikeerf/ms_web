@@ -1,0 +1,9 @@
+var data =[
+	{ "id":"000", "rId":"", "name":"rid 1", "open":"true"},
+	{ "id":"000001", "rId":"000", "name":"rid 11", "file":"main"},
+	{ "id":"000002", "rId":"000001", "name":"rid 111", "file":"main"},
+	{ "id":"000003", "rId":"000001", "name":"rid 112", "file":"super/metro"},
+	{ "id":"000004", "rId":"000001", "name":"rid 113", "file":"super/awesome"},
+	{ "id":"000005", "rId":"000001", "name":"rid 114", "file":"http://www.sina.com/index"},
+	{ "id":"000006", "rId":"000", "name":"rid 13","file":"main", "isParent":"true"},
+]

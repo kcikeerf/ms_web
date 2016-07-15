@@ -2,7 +2,8 @@ class CheckpointsController < ApplicationController
   def get_nodes
     params.permit!
    
-    @tree_data = BankCheckpointCkp.get_ckps   
+    @tree_data = BankCheckpointCkp.get_ckps params 
+    p @tree_data
     return render partial: '/quizs/point_tree'
   end
 
@@ -65,4 +66,8 @@ class CheckpointsController < ApplicationController
     BankCheckpointCkp.delete_ckp
   end
 
+  def dimesion_tree
+    params.permit!
+    render :layout => "ztree"
+  end
 end

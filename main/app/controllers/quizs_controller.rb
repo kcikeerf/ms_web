@@ -25,7 +25,7 @@ class QuizsController < ApplicationController
 #    }
 
 #    f_uploaded = Common::File.single_upload({:str_tempid => params[:str_tempid], :type=>params[:type], :file => params[:file]})
-    f_uploaded = Common::File.single_upload({:file => params[:file]})
+    f_uploaded = Common::PaperFile.single_upload({:file => params[:file]})
 #    result[:str_tempid] = f_uploaded.id
 #    case params[:type]
 #    when "question"
@@ -34,7 +34,7 @@ class QuizsController < ApplicationController
 #      result[:result_str] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
 #    end
      result = ""
-     result = Common::File.get_doc_file_content_as_html(f_uploaded.single.current_path)
+     result = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.single.current_path)
 
 #    respond_to do |format|
 #      format.json { render json: result.to_json }
@@ -60,11 +60,11 @@ class QuizsController < ApplicationController
      :obj_analysis => nil
     }
 
-    f_uploaded = Common::File.multiple_upload({:paper => params[:doc_path], :answer => params[:answer_path], :analysis => params[:xls_path]})
+    f_uploaded = Common::PaperFile.multiple_upload({:paper => params[:doc_path], :answer => params[:answer_path], :analysis => params[:xls_path]})
     result[:str_tempid] = f_uploaded.id
-    result[:str_quiz] = Common::File.get_doc_file_content_as_html(f_uploaded.paper.current_path)
-    result[:str_answer] = Common::File.get_doc_file_content_as_html(f_uploaded.answer.current_path)
-    result[:obj_analysis] = Common::File.get_excel_file_content(f_uploaded.analysis.current_path) 
+    result[:str_quiz] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    result[:str_answer] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)
+    result[:obj_analysis] = Common::PaperFile.get_excel_file_content(f_uploaded.analysis.current_path) 
 
 #    respond_to do |format|
 #      format.json { render json: result.to_json }
@@ -145,9 +145,9 @@ class QuizsController < ApplicationController
 
   #single quiz edit
   def single_quiz_edit    
-    @quiz = Mongodb::BankQuizQiz.find_by(id: params[:str_id])
+    @quiz = Mongodb::BankQuizQiz.where(:_id => params[:str_id]).first
     @quiz_hash_data = @quiz.quiz_detail
-    @tree_data = BankCheckpointCkp.get_ckps   
+    @tree_data = BankCheckpointCkp.get_ckps({"node_uid" => @quiz.node_uid}) 
   end
 
   # single quiz update
@@ -259,8 +259,10 @@ class QuizsController < ApplicationController
     #  result[:arr_list] = @quizs.map{|quiz| 
       @quizs.map!{|quiz| 
         {"uid"=> quiz._id, 
+         "source" => I18n.t("quizs.nosource"),
          "text"=> quiz.text, 
          "levelword2"=>quiz.levelword2, 
+         'levelword2_label' => t("dict.#{quiz.levelword2}"),
          "cat"=>quiz.cat,
          "cat_label"=>quiz.cat.nil?? "":I18n.t("dict.#{quiz.cat}"),
          "type"=>quiz.type, 
