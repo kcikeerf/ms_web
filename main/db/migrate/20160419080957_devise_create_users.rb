@@ -4,8 +4,14 @@ class DeviseCreateUsers < ActiveRecord::Migration
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :name,               limit: 50
-      t.string :phone,              null: false, default: "", limit: 11
+      t.string :phone,              limit: 11
+      t.string :qq,                 limit: 30
+      t.string :wechat,             limit: 50
       t.string :encrypted_password, null: false, default: ""
+
+      t.boolean :phone_validate, null: true, default: false
+      t.boolean :email_validate, null: true, default: false
+      t.boolean :init_profile, null: false, default: false
 
       ## Recoverable
       t.string   :reset_password_token
@@ -36,7 +42,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_index :users, [:email, :phone],      unique: true
+    add_index :users, :name,      unique: true
     add_index :users, :reset_password_token, unique: true
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true

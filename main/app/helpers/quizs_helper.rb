@@ -28,24 +28,6 @@ module QuizsHelper
 		html
 	end
 
-	def trouble_num(name)
-		case name
-
-		when 'easyplus'
-			0
-		when 'easy'
-			1
-		when 'normal'
-			2
-		when 'hard'
-			3
-		when 'hardplus'
-			4
-		else
-			0
-		end
-	end
-
 	def deal_checkpoint(arr, str)
 		arr.select{|s| s if s['dimesion'] == str }.map{|m| m['checkpoint'] }.join(',')
 	end

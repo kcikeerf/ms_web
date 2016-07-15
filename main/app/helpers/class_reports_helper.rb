@@ -1,0 +1,2 @@
+module ClassReportsHelper
+end

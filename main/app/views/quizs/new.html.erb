@@ -1,7 +1,7 @@
-<form action='/quizs/single_quiz_file_upload' method='post' enctype='multipart/form-data'>
+<form action='/papers/upload_filled_score_file' method='post' enctype='multipart/form-data'>
 	<%= token_tag form_authenticity_token %>
-	str_tempid: <input type="text" name="str_tempid"><br/>
-	Select a  file: <input type="file" name="file"><br />
+	<input type="hidden" name="pap_uid" value="574ea2d1421aa9c22a000002"><br/>
+	Select a  file: <input type="file" name="filled_file"><br />
 
 	<input type="submit" name="submit">
 </form>

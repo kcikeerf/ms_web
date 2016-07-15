@@ -1,0 +1,38 @@
+<%= extends :manager do %>
+	<h2><%= @data[:name] %></h2>
+	<div style="margin:20px 0;"></div>
+	<div id="tb">  
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');">增加</a>  
+		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editObj('<%= @data[:path] %>/')">编辑</a>  
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroy('<%= @data[:path] %>/')">删除</a>
+	</div>  
+	<!-- singleSelect:true, 当行选择-->
+	<table id='dg' class="easyui-datagrid" title="<%= @data[:name] %>列表" style="width:98%;height:550px"
+		data-options="		
+		pagination:true,
+		url:'<%= @data[:path] %>.json',
+		method:'get', 
+		toolbar: '#tb'">
+		<thead>
+			<tr>
+				<th field="ck" checkbox="true" width='5%'></th>
+				<%= yield %>
+			</tr>
+
+		</thead>
+	</table>
+	<%= yield(:content) %>
+	<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
+		<div class="ftitle"><%= @data[:name] %>信息</div>
+		<%= form_tag '', id: 'fm' do  %>
+			<input type="hidden" name="_method" id='manager_method' value="post" />
+			<div id='other'>
+				<%= yield(:form) %>
+			</div>
+		<% end %>
+	</div>
+	<div id="dlg-buttons">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveObj()">保存</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+	</div>
+<% end %>

@@ -2,6 +2,25 @@ require 'ox'
 require 'roo'
 
 namespace :swtk do
+
+  #添加所有controller和action到permission表
+  require 'find'
+  desc 'add all controllers、acton to table permissons'
+  task add_acton_to_permisson: :environment do
+    dir = Rails.root.join('app', 'controllers')
+    Find.find(dir) do |controller_name|
+      if controller_name =~ /_controller/ && controller_name !~ /application/
+        controller = controller_name.gsub("#{dir.to_s}", '').gsub('.rb', '').camelcase.constantize
+        controller.instance_methods(false).each do |action|
+          p controller.to_s
+          p action.to_s
+          save_permission(controller.to_s, action.to_s)
+        end
+      end
+    end
+  end
+
+
   desc "load permissions definition"
   task load_permissions: :environment do
 #    xml_str = ""
@@ -119,114 +138,49 @@ namespace :swtk do
 
   end
 
-  desc "read checkpoint data from excel file, rake swtk:reload_checkpoint[<file_path>, {knowledge|skill|ability}]"
-  task :read_checkpoint,[:file_path, :sheet_name]=> :environment do |t, args|
-    if args[:file_path].nil? || args[:sheet_name].nil?
-      puts "Usage: rake swtk:reload_checkpoint[<file_path>, {knowledge|skill|ability}]"
+  desc "import checkpoints, temporary use"
+  task :read_checkpoint,[:file_path,:node_uid,:dimesion]=> :environment do |t, args|
+    if args[:file_path].nil? ||  args[:node_uid].nil? || args[:dimesion].nil?
+      puts "Command format not correct."
       exit 
     end
-    xlsx = Roo::Excelx.new(args[:file_path])
-    ckp = args[:sheet_name]
-    ckp_sheet = xlsx.sheet(ckp)
-    start_line = 5
-    total_line = ckp_sheet.count
 
-    subject = ckp_sheet.row(1)[0]
-    text_book = ckp_sheet.row(2)[0]
-    grade = ckp_sheet.row(3)[0]
-    volume = ckp_sheet.row(4)[0]
-    bn = BankNodestructure.where(:subject=> subject, :version=> text_book, :grade=> grade, :volume => volume)
-    level1_max_rid = BankCheckpointCkp.where("rid >= 000 and rid <=999 and length(rid) < 4").select("rid").map{|t| t.rid}.max
-    level2_max_rid = 0#BankCheckpointCkp.where("substring(rid,3,5)>= 000 and substring(rid,3,5) <=999 and length(rid) >3 and length(rid) < 7").select("rid").map{|t| t.rid.slice(3,5)}.max
-    level3_max_rid = 0#BankCheckpointCkp.where("substring(rid,6,8) >= 000 and substring(rid,6,8) <=999 and length(rid) > 6 and length(rid) < 10").select("rid").map{|t| t.rid.slice(6,8)}.max
-    level1_start = level1_max_rid.nil?? 1:level1_max_rid.to_i + 1
-    level2_start = 0#level2_max_rid.nil?? 0:level2_max_rid.to_i
-    level3_start = 0#level3_max_rid.nil?? 0:level3_max_rid.to_i
-    p level1_start,level2_start,level3_start
-    h = {}
-    (start_line..total_line).each{|x| 
-      r = ckp_sheet.row(x)
-      h[r[0]]= {} if h[r[0]].nil?
-      h[r[0]][r[1]] ={} if h[r[0]][r[1]].nil?
-      if h[r[0]][r[1]][r[2]].nil?
-        h[r[0]][r[1]][r[2]] = {:desc =>r[3], :unit => r[4]}
+    ckp_file = File.open(args[:file_path], "r")
+    ckp_file.each do |line|
+      str = line.chomp!
+      if str
+        arr =str.split(",")
+        ckp = BankCheckpointCkp.new({:node_uid => args[:node_uid].strip,
+          :dimesion => args[:dimesion].strip,
+          :rid=>arr[0],
+          :checkpoint => arr[1],
+          :advice => "建议",
+          #:weights =>
+          :is_entity => true})
+        ckp.save
       end
+    end
+
+    ckps = BankCheckpointCkp.where(node_uid: args[:node_uid])
+    ckps.each_with_index{|ckp,index|
+#      result = BankRid.get_all_higher_nodes ckps,ckp
+#      if result.empty?
+        p index
+        BankRid.update_ancestors(ckps,ckp,{:is_entity => false})
+     # else
+ #       ckp.update(:is_entity => true)
+      #end
     }
-    h.keys.each_with_index{|key1, index1|
-      level1_rid = (level1_start + index1).to_s.rjust(3,"0")
-      ckp_level1= BankCheckpointCkp.new({
-         :dimesion => ckp,
-         :rid => level1_rid,
-         :checkpoint => key1,
-         :desc => nil
-      })
-      ckp_level1.save
-      bn.bank_checkpoint_ckps << ckp_level1
-      h[key1].keys.each_with_index{|key2, index2|
-        level2_rid = level1_rid + (level2_start + index2).to_s.rjust(3, "0")
-        ckp_level2 = BankCheckpointCkp.new({
-          :dimesion => ckp,
-          :rid => level2_rid,
-          :checkpoint => key2,
-          :desc => nil
-        })
-        ckp_level2.save
-        bn.bank_checkpoint_ckps << ckp_level2
-        h[key1][key2].keys.each_with_index{|key3, index3|
-          level3_rid = level2_rid + (level3_start + index3).to_s.rjust(3, "0")
-          ckp_level3 = BankCheckpointCkp.new({
-            :dimesion => ckp,
-            :rid => level3_rid,
-            :checkpoint => key3,
-            :desc => h[key1][key2][key3][:desc]
-          })
-          ckp_level3.save
-          bn.bank_checkpoint_ckps << ckp_level3
-          unless h[key1][key2][key3][:unit].nil?
-            arr = h[key1][key2][key3][:unit].split("#unit#")
-            arr.each{|unit|
-              bnc = BankNodeCatalog.where(:node => unit)
-              bn = BankNodestructure.where(:subject=> subject, :version=> text_book, :grade=> grade, :volume => volume, :node => unit)
-              bnc[0].bank_checkpoint_ckps << ckp_level3 unless bc.blank?
-            }
-          end
-        }
-      }
-    }
-    
+
   end
 
-  desc "import text_book catalog data from excel file, rake swtk:import_catalog[<file_path>, {catalog}]"
-  task :import_catalog,[:file_path, :sheet_name]=> :environment do |t, args|
-    if args[:file_path].nil? || args[:sheet_name].nil?
-      puts "Usage: rake swtk:import_catalog[<file_path>, sheet_name]"
-      exit
-    end
-    xlsx = Roo::Excelx.new(args[:file_path])
-    catalog = args[:sheet_name]
-    sheet = xlsx.sheet(catalog)
-    start_line = 5 # catalog start line
-    total_line = sheet.count
-    subject = sheet.row(1)[0]
-    text_book = sheet.row(2)[0]
-    grade = sheet.row(3)[0]
-    volume = sheet.row(4)[0]
-    bn = BankNodestructure.new({
-      :subject => subject,
-      :version => text_book,
-      :grade => grade,
-      :volume => volume,
-      :node => sheet.row(i)[0]
-    })
-    bn.save
+  def save_permission(controller, action)
+    name = "#{controller}##{action}"
 
-    (start_line..total_line).each{|i|
-      bc = BankNodeCatalog.new({
-        :node => sheet.row(i)[0]
-      })
-      bc.save
-      bn.bank_node_catalogs << bc
-    }
+    permisson = Permission.find_or_initialize_by(subject_class: controller, action: action)
+    permisson.name = name if permisson.name.blank?
+    permisson.description = name if permisson.description.blank?
+    permisson.save
   end
 
   # get xml string

@@ -1,0 +1,68 @@
+<div class="container">
+	<div class="container" id="report_menus">
+	    <div class="dropdown_box">
+	      <a class="classMenu" href="#">
+	        <span class="report_click_menu" reporturl="<%= @scope_menus[:report_url] %>">
+	<%= @scope_menus[:label]%>
+	        </span> 
+	        <small><%=@scope_menus[:pupil_number]%></small>
+	      </a>
+	    	<ul class="dropdown_menu">
+	<% @scope_menus[:items].each do |klass| %>
+	        <li>
+	          <a class="report_click_menu" href="#" reporturl="<%= klass[:report_url]%>">
+	  <%= klass[:label] %>
+	          </a>
+	          <small><%=klass[:pupil_number]%></small>
+	         <ul class="submit_menu">
+	  <% klass[:items].each do |pupil| %>
+	            <li class="report_click_menu"  reporturl="<%= pupil[:report_url]%>">
+	    <%= pupil[:label]%>
+	            </li>
+	  <% end %>
+	         </ul>
+	<% end %>		        
+	        </li>
+	      </ul>
+		</div>
+	</div>
+	<div class="loadingPage">
+		<iframe width = "100%" height="100%" id="reportShowField" src="<%= @default_report%>"></iframe>
+		<script type="text/javascript">
+			/*iframe高度自适应*/
+            function reinitIframe(){
+                var iframe = document.getElementById("reportShowField");
+                iframe.scrolling = 'no';
+                try{
+                    var bHeight = iframe.contentWindow.document.body.scrollHeight;
+                    var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+                    var height = Math.max(bHeight, dHeight)+1;
+                    iframe.height =  height;
+                }catch (ex){}
+                }
+            window.setInterval("reinitIframe()", 200);
+        </script> 
+	</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+		$('.dropdown_box').hover(function(){
+			$('.dropdown_menu>li>ul').attr('class','submit_menu');
+			$('.dropdown_menu').show();
+			$('.dropdown_menu>li').on('mouseover',function(){
+				$(this).addClass('active').siblings('li').removeClass('active');
+				$(this).children('ul').show();
+				$(this).siblings('li').children('ul').hide();
+				var screenHeight = Math.floor($(window).height());
+				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height()-$(document).scrollTop());
+				if(bodyHeight > screenHeight){
+					$(this).children('ul').attr('class','active');
+				}
+			});
+		},function(){
+			$('.dropdown_menu').hide();
+			$('.dropdown_menu>li>ul').hide();
+			$('.dropdown_menu>li').removeClass('active');
+		})
+	})
+</script>

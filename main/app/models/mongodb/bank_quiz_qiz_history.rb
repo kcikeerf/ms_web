@@ -8,6 +8,8 @@ class Mongodb::BankQuizQizHistory
 
 #  field :pap_uid, type: String
 #  field :qiz_uid, type: String
+  
+  field :order, type: Integer # use to record the order in the paper
   field :score, type: Float
 
   belongs_to :bank_paper_pap

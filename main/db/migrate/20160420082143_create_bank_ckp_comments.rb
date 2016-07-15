@@ -1,7 +1,7 @@
 class CreateBankCkpComments < ActiveRecord::Migration
   def change
     create_table :bank_ckp_comments, id: false do |t|
-      t.string :uid, limit: 36
+      t.column :uid, "VARCHAR(255) PRIMARY KEY"
       t.string :ckp_uid, limit: 36
       t.string :ban_uid, limit: 36
       t.string :target, limit: 36

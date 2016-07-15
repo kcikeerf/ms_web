@@ -5,6 +5,8 @@ class CreateFileUploads < ActiveRecord::Migration
       t.string :answer
       t.string :analysis
       t.string :single
+      t.string :revise_paper
+      t.string :revise_answer
 
       t.timestamps
     end

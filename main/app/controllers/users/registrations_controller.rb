@@ -1,6 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-before_action :configure_sign_up_params, only: [:create]
+# before_action :configure_sign_up_params, only: [:create]
 # before_filter :configure_account_update_params, only: [:update]
+  layout 'user', only: [:edit, :update] 
 
   # GET /resource/sign_up
   # def new
@@ -38,12 +39,12 @@ before_action :configure_sign_up_params, only: [:create]
   #   super
   # end
 
-  protected
+  # protected
 
   # If you have extra params to permit, append them to the sanitizer.
-  def configure_sign_up_params
-    devise_parameter_sanitizer.for(:sign_up).push(:name, :phone, :role_name, :email)
-  end
+  # def configure_sign_up_params
+  #   devise_parameter_sanitizer.for(:sign_up).push(:name, :phone, :role_name, :email)
+  # end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_account_update_params
@@ -59,4 +60,29 @@ before_action :configure_sign_up_params, only: [:create]
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  def head_image_upload     
+    crop = JSON.parse(params[:avatar_data]) rescue {}
+    f_upload = Common::Image.file_upload(current_user, params[:file], crop) 
+    if f_upload.errors.blank?
+      # current_user.image_upload = f_upload
+      render json: response_json(200, {message: 'success'})#:json => {:status=> 200, :message =>"success!"}
+    else
+      render json: response_json(500, {message: f_upload.errors.full_messages[0]}) #:json => {:status=> 500, :message =>f_upload.errors.full_messages[0]}
+    end
+  end
+
+  def get_user_password_file
+    params.permit!
+    if params[:pap_uid]
+      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      score_file = ScoreUpload.where(id: current_pap.score_file_id).first
+      if score_file
+        send_file score_file.usr_pwd_file.current_path,
+          filename: score_file.usr_pwd_file.filename,
+          type: "application/octet-stream"
+      end
+    end
+  end
+
 end

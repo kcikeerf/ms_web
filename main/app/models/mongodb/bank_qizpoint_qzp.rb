@@ -17,7 +17,8 @@ class Mongodb::BankQizpointQzp
   field :answer, type: String
   field :desc, type: String
   field :score, type: Float
-
+  field :order, type: String
+ 
 #  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid"
 #  t_has_many :bank_checkpoint_ckps, through: :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp"#, foreign_key: "ckp_uid" 
 #  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid"
@@ -37,14 +38,19 @@ class Mongodb::BankQizpointQzp
   end
 
   def save_qizpoint params
-     self.quz_uid = params["quz_uid"].nil?? nil:params["quz_uid"]
-     self.pap_uid = params["pap_uid"].nil?? nil:params["pap_uid"]
-     self.tbs_sid = params["tbs_sid"].nil?? nil:params["tbs_sid"]
-     self.type = params["type"].nil?? nil:params["type"]
-     self.answer = params["answer"].nil?? nil:params["answer"]
-     self.desc = params["desc"].nil?? nil:params["desc"]
-     self.score = params["score"].nil?? nil:params["score"]
-     self.save!
+     begin
+       self.quz_uid = params[:quz_uid] || ""
+       self.pap_uid = params[:pap_uid] || ""
+       self.tbs_sid = params[:tbs_sid] || ""
+       self.type = params[:type] || ""
+       self.answer = params[:answer] || ""
+       self.desc = params[:desc] || ""
+       self.score = params[:score] || 0.00
+       self.order = (params[:order] || '0').ljust(Common::Paper::Constants::OrderWidth, '0')
+       self.save!
+     rescue Exception => ex
+       return false
+     end
      return true
   end
 

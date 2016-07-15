@@ -1,0 +1,84 @@
+<% @page_title = t('page.user_left_menu.my_report') %>
+
+<section>
+	<div class="container clearfix">
+		<!-- Nav tabs -->
+		<%= render 'shared/user/left_menu' %>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" id="log">
+
+				<div class="panel">
+
+					  <!-- 我的日志 -->
+					  <h1 class="panel-heading clearfix">
+						  <div class="col-lg-4 input-group pull-right">
+							  <input type="text" class="form-control" placeholder="请输入关键字进行搜索">
+							  <span class="input-group-btn">
+								<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+							  </span>
+						  </div>
+						  我的报告
+                      </h1>
+					  <div class="panel-body">
+						  <table id="logtable" class="table table-bordered table-hover">
+							  <thead>
+							  <tr>
+								  <th class="title">报告名称</th>
+								  <th class="updated">发布时间</th>
+							  </tr>
+							  </thead>
+							  <tbody>
+							  <tr>
+								  <td class="text-left"><a href="javascript:void(0);" title="日志标题一">日志标题一</a></td>
+								  <td>2016.3.26 10:40</td>
+							  </tr>
+							  <tr>
+								  <td class="text-left"><a href="javascript:void(0);" title="日志标题二">日志标题二</a></td>
+								  <td>2016.3.26 10:40</td>
+							  </tr>
+							  <tr>
+								  <td class="text-left"><a href="javascript:void(0);" title="日志标题三">日志标题三</a></td>
+								  <td>2016.3.26 10:40</td>
+							  </tr>
+							  <tr>
+								  <td class="text-left"><a href="javascript:void(0);" title="日志标题四">日志标题四</a></td>
+								  <td>2016.3.26 10:40</td>
+							  </tr>
+							  <tr>
+								  <td class="text-left"><a href="javascript:void(0);" title="日志标题五">日志标题五</a></td>
+								  <td>2016.3.26 10:40</td>
+							  </tr>
+							  </tbody>
+						  </table>
+
+						  <nav class="text-center">
+							  <ul class="pagination">
+								  <li class="disabled">
+									  <a href="#" aria-label="Previous">
+										  <span aria-hidden="true">&laquo;</span>
+									  </a>
+								  </li>
+								  <li class="active"><a href="#">1</a></li>
+								  <li><a href="#">2</a></li>
+								  <li><a href="#">3</a></li>
+								  <li><a href="#">4</a></li>
+								  <li><a href="#">5</a></li>
+								  <li>
+									  <a href="#" aria-label="Next">
+										  <span aria-hidden="true">&raquo;</span>
+									  </a>
+								  </li>
+							  </ul>
+						  </nav>
+					  </div>
+
+					</div>
+
+		</div>
+		
+	</div>
+
+</div>
+</section>

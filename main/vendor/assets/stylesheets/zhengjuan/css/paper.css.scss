@@ -1,0 +1,23 @@
+body.cke_editable{counter-reset:questioncount groupcount categorycount; font-size:13px; line-height:16px}
+.cke_bottom.cke_reset_all{display: none !important;}
+
+.cke_editable div > p {display:block; position:relative; border-bottom:dotted 1px #ccc;border-top:dotted 1px #ccc; padding-left:18px; margin: -1px 0;}
+.cke_editable div > p:hover:before, div > p:hover:after{z-index:10;overflow:hidden;text-indent:0;margin:0;padding:0;cursor:pointer;font-size:12px;line-height:12px;color:#0000ff;position:absolute; left:0; width:12px; height:12px;}
+.cke_editable div > p:hover:before {content:'✂'; top:-6px;}
+.cke_editable div > p:hover:after {content:'✂'; bottom:-6px;}
+.cke_editable div.my-block{padding:8px 4px 8px 32px;margin-top:4px; border:solid 1px #ccc;position:relative;display:block;}
+.cke_editable div.my-block:before{font-size:12px;line-height:12px;overflow:hidden;content:attr(my-typetext);cursor:pointer;text-align:center;display: flex;display: -ms-flexbox;display: -webkit-flex;display: flex;-webkit-align-items: center;-ms-flex-align: center;align-items: center;position:absolute; left:0;top:0; width:18px; height:100%;padding: 0 4px;}
+.cke_editable div.my-block:after{font-size:12px;position:absolute;right:0;top:0;width:16px;height:16px;content:'✕';cursor:pointer}
+.cke_editable div.my-timu{}
+.cke_editable div.my-group,div.my-category{background-color:#eee;}
+.cke_editable div.my-other{background-color:#ccc;}
+.cke_editable div.my-timu:before{counter-increment:questioncount; content: '第\A'counter(questioncount,decimal-leading-zero)'\A'attr(my-typetext); background-color:#0000ff;color:#fff;}
+.cke_editable div.my-category:before{counter-increment:categorycount; content: attr(my-typetext)'\A'counter(categorycount,upper-roman);background-color:#444; color:#fff;}
+.cke_editable div.my-group:before{counter-increment:groupcount; content: attr(my-typetext)'\A'counter(groupcount,simp-chinese-informal);background-color:#777;color:#fff;}
+.cke_editable div.my-other:before{background-color:#ccc; color:#000;}
+.cke_editable div.my-active:before{background-color:#ff0000;}
+.cke_editable div.my-active{background-color:#ff0;opacity:0.8}
+.cke_editable div.my-block > p:hover:first-child:before  {content:'∧';font-size:14px;}
+.cke_editable div.my-block > p:hover:last-child:after {content:'∨';font-size:14px;}
+.cke_editable table{position:relative}
+.cke_editable table.table-answer:hover:before{content: '答案拆解';display: block;position: absolute;background-color: #ff0000;color: #fff;cursor: pointer;left: 0;top: -21px;font-size: 9px;height: 16px;border: solid 1px #999;padding: 2px 10px;border-radius: 5px;}
