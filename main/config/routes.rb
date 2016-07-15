@@ -1,8 +1,73 @@
 Rails.application.routes.draw do
 
+  devise_for :managers, controllers: {sessions: 'managers/sessions', 
+                                      registrations: 'managers/registrations', 
+                                      passwords: 'managers/passwords'}, 
+                        path_names: { sign_in: 'login', 
+                                      sign_out: 'logout' }
+
+  mount RuCaptcha::Engine => "/rucaptcha"
+
+                                    
+  namespace :managers do
+    root 'mains#index'
+
+    resources :mains do    
+      get 'navigation'
+    end
+    
+    resources :checkpoints do      
+      collection do 
+        post '/:id/move_node', action: :move_node, as: 'move_node'
+      end
+    end
+
+    resources :subject_checkpoints do    
+      collection do   
+        post '/:id/move_node', action: :move_node, as: 'move_node'
+        get 'list'
+        get 'get_subject_volume_ckps'
+        get 'get_volume_catalog_ckps'
+      end
+    end
+
+    concern :destroy_all do
+      delete 'destroy_all', on: :collection
+    end  
+
+    resources :roles, concerns: :destroy_all do
+      resources :role_permissions, concerns: :destroy_all 
+    end
+
+    resources :node_structures, concerns: :destroy_all do 
+      post 'add_ckps', on: :collection
+      resources :node_catalogs, concerns: :destroy_all do 
+        post 'add_ckps', on: :collection
+      end
+    end
+    
+    resources :permissions, concerns: :destroy_all
+    
+  end
+
   root 'welcomes#index'
+  get '/about_us', to: 'welcomes#about_us'
+  get '/contact', to: 'welcomes#contact'
 
   # routes for quiz_paper controller
+
+  resources :node_structures do
+    collection do 
+      get 'get_subjects'
+      get 'get_grades'
+      get 'get_versions'
+      get 'get_units'
+      get 'get_catalogs_and_tree_data'
+      get 'get_ckp_data' 
+      get 'get_tree_data_by_subject' 
+      get 'get_ckp_data_by_volume_catalog'
+   end
+  end
 
   resource :quizs do
     member do
@@ -30,6 +95,7 @@ Rails.application.routes.draw do
 #      post 'save_node'
 #      post 'update_node'
 #      post 'delete_node'
+      get 'dimesion_tree'
     end
   end
   
@@ -40,6 +106,130 @@ Rails.application.routes.draw do
     end
   end
 
+
+  resource :pupils do
+    member do
+      get 'my_home'
+      get 'my_report'
+    end
+  end
+
+  resource :teachers do
+    member do
+      get 'my_home'
+      get 'my_pupil'
+      get 'test_report'
+    end
+  end
+
+  resource :analyzers do
+    get 'my_home'
+    get 'my_paper(/:page)', action: 'my_paper', as: 'my_paper'
+    get 'my_log'
+    get 'region'
+  end
+
+  resource :papers do
+    member do
+      post 'paper_answer_upload'
+      post 'save_paper'
+      get 'get_paper'
+      get 'get_saved_paper'
+      post 'submit_paper'
+      post 'save_analyze'
+      get 'get_saved_analyze'
+      post 'submit_analyze'
+      post 'generate_all_reports'
+      get 'get_empty_score_file'
+      # post 'upload_filled_score_file'
+      get 'download_original_paper_answer'
+      get 'download_modified_paper_answer_emptyscore'
+      get 'download_imported_score'
+      get 'download_user_password_reporturl'
+      match 'import_filled_score', via: [:get, :post, :patch]
+      get 'download'
+      get 'download_page'
+    end 
+  end
+
+  resource :reports do
+    member do
+      post 'generate_all_reports'
+      get 'class_report'
+      get 'pupil_report'
+      get 'get_grade_report'
+      get 'get_class_report'
+      get 'get_pupil_report'
+      get 'square'
+      get 'check/:codes', to: "reports#first_login_check_report"
+      get 'new_square'
+      get 'grade'
+      get 'klass'
+      get 'pupil'
+    end
+  end
+
+  resource :monitors do
+    member do
+      get 'get_task_status'
+    end
+  end
+
+  resource :grade_reports do
+    member do
+      get 'index'
+    end
+  end
+
+  resource :class_reports do
+    member do
+      get 'index'
+    end
+  end
+
+  resource :pupil_reports do
+    member do
+      get 'index'
+    end
+  end
+
+  resource :gradereport do
+    member do
+      get 'index', to: "gradereport#index"
+      get 'demo',to: "gradereport#demo"
+    end
+  end
+
+  resource :classreport do
+    member do
+      get 'index', to: "classreport#index"
+      get 'demo',to: "classreport#demo"
+    end
+  end
+
+  resource :pupilreport do
+    member do
+      get 'index', to: "pupilreport#index"
+      get 'demo', to: "pupilreport#demo"
+    end
+  end
+
+  resource :profile, only: [] do 
+    get 'message'
+    match 'init', via: [:get, :post]
+    post 'head_image_upload'
+    post 'save_info'
+  end
+
+  resources :messages, only: [] do 
+    collection do 
+      post 'send_sms_auth_number'
+      post 'send_email_auth_number'
+      post 'send_sms_forgot_password'
+      post 'send_email_forgot_password'
+    end
+  end
+  
   get '/ckeditors/urlimage'=> "ckeditor#urlimage"
 
   resources :librarys, :online_tests
@@ -50,6 +240,12 @@ Rails.application.routes.draw do
                    passwords: 'users/passwords'},
     path_names: { sign_in: 'login', 
                   sign_out: 'logout' }
+
+  devise_scope :user do
+    get 'users/get_user_password_file', :to => 'users/registrations#get_user_password_file'
+    post 'users/passwords/user_captcha_validate'
+  end
+
 
   ActiveAdmin.routes(self)
   # The priority is based upon order of creation: first created -> highest priority.
@@ -106,4 +302,15 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+  #######################################
+  ### Wechat API
+
+  namespace :wx do
+    post 'bind', to: "auths#wx_bind"
+    post 'get_indivisual_report_1', to: "reports#get_indivisual_report_1"
+  end
+  #######################################
+
+  # match '*path', to: 'welcomes#error_404', via: :all
 end

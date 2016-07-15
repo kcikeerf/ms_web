@@ -1,0 +1,21 @@
+<th data-options="field:'id',align:'center', width:'10%'">ID</th>
+<th data-options="field:'name',align:'center', width:'20%'">名称</th>
+<th data-options="field:'desc',align:'center', width:'45%'">描述</th>
+<th data-options="field:'ID',width:'15%',align:'center',formatter:formatOper">操作</th>
+
+		
+<% content_for :form do %>
+	<div class="fname">
+			<label>名称:</label>
+			<%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+		</div>
+		<div class="fdesc">
+			<label>描述:</label>
+			<%= text_field_tag :desc, '', class: 'easyui-validatebox' %>
+		</div>
+<% end %>
+<script type="text/javascript">
+	function formatOper(val,row,index){  
+	  return '<a href="<%= @data[:path] %>/'+row["id"]+'">查看权限</a> <a href="<%= @data[:path] %>/'+row["id"]+'/role_permissions/new">添加权限</a>';  
+	} 
+</script>

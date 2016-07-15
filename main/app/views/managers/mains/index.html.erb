@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>三维题库管理后台</title>
+    <%= stylesheet_link_tag 'managers/mains', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'managers/mains', 'data-turbolinks-track' => true %>
+
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="easyui-layout" data-options="fit:true">
+      <div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:20px;font-size:18px; font-weight:bold;">
+         三维题库管理后台    
+    </div>
+      <%= render 'shared/manager/left' %>
+      <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
+        <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
+            <div title="欢迎使用" style="padding:20px;overflow:hidden;" id="home">
+                
+            <h1>Welcome to here!</h1>
+
+            </div>
+        </div>
+    </div>
+  </div>
+      
+    </div>
+  </body>
+</html>

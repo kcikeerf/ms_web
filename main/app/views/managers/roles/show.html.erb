@@ -1,0 +1,16 @@
+	<p>
+		角色：<%= @role.name %>
+	</p>
+	<div>
+		已有权限
+		<ul>
+			<% @permissions.each do |p| %>
+				<li id='permission_<%= p.id %>'>
+					<%= p.permission.try(:permission_name) %>
+					<%= link_to '删除', managers_role_role_permission_path(@role, p), method: :delete, data: {confirm: '你确定要删除么', remote: true} %>
+				</li>	
+			<% end %>
+		</ul>
+
+		<%= link_to '添加新权限', new_managers_role_role_permission_path(@role) %>
+	</div>

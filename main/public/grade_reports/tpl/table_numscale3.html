@@ -1,0 +1,20 @@
+<script type="text/javascript">
+	$(function(){
+		$('#ability_excellent').html(classPupilNumStr.ability.excellent_pupil_percent);
+		$('#ability_good').html(classPupilNumStr.ability.good_pupil_percent);
+		$('#ability_failed').html(classPupilNumStr.ability.failed_pupil_percent);
+	})
+</script>
+<div class="wrapper-md">
+  <h1 class="font-thin h3">各班能力各指标各分数段人数比例数据表</h1>
+</div>
+<div class="wrapper-md">
+    <div id="table_data" class="datatable clearfix">
+        <h2>能力得分率≥85%（优秀率）人数比例</h2>
+        <table id="ability_excellent"></table>
+        <h2> 60≤能力得分率﹤85（良好达标率）人数比例</h2>
+        <table id="ability_good"></table>
+        <h2>能力得分率﹤60 （不及格率）人数比例</h2>
+        <table id="ability_failed"></table>
+    </div>
+</div>

@@ -32,33 +32,24 @@
 
     $("#subject").on("change", function(){
 
-      var $grades = $("#grade")[0];
-      var $versions = $("#version")[0];
-      var $quiz_types = $("#cat")[0];
+      var $grades = $("#grade");
+      var $quiz_types = $("#cat");
 
-      if(this.value == ''){
-        $($grades).find('option:gt(0)').remove();
-        $($versions).find('option:gt(0)').remove();
-        $($quiz_types).find('option:gt(0)').remove();
-        return false;
-      }      
+      $grades.find('option:gt(0)').remove();
+      $quiz_types.find('option:gt(0)').remove();
+
+      if(this.value == '') return false;
       
       // grade and versions
       var grades = json_data[this.value], index = 0;
   
       $.each(grades.items, function(c, grade){
-
-        // $.each(grade.items, function(k, v){
-        //   if(index == 0) $versions.add(new Option(v.label, k));
-        // });
-
-        $grades.add(new Option(grade.label, c));
-        index++;
+        $grades.get(0).add(new Option(grade.label, c));
       });
 
       // quize_type
       $.each(quiz_types_data[this.value], function(i, name) {
-        $quiz_types.add(new Option(name.label, name.type));
+        $quiz_types.get(0).add(new Option(name.label, name.type));
       });
 
     });

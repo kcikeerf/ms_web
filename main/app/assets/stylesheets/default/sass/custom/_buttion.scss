@@ -1,0 +1,17 @@
+.btn {
+  font-weight: 100;
+
+  &:focus,
+  &.focus {
+    outline: none;
+  }
+
+  &:active,
+  &.active {
+    &:focus,
+    &.focus {
+      outline: none;
+    }
+  }
+
+}

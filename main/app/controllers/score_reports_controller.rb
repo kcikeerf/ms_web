@@ -1,5 +1,4 @@
 class ScoreReportsController < ApplicationController
-	layout 'bootstrap'
 
 	def simple
 		
