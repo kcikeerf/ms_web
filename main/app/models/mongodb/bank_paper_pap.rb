@@ -260,10 +260,11 @@ class Mongodb::BankPaperPap
     qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
     qzpoints.each{|qzp|
       qzp.bank_checkpoint_ckps.each{|ckp|
+        next unless ckp
         levels = [*1..Common::Report::CheckPoints::Levels]
         levels.each{|lv|
           # search current level checkpoint
-          lv_ckp = BankCheckpointCkp.where("node_uid = #{self.node_uid} and rid = #{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}").first
+          lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
 
           temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
           result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] = temp_arr
@@ -290,10 +291,10 @@ class Mongodb::BankPaperPap
     qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
     qzpoints.each{|qzp|
       qzp.bank_checkpoint_ckps.each{|ckp|
-
+        next unless ckp
         # search current level checkpoint
-        lv1_ckp = BankCheckpointCkp.where("node_uid = #{self.node_uid} and rid = #{ckp.rid.slice(0, 3)}").first
-        lv2_ckp = BankCheckpointCkp.where("node_uid = #{self.node_uid} and rid = #{ckp.rid.slice(0, 6)}").first
+        lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+        lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
 
         result[ckp.dimesion.to_sym]
 
@@ -759,8 +760,9 @@ class Mongodb::BankPaperPap
         qizpoint = Mongodb::BankQizpointQzp.where(_id: hidden_row[qzp_index]).first
         ckps = qizpoint.bank_checkpoint_ckps
         ckps.each{|ckp|
-          lv1_ckp = BankCheckpointCkp.where("node_uid = #{self.node_uid} and rid = #{ckp.rid.slice(0,3)}").first
-          lv2_ckp = BankCheckpointCkp.where("node_uid = #{self.node_uid} and rid = #{ckp.rid.slice(0,6)}").first
+          next unless ckp
+          lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+          lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
           param_h[:dimesion] = ckp.dimesion
           param_h[:lv1_ckp] = lv1_ckp.checkpoint
           param_h[:lv2_ckp] = lv2_ckp.checkpoint
