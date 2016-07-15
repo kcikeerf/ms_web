@@ -1,0 +1,62 @@
+<script type="text/javascript">
+	$(function(){
+		$('#excellent_table').html(answerCase.excellent);
+		$('#good_table').html(answerCase.good);
+		$('#failed_table').html(answerCase.failed);
+	})
+</script>
+<div class="wrapper-md">
+  <h1 class="font-thin h3">班级学生答题情况统计</h1>
+  <small class="titleexplain">说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为【0，1】，数值越大，表明答对人数越多。答对率低于0.6的题目是本班的薄弱点，需要重点关注。</small>
+</div>
+
+<div class="wrapper-md">
+
+    <div id="table_static" class="clearfix">
+        <section ng-controller="GridDemoCtrl1">
+            <div class="panel-heading">
+                答对率 ≥ 0.85的题目
+            </div>
+            <table class="static-table">
+            	<tr>
+            		<th>题号</th>
+            		<th>答对率</th>
+            	</tr>
+            	<tbody id="excellent_table">
+            		
+            	</tbody>
+            </table>
+        </section>
+        
+        <section class="tablecenter" ng-controller="GridDemoCtrl2">
+            <div class="panel-heading">
+                0.6 ≤ 答对率 < 0.85的题目
+            </div>
+            <table class="static-table">
+            	<tr>
+            		<th>题号</th>
+            		<th>答对率</th>
+            	</tr>
+            	<tbody id="good_table">
+            		
+            	</tbody>
+            </table>
+        </section>
+    
+        <section class="wraning" ng-controller="GridDemoCtrl3">
+            <div class="panel-heading">
+                答对率 < 0.6的题目
+            </div>
+            <table class="static-table">
+            	<tr>
+            		<th>题号</th>
+            		<th>答对率</th>
+            	</tr>
+            	<tbody id="failed_table">
+            		
+            	</tbody>
+            </table>
+        </section>
+    </div>
+    
+</div>

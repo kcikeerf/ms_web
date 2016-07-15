@@ -1,0 +1,54 @@
+<section>
+		<div class="container clearfix page">
+			<div class="page-header">
+				<h2>完善资料</h2>
+			</div>			
+			<div class="page-body clearfix">
+				<%= simple_form_for(@resource, url: init_profile_path, html: {class: 'form-horizontal col-offset-3 profile', method: :post}) do |f| %>
+					<%= render 'shared/error_messages', target: current_user %>
+					<%= f.simple_fields_for :user do |u| %>
+						<%= u.input :name, label: '用户名', required: false, placeholder: '6-19位字母、数字，必须包含字母', hint: '用户名可用于登录，一旦设置不可修改，必须包含字母', maxlength: 20 %>
+						<%#= error_message(current_user, :name) %>	
+					<% end %>
+					<%= f.input :name, label: '姓名' %>
+					<%= f.input :subject, label: '科目' unless current_user.is_pupil? %>
+					<%= f.input :grade, label: '年级' if current_user.is_pupil? %>
+					<%= f.input :classroom, label: '班级' if current_user.is_pupil? %>
+					<%= f.input :school, label: '学校' unless current_user.is_analyzer? %>
+					<%= f.simple_fields_for :user do |u| %>
+						
+					<div class="form-group">
+						<label class="control-label">手机号</label>
+						<%= u.text_field :phone, class: 'form-control' %>
+						<input id="mobilebinding" class="btn binding" type="button" value="绑定" data-toggle="collapse" data-target="#collapsemobile" aria-expanded="false" aria-controls="collapsemobile" onclick="mobilebind()">
+						<span class="explain">绑定手机号可用于登录、找回密码</span>
+					</div>
+
+					<div class="collapse" id="collapsemobile">
+						<div class="form-group captcha">
+							<%= text_field_tag :mobile_auth_number, '', placeholder: '请输入验证码', class: ' form-control' %>
+							<input class="btn send" type="button" value="发送验证码" id="send_mobile_auth_number" data-loading-text="发送中..." data-complete-text="重新获取" >
+						</div>
+					</div>
+
+					<%= u.input :qq, label: 'QQ', required: false if current_user.is_teacher? %>
+
+					<div class="form-group">
+						<label class="control-label">邮箱</label>
+						<%= u.text_field :email, class: 'form-control' %>
+						<input id="emailbinding" class="btn binding" type="button" value="绑定" data-toggle="collapse" data-target="#collapsemail" aria-expanded="false" aria-controls="collapsemail" onclick="emailbind()"><span class="explain">绑定邮箱可用于登录、找回密码</span>
+					</div>
+					<div class="collapse" id="collapsemail">
+						<div class="form-group captcha">
+							<%= text_field_tag :email_auth_number, '', class: 'form-control', placeholder: '邮箱验证码' %>
+							<input class="btn send" type="button" value="发送验证码" id="send_email_auth_number" data-loading-text="发送中..." data-complete-text="重新获取" >
+						</div>
+					</div>				
+					<% end %>
+					<div class="form-group">
+						<%= f.button :submit, '保存' %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</section>

@@ -1,0 +1,31 @@
+@charset "utf-8";
+*{-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+:after, :before {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+body,h1,h2,h3,h4,h5,h6,hr,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,input,textarea,th,td{margin:0;padding:0;word-break:normal;}
+address,cite,dfn,em,var{font-style:normal;}
+code,kbd,pre,samp{font-family:courier new,courier,monospace;}
+h1,h2,h3,h4,h5,h6,p,a,span{text-transform:none !important;}
+small{font-size:12px;}
+ul,ol{list-style:none outside none;}
+sup{vertical-align:text-top;}
+sub{vertical-align:text-bottom;}
+legend{color:#000000;}fieldset,img{border:0 none;}
+button,input,select,textarea{font-size:100%;}
+table{border-collapse:collapse;border-spacing:0;}
+article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{display:block;margin:0;padding:0;}
+mark{background:none repeat scroll 0 0 #FFFF00;}
+body{/*font-family:Verdana,Arial,Helvetica,sans-serif;*/}
+img{border:medium none;vertical-align: middle;}
+body a{text-decoration:none;}
+a:acitve{color:inherit;}
+.clearfix:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+.clearfix:before {content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+a:link, a:visited, a:hover, a:active, a:focus{outline: none;text-decoration:none;}
+h1 em, h2 em, h3 em, h4 em, h5 em, h6 em, p em{font-style: italic;}
+s,b{font-weight: normal;text-decoration: none;}
+input:focus, textarea:focus,
+input:active,
+button:active,
+button:visited,
+button{outline: none;}
+::-ms-clear, ::-ms-reveal{display: none;}

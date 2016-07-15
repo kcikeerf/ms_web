@@ -1,45 +1,75 @@
 class BankNodestructure < ActiveRecord::Base
   self.primary_key = "uid"
 
-  include ActiveRecordPatch
-  before_create :set_create_time_stamp
-  before_save :set_update_time_stamp
+  #concerns
+  include TimePatch
+  include InitUid
 
-  before_create :init_uid
-
-#  has_many :bank_tbc_ckps, foreign_key: "tbs_uid"
+  has_many :bank_tbc_ckps, foreign_key: "tbs_uid"
   has_many :bank_checkpoint_ckps, foreign_key: "node_uid"#, through: :bank_tbc_ckps
 
-  has_many :bank_node_catalogs, foreign_key: "node_uid"
+  has_many :bank_node_catalogs, foreign_key: "node_uid", dependent: :destroy
+
+  has_many :bank_nodestructure_subject_ckps, foreign_key: 'node_structure_uid', dependent: :destroy
+  has_many :bank_subject_checkpoint_ckps, through: :bank_nodestructure_subject_ckps
 
   accepts_nested_attributes_for :bank_checkpoint_ckps, :bank_node_catalogs
 
-  def self.list_structures
-    result = {}
-    self.all.each{|bn|
-      if bn.subject && !result.keys.include?(bn.subject)
-        result[bn.subject] = {"label" => I18n.t("dict.#{bn.subject}"),"items" =>{}}
-#      else
-#        return result
-      end
-      keys_arr = result[bn.subject]["items"].keys
-      if bn.grade && !keys_arr.include?(bn.grade)
-        result[bn.subject]["items"][bn.grade] = {"label" => I18n.t("dict.#{bn.grade}"), "items" =>{}}
-#      else
-#        return result
-      end
-      keys_arr = result[bn.subject]["items"][bn.grade]["items"].keys
-      if bn.version && bn.volume && !keys_arr.include?(bn.version+"("+bn.volume+")")
-        result[bn.subject]["items"][bn.grade]["items"][bn.version+"("+bn.volume+")"] = {"label" => I18n.t("dict.#{bn.version}") + "("+I18n.t("dict.#{bn.volume}")+")", "node_uid" => bn.uid, "items"=>{}}
-#      else
-#        return result
-      end
-    }
-    return result
+  validates :grade, :subject, :version, :volume, presence: true
+
+  scope :by_subject, ->(subject) { where(subject: subject) }
+
+  scope :by_grade, ->(grade) { where(grade: grade) }
+
+  class << self
+
+    def list_structures
+      result = {}
+      self.all.each{|bn|
+        if bn.subject && !result.keys.include?(bn.subject)
+          result[bn.subject] = {"label" => I18n.t("dict.#{bn.subject}"),"items" =>{}}
+  #      else
+  #        return result
+        end
+        keys_arr = result[bn.subject]["items"].keys
+        if bn.grade && !keys_arr.include?(bn.grade)
+          result[bn.subject]["items"][bn.grade] = {"label" => I18n.t("dict.#{bn.grade}"), "items" =>{}}
+  #      else
+  #        return result
+        end
+        keys_arr = result[bn.subject]["items"][bn.grade]["items"].keys
+        if bn.version && bn.volume && !keys_arr.include?(bn.version+"("+bn.volume+")")
+          result[bn.subject]["items"][bn.grade]["items"][bn.version+"("+bn.volume+")"] = {"label" => I18n.t("dict.#{bn.version}") + "("+I18n.t("dict.#{bn.volume}")+")", "node_uid" => bn.uid, "items"=>{}}
+  #      else
+  #        return result
+        end
+      }
+      return result
+    end
+
+    def subject_gather
+      self.all.map{|item| {label: I18n.t("dict.#{item.subject}"), name: item.subject} }.uniq
+    end
+
+    def grade_gather(subject)
+      by_subject(subject).map{ |m| {label: I18n.t("dict.#{m.grade}"), name: m.grade} }
+    end
+
+    def version_gather(subject, grade)
+      by_subject(subject).by_grade(grade).map{ |m| { label: I18n.t('dict.' + m.version), name: m.version } }
+    end
+
+    def unit_gather(subject, grade, version)
+      by_subject(subject).by_grade(grade).where(version: version).map{ |m| { label: I18n.t('dict.' + m.volume), name: m.volume, node_uid: m.uid } }
+    end
+
   end
 
-  private
-  def init_uid
-    self.uid=Time.now.to_snowflake.to_s
+  def add_ckps(ckps)
+    tranction do 
+      bank_nodestructure_subject_ckps.destroy_all
+      bank_nodestructure_subject_ckps.create(ckps)
+    end
   end
+
 end

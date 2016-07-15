@@ -1,23 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<title><%= @page_title ? "#{@page_title}-#{t('page.site_name')}" : t('page.site_name') %></title>
-	<%= stylesheet_link_tag 'bootstrap', media: 'all', 'data-turbolinks-track' => true %>
-	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-	<%#= favicon_link_tag '/common/zy_logo.png' %>
-	<%= yield(:header) %>
-	<%= csrf_meta_tags %>
-</head>
-<body>
-	<%= render 'shared/top' %>
-	<div class="marinBody w100 ohidden">
-		<div class="mainCenter bc ohidden">
-			<%= render 'shared/user_left_menu' %>
-			<div class="mainRight fr ohidden">
-				<%= yield %>
-			</div>
-		</div>
-		<%= render 'shared/footer' %>
-	</body>
-	</html>
+<%= extends :application do %>
+
+	<% replace :head_content do %>
+		<%= stylesheet_link_tag 'default/users', media: 'all', 'data-turbolinks-track' => true %>
+		<%= javascript_include_tag 'application', 'users', 'data-turbolinks-track' => true %>
+	<% end %>
+
+	<%= yield %>
+
+	<% append :footer do %>
+		<%= render 'shared/common_dialog' %>
+	<% end %>
+	
+<% end %>

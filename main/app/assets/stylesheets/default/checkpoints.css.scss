@@ -1,0 +1,55 @@
+/*========弹出框样式=========*/
+.dialog-title{
+    text-align:center;
+    font-size:14px;
+    line-height:24px;
+}
+.modal-content{
+    padding:0;
+    position:relative;
+}
+#modal-header{
+    padding:0;
+    
+}
+#modal-header .close{
+    position: absolute;
+    right:5px;
+    top:5px;
+    margin:0;
+    font-size:18px;
+}
+.modal-footer{
+    border-top:none;
+    padding:0;
+    padding-top:24px;
+    border-top:1px solid #eee;
+}
+.modal-footer .btn{
+    padding:0;
+    width:108px;
+    height:28px;
+    line-height:28px;
+    border:1px solid #eee;
+    background:#fcfcfc;
+    color:#333;
+    font-family: "微软雅黑";
+}
+.modal-footer .btn-primary{
+    border:0 none;
+    background:#498df7;
+    color:#fff;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+

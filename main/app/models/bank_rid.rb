@@ -28,6 +28,36 @@ class BankRid < ActiveRecord::Base
     return result
   end
 
+  def self.get_all_higher_nodes obj=nil,target
+    result = [] 
+    return result if obj.blank?
+    rid_len = target.nil??  0 : target.rid.size 
+    return result if rid_len == Common::SwtkConstants::CkpStep
+    
+    cond_arr = []
+    [*1..(rid_len/Common::SwtkConstants::CkpStep - 1)].each{|index|
+      cond_arr << "(rid=SUBSTR(rid, 1, #{Common::SwtkConstants::CkpStep* index}) and LENGTH(rid)=#{Common::SwtkConstants::CkpStep* index})" 
+    }
+
+    cond_str = cond_arr.join(" or ")
+    result = obj.where(cond_str).to_a
+    return result
+  end
+
+  def self.update_ancestors obj, current, attrs
+    return false if (obj.blank? || current.blank? || attrs.blank?)
+
+    rid_len = current.rid.size
+    [*1..(rid_len/Common::SwtkConstants::CkpStep - 1)].each{|index|
+      cond_str = "rid = ?"
+      ancestors = obj.where(cond_str, current.rid.slice(0, Common::SwtkConstants::CkpStep*index))
+      ancestors.each{|ancestor|
+        ancestor.update_attributes(attrs)
+      }
+    } 
+        
+  end
+
   # get new node rid
   #
   # obj: model name
@@ -35,7 +65,7 @@ class BankRid < ActiveRecord::Base
   #
   def self.get_new_rid obj=nil,pid
     result =""
-    return result if obj.blank?
+    #return result if obj.blank?
     pid="" if pid.blank?
     pid_len = pid.size
     return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
@@ -43,7 +73,7 @@ class BankRid < ActiveRecord::Base
     cond_str = "LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ?"
 #    max_child_rid = obj.where(cond_str, pid_len, target_len, pid_len, pid).maximum('rid')
 #    if max_child_rid
-    child_rids = obj.where(cond_str, pid_len, target_len, pid_len, pid).map{|item| item.rid.slice(pid_len, Common::SwtkConstants::CkpStep)}
+    child_rids = obj.nil?? []:obj.where(cond_str, pid_len, target_len, pid_len, pid).map{|item| item.rid.slice(pid_len, Common::SwtkConstants::CkpStep)}
     unless child_rids.blank?
       #next_rid = self.where("rid > ?", max_child_rid.slice(pid_len, Common::SwtkConstants::CkpStep)).limit(1)
       next_rid = self.where("rid not in (?)", child_rids).limit(1)

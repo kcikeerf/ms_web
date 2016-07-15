@@ -1,0 +1,42 @@
+/*
+*= require easyui/themes/default/easyui.css
+*= require easyui/themes/icon.css
+*= require_self
+*/
+
+
+#dlg #fm{
+	padding:5px;
+	font-family: "微软雅黑";
+	font-size:14px;
+	color:#444;
+}
+#dlg #fm div{
+	overflow:hidden;
+	margin-bottom: 10px;
+}
+#dlg #fm label{
+	width:70px;
+	height:24px;
+	line-height:24px;
+	float:left;
+}
+#dlg #fm input[type="text"]{
+	width:185px;
+	float:left;
+	height:22px;
+	line-height:22px;
+	border-radius: 3px;
+	border:1px solid #ccc;
+	outline: none;
+	padding-left:10px;
+	color:#888;
+}
+#dlg #fm select{
+	width:195px;
+	float:left;
+	border-radius: 3px;
+	border:1px solid #ccc;
+	padding-left:10px;
+	color:#888;
+}
