@@ -1,40 +1,43 @@
 
-<div class="re_content w100 sy_login_block">
-  <div class="re_panel bc">
-    <div class="re_top bc">
-      <div class="re_logo bc"></div>
-      <p class="tc f16"><%= t('page.sign_up.name') %></p>
-    </div>
-    <div class="lo_con bc">
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-        <%= hidden_field_tag :url, '' %>
-        <p><%= f.text_field :login, placeholder: t('page.sign_in.login_placeholder'), class: 'ff' %></p>
+<section class="section">
+  <div class="container">
 
-        <p><%= f.password_field :password, placeholder: t('page.sign_up.password_placeholder') , class: 'ff' %></p>
-
-        <div class="ohidden f12">
-          <b class="fl ohidden ">
-            <input id="check" class="fl" type="checkbox" checked="checked" />
-            <label class="cp" for="check" class="fl"><%= t('page.sign_in.remember_me') %></label>
-          </b>
-          <%= link_to t('page.sign_in.forgot_password'), '' %>
+    <div class="loginwrap">
+      <h4 class="modal-title text-center"><%= t('page.login') %></h4>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form-horizontal', id: 'loginForm'}) do |f| %>
+      <%= hidden_field_tag :url, '' %>
+      <div class="form-group">
+        <div class="col-md-12">
+          <%= f.text_field :login, placeholder: t('page.sign_in.login_placeholder'), class: 'form-control' %>
         </div>
-        <p>
-          <%= submit_tag t('page.login'), class: 'cp f16 ff' %>
-        </p>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <%= f.password_field :password, placeholder: t('page.sign_up.password_placeholder') , class: 'form-control' %>
+          <%= raw "<small class='help-block'>#{alert}</small>" if alert %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary"><%= t('page.login') %></button>
+        </div>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :remember_me, checked: true %> <%= t('page.sign_in.remember_me') %>
+        </label>
+        <label class='pull-right'>
+          <%= link_to t('page.sign_in.forgot_password'), new_user_password_path %>
+        </label>
+      </div>
       <% end %>
     </div>
-    <div class="openID tc">
-      <h2 class="f12"><span><%= t('page.sign_in.other') %></span></h2>
-      <div class="IDbox ohidden  f12">
-        <%= link_to t('page.sign_in.qq'), '' %>
-        <%= link_to t('page.sign_in.weixin'), '' %>
-        <%= link_to t('page.sign_in.weibo'), '' %>
-      </div>
-    </div>
-    <div class="login_footer tc f12">
-      <%= t('page.sign_in.direct_register') %>
-      <%= link_to t('page.register'), new_user_registration_path %>
-    </div>
+
   </div>
-</div>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+      $('body').attr('id', 'login');
+      $('footer').addClass('pb');
+    })
+</script>

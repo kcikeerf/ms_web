@@ -1,6 +1,5 @@
 module SwtkErrors
- 
- class ParameterInvalidError < StandardError
- end
-
+ class SavePaperHasError < StandardError;end
+ class ParameterInvalidError < StandardError;end
+ class UserExistedError < StandardError;end
 end

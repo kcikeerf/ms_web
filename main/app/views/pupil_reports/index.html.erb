@@ -1,0 +1,31 @@
+<% content_for :head do %>
+	<link rel="stylesheet" href="/pupil_reports/css/main.css">
+	<!-- <script src="/pupil_reports/js/angular.min.js"></script>
+	<script src="/pupil_reports/js/angular-route.min.js"></script>
+	<script src="/pupil_reports/js/ui-bootstrap-tpls.min.js"></script>
+	<script src="/pupil_reports/js/app.js"></script> -->
+<% end %>
+<section>
+	<div class="container" ng-controller="NavbarCtrl">
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="gradients"></div>
+			<div class="navbar-header">
+				<p><b>【英语<i>.</i>个人报告】</b>西安交大附属中学2016年春季学期英语期中测试诊断报告</p>
+			</div>
+
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="javascript:void(0);">王晓明</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		<iframe src="/pupil_reports/report_data"></iframe>
+	</div>
+</section>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$("body").attr('id', 'report')
+	})
+</script>

@@ -29,7 +29,7 @@
        </li>
        <li class="col-md-12">
          <label><%= t('page.quiz.source') %>：</label>
-         <input class="form-control" type="test" value="七年级英语在线测试_20160306001">
+         <input class="form-control" type="test" value="">
        </li>
        </ul>
      </dd>
@@ -67,24 +67,23 @@
           <p>
             <label><%= t('page.quiz.small_score') %>：</label>
             <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a), class: 'form-control' %>
-          </p>
-          <p>
-            <label>
-              <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" /> <%= t('page.quiz.subjective_item') %>
+            <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" /> <%= t('page.quiz.subjective_item') %>
               <input type="hidden" name="bank_qizpoint_qzps[][type]" value="option2" />
-            </label>
-            <%= t('page.quiz.tip_objective_item') %>
           </p>
+          
         </li>
         <li class="line"></li>
         <li class="last">
-          <label class="title"><%= t('page.quiz.three_dimensiona_digital_analysis') %></label>
+          <label class="title">
+          	<%= t('page.quiz.three_dimensiona_digital_analysis') %>
+          	<!-- 点击按钮触发模态框 -->
+						<input type="button" id="AAA-btn" class="btn btn-primary btn-lg" data-toggle="modal" href="/checkpoints/dimesion_tree"
+						   			 value="点击">          
+						</label>
           <p>
-            
-
-            <span><label><%= t('dict.knowledge') %>：</label><input readonly  type="text" name="knowledge" class="form-control" placeholder="" data-toggle="modal" data-target=".bs-example-modal-lg"></span>
-            <span><label><%= t('dict.skill') %>：</label><input readonly type="text" name="skill" class="form-control" placeholder="" data-toggle="modal" data-target=".bs-example-modal-lg"></span>
-            <span><label><%= t('dict.ability') %>：</label><input readonly type="text" name="capacity" class="form-control" placeholder="" data-toggle="modal" data-target=".bs-example-modal-lg"></span>
+            <span><label><%= t('dict.knowledge') %>：</label><input readonly  type="text" name="knowledge" class="form-control" placeholder="" data-toggle="modal" data-target="#commonDialog" href="/checkpoints/dimesion_tree"></span>
+            <span><label><%= t('dict.skill') %>：</label><input readonly type="text" name="skill" class="form-control" placeholder="" data-toggle="modal" data-target="#commonDialog" href="/checkpoints/dimesion_tree"></span>
+            <span><label><%= t('dict.ability') %>：</label><input readonly type="text" name="capacity" class="form-control" placeholder="" data-toggle="modal" data-target="#commonDialog" href="/checkpoints/dimesion_tree"></span>
           </p>
         </li>
       </ul>
@@ -100,14 +99,10 @@
             <p>
               <label><%= t('page.quiz.small_score') %>：</label>
               <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a, qzp['score'].try(:to_i)), class: 'form-control' %>
+              <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" /> <%= t('page.quiz.subjective_item') %>
+              <input type="hidden" name="bank_qizpoint_qzps[][type]" value="option2" />
             </p>
-            <p>
-              <label>
-                <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" <%= 'checked' if 'option1' == qzp['type'] %> /> <%= t('page.quiz.subjective_item') %>
-                <input type="hidden" name="bank_qizpoint_qzps[][type]" value="<%= qzp['type'] %>" />
-              </label>
-              <%= t('page.quiz.tip_objective_item') %>
-            </p>
+            
           </li>
           <li class="line"></li>
           <li class="last">
@@ -160,39 +155,22 @@
 </div>
 <script type="text/javascript">
   $(document).ready(function(){
-
     var json_data = <%= raw @subjects_related_data.to_json %>;
     var quiz_types_data = <%= raw @quize_types.to_json %>;
-
     $("#subject").on("change", function(){
-
-      var $grades = $("#grade")[0];
-      var $versions = $("#version")[0];
-      var $quiz_types = $("#cat")[0];
-
-      if(this.value == ''){
-        $($grades).find('option:gt(0)').remove();
-        $($versions).find('option:gt(0)').remove();
-        $($quiz_types).find('option:gt(0)').remove();
-        return false;
-      }      
-      
+      var $grades = $("#grade");
+      var $quiz_types = $("#cat");
+      $grades.find('option:gt(0)').remove();
+      $quiz_types.find('option:gt(0)').remove();
+      if(this.value == '') return false;
       // grade and versions
       var grades = json_data[this.value], index = 0;
-  
       $.each(grades.items, function(c, grade){
-
-        // $.each(grade.items, function(k, v){
-        //   if(index == 0) $versions.add(new Option(v.label, k));
-        // });
-
-        $grades.add(new Option(grade.label, c));
-        index++;
+        $grades.get(0).add(new Option(grade.label, c));
       });
-
       // quize_type
       $.each(quiz_types_data[this.value], function(i, name) {
-        $quiz_types.add(new Option(name.label, name.type));
+        $quiz_types.get(0).add(new Option(name.label, name.type));
       });
 
     });
@@ -200,25 +178,23 @@
     $("#grade").on("change", function(){
       var subject = $("#subject").val();
 
-      var $versions = $("#basic_info select[name='version']");
+      var $versions = $("#version");
 
       if(this.value == ""){
         $versions.find('option:gt(0)').remove();
         return false;
       }
-
       $versions.find('option:gt(0)').remove();
       
       $.each(json_data[subject].items[this.value].items, function(k, v){
         $versions.append('<option uid="' + v.node_uid + '" value="' + k +  '">' + v.label + '</option>')//new Option(v.label, k))
       })
     })
-
     <% unless @quiz.new_record? %>
       $("#subject").val('<%= @quiz_hash_data[:subject] %>').trigger('change');
       $("#grade").val('<%= @quiz_hash_data[:grade] %>').trigger('change');
       $("#cat").val("<%= @quiz[:cat] %>");
-      $("#version").val("<%= @quiz_hash_data[:version] %>");
+      $("#version").val("<%= @quiz_hash_data[:version] %>").change();
       CKEDITOR.replace('TextArea1');
       CKEDITOR.replace('TextArea2');
     <% end %>

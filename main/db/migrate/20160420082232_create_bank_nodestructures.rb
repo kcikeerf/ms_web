@@ -1,7 +1,7 @@
 class CreateBankNodestructures < ActiveRecord::Migration
   def change
     create_table :bank_nodestructures, id: false do |t|
-      t.string :uid, limit: 36
+      t.column :uid, "VARCHAR(255) PRIMARY KEY"
       t.string :subject, limit: 50
       t.string :version, limit: 50
       t.string :grade, limit: 50

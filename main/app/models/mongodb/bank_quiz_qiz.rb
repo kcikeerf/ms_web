@@ -31,6 +31,7 @@ class Mongodb::BankQuizQiz
   field :level, type: Float
   field :levelword, type: String
   field :levelorder, type: Integer
+  field :order, type: Integer
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
@@ -43,33 +44,36 @@ class Mongodb::BankQuizQiz
 
   def save_quiz params
     #params = JSON.parse(params["_json"]) if params["_json"]
-    result = false
+    qzp_arr = []
    
-    begin
+#    begin
       original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
       delete_all_related_qizpoints original_qzp_ids
+
 #      self.bank_qizpoint_qzps=[]
       self.update_attributes({
-        :node_uid => params["node_uid"].nil?? nil:params["node_uid"],
-        :pap_uid => params["pap_uid"].nil?? nil:params["pap_uid"],
-        :tbs_uid => params["tbs_uid"].nil?? nil:params["tbs_uid"],
-        :tpl_id => params["tpl_id"].nil?? nil:params["tpl_id"],
-        :ext1 => params["ext1"].nil?? nil:params["ext1"],
-        :ext2 => params["ext2"].nil?? nil:params["ext2"],
-        :cat => params["cat"].nil?? nil:params["cat"],
-        :type => params["type"].nil?? nil:params["type"],
-        :text => params["text"].nil?? nil:params["text"],
-        :answer => params["answer"].nil?? nil:params["answer"],
-        :desc => params["desc"].nil?? nil:params["desc"],
-        :score => params["score"].nil?? nil:params["score"],
-        :time => params["time"].nil?? nil:params["time"],
-        :levelword2 => params["levelword2"].nil?? nil:params["levelword2"],
-        :level => params["level"].nil?? nil:params["level"],
-        :levelword => params["levelword"].nil?? nil:params["levelword"],
-        :levelorder => params["levelorder"].nil?? nil:params["levelorder"]
+        :node_uid => params["node_uid"] || "",
+        :pap_uid => params["pap_uid"] || "",
+        :tbs_uid => params["tbs_uid"] || "",
+        :tpl_id => params["tpl_id"] || "",
+        :ext1 => params["ext1"] || 0,
+        :ext2 => params["ext2"] || 0,
+        :cat => params["cat"] || "",
+        :type => params["type"] || "",
+        :text => params["text"] || "",
+        :answer => params["answer"] || "",
+        :desc => params["desc"] || "",
+        :score => params["score"] || 0.00,
+        :time => params["time"] || 0.00,
+        :levelword2 => params["levelword2"] || "",
+        :level => params["level"] || 0.00,
+        :levelword => params["levelword"] || "",
+        :levelorder => params["levelorder"] || "",
+#        :order => (params["order"].to_s || '0').ljust(Common::Paper::Constants::OrderWidth, '0')
+        :order => params["order"] || 0
       })
       self.save!
-
+=begin
       params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
         qiz_point = Mongodb::BankQizpointQzp.new
         qiz_point.save_qizpoint bqq
@@ -82,12 +86,35 @@ class Mongodb::BankQuizQiz
 	  }
         end
 
-      }
-    
-    rescue Exception => ex
-      return false
-    end
+      } unless params["bank_qizpoint_qzps"].blank?
+=end
+      if params["bank_qizpoint_qzps"]
+        qzp_arr = save_all_qzps self,params
+      end
+#    rescue Exception => ex
+#      return false
+#    end
+  end
+
+  def save_all_qzps quiz, params
+    result = []
+    params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
+      qiz_point = Mongodb::BankQizpointQzp.new
+      qiz_point.save_qizpoint bqq
+      result << qiz_point._id.to_s
+      quiz.bank_qizpoint_qzps.push(qiz_point)
+      if bqq["bank_checkpoints_ckps"]
+        save_qzp_all_ckps qiz_point,bqq["bank_checkpoints_ckps"]
+      end
+    }
     return result
+  end
+
+  def save_qzp_all_ckps qiz_point, params
+    params["bank_checkpoints_ckps"].each{|bcc|
+      ckp = Mongodb::BankCkpQzp.new
+      ckp.save_ckp_qzp qiz_point._id.to_s, bcc["uid"]
+    }
   end
 
   def destroy_quiz

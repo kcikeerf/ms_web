@@ -1,0 +1,22 @@
+<section>
+		<div class="container clearfix page">
+			<div class="page-header">
+				<h2>完善资料</h2>
+			</div>
+			
+			<div class="page-body clearfix">
+				<form id="profileForm" method="post" class="form-horizontal profile" action="">
+				<%= simple_form_for(@analyzer, url: init_profile_analyzers_path, html: {class: 'form-horizontal profile', method: :post}) do |f| %>
+					<%= render 'shared/error_messages', target: current_user %>
+
+					<%= f.input :name, label: '姓名' %>
+					<%= f.input :subject, label: '科目' %>
+					<%= render 'shared/user/email_and_phone', form: f %>
+
+					<div class="form-group">
+						<%= f.button :submit, '保存' %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</section>
