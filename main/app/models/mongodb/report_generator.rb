@@ -1048,9 +1048,17 @@ class Mongodb::ReportGenerator
   # gra_dim_lv2_avg_percent: 年级2级指标平均得分率
   #
   def add_avg_col
-    arr = Mongodb::ReportTotalAvgResult.where({}) # need add filter here, user_id or somethind
-
-    arr.each{|item|
+    filter = {
+#      :province => @province,
+#      :city => @city,
+#      :district => @district, 
+#      :school => @school,
+      '_id.pap_uid' => @pap_uid
+    }
+    arr = Mongodb::ReportTotalAvgResult.where(filter).no_timeout # need add filter here, user_id or somethind
+    total_num = arr.size
+    arr.each_with_index{|item,index|
+      logger.info(">>>>>>current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
       gra_common_cond = (item[:_id].keys.include?('grade') && 
         !item[:_id].keys.include?('classroom') && 
         !item[:_id].keys.include?('pup_uid') &&
@@ -1751,9 +1759,10 @@ class Mongodb::ReportGenerator
     qzpoints = @paper.bank_quiz_qizs.map{|item| item.bank_qizpoint_qzps}.flatten
     ckps = qzpoints.map{|item| item.bank_checkpoint_ckps}.flatten.uniq
     ckps.each{|ckp|
+        next unless ckp
         # search current level checkpoint
-        lv1_ckp = BankCheckpointCkp.where("node_uid = #{@paper.node_uid} and rid = #{ckp.rid.slice(0, 3)}").first
-        lv2_ckp = BankCheckpointCkp.where("node_uid = #{@paper.node_uid} and rid = #{ckp.rid.slice(0, 6)}").first
+        lv1_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+        lv2_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
 
         lv1_temph = result[ckp.dimesion][lv1_ckp.checkpoint] || {"value"=> {}, "items"=> {}}
         result[ckp.dimesion][lv1_ckp.checkpoint] = lv1_temph
