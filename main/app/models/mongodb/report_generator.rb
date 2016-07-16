@@ -1,5 +1,7 @@
 # -*- coding: UTF-8 -*-
 
+require 'thwait'
+
 class Mongodb::ReportGenerator
   include Mongoid::Document
 
@@ -1056,9 +1058,30 @@ class Mongodb::ReportGenerator
       '_id.pap_uid' => @pap_uid
     }
     arr = Mongodb::ReportTotalAvgResult.where(filter).no_timeout # need add filter here, user_id or somethind
-    total_num = arr.size
+    total_number = arr.size
+
+    worker_number = 20
+    worker_arr = []
+    step = total_number/worker_number
+
+    loop_number = (total_number%worker_number == 0)? worker_number : worker_number + 1
+    loop_number.times.each{|index|
+      worker_arr << Thread.new do
+        logger.info(">>>>>>>>>>>>>>>>>>>>>>Thread (No. #{index}): Begin")
+        start_pos = step*index
+        end_pos = step*(index +1) - 1
+        logger.info(">>>>>>>>>>>>>>>>>>>>>>Thread (No. #{index}) range: [#{start_pos}, #{end_pos}]")
+        add_avg_col_core index, arr[start_pos..end_pos]
+        logger.info(">>>>>>>>>>>>>>>>>>>>>>Thread (No. #{index}): End")
+      end 
+    }
+    ThreadsWait.all_waits(*worker_arr)
+  end
+
+  def add_avg_col_core th_index, arr
+    total_num =arr.size
     arr.each_with_index{|item,index|
-      logger.info(">>>>>>current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
+      logger.info(">>>>>>thread #{th_index}, current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
       gra_common_cond = (item[:_id].keys.include?('grade') && 
         !item[:_id].keys.include?('classroom') && 
         !item[:_id].keys.include?('pup_uid') &&
@@ -1102,8 +1125,8 @@ class Mongodb::ReportGenerator
         qzp_score_upt_h['value.gra_dim_avg'] = item[:value][:average]
         qzp_score_upt_h['value.gra_dim_avg_percent'] = item[:value][:average_percent]
       end
-      if item[:_id].keys.include?('dimesion')
-        results = Mongodb::ReportTotalAvgResult.where(qzp_score_common_cond)
+      unless qzp_score_upt_h.empty?
+        results = Mongodb::ReportTotalAvgResult.where(qzp_score_common_cond).no_timeout
         results.each{|result| result.update_attributes(qzp_score_upt_h)}
       end
     }  
