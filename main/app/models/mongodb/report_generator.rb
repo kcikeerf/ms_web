@@ -1058,6 +1058,9 @@ class Mongodb::ReportGenerator
       '_id.pap_uid' => @pap_uid
     }
     arr = Mongodb::ReportTotalAvgResult.where(filter).no_timeout # need add filter here, user_id or somethind
+
+    add_avg_col_core 1, arr
+=begin
     total_number = arr.size
 
     worker_number = 20
@@ -1076,6 +1079,7 @@ class Mongodb::ReportGenerator
       end 
     }
     ThreadsWait.all_waits(*worker_arr)
+=end
   end
 
   def add_avg_col_core th_index, arr
@@ -1145,26 +1149,47 @@ class Mongodb::ReportGenerator
     }
 
     map = %Q{
-      function(){
+      function(){      
+
         var value_obj = {
           reduced: 0,
           average_percent: this.value.average_percent,
           total_number: 1,
-          failed_pupil_number:  1,
-          good_pupil_number: 1,
-          excellent_pupil_number: 1,
+          failed_pupil_number:  0,
+          good_pupil_number: 0,
+          excellent_pupil_number: 0,
           failed_percent: 0,
           good_percent: 0,
           excellent_percent: 0,
-          level0_number: 1,
-          level25_number: 1,
-          level50_number: 1,
-          level75_number: 1,
+          level0_number: 0,
+          level25_number: 0,
+          level50_number: 0,
+          level75_number: 0,
           level0_percent: 0,
           level25_percent: 0,
           level50_percent: 0,
           level75_percent: 0
         }
+
+        if( 0.0 <= this.value.average_percent && this.value.average_percent < #{Common::Report::ScoreLevel::Level60} ){
+          value_obj.failed_pupil_number = 1;
+        } else if (#{Common::Report::ScoreLevel::Level60}<= this.value.average_percent && this.value.average_percent < #{Common::Report::ScoreLevel::Level85}){
+          value_obj.good_pupil_number = 1;
+        } else if (#{Common::Report::ScoreLevel::Level85} <= this.value.average_percent && this.value.average_percent <= 1.0){
+          value_obj.excellent_pupil_number = 1;
+        }
+
+
+        if( 0.0 <= this.value.average_percent && this.value.average_percent <= #{Common::Report::ScoreLevel::Level25} ){
+          value_obj.level0_number = 1;
+        } else if (#{Common::Report::ScoreLevel::Level25} < this.value.average_percent && this.value.average_percent <= #{Common::Report::ScoreLevel::Level50}){
+          value_obj.level25_number = 1;
+        } else if (#{Common::Report::ScoreLevel::Level50} < this.value.average_percent && this.value.average_percent <= #{Common::Report::ScoreLevel::Level75}){
+          value_obj.level50_number = 1;
+        } else if (#{Common::Report::ScoreLevel::Level75} < this.value.average_percent && this.value.average_percent <= 1.0){
+          value_obj.level75_number = 1;
+        }  
+
         if(this._id.pup_uid && !this._id.lv1_ckp && !this._id.lv2_ckp){
           emit(
               { pap_uid: this._id.pap_uid,
@@ -1260,24 +1285,15 @@ class Mongodb::ReportGenerator
 
         values.forEach(function(value){
           result.total_number += value.total_number;
-          if( 0 <= value.average_percent && value.average_percent < #{Common::Report::ScoreLevel::Level60} ){
-            result.failed_pupil_number += value.failed_pupil_number;
-          } else if (#{Common::Report::ScoreLevel::Level60}<= value.average_percent && value.average_percent < #{Common::Report::ScoreLevel::Level85}){
-            result.good_pupil_number += value.good_pupil_number;
-          } else if (#{Common::Report::ScoreLevel::Level85}<= value.average_percent && value.average_percent <= 1) {
-            result.excellent_pupil_number += value.excellent_pupil_number;
-          }
-
-          if( 0 <= value.average_percent && value.average_percent <= #{Common::Report::ScoreLevel::Level25} ){
-            result.level0_number += value.level0_number;
-          } else if (#{Common::Report::ScoreLevel::Level25} < value.average_percent && value.average_percent <= #{Common::Report::ScoreLevel::Level50}){
-            result.level25_number += value.level25_number;
-          } else if (#{Common::Report::ScoreLevel::Level50} < value.average_percent && value.average_percent <= #{Common::Report::ScoreLevel::Level75}){
-            result.level50_number += value.level50_number;
-          } else if (#{Common::Report::ScoreLevel::Level75} < value.average_percent && value.average_percent <= 1){
-            result.level75_number += value.level75_number;
-          }
+          result.failed_pupil_number += value.failed_pupil_number;
+          result.good_pupil_number += value.good_pupil_number;
+          result.excellent_pupil_number += value.excellent_pupil_number;
+          result.level0_number += value.level0_number;
+          result.level25_number += value.level25_number;
+          result.level50_number += value.level50_number;
+          result.level75_number += value.level75_number;
         });
+
         result.failed_percent = result.failed_pupil_number/result.total_number;
         result.good_percent = result.good_pupil_number/result.total_number;
         result.excellent_percent = result.excellent_pupil_number/result.total_number;
@@ -1801,7 +1817,8 @@ class Mongodb::ReportGenerator
   end
 
   def convert_2_full_mark value
-    format_float(value*@paper.score)
+    #format_float(value*@paper.score)
+    format_float(value*100)
   end
 
   def format_float value
