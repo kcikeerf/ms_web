@@ -79,7 +79,10 @@ class Managers::SubjectCheckpointsController < ApplicationController
   end
 
   def select_checked(ckps, uids)
-    ckps.each {|c| c[:checked] = true if uids.include?(c[:uid]) }
+    ckps.each do |ckp|
+      ckp.delete(:nocheck)
+      ckp[:checked] = true if uids.include?(ckp[:uid])
+    end
   end
 
 end
