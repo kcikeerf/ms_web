@@ -13,7 +13,7 @@ class BankNodestructure < ActiveRecord::Base
   has_many :bank_nodestructure_subject_ckps, foreign_key: 'node_structure_uid', dependent: :destroy
   has_many :bank_subject_checkpoint_ckps, through: :bank_nodestructure_subject_ckps
 
-  accepts_nested_attributes_for :bank_checkpoint_ckps, :bank_node_catalogs
+  accepts_nested_attributes_for :bank_checkpoint_ckps, :bank_node_catalogs, :bank_nodestructure_subject_ckps
 
   validates :grade, :subject, :version, :volume, presence: true
 
@@ -66,9 +66,12 @@ class BankNodestructure < ActiveRecord::Base
   end
 
   def add_ckps(ckps)
-    tranction do 
+    transaction do
       bank_nodestructure_subject_ckps.destroy_all
-      bank_nodestructure_subject_ckps.create(ckps)
+      ckp_arr = [].tap do |arr|
+        ckps.each {|ckp| arr << {subject_ckp_uid: ckp} }
+      end
+      bank_nodestructure_subject_ckps.create(ckp_arr)
     end
   end
 

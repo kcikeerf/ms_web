@@ -217,4 +217,47 @@ var setting = {
 			get_tree_data(subject);
 		});
 
+		$(document).on('click', '.save_button', function(){
+			var treeObj_knowledge = $.fn.zTree.getZTreeObj("knowledge_tree");
+      var treeObj_skill = $.fn.zTree.getZTreeObj("skill_tree");
+      var treeObj_ability = $.fn.zTree.getZTreeObj("ability_tree");
+
+			var knowledge_nodes = treeObj_knowledge.getCheckedNodes(true);
+			var skill_nodes = treeObj_skill.getCheckedNodes(true);
+			var ability_nodes = treeObj_ability.getCheckedNodes(true);
+			var nodes_arr = knowledge_nodes.concat(skill_nodes).concat(ability_nodes);
+
+			var node_uids = [], node_structure_uid = $('#node_structure_uid').val();
+			var catalog_uid = $('#node_catalog_uid').val();
+
+			$.each(nodes_arr, function(_, node){
+				node_uids.push(node.uid);
+			});
+
+			if(node_uids.length > 0){
+				$.post(window.location.pathname + '/add_ckps', 
+					{id: (catalog_uid == '' ? node_structure_uid : catalog_uid), subject_checkpoint_ckp_uids: node_uids}, 
+					function(data){
+						if(data.status == 200){
+							$.messager.alert({ 
+	              title: 'Success',
+	              msg: '添加成功'
+	            });
+	            $('#checkpoint_dialog').dialog('close');
+						} else {
+							$.messager.alert({ 
+	              title: 'Error',
+	              msg: '出现错误'
+	            });
+						}
+					});
+			} else {
+				$.messager.alert({ 
+	              title: '警告',
+	              msg: '请选择节点'
+	            });
+			}
+
+		});
+
 	})
