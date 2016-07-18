@@ -3,7 +3,8 @@ class Managers::NodeCatalogsController < ApplicationController
 
 	respond_to :json, :html
 
-	before_action :set_node_structure , only: [:index, :new, :create, :destroy_all, :add_ckps]
+	before_action :set_node_structure , only: [:index, :new, :create, :destroy_all]
+	before_action :set_catalog, only: [:update, :add_ckps]
 
 	def index
 		@data = {name: '目录', path: "/managers/node_structures/#{@node_structure.id}/node_catalogs"}
@@ -17,7 +18,6 @@ class Managers::NodeCatalogsController < ApplicationController
 	end
 
 	def update
-		@catalog = BankNodeCatalog.find(params[:id])
     render json: response_json_by_obj(@catalog.update(node: params[:node]), @catalog)
 	end
 
@@ -29,13 +29,17 @@ class Managers::NodeCatalogsController < ApplicationController
 
 	def add_ckps
     ckps = @catalog.add_ckps(params[:subject_checkpoint_ckp_uids])
-    render json: response_json_by_obj(ckps.error.length > 0, ckps)
+    render json: response_json_by_obj(@catalog.errors.empty?, @catalog)
   end
 
 	private
 
 	def set_node_structure
 		@node_structure = BankNodestructure.find(params[:node_structure_id])
+	end
+
+	def set_catalog
+		@catalog = BankNodeCatalog.find(params[:id])
 	end
 
 	def catalog_params

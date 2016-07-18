@@ -209,7 +209,6 @@ function saveObj(){
 function destroy(url){
   var rows = $('#dg').datagrid('getSelections');
   var ids_arr = [];
-  console.log('ss');
   $.each(rows, function(i, row){
     ids_arr.push(row.id == undefined ? row.uid : row.id)
   });

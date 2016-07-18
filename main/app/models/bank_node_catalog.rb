@@ -15,9 +15,12 @@ class BankNodeCatalog < ActiveRecord::Base
   validates :node, presence: true
 
   def add_ckps(ckps)
-    tranction do 
+    transaction do 
       bank_node_catalog_subject_ckps.destroy_all
-      bank_node_catalog_subject_ckps.create(ckps)
+      ckp_arr = [].tap do |arr|
+        ckps.each {|ckp| arr << {subject_ckp_uid: ckp} }
+      end
+      bank_node_catalog_subject_ckps.create(ckp_arr)
     end
   end
 end
