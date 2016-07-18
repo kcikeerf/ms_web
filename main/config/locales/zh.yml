@@ -115,19 +115,46 @@ zh:
       error:
         wrong_input: "错误的输入"
         unknown: "用户未生成，发生未知错误"
+
+  #微信使用labels
+  wx_commons:
+    messages:
+      info:
+
+      warn:
+        invalid_params: "参数无效！"
+      error:
   wx_users:
     messages:
       info:
         wx_binded: "您的微信账户与三维题库账户绑定成功！"
-        got_report: "成功获取您的报告！"
-        no_report: "您的报告尚未生成。"
+
       warn:
+        not_wx_user: "非有效微信用户!"
         invalid_pupil: "请确认此学生账户是否存在"
-        invalid_params: "您的微信绑定参数无效！"
+        invalid_binding_params: "您的微信绑定参数无效！"
         invalid_wx_user: "你的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
       error:
         wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
+
+  wx_papers:
+    messages:
+      info:
+        no_paper: "未找到合适的试卷."
+      warn:
+
+      error:
+  wx_reports:
+    messages:
+      info:
+        got_report: "成功获取您的报告！"
+        no_report: "您的报告尚未生成。"
+      warn:
+
+      error:
         got_report_failed: "无法获得您的报告，请联系管理员。"
+  #################
+
   time:
     formats:
       default: "%Y-%m-%d %H:%M"

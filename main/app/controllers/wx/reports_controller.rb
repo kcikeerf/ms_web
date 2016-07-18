@@ -9,18 +9,18 @@ class Wx::ReportsController < ApplicationController
 
     current_pupil = wx_current_user.pupil
     if current_pupil.nil?
-      result = response_json(500, {message: I18n.t("wx_users.messages.warn.invalid_wx_user")})
+      result = response_json(500, {message: I18n.t("wx_users.messages.warn.invalid_binding_params")})
     elsif !params[:report_id].blank?
       target_report = Mongodb::PupilMobileReport.where(:pup_uid=>current_pupil.uid.to_s, :_id => params[:report_id]).first
       if target_report
       	report_json = target_report.report_json.blank?? Common::Report::Format::PupilMobile : target_report.report_json
 
-      	result = response_json(200, {message: I18n.t("wx_users.messages.info.got_report"), report_json: report_json})
+      	result = response_json(200, {message: I18n.t("wx_reports.messages.info.got_report"), report_json: report_json})
       else
-      	result = response_json(200, {message: I18n.t("wx_users.messages.info.no_report")})
+      	result = response_json(200, {message: I18n.t("wx_reports.messages.info.no_report")})
       end
     else
-      result = response_json(500, {message: I18n.t("wx_users.messages.error.got_report_failed")})
+      result = response_json(500, {message: I18n.t("wx_reports.messages.error.got_report_failed")})
     end
     render :json => result
   end

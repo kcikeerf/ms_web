@@ -367,11 +367,11 @@ ActiveRecord::Schema.define(version: 20160714014030) do
     t.datetime "created_at",                                         null: false
     t.datetime "updated_at",                                         null: false
     t.integer  "role_id",                limit: 4
-    t.string   "wx_token",               limit: 255
+    t.string   "wx_openid",              limit: 255
   end
 
   add_index "users", ["name"], name: "index_users_on_name", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
-  add_index "users", ["wx_token"], name: "index_users_on_wx_token", unique: true, using: :btree
+  add_index "users", ["wx_openid"], name: "index_users_on_wx_openid", unique: true, using: :btree
 
 end

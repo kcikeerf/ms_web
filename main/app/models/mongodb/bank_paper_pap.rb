@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::BankPaperPap
   include Mongoid::Document
 
@@ -339,6 +341,16 @@ class Mongodb::BankPaperPap
       }
     }
     return total_score, ckp_total_score
+  end
+
+  # 任意检索一个试卷
+  # 参数：
+  #   grade: 年级
+  #   term: 学期
+  #   subject: 学科
+  #
+  def self.get_a_paper params_h
+    self.where(params_h).sample
   end
 
   # create empty score file
