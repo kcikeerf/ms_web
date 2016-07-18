@@ -1,6 +1,6 @@
 @charset "utf-8";
 .dropdown_box{
-	width:150px;
+	width:154px;
 	position: relative;
 	font-size:14px;
 	height:37px;
@@ -18,7 +18,7 @@
 }
 .classMenu{
 	display:block;
-	width:130px;
+	width:154px;
 	height:37px;
 	line-height:37px;
 	background:#15a892;
@@ -41,18 +41,18 @@
 }
 .dropdown_menu{
 	display:none;
-	width:150px;
+	width:154px;
 	position:absolute;
 	top:37px;
 	left:0;
 	margin-left:0;
 	background:#19b8a0;
-	
+	z-index:100;
 }
 .dropdown_menu>li{
 	display: block;
-	height:28px;
-	line-height:28px;
+	height:37px;
+	line-height:37px;
 	cursor: pointer;
 	padding-left:20px;
 	position: relative;
@@ -86,20 +86,24 @@
 	position:absolute;
 	left:125px;
 	overflow:hidden;
-	padding:12px 0;
+	padding:12px;
 }
 .dropdown_menu>li>ul.submit_menu{
 	top:0;
-	
+	left:154px;
 }
 .dropdown_menu>li>ul.active{
 	bottom: 0;
 }
 .dropdown_menu>li>ul li{
-	width:80px;
+	width:70px;
 	text-align:center;
 	line-height:30px;
 	float:left;
+}
+.dropdown_menu>li>ul li:hover{
+	background:#15a892;
+	color:#fff;
 }
 .grade-top-list{
 	height:60px;
@@ -110,17 +114,9 @@
 	float:left;
 	line-height:60px;
 }
-
-
 #knowledge_line1,#knowledge_line1{
 	width:500px;
 	height:400px;
-}
-.loadingPage iframe{
-	width:100%;
-	border:0 none;
-	display:block;
-	overflow:hidden;
 }
 
 
