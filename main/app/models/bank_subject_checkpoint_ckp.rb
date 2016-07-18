@@ -131,6 +131,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
 	    ckps.each do |c|
 	    	ckp_hash =  c.organization_hash
+        ckp_hash.delete(:nocheck)
 	    	ckp_hash[:checked] = true if child_ckp_uids.include?(c.uid)
 	      knowledge << ckp_hash if c.dimesion == 'knowledge'
 	      skill << ckp_hash if c.dimesion == 'skill'
