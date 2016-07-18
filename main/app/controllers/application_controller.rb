@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   def wx_current_user
     params.permit!
-    User.where(wx_token: params[:wx_token]).first
+    User.where(wx_openid: params[:wx_openid]).first
   end
   #######
 
