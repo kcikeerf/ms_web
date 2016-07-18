@@ -101,9 +101,6 @@ class ReportsController < ApplicationController
     @default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
     @default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
     @default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
-    
-    @default_report_title = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    @default_report_subject = I18n.t("dict.#{current_paper.subject}")
     if current_user.is_analyzer?
       @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
     elsif current_user.is_teacher?
@@ -167,9 +164,10 @@ class ReportsController < ApplicationController
       :grade => current_paper.grade
     }
     grade_report = Mongodb::GradeReport.where(loc_h).first
-    @default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
+    @default_report_type = "grade"
+    @default_report_id = grade_report._id.to_s
     @default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    @default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
+    @default_report_subject = I18n.t("dict.#{current_paper.subject}") # + "&middot" + I18n.t("dict.nian_ji_bao_gao")
     if current_user.is_analyzer?
       @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
     elsif current_user.is_teacher?

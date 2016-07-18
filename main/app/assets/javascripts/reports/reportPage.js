@@ -717,7 +717,7 @@ var reportPage = {
 		},
 		/*针对班级的字段*/
 		creatClassValueArr: function(obj) {
-			return obj = [obj.cls_average, obj.cls_average_percent, obj.class_median_percent, obj.gra_average_percent, obj.cls_gra_avg_percent_diff, obj.cls_med_gra_avg_percent_diff, obj.diff_degree, obj.full_total]
+			return obj = [obj.cls_average, obj.cls_average_percent, obj.class_median_percent, obj.gra_average_percent, obj.cls_gra_avg_percent_diff, obj.cls_med_gra_avg_percent_diff, obj.diff_degree, obj.full_score]
 		},
 	},
 	Pupil: {
@@ -802,7 +802,7 @@ var reportPage = {
 		},
 		/*针对个人的字段*/
 		creatPuilValueArr: function(obj) {
-			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.full_total, obj.correct_qzp_count];
+			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.full_score, obj.correct_qzp_count];
 		}
 	},
 	bindEvent: function(){
