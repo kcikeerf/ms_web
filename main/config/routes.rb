@@ -309,6 +309,7 @@ Rails.application.routes.draw do
   namespace :wx do
     post 'bind', to: "auths#wx_bind"
     post 'get_indivisual_report_1', to: "reports#get_indivisual_report_1"
+    post 'get_quizs', to: "papers#get_quizs"
   end
   #######################################
 
