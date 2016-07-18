@@ -1,8 +1,8 @@
 /*
+*= require default/application
 *= require default/bootstrap.min
-*= require default/swtk
 *= require reports/reset
 *= require reports/report_square
 *= require reports/chart
 *= require reports/report
-* */
+*/
