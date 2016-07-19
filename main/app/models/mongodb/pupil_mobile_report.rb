@@ -5,6 +5,7 @@ class Mongodb::PupilMobileReport
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
 
+=begin
   field :loc_uid, type: String
   #
   field :province, type: String
@@ -14,8 +15,10 @@ class Mongodb::PupilMobileReport
   field :grade, type: String
   field :classroom, type: String
   #
+=end
   field :pap_uid, type: String
   field :pup_uid, type: String
+  field :wx_openid, type: String
   field :report_name, type: String
   field :report_json, type: String
 
