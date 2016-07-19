@@ -1,16 +1,16 @@
 var reportPage = {
-	getGradeUrl: '/reports/get_grade_report',
-	getClassUrl: '/reports/get_class_report',
-	getPupilUrl: '/reports/get_pupil_report',
-	Gradedata: null,
-	ClassData: null,
-	PupilData: null,
+	getGradeUrl : '/reports/get_grade_report',
+	getClassUrl : '/reports/get_class_report',
+	getPupilUrl : '/reports/get_pupil_report',
+	Gradedata : null,
+	ClassData : null,
+	PupilData : null,
+	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 	init: function(){
 		//给左上角导航添加事件
 		reportPage.bindEvent();
 		$('#reportContent').load('/reports/grade',function(){
-                        var default_report_id = $("#report_menus .report_click_menu").attr('report_id');
-			$.get(reportPage.getGradeUrl, 'report_id='+default_report_id, function(data) {
+			$.get(reportPage.getGradeUrl, 'report_id=577b287827f0a50811c7e8ca', function(data) {
 				if (data.status == '200'){
 					reportPage.Grade.createReport(data);
 				} else {
@@ -78,6 +78,8 @@ var reportPage = {
 				echartOption.createEchart(optionLeft,nodeArrLeft[i]);
 				echartOption.createEchart(optionRight,nodeArrRight[i]);
 			}
+			//创建年级分型图;
+			echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(),'parting-chart');
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
 				if($dataId == 'grade-NumScale'){
@@ -104,7 +106,7 @@ var reportPage = {
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
-					}
+					};
 				}else if($dataId == 'grade-checkpoint-skill'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.skill.average_percent,Checkpoints.skill.median_percent,Checkpoints.skill.med_avg_diff,Checkpoints.skill.diff_degree];
@@ -435,7 +437,7 @@ var reportPage = {
 			var colorArr = [] ;
 			var normNameArr = [];
 			for(var i = 0 ; i < normNum; i++){
-				colorArr.push(reportPage.baseFn.getRandomColor());
+				colorArr.push(reportPage.chartColor[i]);
 				normNameArr.push({name:normkeyArr[i],icon:'rect'});
 			};
 			return obj = {
@@ -466,7 +468,7 @@ var reportPage = {
 			var colorArr = [] ;
 			var normNameArr = [];
 			for(var i = 0 ; i < normNum; i++){
-				colorArr.push(reportPage.baseFn.getRandomColor());
+				colorArr.push(reportPage.chartColor[i]);
 				normNameArr.push({name:normkeyArr[i],icon:'rect'});
 			};
 			return obj = {
@@ -569,12 +571,15 @@ var reportPage = {
 				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'class');
 					$('#Class_knowledge_table').html(tableStr);
+					reportPage.baseFn.judgeWrong($('#Class_knowledge_table td'));
 				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'class');
 					$('#Class_skill_table').html(tableStr);
+					reportPage.baseFn.judgeWrong($('#Class_skill_table td'));
 				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'class');
 					$('#Class_ability_table').html(tableStr);
+					reportPage.baseFn.judgeWrong($('#Class_ability_table td'));
 				}else if($dataId == 'class-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
@@ -718,11 +723,12 @@ var reportPage = {
 		},
 		/*针对班级的字段*/
 		creatClassValueArr: function(obj) {
-			return obj = [obj.cls_average, obj.cls_average_percent, obj.class_median_percent, obj.gra_average_percent, obj.cls_gra_avg_percent_diff, obj.cls_med_gra_avg_percent_diff, obj.diff_degree, obj.full_score]
+			return obj = [obj.cls_average, obj.cls_average_percent, obj.class_median_percent, obj.gra_average_percent, obj.cls_gra_avg_percent_diff, obj.cls_med_gra_avg_percent_diff, obj.diff_degree, obj.full_total]
 		},
 	},
 	Pupil: {
 		createReport : function(data){
+			console.log(data);
 			var basicData = data.data.basic;
 			var pupilNavStr = ''+basicData.name+'/'+basicData.sex+'/'+basicData.grade+basicData.classroom+'/'+basicData.school+'/'+basicData.area+'难度:'+basicData.levelword2+'测试日期:'+basicData.quiz_date+'';
 			$('#pupil-top-nav').html(pupilNavStr);
@@ -743,12 +749,15 @@ var reportPage = {
 				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil');
 					$('#knowledge_data_table').html(tableStr);
+					reportPage.baseFn.judgeWrong($('#knowledge_data_table td'));
 				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil');
 					$('#skill_data_table').html(tableStr);
+					reportPage.baseFn.judgeWrong($('#skill_data_table td'));
 				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil');
 					$('#ability_data_table').html(tableStr);
+					reportPage.baseFn.judgeWrong($('#ability_data_table td'));
 				}
 			})
 		},
@@ -803,7 +812,7 @@ var reportPage = {
 		},
 		/*针对个人的字段*/
 		creatPuilValueArr: function(obj) {
-			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.full_score, obj.correct_qzp_count];
+			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
 		}
 	},
 	bindEvent: function(){
@@ -855,6 +864,22 @@ var reportPage = {
 	},
 	/*基础方法*/
 	baseFn: {
+		judgeWrong : function(Node){
+			Node.each(function(){
+				var iNum = $(this).text();
+				if(-30 < iNum && iNum < 0){
+					if($(this).attr('class') == 'one-level-content'){
+						$(this).addClass('one-level-wrong');
+					}
+					$(this).addClass('wrong');
+				}else if(iNum < -20){
+					if($(this).attr('class') == 'one-level-content'){
+						$(this).addClass('one-level-wrong');
+					}
+					$(this).addClass('more-wrong');
+				};
+			});
+		},
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
 			if(data != null){
@@ -984,7 +1009,7 @@ var reportPage = {
 				if (arr[i] >= 0) {
 					upArr.push({
 						value: arr[i],
-						symbolSize: 0
+						symbolSize: 5
 					});
 					downArr.push({
 						value: 0,
@@ -993,7 +1018,7 @@ var reportPage = {
 				} else if (arr[i] < 0) {
 					downArr.push({
 						value: arr[i],
-						symbolSize: 0
+						symbolSize: 5
 					});
 					upArr.push({
 						value: 0,
@@ -1037,10 +1062,6 @@ var reportPage = {
 			return $.map(obj, function(value, index) {
 				return [value];
 			});
-		},
-		/*获取随机的颜色值*/
-		getRandomColor: function() {
-			return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
 		},
 		/*获取url中?后面传递的参数*/
 		getRequest: function() {
