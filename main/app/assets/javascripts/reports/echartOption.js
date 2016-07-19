@@ -313,6 +313,217 @@ var echartOption = {
 					animation: false,
 				};
 			},
+			/*分型图*/
+			setGradePartingChartOption : function(data){
+				return option = {
+			        legend: {
+			          show:true,
+			          top:'0',
+			          right:'8%',
+			          itemWidth: 14,
+			          itemHeight: 14,
+			          data:[{name:'知识',icon:'circle'},{name:'技能',icon:'triangle'},{name:'能力',icon:'rect'}],
+			          textStyle: {fontSize:14}
+			        },
+			        grid: {
+			          left: '3%',
+			          right: '9%',
+			          bottom: '3%',
+			          containLabel: true
+			        },
+			        tooltip : {
+			          trigger: 'item',
+			          showDelay : 0,
+			          formatter : '{b}:{c}'
+			        },
+			        xAxis : [
+			          {
+			            type : 'value',
+			            name:'分化度',
+			            nameLocation:'end',
+			            nameTextStyle:{color:'#000',fontSize:14},
+			            scale:true,
+			            min:'0',
+			            max:'200',
+			            splitNumber:10,
+			            axisLabel : {
+			              formatter: '{value}',
+			            },
+			            axisTick: {show:false},
+			            axisLine: {lineStyle:{color:'#c9c8c8',width:4}},
+			            splitLine: {
+			              lineStyle: {
+			                type: 'dashed',color:'#cdcccc',
+			              }
+			            }
+			          }
+			        ],
+			        yAxis : [
+			          {
+			            type : 'value',
+			            name:'平均得分率',
+			            nameLocation:'end',
+			            nameTextStyle:{color:'#000',fontSize:14},
+			            scale:true,
+			            min:'0',
+			            max:'120',
+			            splitNumber:6,
+			            axisLabel : {
+			              formatter: '{value}',
+			            },
+			            axisTick: {show:false},
+			            axisLine: {lineStyle:{color:'#c9c8c8',width:4}},
+			            splitLine: {
+			              lineStyle: {
+			                type: 'dashed',color:'#cdcccc',
+			              }
+			            }
+			          }
+			        ],
+			        series : [
+			          {
+			            name:'知识',
+			            type:'scatter',
+			            symbolSize:14,
+			            symbol:'circle',
+			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			            data: [
+			              {name:'语音（听）',value:[12, 103]},
+			              {name:'词汇',value:[13, 85]},
+			              {name:'词法',value:[14, 60]},
+			              {name:'句法',value:[38, 33]},
+			              {name:'文章',value:[100, 100]},
+			              {name:'写作',value:[99, 85]}
+			            ],
+			            markPoint : {
+			              label:{
+			                normal:{show:true,formatter:'{b}',textStyle:{color:'#fff'}}
+			              },
+			              data : [
+			                {
+			                  type : 'max',
+			                  name: '语音（听）',
+			                  label:{
+			                    normal:{position:'insideTop'},
+			                    emphasis:{position:'insideTop'}
+			                  },
+			                  symbolSize:[100,30],
+			                  symbol:'image://img/tooltip_purple_up.svg',
+			                  symbolOffset:['-2%', '-100%'],
+			                  itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			                },
+			                {
+			                  type : 'min',
+			                  name: '句法',
+			                  label:{
+			                    normal:{position:'insideBottom'},
+			                    emphasis:{position:'insideBottom'}
+			                  },
+			                  symbolSize:[100,25],
+			                  symbol:'image://img/tooltip_purple_down.svg',
+			                  symbolOffset:['2%', '100%'],
+			                  itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			                }
+			              ]
+			            }
+			          },
+			          {
+			            name:'技能',
+			            type:'scatter',
+			            symbolSize:15,
+			            symbol:'triangle',
+			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			            data: [
+			              {name:'认知',value: [131, 82]},
+			              {name:'理解（听）',value:[113, 84]},
+			              {name:'理解（读）',value:[125, 22]},
+			              {name:'信息提取（听）',value:[140, 90]},
+			              {name:'信息提取（读）',value:[165, 81]},
+			              {name:'推理（听）',value:[141, 52]},
+			              {name:'推理（读）',value:[153, 64]},
+			              {name:'分析',value:[133, 34]},
+			              {name:'表达',value:[105, 54]}
+			            ],
+			            markPoint : {
+			              label:{
+			                normal:{show:true,formatter:'{b}',textStyle:{color:'#fff'}}
+			              },
+			              data : [
+			                {
+			                  type : 'max',
+			                  name: '信息提取（听）',
+			                  label:{
+			                    normal:{position:'insideTop'},
+			                    emphasis:{position:'insideTop'}
+			                  },
+			                  symbolSize:[100,30],
+			                  symbol:'image://img/tooltip_cyan_up.svg',
+			                  symbolOffset:['-2%', '-100%'],
+			                  itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			                },
+			                {
+			                  type : 'min',
+			                  name: '理解（读）',
+			                  label:{
+			                    normal:{position:'insideBottom'},
+			                    emphasis:{position:'insideBottom'}
+			                  },
+			                  symbolSize:[100,25],
+			                  symbol:'image://img/tooltip_cyan_down.svg',
+			                  symbolOffset:['2%', '100%'],
+			                  itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			                }
+			              ]
+			            }
+			          },
+			          {
+			            name:'能力',
+			            type:'scatter',
+			            symbolSize:12,
+			            symbol:'rect',
+			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			            data: [
+			              {name:'词汇辨析',value:[38, 96]},
+			              {name:'语言理解',value:[88, 80]},
+			              {name:'逻辑分析',value:[112, 61]},
+			              {name:'人际理解',value:[125, 40]}
+			            ],
+			            markPoint : {
+			              label:{
+			                normal:{show:true,formatter:'{b}',textStyle:{color:'#fff'}}
+			              },
+			              data : [
+			                {
+			                  type : 'max',
+			                  name: '词汇辨析',
+			                  label:{
+			                    normal:{position:'insideTop'},
+			                    emphasis:{position:'insideTop'}
+			                  },
+			                  symbolSize:[100,30],
+			                  symbol:'image://img/tooltip_blue_up.svg',
+			                  symbolOffset:['-2%', '-100%'],
+			                  itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			                },
+			                {
+			                  type : 'min',
+			                  name: '人际理解',
+			                  label:{
+			                    normal:{position:'insideBottom'},
+			                    emphasis:{position:'insideBottom'}
+			                  },
+			                  symbolSize:[100,25],
+			                  symbol:'image://img/tooltip_blue_down.svg',
+			                  symbolOffset:['2%', '100%'],
+			                  itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
+			                }
+			              ]
+			            }
+			          },
+			        ],
+			        color:['#dca2ea','#15a892','#4a8ad3']
+			    };
+			},
 			/*scale比例图*/
 			setGradeScaleOption: function(data) {
 				return option = {
@@ -946,16 +1157,16 @@ var echartOption = {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
                           offset: 0,
-                          color: '#faa9a7'
+                          color: '#51b8c1'
                         }, {
                           offset: 1,
-                          color: '#fffefe'
+                          color: '#fcfcfc'
                         }]),
                         opacity:0.8,
                       }},
                     data:data.yaxis.diff.avg.up,
                     itemStyle: {
-                      normal: {color:'#15a892'}
+                      normal: {color:'#51b8c1'}
                     },
                     LegendHoverLink: true,
                   },
@@ -972,16 +1183,16 @@ var echartOption = {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
                           offset: 0,
-                          color: '#faa9a7'
+                          color: '#fff'
                         }, {
                           offset: 1,
-                          color: '#fffefe'
+                          color: '#c90303'
                         }]),
                         opacity:0.8,
                       }},
                     data:data.yaxis.diff.avg.down,
                     itemStyle: {
-                      normal: {color:'#e60012'}
+                      normal: {color:'#c90303'}
                     },
                     LegendHoverLink: true,
                   },
@@ -1059,16 +1270,16 @@ var echartOption = {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                           offset: 0,
-                          color: '#74c6ce'
+                          color: '#51b8c1'
                         }, {
                           offset: 1,
-                          color: '#def2f3'
+                          color: '#fcfcfc'
                         }]),
                         opacity:0.8,
                       }},
                     data:data.yaxis.diff.mid.up,
                     itemStyle: {
-                      normal: {color:'#15a892'}
+                      normal: {color:'#51b8c1'}
                     },
                     LegendHoverLink: true,
                   },
@@ -1085,16 +1296,16 @@ var echartOption = {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                           offset: 0,
-                          color: '#74c6ce'
+                          color: '#fff'
                         }, {
                           offset: 1,
-                          color: '#def2f3'
+                          color: '#c90303'
                         }]),
                         opacity:0.8,
                       }},
                     data:data.yaxis.diff.mid.down,
                     itemStyle: {
-                      normal: {color:'#e60012'}
+                      normal: {color:'#c90303'}
                     },
                     LegendHoverLink: true,
                   },

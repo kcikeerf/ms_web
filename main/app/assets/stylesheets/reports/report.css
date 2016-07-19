@@ -1,6 +1,23 @@
 @charset "utf-8";
+/*样式重置部分*/
+dt{
+	font-weight: normal;
+}
+/*表格部分文字变红，北京变红的样式*/
+.wrong{
+	color:#d00211!important;
+}
+.more-wrong{
+	background:#fde0e0!important;
+	color:#d43b40!important;
+}
+.one-level-wrong{
+	font-weight:bolder;
+}
 /*报告公用部分*/
-
+.report-container{
+	margin-top:20px;
+}
 .report-content{
 	background:#fbfbfb;
 }
@@ -11,6 +28,9 @@
 	line-height:36px;
 	text-align:center;
 	float:left;
+}
+.exam-name span{
+	margin-right:100px;
 }
 /*左边导航 start*/
 .chart-nav{
@@ -93,6 +113,7 @@
 	width:842px;
 	float:left;
 	background:#fff;
+	padding-bottom: 50px;
 }
 .tab-content>div.active{
 	display:block;
@@ -111,27 +132,64 @@
 }
 /*图表的header部分*/
 .wrapper-md{
-	padding:40px 20px 0;
+	padding:30px 20px 0;
 }
 .wrapper-md h1 {
 	font-size:16px;
 	border-left:4px solid #15a892;
 	padding-left:10px;
-	margin:10px 0;
+	margin:0;
 }
 /*评价部分*/
-.report-data {background:#fff;padding:0;}
-.report-data .wrapper-md {padding:40px 20px 0}
-.report-data .wrapper-md.pt0 {padding-top:0;}
-.report-data h1 {font-size:16px;border-left:4px solid #15a892;padding-left:10px;margin:10px 0;}
-.report-data h3 {font-size:14px;}
-.report-data dl {margin:25px 0;}
-.report-data dl dt {color:#15a892;margin:20px 0;font-weight:normal;}
-.report-data dl dd ol {padding:0;list-style:decimal;margin:0 15px;}
-.report-data dl dd ol li {margin:15px 0;line-height:24px;}
-.report-data dl dd ul {padding:0;list-style:none;}
-.report-data dl dd ul li {background: url('../img/square.png') no-repeat 0 10px;padding-left:10px;margin:15px 0;line-height:24px;}
-.padder-lg {padding:0 35px;}
+.report-data {
+	background:#fff;
+	padding:0;
+}
+.report-data .wrapper-md {
+	padding:40px 20px 0;
+}
+.report-data .wrapper-md.pt0 {
+	padding-top:0;
+}
+.report-data h1 {
+	font-size:16px;
+	border-left:4px solid #15a892;
+	padding-left:10px;
+	margin:10px 0;
+}
+.report-data h3 {
+	font-size:14px;
+}
+.report-data dl {
+	margin:25px 0;
+}
+.report-data dl dt {
+	color:#15a892;
+	margin:20px 0;
+	font-weight:normal;
+}
+.report-data dl dd ol {
+	padding:0;
+	list-style:decimal;
+	margin:0 15px;
+}
+.report-data dl dd ol li {
+	margin:15px 0;
+	line-height:24px;
+}
+.report-data dl dd ul {
+	padding:0;
+	list-style:none;
+}
+.report-data dl dd ul li {
+	background: url('../img/square.png') no-repeat 0 10px;
+	padding-left:10px;
+	margin:15px 0;
+	line-height:24px;
+}
+.padder-lg {
+	padding:0 35px;
+}
 /* 年级知识、技能、能力情况诊断图 */
 .grade-diagnosis dl {
 	margin:0 0 25px 0;
@@ -139,7 +197,7 @@
 }
 .grade-diagnosis dl dt {
 	color:#050505;
-	margin-top:0;
+	margin:20px 0 ;
 }
 .grade-diagnosis .chart {
 	width:48%;
@@ -276,9 +334,6 @@
 .grade-data-table tr:nth-child(even){
 	background:#fff;
 }
-
-
-
 /*班级报告*/
 /* 学生知识、技能、能力情况诊断图 */
 .class-diagnosis {
