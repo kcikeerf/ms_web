@@ -10,7 +10,7 @@ var reportPage = {
 		//给左上角导航添加事件
 		reportPage.bindEvent();
 		$('#reportContent').load('/reports/grade',function(){
-                        var default_report_id = $('#report_menus .report_click_menu').attr('report_id');
+            var default_report_id = $('#report_menus .report_click_menu').attr('report_id');
 			$.get(reportPage.getGradeUrl, 'report_id='+default_report_id, function(data) {
 				if (data.status == '200'){
 					reportPage.Grade.createReport(data);
@@ -233,7 +233,15 @@ var reportPage = {
 			for(var i = 0 ; i < classNum ; i++){
 				var str = '';
 				for(var k = 0 ; k < normArr.length ; k++){
-					str += '<td>'+reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i])[k]+'</td>';
+					var iNum = reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i])[k];
+					if(iNum > -20  && iNum < 0){
+						str += '<td class="wrong">'+iNum+'</td>';
+					}else if(iNum < -20 ){
+						str += '<td class="wrong more-wrong">'+iNum+'</td>';
+					}else{
+						str += '<td>'+iNum+'</td>';
+					}
+//					str += '<td>'+iNum+'</td>';
 				}
 				if(classValue[i] == '年级'){
 					str = '<td>年级</td>'+ str ;
@@ -572,15 +580,12 @@ var reportPage = {
 				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'class');
 					$('#Class_knowledge_table').html(tableStr);
-					reportPage.baseFn.judgeWrong($('#Class_knowledge_table td'));
 				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'class');
 					$('#Class_skill_table').html(tableStr);
-					reportPage.baseFn.judgeWrong($('#Class_skill_table td'));
 				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'class');
 					$('#Class_ability_table').html(tableStr);
-					reportPage.baseFn.judgeWrong($('#Class_ability_table td'));
 				}else if($dataId == 'class-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
@@ -750,15 +755,12 @@ var reportPage = {
 				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil');
 					$('#knowledge_data_table').html(tableStr);
-					reportPage.baseFn.judgeWrong($('#knowledge_data_table td'));
 				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil');
 					$('#skill_data_table').html(tableStr);
-					reportPage.baseFn.judgeWrong($('#skill_data_table td'));
 				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil');
 					$('#ability_data_table').html(tableStr);
-					reportPage.baseFn.judgeWrong($('#ability_data_table td'));
 				}
 			})
 		},
@@ -865,22 +867,6 @@ var reportPage = {
 	},
 	/*基础方法*/
 	baseFn: {
-		judgeWrong : function(Node){
-			Node.each(function(){
-				var iNum = $(this).text();
-				if(-30 < iNum && iNum < 0){
-					if($(this).attr('class') == 'one-level-content'){
-						$(this).addClass('one-level-wrong');
-					}
-					$(this).addClass('wrong');
-				}else if(iNum < -20){
-					if($(this).attr('class') == 'one-level-content'){
-						$(this).addClass('one-level-wrong');
-					}
-					$(this).addClass('more-wrong');
-				};
-			});
-		},
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
 			if(data != null){
@@ -913,20 +899,33 @@ var reportPage = {
 				var oneValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(oneValue) : reportPage.Pupil.creatPuilValueArr(oneValue);
 				//插入具体数据;
 				for (var k = 0; k < oneValueArr.length; k++) {
-					oneValueStr += '<td class="one-level-content">' + oneValueArr[k] + '</td>';
+					var iNum = oneValueArr[k];
+					if(iNum < 0 && iNum > -20){
+						oneValueStr += '<td class="one-level-content one-level-wrong wrong">' + iNum + '</td>';
+					}else if(iNum < -20){
+						oneValueStr += '<td class="one-level-content one-level-wrong wrong more-wrong">' + iNum + '</td>';
+					}else{
+						oneValueStr += '<td class="one-level-content">' + iNum + '</td>';
+					};
 				};
 				var oneAllStr = '<tr>' + oneNameStr + oneValueStr + '</tr>';
 				//创建二级指标表格数据
 				if (oneArrValue[i].items && oneArrValue[i].items != null) {
 					var two_len = reportPage.baseFn.getKeys(oneArrValue[i].items).length;
-					
 					for (var j = 0; j < two_len; j++) {
 						var twoNameStr = '<td>' + reportPage.baseFn.getKeys(oneArrValue[i].items)[j] + '</td>';
 						var twoValueStr = '';
 						var twoArrValue = reportPage.baseFn.getValue(oneArrValue[i].items)[j].value;
 						var twoValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(twoArrValue) : reportPage.Pupil.creatPuilValueArr(twoArrValue);
 						for (var g = 0; g <twoValueArr.length ; g++) {
-							twoValueStr += '<td>' + twoValueArr[g] + '</td>';
+							var iNum = twoValueArr[g];
+							if(iNum < 0 && iNum > -20){
+								twoValueStr += '<td class="wrong">' + iNum + '</td>';
+							}else if(iNum < -20){
+								twoValueStr += '<td class="wrong more-wrong">' + iNum + '</td>';
+							}else{
+								twoValueStr += '<td>' + iNum + '</td>';
+							};
 						};
 						twoAllStr += '<tr>' + twoNameStr + twoValueStr + '</tr>';
 					}
