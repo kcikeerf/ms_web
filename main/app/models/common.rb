@@ -703,8 +703,8 @@ module Common
           "score" =>""
         },
         "rank" => {
-          "class" =>"",
-          "grade" =>""
+          "my_position" => 0,
+          "total_testers" => 0
         },
         "charts" => {
           "knowledge" => {
@@ -715,10 +715,20 @@ module Common
           }
         },
         "weak_fields" => {
-
+          "knowledge" => {
+          },
+          "skill" => {
+          },
+          "ability" => {
+          }
         },
         "wrong_quizs"=>{
-
+          "knowledge" => {
+          },
+          "skill" => {
+          },
+          "ability" => {
+          }
         }
       }
     end

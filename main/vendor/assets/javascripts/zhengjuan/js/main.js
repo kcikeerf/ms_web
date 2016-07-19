@@ -262,7 +262,7 @@ $(function(){
         });
         //科目下拉选择
         doc.on("click",".selectSubject .optionList li",function(){
-            if($(this).hasClass("active")) return;
+            //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
             $(".selecGrade, .selectVersion, .selecTerm, .selectKnowledge").find(".optionList").html("");
@@ -280,7 +280,7 @@ $(function(){
         });
         //年级下拉选择
         doc.on("click",".selecGrade .optionList li",function(){
-            if($(this).hasClass("active")) return;
+            //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
             $(".selectVersion, .selecTerm, .selectKnowledge").find(".optionList").html("");
@@ -299,7 +299,7 @@ $(function(){
         });
         //教材版本下拉选择
         doc.on("click",".selectVersion .optionList li",function(){
-            if($(this).hasClass("active")) return;
+            //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
             $(".selecTerm, .selectKnowledge").find(".optionList").html("");
@@ -319,7 +319,7 @@ $(function(){
         });
         //学期下拉选择
         doc.on("click",".selecTerm .optionList li",function(){
-            if($(this).hasClass("active")) return;
+            //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
             $(".selectKnowledge").find(".optionList").html("");
@@ -347,7 +347,7 @@ $(function(){
         });
         //得分下拉选择
         doc.on("click",".selectFullscore .optionList li, .scorePart .optionList li, .selectScore .optionList li",function(){
-            if($(this).hasClass("active")) return;
+            //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal input").val($(this).text());
             if(!$(this).parents(".selectScore").length && $(".analyze .textLabelWarp").length==1){
@@ -385,7 +385,7 @@ $(function(){
         //普通下拉选择
         doc.on("click",".optionList li",function(){
             //科目学期等单独绑定
-            if($(this).hasClass("active") || $(this).parents(".different").length) return;
+            if($(this).parents(".different").length) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).text());
             if($(this).parents(".part4").length){

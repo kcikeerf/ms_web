@@ -185,7 +185,7 @@ class ReportsController < ApplicationController
         :report_url => "",
         :items => []}
     end
-    render :layout => 'new_report'
+    render :layout => 'breport'
   end
 
   def grade

@@ -153,6 +153,22 @@ zh:
 
       error:
         got_report_failed: "无法获得您的报告，请联系管理员。"
+  wx_scores:
+    messages:
+      info:
+        save_success: "成绩保存成功。"
+      warn:
+        no_quizs: "发生未知错误，未收到任何试题。"
+      error:
+        save_exception: "成绩保存中发生异常错误!"
+  online_tests:
+    messages:
+      info:
+        save_success: "成绩保存成功。"
+      warn:
+        no_quizs: "发生未知错误，未收到任何试题。"
+      error:
+        save_failed: "在线测试结果保存失败!"
   #################
 
   time:
@@ -162,6 +178,7 @@ zh:
 
   #字典库用label
   dict:
+    unkown: "未知"
     province: "省"
     city: "市"
     district: "区"
