@@ -17,6 +17,8 @@ dt{
 /*报告公用部分*/
 .report-container{
 	margin-top:20px;
+	width:1000px;
+	padding:0;
 }
 .report-content{
 	background:#fbfbfb;
