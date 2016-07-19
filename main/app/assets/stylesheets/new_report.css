@@ -3,6 +3,5 @@
 *= require default/bootstrap.min
 *= require reports/reset
 *= require reports/report_square
-*= require reports/chart
 *= require reports/report
 */
