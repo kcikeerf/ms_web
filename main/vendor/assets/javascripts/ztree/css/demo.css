@@ -42,3 +42,4 @@ div.ruler div.cursor {height:20px; width:30px; background-color:#3C6E31; color:w
 .mainwrap ul li label {display:inline-block;width:50px;text-align:right;}
 .mainwrap ul li label:after {content:"：";}
 .mainwrap ul li input[type="submit"] {margin-left:50px;}
+a.save_button {float: right; margin:10px;}

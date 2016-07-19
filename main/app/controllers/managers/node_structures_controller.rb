@@ -3,7 +3,7 @@ class Managers::NodeStructuresController < ApplicationController
 
   respond_to :json, :html
   
-  before_action :set_node_structure, only: [:show, :edit, :update]
+  before_action :set_node_structure, only: [:show, :edit, :update, :add_ckps]
 
   def index
     @data = {name: '教材', path: '/managers/node_structures'}
@@ -32,7 +32,7 @@ class Managers::NodeStructuresController < ApplicationController
 
   def add_ckps
     ckps = @node_structure.add_ckps(params[:subject_checkpoint_ckp_uids])
-    render json: response_json_by_obj(ckps.error.length > 0, ckps)
+    render json: response_json_by_obj(@node_structure.errors.empty?, @node_structure)
   end
 
   private
