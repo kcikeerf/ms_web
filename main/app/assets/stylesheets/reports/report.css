@@ -1,5 +1,13 @@
 @charset "utf-8";
 /*样式重置部分*/
+body{
+	background:#f4f4f4!important;
+	overflow:auto!important;
+}
+.container{
+	width:1000px;
+	padding:0;
+}
 dt{
 	font-weight: normal;
 }
