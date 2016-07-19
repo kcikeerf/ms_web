@@ -51,6 +51,8 @@ class Mongodb::BankPaperPap
 
   field :user_id, type: String
   field :paper_json, type: String
+  #field :paper_saved_json, type: String
+  #field :paper_analyzed_json, type: String
   field :analyze_json, type: String
   field :paper_status, type: String
 
@@ -341,16 +343,6 @@ class Mongodb::BankPaperPap
       }
     }
     return total_score, ckp_total_score
-  end
-
-  # 任意检索一个试卷
-  # 参数：
-  #   grade: 年级
-  #   term: 学期
-  #   subject: 学科
-  #
-  def self.get_a_paper params_h
-    self.where(params_h).sample
   end
 
   # create empty score file
@@ -880,6 +872,18 @@ class Mongodb::BankPaperPap
    
     end
     region
+  end
+
+  #################################Mobile#####################################
+
+  # 任意检索一个试卷
+  # 参数：
+  #   grade: 年级
+  #   term: 学期
+  #   subject: 学科
+  #
+  def self.get_a_paper params_h
+    self.where(params_h).sample
   end
 
 end
