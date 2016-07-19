@@ -91,3 +91,4 @@ gem 'rucaptcha'
 #nest layout
 gem 'nestive'
 gem 'thin'
+gem 'unicorn'
