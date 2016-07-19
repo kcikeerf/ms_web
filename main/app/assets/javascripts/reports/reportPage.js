@@ -10,7 +10,8 @@ var reportPage = {
 		//给左上角导航添加事件
 		reportPage.bindEvent();
 		$('#reportContent').load('/reports/grade',function(){
-			$.get(reportPage.getGradeUrl, 'report_id=577b287827f0a50811c7e8ca', function(data) {
+                        var default_report_id = $('#report_menus .report_click_menu').attr('report_id');
+			$.get(reportPage.getGradeUrl, 'report_id='+default_report_id, function(data) {
 				if (data.status == '200'){
 					reportPage.Grade.createReport(data);
 				} else {
