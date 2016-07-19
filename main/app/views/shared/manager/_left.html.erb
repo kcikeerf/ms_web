@@ -1,50 +1,18 @@
 <div id="left_panel" region='west' split='true' title="导航菜单" style="width:200px;padding:10px;">
   <div class="easyui-accordion" data-options="fit:true,border:true">
 
-    <div title="指标体系" icon="icon-sys" style="overflow:auto;">
-      <ul>
-        <li>
-          <div>
-            <a rel='1' href='#' ref="/managers/node_structures">
-              教材管理
-            </a>
-          </div>
-        </li> 
-        <li>
-          <div>
-            <a rel='11' href='#' ref="/managers/checkpoints">
-              指标体系管理
-            </a>
-          </div>
-        </li> 
-        <li>
-          <div>
-            <a rel='12' href='#' ref="/managers/subject_checkpoints">
-              科目指标体系管理
-            </a>
-          </div>
-        </li> 
-      </ul>
-    </div>
-    <div title="用户管理" style="padding:10px;">
-      <ul>
-        <li>
-          <div>
-            <a rel='2' href="#" ref="/managers/roles">
-              角色管理
-            </a>
-          </div>
-        </li>
-        <li>
-          <div>
-            <a rel='3' href='#' ref="/managers/permissions">
-              权限管理
-            </a>
-          </div>
-        </li> 
-      </ul>
-    </div>
-
+    <% @menus.each do |menu| %>
+      <div title="<%= menu[:name] %>" icon="<%= menu[:icon] %>">
+        <ul>
+          <% menu[:menus].each do |sub_menu| %>
+            <li>
+              <div>
+                <%= link_to sub_menu[:name], 'javascript:void(0)', rel: sub_menu[:id], ref: sub_menu[:url] %>
+              </div>
+            </li> 
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
   </div>
-
 </div>
