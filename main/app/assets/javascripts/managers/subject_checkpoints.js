@@ -217,7 +217,7 @@ var setting = {
 			get_tree_data(subject);
 		});
 
-		$(document).on('click', '.save_button', function(){
+		$(document).on('click.ckp', '.save_button', function(){
 			var treeObj_knowledge = $.fn.zTree.getZTreeObj("knowledge_tree");
       var treeObj_skill = $.fn.zTree.getZTreeObj("skill_tree");
       var treeObj_ability = $.fn.zTree.getZTreeObj("ability_tree");
@@ -257,7 +257,7 @@ var setting = {
 	              msg: '请选择节点'
 	            });
 			}
-
+			$(document).off('click.ckp');
 		});
 
 	})
