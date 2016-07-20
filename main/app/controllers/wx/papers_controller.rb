@@ -69,7 +69,7 @@ class Wx::PapersController < ApplicationController
         #分析成绩
         pupil = wx_current_user.nil?? nil : wx_current_user.pupil
         mobile_report_generator = Mongodb::MobileUserReportGenerator.new({
-        	:pap_uid => params[:paper][:pap_uid],
+          	:pap_uid => params[:paper][:pap_uid],
             :pup_uid => pupil.nil?? "" : pupil.uid,
             :wx_openid => params[:wx_openid]
         })
