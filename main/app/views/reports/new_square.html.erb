@@ -1,42 +1,44 @@
-<div class="container">
-	<!--诊断报告头部 start-->
-	<div class="diagnostic-report-title clearfix" id="report_menus">
-		<div class="dropdown_box grade-class-menu">
-	      <a class="classMenu" href="#">
-	        <span class="report_click_menu" 
-	              report_id="<%= @scope_menus[:report_id] %>"
-	              data_type="<%= @scope_menus[:data_type] %>">
-	<%= @scope_menus[:label]%>
-	        </span> 
-	        <small><%=@scope_menus[:pupil_number]%></small>
-	      </a>
-	    	<ul class="dropdown_menu">
-	<% @scope_menus[:items].each do |klass| %>
-	        <li>
-	          <a class="report_click_menu" href="#" 
-	             report_id="<%= klass[:report_id]%>"
-	             data_type="<%= klass[:data_type] %>">
-	  <%= klass[:label] %>
-	          </a>
-	          <small><%=klass[:pupil_number]%></small>
-	         <ul class="submit_menu">
-	  <% klass[:items].each do |pupil| %>
-	            <li class="report_click_menu"  
-	                report_id="<%= pupil[:report_id]%>"
-	                data_type="<%= pupil[:data_type]%>">
-	    <%= pupil[:label]%>
-	            </li>
-	  <% end %>
-	         </ul>
-	<% end %>		        
-	        </li>
-	      </ul>
+<div style="background:#f4f4f4;">
+	<div class="container clearfix  report-container" >
+		<!--诊断报告头部 start-->
+		<div class="diagnostic-report-title clearfix" id="report_menus">
+			<div class="dropdown_box grade-class-menu">
+		      <a class="classMenu" href="#">
+		        <span class="report_click_menu" 
+		              report_id="<%= @scope_menus[:report_id] %>"
+		              data_type="<%= @scope_menus[:data_type] %>">
+		<%= @scope_menus[:label]%>
+		        </span> 
+		        <small><%=@scope_menus[:pupil_number]%></small>
+		      </a>
+		    	<ul class="dropdown_menu">
+		<% @scope_menus[:items].each do |klass| %>
+		        <li>
+		          <a class="report_click_menu" href="#" 
+		             report_id="<%= klass[:report_id]%>"
+		             data_type="<%= klass[:data_type] %>">
+		  <%= klass[:label] %>
+		          </a>
+		          <small><%=klass[:pupil_number]%></small>
+		         <ul class="submit_menu">
+		  <% klass[:items].each do |pupil| %>
+		            <li class="report_click_menu"  
+		                report_id="<%= pupil[:report_id]%>"
+		                data_type="<%= pupil[:data_type]%>">
+		    <%= pupil[:label]%>
+		            </li>
+		  <% end %>
+		         </ul>
+		<% end %>		        
+		        </li>
+		      </ul>
+			</div>
+			<!--考试名称-->
+			<h1 class="exam-name"><span><%= @default_report_name %></span><b><%=@default_report_subject%></b></h1>
 		</div>
-		<!--考试名称-->
-		<h1 class="exam-name"><span>西安交大附属中学2016年春季学期英语期中测试诊断报告</span><b>英语</b></h1>
+		<!--诊断报告头部 end-->
+		<div id="reportContent" class="clearfix report-content"></div>
 	</div>
-	<!--诊断报告头部 end-->
-	<div id="reportContent"></div>
 </div>
 <script type="text/javascript">
 $(function(){

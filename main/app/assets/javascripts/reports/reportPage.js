@@ -1,30 +1,40 @@
 var reportPage = {
-	getGradeUrl: '/reports/get_grade_report',
-	getClassUrl: '/reports/get_class_report',
-	getPupilUrl: '/reports/get_pupil_report',
-	Gradedata: null,
-	ClassData: null,
-	PupilData: null,
+	getGradeUrl : '/reports/get_grade_report',
+	getClassUrl : '/reports/get_class_report',
+	getPupilUrl : '/reports/get_pupil_report',
+	Gradedata : null,
+	ClassData : null,
+	PupilData : null,
+	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 	init: function(){
 		//给左上角导航添加事件
 		reportPage.bindEvent();
+		$('#reportContent').load('/reports/grade',function(){
+            var default_report_id = $('#report_menus .report_click_menu').attr('report_id');
+			$.get(reportPage.getGradeUrl, 'report_id='+default_report_id, function(data) {
+				if (data.status == '200'){
+					reportPage.Grade.createReport(data);
+				} else {
+					alert('网络出现错误');
+				};
+			});
+		});
 		$('#report_menus .report_click_menu').on('click', function() {
-			console.info("click!!!");
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
 			var params = "report_id=" + reportId;
-			if (dataType == 'grade'){
+			if(dataType == 'grade'){
 				$('#reportContent').load('/reports/grade',function(){
 					$.get(reportPage.getGradeUrl, params, function(data) {
 						if (data.status == '200'){
 							reportPage.Grade.createReport(data);
+							
 						} else {
 							alert('网络出现错误');
 						};
 					});
 				});
-				
-			} else if (dataType == 'klass') {
+			}else if (dataType == 'klass') {
 				$('#reportContent').load('/reports/klass',function(){
 					$.get(reportPage.getClassUrl, params, function(data) {
 						if (data.status == '200'){
@@ -35,7 +45,7 @@ var reportPage = {
 					});
 				});
 				
-			} else if (dataType == 'pupil') {
+			}else if (dataType == 'pupil') {
 				$('#reportContent').load('/reports/pupil',function(){
 					$.get(reportPage.getPupilUrl, params, function(data) {
 						if (data.status == '200'){
@@ -51,7 +61,13 @@ var reportPage = {
 	/*处理年级数据*/
 	Grade: {
 		createReport : function(data){
-			console.log(data);
+			//设置年级表头；
+			var basicData = data.data.basic;
+			var gradeNavStr = '学校名称：<span>'+basicData.school+'</span>&nbsp;&nbsp;年级：<span>'+basicData.grade+'</span>&nbsp;&nbsp;'
+						 +'班级数量：<span>'+basicData.klass_count+'</span>&nbsp;&nbsp;年级人数：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;'
+						 +'难度：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;测试类型：<span>'+basicData.quiz_type+'</span>&nbsp;&nbsp;'
+						 +'测试日期：<span>'+basicData.quiz_date+'</span>';
+			$('#grade-top-nav').html(gradeNavStr);
 			//创建年级的第一个诊断图;
 			var grade_charts = reportPage.Grade.getGradeDiagnoseData(data.data.charts);
 			var objArr = [grade_charts.knowledge,grade_charts.skill,grade_charts.ability];
@@ -63,10 +79,11 @@ var reportPage = {
 				echartOption.createEchart(optionLeft,nodeArrLeft[i]);
 				echartOption.createEchart(optionRight,nodeArrRight[i]);
 			}
-			$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-				console.log();
-				var $href = $(e.target).attr('href');
-				if($href == '#grade-NumScale'){
+			//创建年级分型图;
+			echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(),'parting-chart');
+			$('#tab-menu li[data-id]').on('click', function (e) {
+				var $dataId = $(e.target).attr('data-id');
+				if($dataId == 'grade-NumScale'){
 					//创建人数比例图
 					var NumScaleObj = reportPage.Grade.getGradeNumScaleData(data.data.each_level_number);
 					var objArr = [NumScaleObj.knowledge,NumScaleObj.skill,NumScaleObj.ability];
@@ -75,7 +92,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setGradeScaleOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					}
-				}else if($href == '#grade-FourSections'){
+				}else if($dataId == 'grade-FourSections'){
 					var FourSections = reportPage.Grade.getFourSectionsData(data.data.four_sections);
 					var objArr = [FourSections.knowledge.le75,FourSections.skill.le75,FourSections.ability.le75,FourSections.knowledge.le50,FourSections.skill.le50,FourSections.ability.le50,FourSections.knowledge.le25,FourSections.skill.le25,FourSections.ability.le25,FourSections.knowledge.le0,FourSections.skill.le0,FourSections.ability.le0,];
 					var nodeArr = ['knowledge_Four_L75','skill_Four_L75','ability_Four_L75','knowledge_Four_L50','skill_Four_L50','ability_Four_L50','knowledge_Four_L25','skill_Four_L25','ability_Four_L25','knowledge_Four_L0','skill_Four_L0','ability_Four_L0'];
@@ -83,15 +100,15 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setFourSectionsOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-checkpoint-knowledge'){
+				}else if($dataId == 'grade-checkpoint-knowledge'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.knowledge.average_percent,Checkpoints.knowledge.median_percent,Checkpoints.knowledge.med_avg_diff,Checkpoints.knowledge.diff_degree];
 					var nodeArr = ['knowledge_Grade_average_percent','knowledge_Grade_median_percent','knowledge_Grade_med_avg_diff','knowledge_Grade_diff_degree'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
-					}
-				}else if($href == '#grade-checkpoint-skill'){
+					};
+				}else if($dataId == 'grade-checkpoint-skill'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.skill.average_percent,Checkpoints.skill.median_percent,Checkpoints.skill.med_avg_diff,Checkpoints.skill.diff_degree];
 					var nodeArr = ['skill_Grade_average_percent','skill_Grade_median_percent','skill_Grade_med_avg_diff','skill_Grade_diff_degree'];
@@ -99,7 +116,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-checkpoint-ability'){
+				}else if($dataId == 'grade-checkpoint-ability'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.ability.average_percent,Checkpoints.ability.median_percent,Checkpoints.ability.med_avg_diff,Checkpoints.ability.diff_degree];
 					var nodeArr = ['ability_Grade_average_percent','ability_Grade_median_percent','ability_Grade_med_avg_diff','ability_Grade_diff_degree'];
@@ -107,7 +124,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-checkpoint-total'){
+				}else if($dataId == 'grade-checkpoint-total'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.total.average_percent,Checkpoints.total.median_percent,Checkpoints.total.med_avg_diff,Checkpoints.total.diff_degree];
 					var nodeArr = ['total_Grade_average_percent','total_Grade_median_percent','total_Grade_med_avg_diff','total_Grade_diff_degree'];
@@ -115,7 +132,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-classPupilNum-knowledge'){
+				}else if($dataId == 'grade-classPupilNum-knowledge'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.knowledge.excellent_pupil_percent,ClassPupilNum.knowledge.good_pupil_percent,ClassPupilNum.knowledge.failed_pupil_percent];
 					var nodeArr = ['knowledge_excellent','knowledge_good','knowledge_faild'];
@@ -123,7 +140,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-classPupilNum-skill'){
+				}else if($dataId == 'grade-classPupilNum-skill'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.skill.excellent_pupil_percent,ClassPupilNum.skill.good_pupil_percent,ClassPupilNum.skill.failed_pupil_percent];
 					var nodeArr = ['skill_excellent','skill_good','skill_faild'];
@@ -131,7 +148,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-classPupilNum-ability'){
+				}else if($dataId == 'grade-classPupilNum-ability'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.ability.excellent_pupil_percent,ClassPupilNum.ability.good_pupil_percent,ClassPupilNum.ability.failed_pupil_percent];
 					var nodeArr = ['ability_excellent','ability_good','ability_faild'];
@@ -139,7 +156,7 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#grade-checkpoint-table-knowledge'){
+				}else if($dataId == 'grade-checkpoint-table-knowledge'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.average_percent);
 					$('#knowledge_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.median_percent);
@@ -148,7 +165,7 @@ var reportPage = {
 					$('#knowledge_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.diff_degree);
 					$('#knowledge_diff_degree').html(diff_table);
-				}else if($href == '#grade-checkpoint-table-skill'){
+				}else if($dataId == 'grade-checkpoint-table-skill'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.average_percent);
 					$('#skill_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.median_percent);
@@ -157,7 +174,7 @@ var reportPage = {
 					$('#skill_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.diff_degree);
 					$('#skill_diff_degree').html(diff_table);
-				}else if($href == '#grade-checkpoint-table-ability'){
+				}else if($dataId == 'grade-checkpoint-table-ability'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.average_percent);
 					$('#ability_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.median_percent);
@@ -166,41 +183,39 @@ var reportPage = {
 					$('#ability_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.diff_degree);
 					$('#ability_diff_degree').html(diff_table);
-				}else if($href == '#grade-classPupilNum-table-knowledge'){
+				}else if($dataId == 'grade-classPupilNum-table-knowledge'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.excellent_pupil_percent);
 					$('#knowledge_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.good_pupil_percent);
 					$('#knowledge_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.failed_pupil_percent);
 					$('#knowledge_failed_table').html(faild_table);
-				}else if($href == '#grade-classPupilNum-table-skill'){
+				}else if($dataId == 'grade-classPupilNum-table-skill'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.excellent_pupil_percent);
 					$('#skill_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.good_pupil_percent);
 					$('#skill_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.failed_pupil_percent);
 					$('#skill_failed_table').html(faild_table);
-				}else if($href == '#grade-classPupilNum-table-ability'){
+				}else if($dataId == 'grade-classPupilNum-table-ability'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.excellent_pupil_percent);
-					console.log()
 					$('#ability_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.good_pupil_percent);
 					$('#ability_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.failed_pupil_percent);
 					$('#ability_failed_table').html(faild_table);
-				}else if($href == '#grade-answerCase'){
+				}else if($dataId == 'grade-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					$('#excellent_answerCase_table').html(excellent_table);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
-					console.log(good_table);
 					$('#good_answerCase_table').html(good_table);
 					var faild_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.failed);
 					$('#failed_answerCase_table').html(faild_table);
-				}else if($href == '#grade-readReport-three'){
+				}else if($dataId == 'grade-readReport-three'){
 					$('#grade-readReport-three').html(data.data.report_explanation.three_dimesions);
-				}else if($href == '#grade-readReport-statistics'){
+				}else if($dataId == 'grade-readReport-statistics'){
 					$('#grade-readReport-statistics').html(data.data.report_explanation.statistics);
-				}else if($href == '#grade-readReport-data'){
+				}else if($dataId == 'grade-readReport-data'){
 					$('#grade-readReport-data').html(data.data.report_explanation.data);
 				}
 			});
@@ -210,7 +225,7 @@ var reportPage = {
 			var classNum = reportPage.baseFn.getKeys(data).length;
 			var classValue = reportPage.baseFn.getValue(data);
 			var normArr = reportPage.baseFn.getKeys(reportPage.baseFn.getValue(data)[0]);
-			var thStr = '<td>班级</td>';
+			var thStr = '<td class="grade-titlt">班级</td>';
 			for(var i = 0 ; i < normArr.length ; i++){
 				thStr += '<td>'+normArr[i]+'</td>';
 			}
@@ -218,7 +233,15 @@ var reportPage = {
 			for(var i = 0 ; i < classNum ; i++){
 				var str = '';
 				for(var k = 0 ; k < normArr.length ; k++){
-					str += '<td>'+reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i])[k]+'</td>';
+					var iNum = reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i])[k];
+					if(iNum > -20  && iNum < 0){
+						str += '<td class="wrong">'+iNum+'</td>';
+					}else if(iNum < -20 ){
+						str += '<td class="wrong more-wrong">'+iNum+'</td>';
+					}else{
+						str += '<td>'+iNum+'</td>';
+					}
+//					str += '<td>'+iNum+'</td>';
 				}
 				if(classValue[i] == '年级'){
 					str = '<td>年级</td>'+ str ;
@@ -423,7 +446,7 @@ var reportPage = {
 			var colorArr = [] ;
 			var normNameArr = [];
 			for(var i = 0 ; i < normNum; i++){
-				colorArr.push(reportPage.baseFn.getRandomColor());
+				colorArr.push(reportPage.chartColor[i]);
 				normNameArr.push({name:normkeyArr[i],icon:'rect'});
 			};
 			return obj = {
@@ -454,7 +477,7 @@ var reportPage = {
 			var colorArr = [] ;
 			var normNameArr = [];
 			for(var i = 0 ; i < normNum; i++){
-				colorArr.push(reportPage.baseFn.getRandomColor());
+				colorArr.push(reportPage.chartColor[i]);
 				normNameArr.push({name:normkeyArr[i],icon:'rect'});
 			};
 			return obj = {
@@ -525,7 +548,12 @@ var reportPage = {
 	/*处理班级数据*/
 	Class: {
 		createReport : function(data){
-			console.log(data)
+			var basicData = data.data.basic;
+			var classNavStr = '学校名称：<span>'+basicData.school+'</span>&nbsp;&nbsp;班级：<span>'+basicData.classroom+'</span>&nbsp;&nbsp;'
+						 +'班级人数：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;测试类型：<span>'+basicData.quiz_type+'</span>&nbsp;&nbsp;'
+						 +'班级主任：<span>'+basicData.head_teacher+'</span>&nbsp;&nbsp;科目老师：<span>'+basicData.subject_teacher+'</span>&nbsp;&nbsp;'
+						 +'测试日期：<span>'+basicData.quiz_date+'</span>';
+			$('#class-top-nav').html(classNavStr);
 			var DiagnoseObj = reportPage.Class.getClassDiagnoseData(data.data.charts);
 			var objArr = [DiagnoseObj.knowledge,DiagnoseObj.skill,DiagnoseObj.ability];
 			var nodeArrLeft = ['knowledge_diagnose_left','skill_diagnose_left','ability_diagnose_left'];
@@ -539,9 +567,9 @@ var reportPage = {
 				echartOption.createEchart(optionCenter,nodeArrCenter[i]);
 				echartOption.createEchart(optionRight,nodeArrRight[i]);
 			};
-			$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-				var $href = $(e.target).attr('href');
-				if($href == '#class-NumScale'){
+			$('#tab-menu li[data-id]').on('click', function (e) {
+				var $dataId = $(e.target).attr('data-id');
+				if($dataId == 'class-NumScale'){
 					var classScaleObj = reportPage.Class.getClassScaleNumData(data.data.each_level_number);
 					var objArr = [classScaleObj.dimesions,classScaleObj.class_knowledge,classScaleObj.class_skill,classScaleObj.class_ability];
 					var nodeArr = ['scale_dimesions','scale_knowledge','scale_skill','scale_ability'];
@@ -549,35 +577,35 @@ var reportPage = {
 						var option = echartOption.getOption.Class.setClassScaleNumOption(objArr[i]);
 						echartOption.createEchart(option,nodeArr[i]);
 					};
-				}else if($href == '#table-data-knowledge'){
+				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'class');
 					$('#Class_knowledge_table').html(tableStr);
-				}else if($href == '#table-data-skill'){
+				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'class');
 					$('#Class_skill_table').html(tableStr);
-				}else if($href == '#table-data-ability'){
+				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'class');
 					$('#Class_ability_table').html(tableStr);
-				}else if($href == '#class-answerCase'){
+				}else if($dataId == 'class-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
 					var failed_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.failed);
 					$('#class_answer_excellent').html(excellent_table);
 					$('#class_answer_good').html(good_table);
 					$('#class_answer_failed').html(failed_table);
-				}else if($href == '#report-read-three'){
+				}else if($dataId == 'report-read-three'){
 					$('#report-read-three').html(data.data.report_explanation.three_dimesions);
-				}else if($href == '#report-read-checkpoint'){
+				}else if($dataId == 'report-read-checkpoint'){
 					$('#report-read-checkpoint').html(data.data.report_explanation.statistics);
-				}else if($href == '#report-read-data'){
+				}else if($dataId == 'report-read-data'){
 					$('#report-read-data').html(data.data.report_explanation.data);
-				}else if($href == '#exam-knowledge'){
+				}else if($dataId == 'exam-knowledge'){
 					$('#exam-knowledge').html(data.data.quiz_comment.knowledge);
-				}else if($href == '#exam-skill'){
+				}else if($dataId == 'exam-skill'){
 					$('#exam-skill').html(data.data.quiz_comment.skill);
-				}else if($href == '#exam-ability'){
+				}else if($dataId == 'exam-ability'){
 					$('#exam-ability').html(data.data.quiz_comment.ability);
-				}else if($href == '#exam-total'){
+				}else if($dataId == 'exam-total'){
 					$('#exam-total').html(data.data.quiz_comment.total);
 				}
 			});
@@ -640,7 +668,6 @@ var reportPage = {
 		},
 		handleClassScaleData : function(data){
 			var keys = reportPage.baseFn.getKeys(data);
-			console.log(keys);
 			var values = reportPage.baseFn.getValue(data);
 			var excellent = [], good = [],faild = [];
 			for(var i = 0 ; i < keys.length ; i++){
@@ -707,6 +734,10 @@ var reportPage = {
 	},
 	Pupil: {
 		createReport : function(data){
+			console.log(data);
+			var basicData = data.data.basic;
+			var pupilNavStr = ''+basicData.name+'/'+basicData.sex+'/'+basicData.grade+basicData.classroom+'/'+basicData.school+'/'+basicData.area+'难度:'+basicData.levelword2+'测试日期:'+basicData.quiz_date+'';
+			$('#pupil-top-nav').html(pupilNavStr);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
 			var nodeArr_radar = ['pupil_knowledge_radar','pupil_skill_radar','pupil_ability_radar'];
@@ -717,18 +748,17 @@ var reportPage = {
 				echartOption.createEchart(optionRadar,nodeArr_radar[i]);
 				echartOption.createEchart(optionDiff,nodeArr_diff[i]);
 			}
-			$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-				console.log(data);
-				var $href = $(e.target).attr('href');
-				if($href == '#improve-sugg'){
+			$('#tab-menu li[data-id]').on('click', function (e) {
+				var $dataId = $(e.target).attr('data-id');
+				if($dataId == 'improve-sugg'){
 					$('#improve-sugg').html(data.data.quiz_comment);
-				}else if($href == '#table-data-knowledge'){
+				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil');
 					$('#knowledge_data_table').html(tableStr);
-				}else if($href == '#table-data-skill'){
+				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil');
 					$('#skill_data_table').html(tableStr);
-				}else if($href == '#table-data-ability'){
+				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil');
 					$('#ability_data_table').html(tableStr);
 				}
@@ -785,7 +815,7 @@ var reportPage = {
 		},
 		/*针对个人的字段*/
 		creatPuilValueArr: function(obj) {
-			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.full_total, obj.correct_qzp_count];
+			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
 		}
 	},
 	bindEvent: function(){
@@ -807,6 +837,32 @@ var reportPage = {
 			$('.dropdown_menu').hide();
 			$('.dropdown_menu>li>ul').hide();
 			$('.dropdown_menu>li').removeClass('active');
+		});
+		$(document).on('click','#tab-menu li[data-id]',function(event){
+			
+			$select = $(this).attr('data-id');
+			$('#myTabContent div.tab-pane').hide();
+			$('#'+$select+'').fadeIn();
+			$('#tab-menu li[data-id]').each(function(){
+				$(this).removeClass('active');
+			})
+			$(this).addClass('active');
+		});
+		$(document).on('click','#xialatab',function(event){
+			var $this = $(this).children('ul');
+			if($this.is(':hidden')){
+				$this.slideDown();
+			}else{
+				$this.slideUp();
+			}
+		});
+		$(document).on('show.bs.collapse','.panel-collapse',function(){
+			$(this).prev().removeClass('collapse-close');
+			$(this).prev().addClass('collapse-open');
+		});
+		$(document).on('hide.bs.collapse','.panel-collapse',function(){
+			$(this).prev().removeClass('collapse-open');
+			$(this).prev().addClass('collapse-close');
 		});
 	},
 	/*基础方法*/
@@ -837,28 +893,39 @@ var reportPage = {
 				var twoAllStr = '';
 				//取得一级指标的键名;
 				one_level_name = oneArrKey[i];
-				var oneNameStr = '<td class="colbg">' + one_level_name + '</td>';
+				var oneNameStr = '<td class="one-level">' + one_level_name + '</td>';
 				//取得一级指标的键值对value；
 				var oneValue = oneArrValue[i].value;
 				var oneValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(oneValue) : reportPage.Pupil.creatPuilValueArr(oneValue);
-				console.log(oneValueArr.length)
 				//插入具体数据;
 				for (var k = 0; k < oneValueArr.length; k++) {
-					oneValueStr += '<td class="rowbg">' + oneValueArr[k] + '</td>';
+					var iNum = oneValueArr[k];
+					if(iNum < 0 && iNum > -20){
+						oneValueStr += '<td class="one-level-content one-level-wrong wrong">' + iNum + '</td>';
+					}else if(iNum < -20){
+						oneValueStr += '<td class="one-level-content one-level-wrong wrong more-wrong">' + iNum + '</td>';
+					}else{
+						oneValueStr += '<td class="one-level-content">' + iNum + '</td>';
+					};
 				};
 				var oneAllStr = '<tr>' + oneNameStr + oneValueStr + '</tr>';
-				console.log(oneAllStr);
 				//创建二级指标表格数据
 				if (oneArrValue[i].items && oneArrValue[i].items != null) {
 					var two_len = reportPage.baseFn.getKeys(oneArrValue[i].items).length;
-					
 					for (var j = 0; j < two_len; j++) {
 						var twoNameStr = '<td>' + reportPage.baseFn.getKeys(oneArrValue[i].items)[j] + '</td>';
 						var twoValueStr = '';
 						var twoArrValue = reportPage.baseFn.getValue(oneArrValue[i].items)[j].value;
 						var twoValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(twoArrValue) : reportPage.Pupil.creatPuilValueArr(twoArrValue);
 						for (var g = 0; g <twoValueArr.length ; g++) {
-							twoValueStr += '<td>' + twoValueArr[g] + '</td>';
+							var iNum = twoValueArr[g];
+							if(iNum < 0 && iNum > -20){
+								twoValueStr += '<td class="wrong">' + iNum + '</td>';
+							}else if(iNum < -20){
+								twoValueStr += '<td class="wrong more-wrong">' + iNum + '</td>';
+							}else{
+								twoValueStr += '<td>' + iNum + '</td>';
+							};
 						};
 						twoAllStr += '<tr>' + twoNameStr + twoValueStr + '</tr>';
 					}
@@ -942,7 +1009,7 @@ var reportPage = {
 				if (arr[i] >= 0) {
 					upArr.push({
 						value: arr[i],
-						symbolSize: 0
+						symbolSize: 5
 					});
 					downArr.push({
 						value: 0,
@@ -951,7 +1018,7 @@ var reportPage = {
 				} else if (arr[i] < 0) {
 					downArr.push({
 						value: arr[i],
-						symbolSize: 0
+						symbolSize: 5
 					});
 					upArr.push({
 						value: 0,
@@ -995,10 +1062,6 @@ var reportPage = {
 			return $.map(obj, function(value, index) {
 				return [value];
 			});
-		},
-		/*获取随机的颜色值*/
-		getRandomColor: function() {
-			return "#" + ("00000" + ((Math.random() * 16777215 + 0.5) >> 0).toString(16)).slice(-6);
 		},
 		/*获取url中?后面传递的参数*/
 		getRequest: function() {

@@ -1,216 +1,215 @@
-3<div class="container">
-	<ul class="nav nav-tabs panel-group chart-nav" id="accordion">
-		<li><a href="#pupil-diagnoseEchart" title="诊断图" data-toggle="tab">诊断图</a></li>
-		<li><a href="#improve-sugg" title="年级个分段人数比例" data-toggle="tab">诊断及改进建议</a></li>
-		<li>
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">数据表</a>
-			<ul id="collapseOne" class="panel-collapse collapse">
-				<li><a href="#table-data-knowledge" data-toggle="tab">知识</a></li>
-				<li><a href="#table-data-skill" data-toggle="tab">技能</a></li>
-				<li><a href="#table-data-ability" data-toggle="tab">能力</a></li>
-			</ul>
-		</li>
-	</ul>
-	<div id="myTabContent" class="tab-content">
-		<!--<nav id='grade-top'></nav>-->
-		<div class="tab-pane fade in active" id="pupil-diagnoseEchart">
-			<!--诊断图-->
-			<div class="wrapper-md">
-				<h1 class="m-n font-thin h3">学生个人知识情况诊断图</h1>
-			</div>
-			<div class="wrapper-md">
-				<div class="diagnosis">
-					<dl>
-						<dt>知识</dt>
-						<dd class="clearfix">
-							<div id="pupil_knowledge_radar" class="chart pull-left"></div>
-							<!-- Large modal -->
-							<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-								<div class="modal-dialog modal-lg" id="practice">
-									<div class="modal-content">
-										<div class="modal-header">
-											<button type="button" class="close glyphicon glyphicon-remove-circle" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-											<h4 class="modal-title">针对词法中的薄弱项，以下视频内容的学习和专项练习会有助于你的提高：</h4>
+<ul class="chart-nav box-height" id="tab-menu">
+	<li class="tab-btn active" data-id="pupil-diagnoseEchart">诊断图</li>
+	<li class="tab-btn" data-id="improve-sugg">诊断及改进建议</li>
+	<li class="drop-down">
+		<a class="collapse-close" data-toggle="collapse" data-target="#data_table">数据表</a>
+		<ul id="data_table" class="panel-collapse collapse">
+			<li class="tab-btn" data-id="table-data-knowledge">知识</li>
+			<li class="tab-btn" data-id="table-data-skill">技能</li>
+			<li class="tab-btn" data-id="table-data-ability">能力</li>
+		</ul>
+	</li>
+</ul>
+<div id="myTabContent" class="tab-content box-height">
+	<div class="report-nav-wrapper">
+		<nav id='pupil-top-nav' class="reptort-top-nav"></nav>
+	</div>
+	<div class="tab-pane active" id="pupil-diagnoseEchart">
+		<!--诊断图-->
+		<div class="wrapper-md">
+			<h1 class="m-n font-thin h3">学生个人知识、技能、能力情况诊断图</h1>
+		</div>
+		<div class="wrapper-md clearfix">
+			<div class="pupil-diagnosis clearfix">
+				<dl>
+					<dt>知识</dt>
+					<dd class="clearfix">
+						<div id="pupil_knowledge_radar" class="chart pull-left"></div>
+						<!-- Large modal -->
+						<div class="modal  bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+							<div class="modal-dialog modal-lg" id="practice">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close glyphicon glyphicon-remove-circle" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+										<h4 class="modal-title">针对词法中的薄弱项，以下视频内容的学习和专项练习会有助于你的提高：</h4>
+									</div>
+									<!-- Nav tabs -->
+									<ul class="nav nav-tabs" role="tablist">
+										<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">视频学习</a><i></i></li>
+										<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">专项练习</a><i></i></li>
+										<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">拓展阅读</a><i></i></li>
+									</ul>
+									<!-- Tab panes -->
+									<div class="tab-content">
+										<div role="tabpanel" class="tab-pane active" id="home">
+											<div class="row">
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic.jpg" alt="...">
+													</a>
+													<a href="#">http://junior.vipabc.com</a>
+												</div>
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic1.jpg" alt="...">
+													</a>
+													<a href="#">http://junior.vipabc.com</a>
+												</div>
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic2.jpg" alt="...">
+													</a>
+													<a href="#">http://junior.vipabc.com</a>
+												</div>
+											</div>
 										</div>
-										<!-- Nav tabs -->
-										<ul class="nav nav-tabs" role="tablist">
-											<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">视频学习</a><i></i></li>
-											<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">专项练习</a><i></i></li>
-											<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">拓展阅读</a><i></i></li>
-										</ul>
-										<!-- Tab panes -->
-										<div class="tab-content">
-											<div role="tabpanel" class="tab-pane active" id="home">
-												<div class="row">
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic.jpg" alt="...">
-														</a>
-														<a href="#">http://junior.vipabc.com</a>
-													</div>
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic1.jpg" alt="...">
-														</a>
-														<a href="#">http://junior.vipabc.com</a>
-													</div>
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic2.jpg" alt="...">
-														</a>
-														<a href="#">http://junior.vipabc.com</a>
-													</div>
+										<div role="tabpanel" class="tab-pane" id="profile">
+											<div class="row">
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic.jpg" alt="...">
+													</a>
+													<a href="#">http://junior1.vipabc.com</a>
+												</div>
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic1.jpg" alt="...">
+													</a>
+													<a href="#">http://junior1.vipabc.com</a>
+												</div>
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic2.jpg" alt="...">
+													</a>
+													<a href="#">http://junior1.vipabc.com</a>
 												</div>
 											</div>
-											<div role="tabpanel" class="tab-pane" id="profile">
-												<div class="row">
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic.jpg" alt="...">
-														</a>
-														<a href="#">http://junior1.vipabc.com</a>
-													</div>
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic1.jpg" alt="...">
-														</a>
-														<a href="#">http://junior1.vipabc.com</a>
-													</div>
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic2.jpg" alt="...">
-														</a>
-														<a href="#">http://junior1.vipabc.com</a>
-													</div>
+										</div>
+										<div role="tabpanel" class="tab-pane" id="messages">
+											<div class="row">
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic.jpg" alt="...">
+													</a>
+													<a href="#">http://junior2.vipabc.com</a>
 												</div>
-											</div>
-											<div role="tabpanel" class="tab-pane" id="messages">
-												<div class="row">
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic.jpg" alt="...">
-														</a>
-														<a href="#">http://junior2.vipabc.com</a>
-													</div>
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic1.jpg" alt="...">
-														</a>
-														<a href="#">http://junior2.vipabc.com</a>
-													</div>
-													<div class="col-xs-6 col-md-4">
-														<a href="#" class="thumbnail">
-															<img src="img/pic2.jpg" alt="...">
-														</a>
-														<a href="#">http://junior2.vipabc.com</a>
-													</div>
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic1.jpg" alt="...">
+													</a>
+													<a href="#">http://junior2.vipabc.com</a>
+												</div>
+												<div class="col-xs-6 col-md-4">
+													<a href="#" class="thumbnail">
+														<img src="img/pic2.jpg" alt="...">
+													</a>
+													<a href="#">http://junior2.vipabc.com</a>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div id="pupil_knowledge_diff" class="chart pull-right"></div>
-						</dd>
-					</dl>
-					<dl>
-						<dt>技能</dt>
-						<dd class="clearfix">
-							<div id="pupil_skill_radar" class="chart pull-left"></div>
-							<div id="pupil_skill_diff" class="chart pull-right"></div>
-						</dd>
-					</dl>
-					<dl>
-						<dt>能力</dt>
-						<dd class="clearfix">
-							<div id="pupil_ability_radar" class="chart pull-left"></div>
-							<div id="pupil_ability_diff" class="chart pull-right"></div>
-						</dd>
-					</dl>
-				</div>
+						</div>
+						<div id="pupil_knowledge_diff" class="chart pull-right"></div>
+					</dd>
+				</dl>
+				<dl>
+					<dt>技能</dt>
+					<dd class="clearfix">
+						<div id="pupil_skill_radar" class="chart pull-left"></div>
+						<div id="pupil_skill_diff" class="chart pull-right"></div>
+					</dd>
+				</dl>
+				<dl>
+					<dt>能力</dt>
+					<dd class="clearfix">
+						<div id="pupil_ability_radar" class="chart pull-left"></div>
+						<div id="pupil_ability_diff" class="chart pull-right"></div>
+					</dd>
+				</dl>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="improve-sugg">
+	</div>
+	<div class="tab-pane pupil-report-data" id="improve-sugg">
+	</div>
+	<div class="tab-pane " id="table-data-knowledge">
+		<div class="wrapper-md">
+			<h1 class="font-thin h3">个人知识数据表</h1>
 		</div>
-		<div class="tab-pane fade" id="table-data-knowledge">
-			<div class="wrapper-md">
-				<h1 class="font-thin h3">个人知识数据表</h1>
-			</div>
-			<div class="wrapper-md">
-				<div class="studenttable">
-					<table>
-						<caption>知 识</caption>
-						<tr>
-							<th class="col1 colbg">能力百分等级</th>
-							<th class="col2" rowspan="2">个人得分率</th>
-							<th class="col3" rowspan="2">年级平均水平</th>
-							<th class="col4" rowspan="2">得分率差值</th>
-							<th class="col5" rowspan="2">满分</th>
-							<th class="col6" rowspan="2">答对考点</th>
-						</tr>
-						<tr>
-						</tr>
-						<tbody id="knowledge_data_table"></tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div class="tab-pane fade" id="table-data-skill">
-			<div class="wrapper-md">
-				<h1 class="font-thin h3">个人技能数据表</h1>
-			</div>
-			<div class="wrapper-md">
-				<div class="studenttable">
-					<table>
-						<caption>技 能</caption>
-						<tr>
-							<th class="col1 colbg">能力百分等级</th>
-							<th class="col2" rowspan="2">个人得分率</th>
-							<th class="col3" rowspan="2">年级平均水平</th>
-							<th class="col4" rowspan="2">得分率差值</th>
-							<th class="col5" rowspan="2">满分</th>
-							<th class="col6" rowspan="2">答对考点</th>
-						</tr>
-						<tr>
-						</tr>
-						<tbody id="skill_data_table"></tbody>
-					</table>
-					<dl>
-						<dt>说明</dt>
-						<dd>
-							1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-						</dd>
-					</dl>
-				</div>
+		<div class="wrapper-md">
+			<div class="studenttable">
+				<table class="data-table pupil-data-table">
+					<caption>知 识</caption>
+					<tr>
+						<th>能力百分等级</th>
+						<th>个人得分率</th>
+						<th>年级平均水平</th>
+						<th>得分率差值</th>
+						<th>个人得分</th>
+						<th>满分</th>
+						<th>答对考点</th>
+					</tr>
+					<tbody id="knowledge_data_table"></tbody>
+				</table>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="table-data-ability">
-			<div class="wrapper-md">
-				<h1 class="font-thin h3">个人能力数据表</h1>
+	</div>
+	<div class="tab-pane " id="table-data-skill">
+		<div class="wrapper-md">
+			<h1 class="font-thin h3">个人技能数据表</h1>
+		</div>
+		<div class="wrapper-md">
+			<div class="studenttable">
+				<table class="data-table pupil-data-table">
+					<caption>技 能</caption>
+					<tr>
+						<th>能力百分等级</th>
+						<th>个人得分率</th>
+						<th>年级平均水平</th>
+						<th>得分率差值</th>
+						<th>个人得分</th>
+						<th>满分</th>
+						<th>答对考点</th>
+					</tr>
+					<tbody id="skill_data_table"></tbody>
+				</table>
+				<dl>
+					<dt>说明</dt>
+					<dd>
+						1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
+					</dd>
+				</dl>
 			</div>
-			<div class="wrapper-md">
-				<div class="studenttable">
-					<table>
-						<caption>能 力</caption>
-						<tr>
-							<th class="col1 colbg">能力百分等级</th>
-							<th class="col2" rowspan="2">个人得分率</th>
-							<th class="col3" rowspan="2">年级平均水平</th>
-							<th class="col4" rowspan="2">得分率差值</th>
-							<th class="col5" rowspan="2">满分</th>
-							<th class="col6" rowspan="2">答对考点</th>
-						</tr>
-						<tr>
-						</tr>
-						<tbody id="ability_data_table"></tbody>
-					</table>
-					<dl>
-						<dt>说明</dt>
-						<dd>
-							1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-						</dd>
-					</dl>
-				</div>
+		</div>
+	</div>
+	<div class="tab-pane " id="table-data-ability">
+		<div class="wrapper-md">
+			<h1 class="font-thin h3">个人能力数据表</h1>
+		</div>
+		<div class="wrapper-md">
+			<div class="studenttable">
+				<table class="data-table pupil-data-table">
+					<caption>能 力</caption>
+					<tr>
+						<th>能力百分等级</th>
+						<th>个人得分率</th>
+						<th>年级平均水平</th>
+						<th>得分率差值</th>
+						<th>个人得分</th>
+						<th>满分</th>
+						<th>答对考点</th>
+					</tr>
+					<tr>
+					</tr>
+					<tbody id="ability_data_table"></tbody>
+				</table>
+				<dl>
+					<dt>说明</dt>
+					<dd>
+						1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
+					</dd>
+				</dl>
 			</div>
 		</div>
 	</div>

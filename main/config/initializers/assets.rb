@@ -13,7 +13,8 @@ Rails.application.config.assets.precompile +=
 			zhengjuan.css init_zhengjuan.js ztree.js ztree.css
 			report.css init_report.js
 			echarts.min.js
-			managers/mains.css managers/mains.js managers/subject_checkpoints.js managers/checkpoints.css
+			managers/mains.css managers/mains.js
+			managers/subject_checkpoints.js managers/checkpoints.js managers/checkpoints.css
 			jquery.remotipart.js
 			default/ques-bank.css
 		)
