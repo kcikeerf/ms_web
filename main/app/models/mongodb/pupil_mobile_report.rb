@@ -24,4 +24,14 @@ class Mongodb::PupilMobileReport
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
+
+  def simple_report_wx_notbinded
+    report_j = JSON.parse(self.report_json)
+    result = {
+      :basic => report_j["basic"],
+      :rank => report_j["rank"]
+    }
+    return result
+  end
+
 end
