@@ -28,7 +28,7 @@ class Wx::PapersController < ApplicationController
         paper_h = JSON.parse(current_paper.paper_json)
         # 临时处理，待流程整理后处理
         paper_h["paper_html"] = ""
-        paper_h["answer_hmtl"] = ""
+        paper_h["answer_html"] = ""
         status = 200
         data = {paper_json: paper_h.to_json, message: I18n.t("wx_commons.messages.info.get_success")}
       else
