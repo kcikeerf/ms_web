@@ -35,7 +35,7 @@ class Mongodb::MobileUserQizpointScore
 
   def self.save_score params
   	#qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
-    qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz.bank_qizpoint_qzps}.flatten
+    qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
 
   	qzp_arr.each{|qzp|
       qizpoint = Mongodb::BankQizpointQzp.where(_id: qzp[:id]).first
