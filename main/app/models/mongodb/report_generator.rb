@@ -53,18 +53,18 @@ class Mongodb::ReportGenerator
     logger.info "construct class all charts"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.pup_uid' => nil,
+      '_id.grade' => {'$exists' => true },
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv1_ckp' => {'$exists' => true }
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
       #
       #grade
       #
-      if(item[:_id].keys.include?("grade") && 
-        !item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp"))
+      if !item[:_id].keys.include?("classroom")
 
         grade_report, report_h = get_grade_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp].to_sym
@@ -79,11 +79,7 @@ class Mongodb::ReportGenerator
       #
       #classroom
       #
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp"))
+      if item[:_id].keys.include?("classroom")
 
         klass_report, report_h = get_class_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp].to_sym
@@ -114,11 +110,7 @@ class Mongodb::ReportGenerator
       #
       #grade
       #
-      if(item[:_id].keys.include?("grade") && 
-        !item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp"))
+      if !item[:_id].keys.include?("classroom")
 
         grade_report, report_h = get_grade_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp].to_sym
@@ -135,11 +127,7 @@ class Mongodb::ReportGenerator
       #
       #classroom
       #
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp"))
+      if item[:_id].keys.include?("classroom")
 
         klass_report, report_h = get_class_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp]
@@ -174,37 +162,31 @@ class Mongodb::ReportGenerator
     logger.info "construct grade dimesion disperse chart"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => nil,
+      '_id.pup_uid' => nil,
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv2_ckp' => {'$exists' => true }
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
       #
       #grade
       #
-      if(item[:_id].keys.include?("grade") && 
-        !item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv2_ckp"))
+      grade_report, report_h = get_grade_report_hash item
+      lv2_ckp_key = item[:_id][:lv2_ckp].to_sym
+      dimesion = item[:_id][:dimesion]
 
-        grade_report, report_h = get_grade_report_hash item
-        lv2_ckp_key = item[:_id][:lv2_ckp].to_sym
-        dimesion = item[:_id][:dimesion]
+      report_h["charts"]["dimesion_disperse"][dimesion][lv2_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
 
-        report_h["charts"]["dimesion_disperse"][dimesion][lv2_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
-
-        grade_report.report_json = report_h.to_json
-        grade_report.save
-      end
+      grade_report.report_json = report_h.to_json
+      grade_report.save
     }
   end
 
   def construct_each_level_pupil_number
     logger.info "construct class each level number"
-
-    filter = {
-      '_id.pap_uid' => @pap_uid
-    }
 
     grade_filter = {
       '_id.pap_uid' => @pap_uid,
@@ -232,15 +214,17 @@ class Mongodb::ReportGenerator
       }
     }
 
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.pup_uid' => nil,
+      '_id.lv2_ckp' => nil
+    }
+
     Mongodb::ReportEachLevelPupilNumberResult.where(filter).each{|item|
       #grade
       #
-      if(item[:_id].keys.include?("grade") && 
-#        !item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
+      if item[:_id].keys.include?('dimesion') && item[:_id].keys.include?("lv1_ckp")
 
         grade_report, report_h = get_grade_report_hash item
         dimesion = item[:_id][:dimesion]
@@ -268,12 +252,8 @@ class Mongodb::ReportGenerator
       end
 
       #classroom
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        #item[:_id].keys.include?('dimesion') &&
-        !item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
+      if item[:_id].keys.include?("classroom") && !item[:_id].keys.include?("lv1_ckp")
+
         klass_report, report_h = get_class_report_hash item
 
         klass_value_h ={
@@ -314,7 +294,10 @@ class Mongodb::ReportGenerator
     logger.info "construct data table"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => {'$exists' => true },
+      '_id.dimesion' => {'$exists' => true }
     }
 
     data_table, ckp_lv2_to_lv1 = get_ckp_table
@@ -322,10 +305,7 @@ class Mongodb::ReportGenerator
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
       #####班级######
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion'))
+      if !item[:_id].keys.include?("pup_uid")
 
         klass_report, report_h = get_class_report_hash item
         dimesion = item[:_id][:dimesion]
@@ -356,10 +336,7 @@ class Mongodb::ReportGenerator
       end
 
       ######个人#####
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion'))
+      if item[:_id].keys.include?("pup_uid")
 
         pupil_report, pupil_report_h = get_pupil_report_hash item
         dimesion = item[:_id][:dimesion]
@@ -393,10 +370,7 @@ class Mongodb::ReportGenerator
 
     Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
       #### here is the processing ######
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid")&& 
-        item[:_id].keys.include?('dimesion'))
+      if !item[:_id].keys.include?("pup_uid")
 
         klass_report, report_h = get_class_report_hash item
         dimesion =item[:_id][:dimesion]
@@ -430,7 +404,9 @@ class Mongodb::ReportGenerator
     logger.info "construct data table"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.order' => {'$exists' => true }
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).sort({"_id.order" =>1}).each{|item|
@@ -439,35 +415,30 @@ class Mongodb::ReportGenerator
       report_h = {}
 
       #班级
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        item[:_id].keys.include?("order"))
+      if item[:_id].keys.include?("classroom")
         target_report, report_h = get_class_report_hash item
       #年级
-      elsif(item[:_id].keys.include?("grade") && 
-        !item[:_id].keys.include?("classroom") && 
-        item[:_id].keys.include?("order"))
+      elsif !item[:_id].keys.include?("classroom")
         target_report, report_h = get_grade_report_hash item
       end
 
       #统计各题答对率
-      if(item[:_id].keys.include?("order"))
-        if(0 <= item[:value][:average_percent] && 
-          item[:value][:average_percent] <Common::Report::ScoreLevel::Level60)
-         report_h["average_percent"]["failed"][item[:_id][:order]] =format_float(item[:value][:average_percent])
-        elsif(Common::Report::ScoreLevel::Level60 <= item[:value][:average_percent] && 
-          item[:value][:average_percent] < Common::Report::ScoreLevel::Level85)
-         report_h["average_percent"]["good"][item[:_id][:order]] =format_float(item[:value][:average_percent])
-        elsif(Common::Report::ScoreLevel::Level85 <= item[:value][:average_percent] && 
-          item[:value][:average_percent] <= 1)
-         report_h["average_percent"]["excellent"][item[:_id][:order]] =format_float(item[:value][:average_percent])
-        end
-        #保存报告
-        if target_report
-          target_report.report_json = report_h.to_json
-          target_report.save
-        end
+      if(0 <= item[:value][:average_percent] && 
+        item[:value][:average_percent] <Common::Report::ScoreLevel::Level60)
+       report_h["average_percent"]["failed"][item[:_id][:order]] =format_float(item[:value][:average_percent])
+      elsif(Common::Report::ScoreLevel::Level60 <= item[:value][:average_percent] && 
+        item[:value][:average_percent] < Common::Report::ScoreLevel::Level85)
+       report_h["average_percent"]["good"][item[:_id][:order]] =format_float(item[:value][:average_percent])
+      elsif(Common::Report::ScoreLevel::Level85 <= item[:value][:average_percent] && 
+        item[:value][:average_percent] <= 1)
+       report_h["average_percent"]["excellent"][item[:_id][:order]] =format_float(item[:value][:average_percent])
       end
+      #保存报告
+      if target_report
+        target_report.report_json = report_h.to_json
+        target_report.save
+      end
+
     }
   end
 
@@ -476,24 +447,24 @@ class Mongodb::ReportGenerator
     logger.info "construct pupil all charts"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.pup_uid' => {'$exists' => true },
+      '_id.dimesion' => {'$exists' => true }
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
       #pupils
-      if item[:_id].keys.include?("pup_uid")&& item[:_id].keys.include?('dimesion') 
-        pupil_report, report_h = get_pupil_report_hash item
-        if item[:id].keys.include?("lv1_ckp")
-          lv1_ckp_key = item[:_id][:lv1_ckp]
-          report_h["charts"]["#{item[:id][:dimesion]}_radar"]["grade_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-          report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
-        elsif item[:id].keys.include?("lv2_ckp")
-          lv2_ckp_key = item[:_id][:lv2_ckp]
-          report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"][lv2_ckp_key] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:gra_dim_lv2_avg_percent])
-        end
-        pupil_report.report_json = report_h.to_json
-        pupil_report.save
+      pupil_report, report_h = get_pupil_report_hash item
+      if item[:id].keys.include?("lv1_ckp")
+        lv1_ckp_key = item[:_id][:lv1_ckp]
+        report_h["charts"]["#{item[:id][:dimesion]}_radar"]["grade_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
+        report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+      elsif item[:id].keys.include?("lv2_ckp")
+        lv2_ckp_key = item[:_id][:lv2_ckp]
+        report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"][lv2_ckp_key] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:gra_dim_lv2_avg_percent])
       end
+      pupil_report.report_json = report_h.to_json
+      pupil_report.save
     }
   end
 
@@ -585,30 +556,28 @@ class Mongodb::ReportGenerator
     logger.info "construct grade 4 sections"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid，
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => nil,
+      '_id.pup_uid' => nil,
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv1_ckp' => {'$exists' => true },
+      '_id.lv2_ckp' => nil
     }
 
     Mongodb::ReportEachLevelPupilNumberResult.where(filter).each{|item|
-      if(item[:_id].keys.include?("grade") && 
-        !item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
+      #grade
+      grade_report, report_h = get_grade_report_hash item
+      dimesion = item[:_id][:dimesion]
+      lv1_ckp_key = item[:_id][:lv1_ckp]
 
-        #grade
-        grade_report, report_h = get_grade_report_hash item
-        dimesion = item[:_id][:dimesion]
-        lv1_ckp_key = item[:_id][:lv1_ckp]
+      report_h["four_sections"]["level0"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level0_percent])
+      report_h["four_sections"]["level25"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level25_percent])
+      report_h["four_sections"]["level50"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level50_percent])
+      report_h["four_sections"]["level75"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level75_percent])
 
-        report_h["four_sections"]["level0"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level0_percent])
-        report_h["four_sections"]["level25"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level25_percent])
-        report_h["four_sections"]["level50"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level50_percent])
-        report_h["four_sections"]["level75"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level75_percent])
-
-        grade_report.report_json = report_h.to_json
-        grade_report.save
-      end
+      grade_report.report_json = report_h.to_json
+      grade_report.save
     }
   end
 
@@ -1057,7 +1026,10 @@ class Mongodb::ReportGenerator
 #      :city => @city,
 #      :district => @district, 
 #      :school => @school,
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid，
+      '_id.grade' => {'$exists' => true },
+      '_id.dimesion' => {'$exists' => true },
+      '_id.pup_uid' => nil
     }
     arr = Mongodb::ReportTotalAvgResult.where(filter).no_timeout # need add filter here, user_id or somethind
 
@@ -1088,14 +1060,8 @@ class Mongodb::ReportGenerator
     total_num =arr.size
     arr.each_with_index{|item,index|
       logger.info(">>>>>>thread #{th_index}, current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
-      gra_common_cond = (item[:_id].keys.include?('grade') && 
-        !item[:_id].keys.include?('classroom') && 
-        !item[:_id].keys.include?('pup_uid') &&
-        item[:_id].keys.include?('dimesion'))
-      cls_common_cond = (item[:_id].keys.include?('grade') && 
-        item[:_id].keys.include?('classroom') && 
-        !item[:_id].keys.include?('pup_uid') &&
-        item[:_id].keys.include?('dimesion'))
+      gra_common_cond = !item[:_id].keys.include?('classroom')
+      cls_common_cond = item[:_id].keys.include?('classroom')
       qzp_score_common_cond = {
           '_id.pap_uid' => @pap_uid,
           #:ana_id => "", user id to filter result from mongodb_total_avg_result
@@ -1693,7 +1659,8 @@ class Mongodb::ReportGenerator
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
       report_h["basic"]["klass_count"] = klass_count
       report_h["basic"]["quiz_type"] = @paper.quiz_type
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
+#      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d")
       report_h["basic"]["levelword2"] = @paper.levelword2
       grade_report.update(:report_json => report_h.to_json)
     else
@@ -1725,7 +1692,8 @@ class Mongodb::ReportGenerator
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
       report_h["basic"]["classroom"] = I18n.t("dict.#{item[:_id][:classroom]}")
       report_h["basic"]["quiz_type"] = @paper.quiz_type
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
+#      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d")
       report_h["basic"]["levelword2"] = @paper.levelword2
 
       filter = {
@@ -1733,17 +1701,17 @@ class Mongodb::ReportGenerator
         '_id.pup_uid' => nil,
         '_id.lv1_ckp' => nil,
         '_id.lv2_ckp' => nil,
-        '_id.order' => nil
+        '_id.order' => nil,
+        '_id.dimesion' => {'$exists' => true },
+        '_id.classroom' => {'$exists' => true }
       }
       klass_results = Mongodb::ReportTotalAvgResult.where(filter)
       klass_results.each{|item|
-        if(item[:_id].keys.include?('classroom') && item[:_id].keys.include?('dimesion'))
-          dimesion = item[:_id][:dimesion]
-          report_h["dimesion_values"][dimesion]["average"] = item[:value][:cls_dim_avg]
-          report_h["dimesion_values"][dimesion]["average_percent"] = item[:value][:cls_dim_avg_percent]
-          report_h["dimesion_values"][dimesion]["gra_average"] = item[:value][:gra_dim_avg]
-          report_h["dimesion_values"][dimesion]["gra_average_percent"] = item[:value][:gra_dim_avg_percent]
-        end
+        dimesion = item[:_id][:dimesion]
+        report_h["dimesion_values"][dimesion]["average"] = item[:value][:cls_dim_avg]
+        report_h["dimesion_values"][dimesion]["average_percent"] = item[:value][:cls_dim_avg_percent]
+        report_h["dimesion_values"][dimesion]["gra_average"] = item[:value][:gra_dim_avg]
+        report_h["dimesion_values"][dimesion]["gra_average_percent"] = item[:value][:gra_dim_avg_percent]
       }
       klass_report.update(:report_json => report_h.to_json)
     else
@@ -1778,7 +1746,8 @@ class Mongodb::ReportGenerator
       report_h["basic"]["subject"] = @paper.subject
       report_h["basic"]["name"] = pupil.nil?? "":pupil.name
       report_h["basic"]["sex"] = pupil.nil?? "":pupil.sex
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
+#      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d")
       report_h["basic"]["levelword2"] = @paper.levelword2
       pupil_report.update(:report_json => report_h.to_json)
     else
@@ -1803,16 +1772,16 @@ class Mongodb::ReportGenerator
     qzpoints = @paper.bank_quiz_qizs.map{|item| item.bank_qizpoint_qzps}.flatten
     ckps = qzpoints.map{|item| item.bank_checkpoint_ckps}.flatten.uniq
     ckps.each{|ckp|
-        next unless ckp
-        # search current level checkpoint
-        lv1_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
-        lv2_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
+      next unless ckp
+      # search current level checkpoint
+      lv1_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+      lv2_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
 
-        lv1_temph = result[ckp.dimesion][lv1_ckp.checkpoint] || {"value"=> {}, "items"=> {}}
-        result[ckp.dimesion][lv1_ckp.checkpoint] = lv1_temph
-        result[ckp.dimesion][lv1_ckp.checkpoint]["items"][lv2_ckp.checkpoint] = {"value"=> {}, "items"=> {}}
-  
-        ckp_lv2_to_lv1[lv2_ckp.dimesion][lv2_ckp.checkpoint] = lv1_ckp.checkpoint
+      lv1_temph = result[ckp.dimesion][lv1_ckp.checkpoint] || {"value"=> {}, "items"=> {}}
+      result[ckp.dimesion][lv1_ckp.checkpoint] = lv1_temph
+      result[ckp.dimesion][lv1_ckp.checkpoint]["items"][lv2_ckp.checkpoint] = {"value"=> {}, "items"=> {}}
+
+      ckp_lv2_to_lv1[lv2_ckp.dimesion][lv2_ckp.checkpoint] = lv1_ckp.checkpoint
     }
     return result,ckp_lv2_to_lv1
   end
