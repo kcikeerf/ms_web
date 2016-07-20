@@ -140,6 +140,7 @@ zh:
   wx_papers:
     messages:
       info:
+        get_success: "成功获取试卷."
         no_paper: "未找到合适的试卷."
       warn:
 

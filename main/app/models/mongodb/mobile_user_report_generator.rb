@@ -34,18 +34,16 @@ class Mongodb::MobileUserReportGenerator
     current_rank = 0
     last_average_percent = 0
     Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.average_percent' => 1 }).each{|item|
-      if item[:_id].keys.include?('wx_openid')
-        if(last_average_percent < item[:value][:average_percent])
-          last_average_percent = item[:value][:average_percent]
-          current_rank += 1
-        end
+      if(last_average_percent < item[:value][:average_percent])
+        last_average_percent = item[:value][:average_percent]
+        current_rank += 1
+      end
 
-        mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
-        if mobile_report
-          mobile_report_h['rank']['my_position'] = current_rank
-          mobile_report_h['rank']['total_testers'] = total_tester
-          mobile_report.update(:report_json => mobile_report_h.to_json)
-        end
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+      if mobile_report
+        mobile_report_h['rank']['my_position'] = current_rank
+        mobile_report_h['rank']['total_testers'] = total_tester
+        mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
   end
@@ -54,21 +52,20 @@ class Mongodb::MobileUserReportGenerator
   def construct_ckp_charts
     filter = {
       '_id.pap_uid' => @pap_uid,
+      '_id.dimesion' => {'$exists' => true },
       '_id.order' => nil,
-      '_id.lv1_ckp' => nil
+      '_id.lv1_ckp' => nil,
+      '_id.lv2_ckp' => {'$exists' => true },
+      '_id.wx_openid' => {'$exists' => true }
     }
 
     Mongodb::MobileReportBasedOnTotalAvgResult.where(filter).each{|item|
-      if(item[:_id].keys.include?('wx_openid') &&
-         item[:_id].keys.include?('dimesion') && 
-         item[:_id].keys.include?('lv2_ckp'))
-        mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
-        if mobile_report
-          dimesion = item[:_id][:dimesion]
-          lv_ckp = item[:_id][:lv2_ckp]
-          mobile_report_h["charts"][dimesion][lv_ckp] = item[:value][:user_total_diff]
-          mobile_report.update(:report_json => mobile_report_h.to_json)
-        end
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+      if mobile_report
+        dimesion = item[:_id][:dimesion]
+        lv_ckp = item[:_id][:lv2_ckp]
+        mobile_report_h["charts"][dimesion][lv_ckp] = format_float(item[:value][:user_total_diff])
+        mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
   end
@@ -110,18 +107,17 @@ class Mongodb::MobileUserReportGenerator
       '_id.wx_openid' => {'$exists' => true }
     }
 
-    Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.correct_qzp_percent' => -1 }).each{|item|
+    Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.total_correct_qzp_percent' => -1 }).each{|item|
       mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
       if mobile_report
         dimesion = item[:_id][:dimesion]
         order = item[:_id][:order]
         lv_ckp = item[:_id][:lv2_ckp]
 
-        temph = mobile_report_h['wrong_quizs'][dimesion][order] || {"correct_qzp_percent" => 0, "checkpoint" => ""}
-        temph["correct_qzp_percent"] = item[:value][:correct_qzp_percent]
+        temph = mobile_report_h['wrong_quizs'][dimesion][order] || {"total_correct_qzp_percent" => 0, "checkpoint" => ""}
+        temph["total_correct_qzp_percent"] = convert_2_hundred(item[:value][:total_correct_qzp_percent])
         temph["checkpoint"] = lv_ckp
         mobile_report_h['wrong_quizs'][dimesion][order] = temph
-        p mobile_report_h['wrong_quizs'][dimesion]
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
@@ -267,6 +263,7 @@ class Mongodb::MobileUserReportGenerator
         qzp_score_common_cond['_id.lv1_ckp']=item[:_id][:lv1_ckp]
         qzp_score_upt_h['value.total_dim_lv1_avg'] = item[:value][:average]
         qzp_score_upt_h['value.total_dim_lv1_avg_percent'] = item[:value][:average_percent]
+        qzp_score_upt_h['value.total_correct_qzp_percent'] = item[:value][:correct_qzp_percent]
       elsif(total_common_cond &&
             item[:_id].keys.include?('dimesion') && 
             item[:_id].keys.include?('lv2_ckp'))
@@ -274,21 +271,25 @@ class Mongodb::MobileUserReportGenerator
         qzp_score_common_cond['_id.lv2_ckp']=item[:_id][:lv2_ckp]
         qzp_score_upt_h['value.total_dim_lv2_avg'] = item[:value][:average]
         qzp_score_upt_h['value.total_dim_lv2_avg_percent'] = item[:value][:average_percent]
+        qzp_score_upt_h['value.total_correct_qzp_percent'] = item[:value][:correct_qzp_percent]
       elsif(total_common_cond &&
             item[:_id].keys.include?('dimesion') &&
             !item[:_id].keys.include?('order'))
         qzp_score_common_cond['_id.dimesion']=item[:_id][:dimesion]
         qzp_score_upt_h['value.total_dim_avg'] = item[:value][:average]
         qzp_score_upt_h['value.total_dim_avg_percent'] = item[:value][:average_percent]
+        qzp_score_upt_h['value.total_correct_qzp_percent'] = item[:value][:correct_qzp_percent]
       elsif(total_common_cond &&
             !item[:_id].keys.include?('dimesion') &&
             item[:_id].keys.include?('order'))
         qzp_score_common_cond['_id.order']=item[:_id][:order]
         qzp_score_upt_h['value.total_dim_avg'] = item[:value][:average]
         qzp_score_upt_h['value.total_dim_avg_percent'] = item[:value][:average_percent]
+        qzp_score_upt_h['value.total_correct_qzp_percent'] = item[:value][:correct_qzp_percent]
       elsif total_common_cond
         qzp_score_upt_h['value.total_avg'] = item[:value][:average]
         qzp_score_upt_h['value.total_avg_percent'] = item[:value][:average_percent]
+        qzp_score_upt_h['value.total_correct_qzp_percent'] = item[:value][:correct_qzp_percent]
       end
       unless qzp_score_upt_h.empty?
         results = Mongodb::MobileReportTotalAvgResult.where(qzp_score_common_cond).no_timeout
@@ -404,7 +405,7 @@ class Mongodb::MobileUserReportGenerator
   	unless mobile_report
   	  if !pup_uid.blank? || !wx_openid.blank?
   	  	params_h= {
-  	  	  :pap_uid => @pap_uid,
+          :pap_uid => @pap_uid,
           :pup_uid => @pup_uid,
           :wx_openid => @wx_openid
         }
