@@ -1,61 +1,63 @@
-1<div class="container">
+<div class="container">
 	<!--年级图表左面nav导航部分-->
-	<ul class="nav nav-tabs panel-group chart-nav" id="accordion">
-		<li><a href="#grade-diagnoseEchart" title="诊断图" data-toggle="tab">诊断图</a></li>
-		<li><a href="#grade-NumScale" title="年级个分段人数比例" data-toggle="tab">年级个分段人数比例</a></li>
-		<li><a href="#grade-FourSections" title="四分位区间表现情况" data-toggle="tab">四分位区间表现情况</a></li>
-		<li>
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">各指标表现水平图</a>
+	<ul class="chart-nav" id="tab-menu">
+		<li class="tab-btn active" data-id="grade-diagnoseEchart">诊断图</li>
+		<li class="tab-btn" data-id="grade-NumScale">年级个分段人数比例</li>
+		<li class="tab-btn" data-id="grade-FourSections">四分位区间表现情况</li>
+		<li class="drop-down">
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">各指标表现水平图</a>
 			<ul id="collapseOne" class="panel-collapse collapse">
-				<li><a href="#grade-checkpoint-knowledge" data-toggle="tab">知识</a></li>
-				<li><a href="#grade-checkpoint-skill" data-toggle="tab">技能</a></li>
-				<li><a href="#grade-checkpoint-ability" data-toggle="tab">能力</a></li>
-				<li><a href="#grade-checkpoint-total" data-toggle="tab">总成绩</a></li>
+				<li class="tab-btn" data-id="grade-checkpoint-knowledge">知识</li>
+				<li class="tab-btn" data-id="grade-checkpoint-skill">技能</li>
+				<li class="tab-btn" data-id="grade-checkpoint-ability">能力</li>
+				<li class="tab-btn" data-id="grade-checkpoint-total">总成绩</li>
 			</ul>
 		</li>
-		<li>
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">各班人数比例图</a>
+		<li class="drop-down">
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">各班人数比例图</a>
 			<ul id="collapseTwo" class="panel-collapse collapse">
-				<li><a href="#grade-classPupilNum-knowledge" tabindex="-1" data-toggle="tab">知识</a></li>
-				<li><a href="#grade-classPupilNum-skill" tabindex="-1" data-toggle="tab">技能</a></li>
-				<li><a href="#grade-classPupilNum-ability" data-toggle="tab">能力</a></li>
+				<li class="tab-btn" data-id="grade-classPupilNum-knowledge">知识</li>
+				<li class="tab-btn" data-id="grade-classPupilNum-skill">技能</li>
+				<li class="tab-btn" data-id="grade-classPupilNum-ability">能力</li>
 			</ul>
 		</li>
-		<li>
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">各指标表现水平数据<span class="caret"></a>
+		<li class="drop-down">
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">各指标表现水平数据</a>
 			<ul id="collapseThree" class="panel-collapse collapse">
-				<li><a href="#grade-checkpoint-table-knowledge" data-toggle="tab">知识</a></li>
-				<li><a href="#grade-checkpoint-table-skill" data-toggle="tab">技能</a></li>
-				<li><a href="#grade-checkpoint-table-ability" data-toggle="tab">能力</a></li>
+				<li class="tab-btn" data-id="grade-checkpoint-table-knowledge">知识</li>
+				<li class="tab-btn" data-id="grade-checkpoint-table-skill">技能</li>
+				<li class="tab-btn" data-id="grade-checkpoint-table-ability">能力</li>
 			</ul>
 		</li>
-		<li>
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapseFore">各班人数比例数据</a>
+		<li class="drop-down">
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseFore">各班人数比例数据</a>
 			<ul id="collapseFore" class="panel-collapse collapse">
-				<li><a href="#grade-classPupilNum-table-knowledge" data-toggle="tab">知识</a></li>
-				<li><a href="#grade-classPupilNum-table-skill" data-toggle="tab">技能</a></li>
-				<li><a href="#grade-classPupilNum-table-ability" data-toggle="tab">能力</a></li>
+				<li class="tab-btn" data-id="grade-classPupilNum-table-knowledge">知识</li>
+				<li class="tab-btn" data-id="grade-classPupilNum-table-skill">技能</li>
+				<li class="tab-btn" data-id="grade-classPupilNum-table-ability">能力</li>
 			</ul>
 		</li>
-		<li><a href="#grade-answerCase" tabindex="-1" data-toggle="tab">学生答题情况统计</a></li>
-		<li>
-			<a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">报告解读</a>
+		<li class="tab-btn" data-id="grade-answerCase">学生答题情况统计</li>
+		<li class="drop-down">
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">报告解读</a>
 			<ul id="collapseFive" class="panel-collapse collapse">
-				<li><a href="#grade-readReport-three" tabindex="-1" data-toggle="tab">三维指标含义解读</a></li>
-				<li><a href="#grade-readReport-statistics" data-toggle="tab">统计指标解释</a></li>
-				<li><a href="#grade-readReport-data" data-toggle="tab">数据解读</a></li>
+				<li class="tab-btn" data-id="grade-readReport-three">三维指标含义解读</li>
+				<li class="tab-btn" data-id="grade-readReport-statistics">统计指标解释</li>
+				<li class="tab-btn" data-id="grade-readReport-data">数据解读</li>
 			</ul>
 		</li>
 	</ul>
 	<div id="myTabContent" class="tab-content">
-		<!--<nav id='grade-top'></nav>-->
-		<div class="tab-pane fade in active" id="grade-diagnoseEchart">
+		<div class="report-nav-wrapper">
+			<nav id='grade-top-nav' class="reptort-top-nav"></nav>
+		</div>
+		<div class="tab-pane active" id="grade-diagnoseEchart">
 			<!--诊断图-->
 			<div class="wrapper-md">
-				<h1 class="m-n font-thin h3">年级知识、技能、能力情况诊断图</h1>
+				<h1 class="">年级知识、技能、能力情况诊断图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="diagnosis">
+				<div class="grade-diagnosis">
 					<dl>
 						<dt id="aaaa">知识</dt>
 						<dd class="clearfix">
@@ -84,11 +86,11 @@
 			</div>
 			<div class="wrapper-md">
 				<div class="typing">
-					<canvas id="canvas" width="800" height="600"></canvas>
+					<canvas id="parting-chart" width="800" height="450"></canvas>
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-NumScale">
+		<div class="tab-pane" id="grade-NumScale">
 			<!--年级各分数段人数比例-->
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">年级知识、技能、能力各分数段人数比例</h1>
@@ -98,7 +100,6 @@
 					<dl>
 						<dt>知识</dt>
 						<dd>
-							<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 							<div id="KnowledgeScale" style="width:750px;height:450px"></div>
 						</dd>
 					</dl>
@@ -106,8 +107,7 @@
 					<dl>
 						<dt>技能</dt>
 						<dd>
-							<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-							<div id="SkillScale" style="width:750px;height:660px"></div>
+							<div id="SkillScale" style="width:750px;height:300px"></div>
 						</dd>
 					</dl>
 
@@ -121,15 +121,15 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-FourSections">
+		<div class="tab-pane " id="grade-FourSections">
 			<!--四分位区间-->
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">年级四分位区间学生知识、技能、能力表现情况</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="interval">
+				<div class="grade-interval">
 					<dl>
-						<dt>百分位为（75,100]区间（上四分位）学生的各项指标情况</dt>
+						<dt>百分位为（[75,100]区间（上四分位）学生的各项指标情况</dt>
 						<dd class="clearfix">
 							<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
 							<div id="knowledge_Four_L75" class="chart"></div>
@@ -182,14 +182,13 @@
 			</div>
 		</div>
 		<!--各指标表现水平图 start-->
-		<div class="tab-pane fade" id="grade-checkpoint-knowledge">
+		<div class="tab-pane " id="grade-checkpoint-knowledge">
 
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班知识指标表现水平图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="level">
-
+				<div class="grade-level">
 					<dl>
 						<dt>知识指标各班平均得分率</dt>
 						<dd class="clearfix">
@@ -221,12 +220,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-checkpoint-skill">
+		<div class="tab-pane " id="grade-checkpoint-skill">
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班技能指标表现水平图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="level">
+				<div class="grade-level">
 					<dl>
 						<dt>技能指标各班平均得分率</dt>
 						<dd class="clearfix">
@@ -258,12 +257,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-checkpoint-ability">
+		<div class="tab-pane " id="grade-checkpoint-ability">
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班能力指标表现水平图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="level">
+				<div class="grade-level">
 
 					<dl>
 						<dt>能力指标各班平均得分率</dt>
@@ -296,12 +295,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-checkpoint-total">
+		<div class="tab-pane " id="grade-checkpoint-total">
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班总成绩指标表现水平图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="level">
+				<div class="grade-level">
 					<dl>
 						<dt>总成绩指标各班平均得分率</dt>
 						<dd class="clearfix">
@@ -335,12 +334,12 @@
 		</div>
 		<!--各指标表现水平图 end-->
 		<!--各班人数比例图 start-->
-		<div class="tab-pane fade" id="grade-classPupilNum-knowledge">
+		<div class="tab-pane " id="grade-classPupilNum-knowledge">
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班知识分数段人数比例图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="percentage">
+				<div class="grade-percentage">
 					<dl>
 						<dt>知识各班优秀率</dt>
 						<dd class="clearfix">
@@ -367,12 +366,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-classPupilNum-skill">
+		<div class="tab-pane " id="grade-classPupilNum-skill">
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班技能分数段人数比例图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="percentage">
+				<div class="grade-percentage">
 					<dl>
 						<dt>技能各班优秀率</dt>
 						<dd class="clearfix">
@@ -397,12 +396,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-classPupilNum-ability">
+		<div class="tab-pane " id="grade-classPupilNum-ability">
 			<div class="wrapper-md">
 				<h1 class="m-n font-thin h3">各班能力分数段人数比例图</h1>
 			</div>
 			<div class="wrapper-md">
-				<div class="percentage">
+				<div class="grade-percentage">
 					<dl>
 						<dt>能力各班优秀率</dt>
 						<dd class="clearfix">
@@ -429,117 +428,113 @@
 		</div>
 		<!--各班人数比例图 end-->
 		<!--各指标表现水平数据  start-->
-		<div class="tab-pane fade" id="grade-checkpoint-table-knowledge">
+		<div class="tab-pane " id="grade-checkpoint-table-knowledge">
 			<div class="wrapper-md">
 				<h1 class="font-thin h3">各班知识情况数据表</h1>
 			</div>
 			<div class="wrapper-md">
 				<div class="datatable clearfix">
 					<h2>知识平均得分率</h2>
-					<table id="knowledge_average_percent" class="data-table">
-						
-					</table>
+					<table id="knowledge_average_percent" class="data-table grade-data-table"></table>
 					<h2>知识中位数得分率</h2>
-					<table id="knowledge_median_percent" class="data-table">
-						
-					</table>
+					<table id="knowledge_median_percent" class="data-table grade-data-table"></table>
 					<h2>知识各指标中平差值</h2>
-					<table id="knowledge_med_avg_diff" class="data-table"></table>
+					<table id="knowledge_med_avg_diff" class="data-table grade-data-table"></table>
 					<h2>知识分化度</h2>
-					<table id="knowledge_diff_degree" class="data-table"></table>
+					<table id="knowledge_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-checkpoint-table-skill">
+		<div class="tab-pane " id="grade-checkpoint-table-skill">
 			<div class="wrapper-md">
 				<h1 class="font-thin h3">班级技能数据表</h1>
 			</div>
 			<div class="wrapper-md">
 				<div class="datatable clearfix">
 					<h2>技能平均得分率</h2>
-					<table id="skill_average_percent" class="data-table"></table>
+					<table id="skill_average_percent" class="data-table grade-data-table"></table>
 					<h2>技能中位数得分率</h2>
-					<table id="skill_median_percent" class="data-table"></table>
+					<table id="skill_median_percent" class="data-table grade-data-table"></table>
 					<h2>技能各指标中平差值</h2>
-					<table id="skill_med_avg_diff" class="data-table"></table>
+					<table id="skill_med_avg_diff" class="data-table grade-data-table"></table>
 					<h2>技能分化度</h2>
-					<table id="skill_diff_degree" class="data-table"></table>
+					<table id="skill_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-checkpoint-table-ability">
+		<div class="tab-pane " id="grade-checkpoint-table-ability">
 			<div class="wrapper-md">
 				<h1 class="font-thin h3">班级能力数据表</h1>
 			</div>
 			<div class="wrapper-md">
 				<div class="datatable clearfix">
 					<h2>能力平均得分率</h2>
-					<table id="ability_average_percent" class="data-table"></table>
+					<table id="ability_average_percent" class="data-table grade-data-table"></table>
 					<h2>能力中位数得分率</h2>
-					<table id="ability_median_percent" class="data-table"></table>
+					<table id="ability_median_percent" class="data-table grade-data-table"></table>
 					<h2>能力各指标中平差值</h2>
-					<table id="ability_med_avg_diff" class="data-table"></table>
+					<table id="ability_med_avg_diff" class="data-table grade-data-table"></table>
 					<h2>能力分化度</h2>
-					<table id="ability_diff_degree" class="data-table"></table>
+					<table id="ability_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
 		<!--各指标表现水平数据  end-->
 		<!--各班人数比例数据  start-->
-		<div class="tab-pane fade" id="grade-classPupilNum-table-knowledge">
+		<div class="tab-pane " id="grade-classPupilNum-table-knowledge">
 			<div class="wrapper-md">
 				<h1 class="font-thin h3">各班知识各指标各分数段人数比例数据表</h1>
 			</div>
 			<div class="wrapper-md">
 				<div class="datatable clearfix">
 					<h2>知识得分率≥85%（优秀率）人数比例</h2>
-					<table id="knowledge_excellent_table" class="data-table"></table>
+					<table id="knowledge_excellent_table" class="data-table grade-data-table"></table>
 					<h2> 60≤知识得分率﹤85（良好达标率）人数比例</h2>
-					<table id="knowledge_good_table" class="data-table"></table>
+					<table id="knowledge_good_table" class="data-table grade-data-table"></table>
 					<h2>知识得分率﹤60 （不及格率）人数比例</h2>
-					<table id="knowledge_failed_table" class="data-table"></table>
+					<table id="knowledge_failed_table" class="data-table grade-data-tables"></table>
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-classPupilNum-table-skill">
+		<div class="tab-pane " id="grade-classPupilNum-table-skill">
 			<div class="wrapper-md">
 				<h1 class="font-thin h3">各班技能各指标各分数段人数比例数据表</h1>
 			</div>
 			<div class="wrapper-md">
 				<div class="datatable clearfix">
 					<h2>技能得分率≥85%（优秀率）人数比例</h2>
-					<table id="skill_excellent_table" class="data-table"></table>
+					<table id="skill_excellent_table" class="data-table grade-data-table"></table>
 					<h2> 60≤技能得分率﹤85（良好达标率）人数比例</h2>
-					<table id="skill_good_table" class="data-table"></table>
+					<table id="skill_good_table" class="data-table grade-data-table"></table>
 					<h2>技能得分率﹤60 （不及格率）人数比例</h2>
-					<table id="skill_failed_table" class="data-table"></table>
+					<table id="skill_failed_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
-		<div class="tab-pane fade" id="grade-classPupilNum-table-ability">
+		<div class="tab-pane " id="grade-classPupilNum-table-ability">
 			<div class="wrapper-md">
 				<h1 class="font-thin h3">各班能力各指标各分数段人数比例数据表</h1>
 			</div>
 			<div class="wrapper-md">
 				<div class="datatable clearfix">
 					<h2>能力得分率≥85%（优秀率）人数比例</h2>
-					<table id="ability_excellent_table"></table>
+					<table id="ability_excellent_table" class="data-table grade-data-table"></table>
 					<h2> 60≤能力得分率﹤85（良好达标率）人数比例</h2>
-					<table id="ability_good_table"></table>
+					<table id="ability_good_table" class="data-table grade-data-table"></table>
 					<h2>能力得分率﹤60 （不及格率）人数比例</h2>
-					<table id="ability_failed_table"></table>
+					<table id="ability_failed_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
 		<!--各班人数比例数据  end-->
-		<div class="tab-pane fade" id="grade-answerCase">
+		<div class="tab-pane " id="grade-answerCase">
 			<!--学生答题情况-->
 			<div class="wrapper-md">
 			  	<h1 class="font-thin h3">班级学生答题情况统计</h1>
 			  	<small class="titleexplain">说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为【0，1】，数值越大，表明答对人数越多。答对率低于0.6的题目是本班的薄弱点，需要重点关注。</small>
 			</div>
 			<div class="wrapper-md">
-			    <div id="table_static" class="clearfix">
+			   	<div id="table_static" class="clearfix answerCase-table-all">
 			        <section ng-controller="GridDemoCtrl1">
 			            <div class="panel-heading">
 			                答对率 ≥ 0.85的题目
@@ -584,13 +579,13 @@
 			</div>
 		</div>
 		<!--报告解读  start-->
-		<div class="tab-pane fade" id="grade-readReport-three">
+		<div class="tab-pane grade-report" id="grade-readReport-three" >
 			<!--报告解读-三维指标-->
 		</div>
-		<div class="tab-pane fade" id="grade-readReport-statistics">
+		<div class="tab-pane grade-report" id="grade-readReport-statistics" >
 			<!--报告解读-统计指标-->
 		</div>
-		<div class="tab-pane fade" id="grade-readReport-data">
+		<div class="tab-pane grade-report" id="grade-readReport-data">
 			<!--报告解读-数据解读-->
 		</div>
 		<!--报告解读  end-->

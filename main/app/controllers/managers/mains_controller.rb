@@ -2,11 +2,7 @@ class Managers::MainsController < ApplicationController
   layout false
 
   def index
-
+  	@menus = Manager.left_menus
   end  
 
-  def navigation
-    @navi = Manager.get_all_navi_menus
-    render :layout => false
-  end
 end
