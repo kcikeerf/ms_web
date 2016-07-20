@@ -12,6 +12,7 @@ Rails.application.config.assets.precompile +=
 	%w( default/users.css users.js
 			zhengjuan.css init_zhengjuan.js ztree.js ztree.css
 			report.css init_report.js
+                        new_report.css init_new_report.js
 			echarts.min.js
 			managers/mains.css managers/mains.js
 			managers/subject_checkpoints.js managers/checkpoints.js managers/checkpoints.css
