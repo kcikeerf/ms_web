@@ -3,6 +3,7 @@
 class Wx::PapersController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :wx_authenticate!, :except => [:get_quizs, :submit_quiz_score]
+  before_action :wx_set_api_header
 
   def get_quizs
   	params.permit!

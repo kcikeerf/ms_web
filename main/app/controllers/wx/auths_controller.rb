@@ -1,5 +1,6 @@
 class Wx::AuthsController < ApplicationController
   skip_before_action :verify_authenticity_token
+  before_action :wx_set_api_header
 
   def wx_bind
     params.permit!
