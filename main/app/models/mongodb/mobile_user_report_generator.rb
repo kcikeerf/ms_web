@@ -390,12 +390,12 @@ class Mongodb::MobileUserReportGenerator
   	# 无pup_id，有wx_openid: 微信未绑定用户
   	# 
   	if !pup_uid.blank?
-      mobile_report = Mongodb::PupilMobileReport.where(:pup_uid=> @pup_uid, :pap_uid => @pap_uid ).first
+      mobile_report = Mongodb::PupilMobileReport.where(:pup_uid=> pup_uid, :pap_uid => @pap_uid ).first
       pupil = Pupil.where(uid: pup_uid).first
       username = pupil.name
       sex = pupil.sex
     elsif !wx_openid.blank?
-      mobile_report = Mongodb::PupilMobileReport.where(:wx_openid=> @wx_openid, :pap_uid => @pap_uid ).first
+      mobile_report = Mongodb::PupilMobileReport.where(:wx_openid=> wx_openid, :pap_uid => @pap_uid ).first
       username = wx_openid 
       sex = I18n.t("dict.unknown")
     else
@@ -406,8 +406,8 @@ class Mongodb::MobileUserReportGenerator
   	  if !pup_uid.blank? || !wx_openid.blank?
   	  	params_h= {
           :pap_uid => @pap_uid,
-          :pup_uid => @pup_uid,
-          :wx_openid => @wx_openid
+          :pup_uid => pup_uid,
+          :wx_openid => wx_openid
         }
         mobile_report = Mongodb::PupilMobileReport.new(params_h)
         mobile_report_h = Common::Report::Format::PupilMobile.deep_dup
