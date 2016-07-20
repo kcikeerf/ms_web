@@ -34,7 +34,7 @@ class Mongodb::ReportGenerator
     logger.debug(@paper.paper_status)
   end
 
-  # class reports
+  # grade class reports
   def construct_gra_cls_charts
     logger.info "construct class all charts"
 
@@ -125,19 +125,33 @@ class Mongodb::ReportGenerator
       '_id.grade' => {'$exists' => true },
       '_id.classroom' => nil,
       '_id.pup_uid' => nil,
+      '_id.order' => nil,
       '_id.dimesion' => {'$exists' => true },
+      '_id.lv1_ckp' => nil,
       '_id.lv2_ckp' => {'$exists' => true }
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
-      #
-      #grade
-      #
       grade_report, report_h = get_grade_report_hash item
-      lv2_ckp_key = item[:_id][:lv2_ckp].to_sym
+      lv_ckp = item[:_id][:lv2_ckp]
       dimesion = item[:_id][:dimesion]
 
-      report_h["charts"]["dimesion_disperse"][dimesion][lv2_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+      temph = report_h["charts"]["dimesion_disperse"][dimesion][lv_ckp] || { :average_percent => 0, :diff_degree => 0 }
+      temph[:average_percent] = convert_2_full_mark(item[:value][:average_percent])
+      report_h["charts"]["dimesion_disperse"][dimesion][lv_ckp] = temph
+
+      grade_report.report_json = report_h.to_json
+      grade_report.save
+    }
+
+    Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
+      grade_report, report_h = get_grade_report_hash item
+      lv_ckp = item[:_id][:lv2_ckp]
+      dimesion = item[:_id][:dimesion]
+
+      temph = report_h["charts"]["dimesion_disperse"][dimesion][lv_ckp] || { :average_percent => 0, :diff_degree => 0 }
+      temph[:diff_degree] = convert_2_full_mark(item[:value][:diff_degree])
+      report_h["charts"]["dimesion_disperse"][dimesion][lv_ckp] = temph
 
       grade_report.report_json = report_h.to_json
       grade_report.save
