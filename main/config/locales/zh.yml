@@ -179,7 +179,7 @@ zh:
 
   #字典库用label
   dict:
-    unkown: "未知"
+    unknown: "未知"
     province: "省"
     city: "市"
     district: "区"
