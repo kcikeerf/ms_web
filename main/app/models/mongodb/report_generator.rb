@@ -586,65 +586,39 @@ class Mongodb::ReportGenerator
     logger.info "construct each class horizon charts"
 
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => {'$exists' => true },
+      '_id.pup_uid' => nil,
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv2_ckp' => nil
+
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
-
-        #grade
-        grade_report, report_h = get_grade_report_hash item
-        dimesion = item[:_id][:dimesion]
-        klass = I18n.t("dict.#{item[:_id][:classroom]}")
+      grade_report, report_h = get_grade_report_hash item
+      dimesion = item[:_id][:dimesion]
+      klass = I18n.t("dict.#{item[:_id][:classroom]}")
+      if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
-
         temp_h = report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] || {}
         temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
         report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] = temp_h
-
-        grade_report.report_json = report_h.to_json
-        grade_report.save
-      elsif(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        !item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
-
-        #grade
-        grade_report, report_h = get_grade_report_hash item
-        dimesion = item[:_id][:dimesion]
-        klass = I18n.t("dict.#{item[:_id][:classroom]}")
-
+      else
         temp_h = report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] || {}
         temp_h[dimesion] = convert_2_full_mark(item[:value]["average_percent".to_sym])
         report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] = temp_h
-
-        grade_report.report_json = report_h.to_json
-        grade_report.save
-
       end
+      grade_report.report_json = report_h.to_json
+      grade_report.save
     }
 
     Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
-      if(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
-
-        #grade
-        grade_report, report_h = get_grade_report_hash item
-        dimesion = item[:_id][:dimesion]
-        klass = I18n.t("dict.#{item[:_id][:classroom]}")
+      grade_report, report_h = get_grade_report_hash item
+      dimesion = item[:_id][:dimesion]
+      klass = I18n.t("dict.#{item[:_id][:classroom]}")
+      if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
-
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
           temp_h = report_h["each_checkpoint_horizon"][dimesion][member][klass] || {}
           if member == "med_avg_diff"
@@ -654,21 +628,7 @@ class Mongodb::ReportGenerator
           end
           report_h["each_checkpoint_horizon"][dimesion][member][klass] = temp_h
         }
-
-        grade_report.report_json = report_h.to_json
-        grade_report.save
-      elsif(item[:_id].keys.include?("grade") && 
-        item[:_id].keys.include?("classroom") && 
-        !item[:_id].keys.include?("pup_uid") && 
-        item[:_id].keys.include?('dimesion') &&
-        !item[:_id].keys.include?("lv1_ckp") &&
-        !item[:_id].keys.include?("lv2_ckp"))
-
-        #grade
-        grade_report, report_h = get_grade_report_hash item
-        dimesion = item[:_id][:dimesion]
-        klass = I18n.t("dict.#{item[:_id][:classroom]}")
-
+      else
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
           temp_h = report_h["each_checkpoint_horizon"]["total"][member][klass] || {}
           if member == "med_avg_diff"
@@ -678,11 +638,9 @@ class Mongodb::ReportGenerator
           end
           report_h["each_checkpoint_horizon"]["total"][member][klass] = temp_h
         }
-
-        grade_report.report_json = report_h.to_json
-        grade_report.save
-
       end
+      grade_report.report_json = report_h.to_json
+      grade_report.save
     }
   end
 
