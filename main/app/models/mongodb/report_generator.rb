@@ -506,7 +506,7 @@ class Mongodb::ReportGenerator
     logger.info "construct grade 4 sections"
 
     filter = {
-      '_id.pap_uid' => @pap_uid，
+      '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.classroom' => nil,
       '_id.pup_uid' => nil,
@@ -905,7 +905,7 @@ class Mongodb::ReportGenerator
   #
   def add_avg_col
     filter = {
-      '_id.pap_uid' => @pap_uid，
+      '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.dimesion' => {'$exists' => true },
       '_id.pup_uid' => nil
