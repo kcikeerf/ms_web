@@ -293,7 +293,7 @@ class Mongodb::ReportGenerator
         if(item[:_id].keys.include?("lv1_ckp"))
           lv1_ckp_key = item[:_id][:lv1_ckp]
           next if !ckp_lv2_to_lv1[dimesion].values.include?(lv1_ckp_key)
-          pupil_table[dimesion][lv1_ckp_key]["value"]["average"] = convert_2_full_mark(item[:value][:average])
+          pupil_table[dimesion][lv1_ckp_key]["value"]["average"] = format_float(item[:value][:average])
           pupil_table[dimesion][lv1_ckp_key]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
           pupil_table[dimesion][lv1_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
           pupil_table[dimesion][lv1_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:cls_dim_lv1_avg_percent])
@@ -304,7 +304,7 @@ class Mongodb::ReportGenerator
           lv2_ckp_key = item[:_id][:lv2_ckp]
           lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_key]
           next if !ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_key)
-          pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average"] = convert_2_full_mark(item[:value][:average])
+          pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average"] = format_float(item[:value][:average])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:cls_dim_lv2_avg_percent])
