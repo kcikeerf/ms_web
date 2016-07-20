@@ -10,6 +10,12 @@ class ApplicationController < ActionController::Base
   ######
   # wechat use
   #
+  def wx_set_api_header
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Request-Method'] = 'GET, POST, PUT, OPTIONS, HEAD'
+    headers['Access-Control-Allow-Headers'] = 'x-requested-with,Content-Type, Authorization'    
+  end
+
   def wx_authenticate!
     render common_json_response(401, I18n.t("wx_users.messages.warn.invalid_wx_user")) unless wx_current_user
   end
