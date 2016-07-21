@@ -67,6 +67,8 @@ class Wx::PapersController < ApplicationController
       	raise SwtkErrors::SaveOnlineTestError.new(I18n.t("online_tests.messages.error.save_failed")) unless target_mot.save
 
         #录入得分点
+        #删除同一试卷的旧得分点
+        Mongodb::MobileUserQizpointScore.where({:wx_openid => params[:wx_openid], :pap_uid => params[:pap_uid]}).destroy_all
         Mongodb::MobileUserQizpointScore.save_score params
 
         #分析成绩
