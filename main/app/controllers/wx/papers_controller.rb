@@ -24,7 +24,7 @@ class Wx::PapersController < ApplicationController
       	:subject => params[:subject]
       }
 #      current_paper = Mongodb::BankPaperPap.get_a_paper params_h
-      current_paper = Mongodb::BankPaperPap.where(_id: "578453ef98014627f7312f48").first
+      current_paper = Mongodb::BankPaperPap.where(_id: "578453ef98014627f7312f48").first || Mongodb::BankPaperPap.get_a_paper(params_h)
       if current_paper
         paper_h = JSON.parse(current_paper.paper_json)
         # 临时处理，待流程整理后处理
