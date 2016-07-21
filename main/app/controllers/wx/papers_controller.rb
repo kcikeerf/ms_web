@@ -23,12 +23,15 @@ class Wx::PapersController < ApplicationController
       	:term => params[:term],
       	:subject => params[:subject]
       }
-      current_paper = Mongodb::BankPaperPap.get_a_paper params_h
+#      current_paper = Mongodb::BankPaperPap.get_a_paper params_h
+      current_paper = Mongodb::BankPaperPap.where(_id: "578453ef98014627f7312f48").first
       if current_paper
         paper_h = JSON.parse(current_paper.paper_json)
         # 临时处理，待流程整理后处理
         paper_h["paper_html"] = ""
         paper_h["answer_html"] = ""
+        paper_h["paper"]["paper_html"] = ""
+        paper_h["paper"]["answer_html"] = ""
         status = 200
         data = {paper_json: paper_h.to_json, message: I18n.t("wx_commons.messages.info.get_success")}
       else
@@ -42,7 +45,6 @@ class Wx::PapersController < ApplicationController
 
   def submit_quiz_score
     params.permit!
-
     status = 403
     data = {}
 
@@ -57,7 +59,7 @@ class Wx::PapersController < ApplicationController
       	#未来视情况作JOB处理
       	#保存成绩
       	target_mot = Mongodb::OnlineTest.new({
-      	  :pap_uid => params[:paper][:pap_uid],
+      	  :pap_uid => params[:pap_uid],
       	  :user_id => wx_current_user.nil?? "" : wx_current_user.id,
       	  :wx_openid => params[:wx_openid],
       	  :result_json => params.to_json 
@@ -70,7 +72,7 @@ class Wx::PapersController < ApplicationController
         #分析成绩
         pupil = wx_current_user.nil?? nil : wx_current_user.pupil
         mobile_report_generator = Mongodb::MobileUserReportGenerator.new({
-          	:pap_uid => params[:paper][:pap_uid],
+          	:pap_uid => params[:pap_uid],
             :pup_uid => pupil.nil?? "" : pupil.uid,
             :wx_openid => params[:wx_openid]
         })
@@ -84,13 +86,23 @@ class Wx::PapersController < ApplicationController
         mobile_report_generator.construct_knowledge_weak_ckps
 
         #获取报告id
-        mobile_report = Mongodb::PupilMobileReport.where({
-          :pap_uid => @pap_uid,
-          :pup_uid => @pup_uid,
-          :wx_openid => @wx_openid}).first
+        if pupil.nil?
+          rparams = {
+            :pap_uid => params[:pap_uid],
+            :wx_openid => params[:wx_openid]
+          }
+        else
+          rparams ={
+            :pap_uid => params[:pap_uid],
+            :pup_uid => pupil.uid,
+            :wx_openid => params[:wx_openid]
+          }
+        end
+        mobile_report = Mongodb::PupilMobileReport.where(rparams).first
+        raise unless mobile_report
 
         status = 200
-        data = {report_id: mobile_report._id.to_s, message: I18n.t("wx_scores.messages.error.save_success")}
+        data = {report_id: mobile_report._id.to_s, message: I18n.t("wx_scores.messages.info.save_success")}
       rescue Exception => ex
       	status = 500
       	data = {message: I18n.t("wx_scores.messages.error.save_exception")}
