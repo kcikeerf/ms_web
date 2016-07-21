@@ -5,6 +5,7 @@ class Mongodb::MobileUserReportGenerator
 
   def initialize(args)
     logger.info("=====initialization: begin!=====")
+    logger.info("args: #{args}")
     @pap_uid = args[:pap_uid]
     @pup_uid = args[:pup_uid]
     @wx_openid = args[:wx_openid]
@@ -21,6 +22,7 @@ class Mongodb::MobileUserReportGenerator
 
   #计算排名
   def construct_rank
+    logger.info("======组装排名:begin===========")
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.dimesion' => nil,
@@ -34,7 +36,7 @@ class Mongodb::MobileUserReportGenerator
     current_rank = 0
     last_average_percent = 0
     Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.average_percent' => 1 }).each{|item|
-      if(last_average_percent < item[:value][:average_percent])
+      if(last_average_percent <= item[:value][:average_percent])
         last_average_percent = item[:value][:average_percent]
         current_rank += 1
       end
@@ -46,10 +48,12 @@ class Mongodb::MobileUserReportGenerator
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
+    logger.info("======组装排名:end===========")
   end
 
   #构造诊断图
   def construct_ckp_charts
+    logger.info("======组装诊断图:begin===========")
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.dimesion' => {'$exists' => true },
@@ -68,10 +72,12 @@ class Mongodb::MobileUserReportGenerator
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
+    logger.info("======组装诊断图:end===========")
   end
 
   #构造短板提升
   def construct_weak_ckps
+    logger.info("======组装短板提升:begin===========")
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.dimesion' => {'$exists' => true },
@@ -94,10 +100,12 @@ class Mongodb::MobileUserReportGenerator
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
+    logger.info("======组装短板提升:end===========")
   end
 
   #构造错题解析
   def construct_knowledge_weak_ckps
+    logger.info("======组装错题分析:begin===========")
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.dimesion' => {'$exists' => true },
@@ -121,10 +129,12 @@ class Mongodb::MobileUserReportGenerator
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
+    logger.info("======组装错题分析:end===========")
   end
 
   #计算整体，个人各指标：总分，平均分
   def cal_ckp_total_avg
+    logger.info("======计算整体，个人各指标：总分，平均分:begin===========")
     return false if @pap_uid.blank?
     filter = {
 #      :wx_openid => @wx_openid,
@@ -237,15 +247,18 @@ class Mongodb::MobileUserReportGenerator
     }
 
     Mongodb::MobileUserQizpointScore.where(filter).map_reduce(map,reduce).finalize(finalize).out(:reduce => "mongodb_mobile_report_total_avg_results").execute
+    logger.info("======计算整体，个人各指标：总分，平均分:end===========")
   end
 
   def add_avg_col
+    logger.info("======信息加工:begin===========")
     filter = {
       '_id.pap_uid' => @pap_uid
     }
     arr = Mongodb::MobileReportTotalAvgResult.where(filter).no_timeout # need add filter here, user_id or somethind
 
     add_avg_col_core 1, arr
+    logger.info("======信息加工:end===========")
   end
 
   def add_avg_col_core th_index, arr
@@ -299,6 +312,7 @@ class Mongodb::MobileUserReportGenerator
   end
 
   def cal_based_on_total_avg
+    logger.info("======信息加工2:begin===========")
     return false if @pap_uid.blank?
     filter = {
       '_id.pap_uid' => @pap_uid
@@ -381,6 +395,7 @@ class Mongodb::MobileUserReportGenerator
     }
 
     Mongodb::MobileReportTotalAvgResult.where(filter).map_reduce(map,reduce).out(:reduce => "mongodb_mobile_report_based_on_total_avg_results").execute
+    logger.info("======信息加工2:end===========")
   end
 
   def get_mobile_user_report pup_uid, wx_openid
