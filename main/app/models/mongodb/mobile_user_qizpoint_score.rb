@@ -35,17 +35,21 @@ class Mongodb::MobileUserQizpointScore
 
   def self.save_score params
   	#qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
-    qzp_arr = params[:bank_quiz_qizs].values.map{|qiz| qiz[:bank_qizpoint_qzps].values}.flatten
-
-  	qzp_arr.each{|qzp|
+    qzp_arr = params[:bank_quiz_qizs].values.map{|qiz| qiz[:bank_qizpoint_qzps].values}.flatten    
+    qzp_arr.each{|qzp|
       qizpoint = Mongodb::BankQizpointQzp.where(_id: qzp[:id]).first
+      if qizpoint && !qzp[:result].blank? && !qizpoint.answer.blank?
+        test_score = (qzp[:result].strip == qizpoint.answer.strip) ? qizpoint.score : 0
+      else
+        test_score = 0
+      end
       param_h = {
         :pup_uid => params[:pup_uid] || "",
         :wx_openid => params[:wx_openid] || "",
         :pap_uid => params[:pap_uid] || "",
         :qzp_uid => qizpoint._id.to_s,
         :order => qizpoint.order,
-        :real_score => qzp[:result] || 0,
+        :real_score => test_score,
         :full_score => qizpoint.score
       }
       node_uid = params[:information][:node_uid] || ""
