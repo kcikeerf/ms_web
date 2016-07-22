@@ -12,20 +12,20 @@
 					  <!-- 帐号绑定 -->
 					  <h1 class="panel-heading bb0 clearfix">
 						  <!--<a href="javascript:void(0);" class="btn btn-link pull-right">返回</a>-->
-						  帐号绑定
+						  <%=t('page.user_left_menu.account_binding')%>
                       </h1>
 					  <div class="panel-body">
 						  <ul class="list-group">
 							  <li class="list-group-item clearfix">
 							  	  <%unless current_user.phone_validate?%>
 									  <span>
-										  <a class="btn btn-default bindingbtn" href="/profile/binding_or_unbinding_mobile" role="button">绑定</a>
+										  <a class="btn btn-default bindingbtn" href="/profile/binding_or_unbinding_mobile" role="button"><%=t('page.user.binding')%></a>
 										  未绑定（绑定手机号可用于登录、找回密码）
 									  </span>
 								  <%else%>
 									  <span>
-										  <a class="btn btn-default modifybtn" href="/profile/verified_mobile" role="button">修改</a>
-										  <a class="btn btn-default unbindingbtn" href="/profile/binding_or_unbinding_mobile" role="button">解绑</a>
+										  <a class="btn btn-default modifybtn" href="/profile/verified_mobile" role="button"><%=t('page.user.modify')%></a>
+										  <a class="btn btn-default unbindingbtn" href="/profile/binding_or_unbinding_mobile" role="button"><%=t('page.user.unbinding')%></a>
 										  <i class="fa fa-check-circle"></i>已绑定手机：<%=current_user.phone%>
 									  </span>
 								  <%end%>
@@ -34,13 +34,13 @@
 							  <li class="list-group-item clearfix">
 							    <%unless current_user.email_validate?%>
 								  <span>
-								  <a class="btn btn-default bindingbtn" href="/profile/binding_or_unbinding_email" role="button">绑定</a>
+								  <a class="btn btn-default bindingbtn" href="/profile/binding_or_unbinding_email" role="button"><%=t('page.user.binding')%></a>
 								  未绑定（绑定邮箱可用于登录、找回密码）
 								  </span>
 								  <%else%>
 								  <span>
-									  <a class="btn btn-default modifybtn" href="/profile/verified_email" role="button">修改</a>
-									  <a class="btn btn-default unbindingbtn" href="/profile/binding_or_unbinding_email" role="button">解绑</a>
+									  <a class="btn btn-default modifybtn" href="/profile/verified_email" role="button"><%=t('page.user.modify')%></a>
+									  <a class="btn btn-default unbindingbtn" href="/profile/binding_or_unbinding_email" role="button"><%=t('page.user.unbinding')%></a>
 									  <i class="fa fa-check-circle"></i>已绑定邮箱：<%=current_user.email%>
 								  </span>
 								 <%end%>
