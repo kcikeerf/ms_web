@@ -35,6 +35,18 @@ class Managers::CheckpointsController < ApplicationController
     render json: response_json(checkpoint ? 200 : 500, message)
   end
 
+  # 指标文件导入
+  def import_ckp_file
+    file, node_uid, dimesion = params[:file], params[:node_uid], params[:dimesion]
+    file_content = IO.readlines(file.path).join('').gsub(/\n|\s+/, '')
+    ckp_hash = JSON.parse(file_content) rescue nil
+    @is_ok = ckp_hash && ckp_hash["data"]
+    if @is_ok
+      BankCheckpointCkp.generate_ckp(node_uid, dimesion, ckp_hash["data"])
+    end
+    File.delete(file.path)
+  end
+
   private
 
   def set_checkpoint
@@ -42,6 +54,6 @@ class Managers::CheckpointsController < ApplicationController
   end
 
   def checkpoint_params
-    params.permit(:id, :node_uid, :str_pid, :dimesion, :checkpoint, :desc, :advice, :str_uid, :is_entity, cats: [:cat_uid])
+    params.permit(:id, :node_uid, :str_pid, :dimesion, :checkpoint, :sort, :desc, :advice, :str_uid, :is_entity, cats: [:cat_uid])
   end
 end

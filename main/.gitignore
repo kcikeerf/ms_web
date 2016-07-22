@@ -19,6 +19,7 @@
 /tmp/*
 /config/database.yml
 /public/uploads/*
+/uploads/*
 .DS_Store
 *.sublime-workspace
 *.sublime-project
