@@ -21,7 +21,6 @@ class ProfilesController < ApplicationController
   def init
   	#return redirect_to root_path if current_user.init_profile
     @resource ||= current_user.role_obj
-   
     if request.post?
       
       @user_params.merge!({init_profile: true})
