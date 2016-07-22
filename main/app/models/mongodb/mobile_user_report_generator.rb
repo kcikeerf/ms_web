@@ -549,8 +549,8 @@ class Mongodb::MobileUserReportGenerator
         mobile_report_h["basic"]["sex"] = sex
         mobile_report_h["basic"]["levelword2"] = @paper.levelword2
         mobile_report_h["basic"]["quiz_date"] = @online_test.nil?? "" : @online_test.dt_add.strftime("%Y-%m-%d %H:%M")
-        j = JSON.parse(@online_test.result_json) if @online_test
-        mobile_report_h["basic"]["score"] = @online_test.nil?? 0 : j["bank_quiz_qizs"].values.map{|qiz| qiz["bank_qizpoint_qzps"].values }.flatten.map{|a| a["real_score"].to_i}.sum
+#        j = JSON.parse(@online_test.result_json) if @online_test
+#        mobile_report_h["basic"]["score"] = @online_test.nil?? 0 : j["bank_quiz_qizs"].values.map{|qiz| qiz["bank_qizpoint_qzps"].values }.flatten.map{|a| a["real_score"].to_i}.sum
         mobile_report_h["basic"]["full_score"] = @paper.score
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
