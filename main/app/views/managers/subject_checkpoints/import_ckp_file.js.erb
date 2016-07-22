@@ -1,0 +1,12 @@
+<% if @is_ok %>
+	$.messager.alert({ 
+		title: 'Success',
+		msg: '导入文件成功'
+	});
+	get_tree_data('<%= @subject %>');
+<% else %>
+	$.messager.alert({ 
+		title: 'Error',
+		msg: '文件格式错误'
+	});
+<% end %>
