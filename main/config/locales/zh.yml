@@ -635,7 +635,9 @@ zh:
       test_report: '测试报告'
       my_pupil: '我的学生'
       my_log: '我的日志'
-      edit_password: '修改密码'
+    user_left_menu_in_account_binding:
+      registrations: '修改密码'
+      profiles: '账号绑定'
     user:
       login_placeholder: '请您输入已注册的手机/邮箱'
       current_password: '原密码'
@@ -645,6 +647,13 @@ zh:
       security_validate: '安全验证'
       reset_password: '重置密码'
       password_placeholder: '请输入6-19位字母、数字或符号'
+      binding: '绑定'
+      unbinding: '解绑'
+      modify: '修改'
+      binding_mobile: '绑定手机号'
+      unbinding_mobile: '解绑手机号'
+      binding_email: '绑定邮箱'
+      unbinding_email: '解绑邮箱'
 
     paper:
       add_paper: "添加试卷"
