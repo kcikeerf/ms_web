@@ -35,17 +35,34 @@ class Mongodb::MobileUserQizpointScore
 
   def self.save_score params
   	#qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
-    qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
-
-  	qzp_arr.each{|qzp|
+    qzp_arr = params[:bank_quiz_qizs].values.map{|qiz| qiz[:bank_qizpoint_qzps].values}.flatten    
+    qzp_arr.each{|qzp|
       qizpoint = Mongodb::BankQizpointQzp.where(_id: qzp[:id]).first
+      if qizpoint && !qzp[:result].blank? && !qizpoint.answer.blank?
+        test_result = ""
+        test_result = qzp[:result].downcase if qzp[:result]
+        test_result.strip! if test_result
+
+        qizpoint_answer = qizpoint.answer.nil?? "" : qizpoint.answer.gsub(/<\/?[^>]*>/, "")
+        qizpoint_answer.gsub!(/[\\\n]/, "") if qizpoint_answer
+        qizpoint_answer.downcase! if qizpoint_answer
+        qizpoint_answer.strip! if qizpoint_answer
+
+        if test_result.blank? || qizpoint_answer.blank?
+          test_score = 0
+        else
+          test_score = (test_result == qizpoint_answer) ? qizpoint.score : 0
+        end
+      else
+        test_score = 0
+      end
       param_h = {
         :pup_uid => params[:pup_uid] || "",
         :wx_openid => params[:wx_openid] || "",
-        :pap_uid => params[:paper][:pap_uid] || "",
+        :pap_uid => params[:pap_uid] || "",
         :qzp_uid => qizpoint._id.to_s,
         :order => qizpoint.order,
-        :real_score => qzp[:result] || 0,
+        :real_score => test_score,
         :full_score => qizpoint.score
       }
       node_uid = params[:information][:node_uid] || ""
