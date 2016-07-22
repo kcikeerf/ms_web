@@ -18,7 +18,7 @@ module Common
   module Paper
     module Constants
       OrderWidth = 5
-    end 
+    end
 
     module Status
       None = "none"
@@ -32,6 +32,7 @@ module Common
       ReportGenerating = "report_generating"
       ReportCompleted = "report_completed"
     end
+
   end
 
   module CheckpointCkp
@@ -45,6 +46,31 @@ module Common
       end
       nodes
     end
+
+    DifficultyModifier = {
+      :default =>1,
+      :knowledge => {
+        :rong_yi => 1,
+        :jiao_yi => 1,
+        :zhong_deng => 1,
+        :jiao_nan => 1,
+        :kun_nan => 1
+      },
+      :skill => {
+        :rong_yi => 1,
+        :jiao_yi => 1,
+        :zhong_deng => 1,
+        :jiao_nan => 1,
+        :kun_nan => 1
+      },
+      :ability => {
+        :rong_yi => 0.4,
+        :jiao_yi => 0.6,
+        :zhong_deng => 0.7,
+        :jiao_nan => 0.8,
+        :kun_nan => 1
+      }
+    }
   end
 
   module School
@@ -700,7 +726,8 @@ module Common
           "sex" => "",          
           "levelword2" => "",
           "quiz_date" => "",
-          "score" =>""
+          "score" =>"",
+          "full_score" =>""
         },
         "rank" => {
           "my_position" => 0,
