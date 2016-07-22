@@ -6,6 +6,7 @@ class MessagesController < ApplicationController
 		auth_number = (0..9).to_a.sample(6).join
 		content = "#{I18n.t('messages.bind_auth_number')}#{auth_number}"
 
+		
 		return send_sms(mobile, content, 'init_profile', auth_number)
 	end
 
@@ -22,7 +23,7 @@ class MessagesController < ApplicationController
 	def send_email_auth_number
 		email = params[:email]
 		send_email(email) do 
-			UserMailer.send_auth_number(email).deliver_later
+			UserMailer.send_auth_number(email).deliver#_later
 		end
 	end
 
@@ -37,12 +38,12 @@ class MessagesController < ApplicationController
 	
 	def send_email(email)
 		email_count_key = "#{email}_count"
-		return render json: response_json(500, I18n.t('messages.email_not_send')) if ($redis.get(email_count_key).try(:to_i) || 0) >= 5
+		return render json: response_json(500, I18n.t('messages.email_not_send')) if ($redis.get(email_count_key).try(:to_i) || 0) >= 50
 
 		yield
 		$redis.incr(email_count_key)
 		$redis.expire(email_count_key, 1.hours)
-
+       
 		render json: response_json(200, I18n.t('messages.email_send_success'))
 	end
 

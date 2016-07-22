@@ -1,0 +1,32 @@
+<section>
+		<div class="container clearfix">
+			<!-- Nav tabs -->
+			<%= render 'shared/user/left_menu_in_account_binding' %>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="BindingAccount">
+                
+					<div class="panel">
+
+					  <!-- 绑定邮箱/解绑邮箱  -->
+					  <h1 class="panel-heading bb0 clearfix">
+						  <a href="/profile/account_binding" class="btn btn-link pull-right">返回</a>
+						  <%=current_user.email_validate? ? '绑定邮箱' : '解绑邮箱'%> 
+                      </h1>
+					  <div class="panel-body b1">
+						  <div class="succeed mv50">
+							  <p class="text-center">
+								  <i class="glyphicon glyphicon-ok-sign"></i>
+								  <%=current_user.email_validate? ? '邮箱绑定成功' : '邮箱解绑成功'%>  
+							  </p>
+						  </div>
+					  </div>
+
+					 </div>
+
+			    </div>
+			  </div>
+
+		</div>
+	</section>
