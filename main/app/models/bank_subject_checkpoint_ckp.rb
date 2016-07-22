@@ -113,6 +113,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     		subject: subject, 
     		checkpoint: params[:checkpoint], 
     		desc: params[:desc],
+        advice: params[:desc],
+        sort: params[:sort],
     		is_entity: true)                 
 
     	rid_len = new_rid.size
@@ -140,6 +142,19 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 	    {knowledge: knowledge, skill: skill, ability: ability}
     end
 
+    # 循坏生成指标
+    def generate_ckp(subject, dimesion, ckp_arr, parent_rid = nil)
+      ckp_arr.each do |ckp|
+        ckp.symbolize_keys!
+        name = ckp[:text]
+        new_ckp = save_ckp(subject: subject, checkpoint: name, dimesion: dimesion, str_pid: parent_rid)
+        ckp_children = ckp[:items]
+        unless ckp_children.blank?
+          generate_ckp(subject, dimesion, ckp_children, new_ckp[:rid])
+        end
+      end
+    end
+
     def root_node(dimesion)
     	{rid: '', pid: '', nocheck: true, dimesion: dimesion, name: I18n.t('managers.root_node'), open: true}
     end
@@ -153,8 +168,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   #
   #
   def update_ckp params
-
-  	update(checkpoint: params[:checkpoint], desc: params[:desc], advice: params[:advice])
+    ckp_hash = params.extract!(:checkpoint, :desc, :advice, :sort)
+  	update(ckp_hash)
 
   	return organization_hash
   end
@@ -183,15 +198,15 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
 
   def children
-  	get_nodes(rid.size, rid, node_uid, dimesion).not_equal_rid(rid)
+  	get_nodes(rid.size, rid, subject, dimesion).not_equal_rid(rid)
   end
 
   def parents
-  	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, node_uid, dimesion).not_equal_rid(rid)
+  	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion).not_equal_rid(rid)
   end
 
   def parent
-  	get_nodes(parent_node_rid.size, parent_node_rid, node_uid, dimesion).find_by(rid: parent_node_rid)
+  	get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion).find_by(rid: parent_node_rid)
   end
 
   def parent_node_rid
@@ -209,6 +224,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   		name: checkpoint,
   		is_entity: is_entity,
   		advice: advice,
+      desc: desc,
+      sort: sort,
   		nocheck: is_entity^1
   	}
   end

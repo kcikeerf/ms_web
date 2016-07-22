@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     resources :checkpoints do      
       collection do 
         post '/:id/move_node', action: :move_node, as: 'move_node'
+        post 'import_ckp_file'
       end
     end
 
@@ -28,6 +29,7 @@ Rails.application.routes.draw do
         get 'list'
         get 'get_subject_volume_ckps'
         get 'get_volume_catalog_ckps'
+        post 'import_ckp_file'
       end
     end
 

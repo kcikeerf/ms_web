@@ -7,3 +7,5 @@
 .ztree li span.button::before {
 	color:#333;
 }
+
+form#file_upload {padding-top: 10px;}
