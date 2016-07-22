@@ -1,0 +1,77 @@
+<section>
+		<div class="container clearfix">
+			<!-- Nav tabs -->
+			<%= render 'shared/user/left_menu_in_account_binding' %>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="BindingAccount">
+                
+					<div class="panel">
+
+					  <!-- 帐号绑定 -->
+					  <h1 class="panel-heading bb0 clearfix">
+						  <!--<a href="javascript:void(0);" class="btn btn-link pull-right">返回</a>-->
+						  <%=t('page.user_left_menu_in_account_binding.profiles')%>
+                      </h1>
+					  <div class="panel-body">
+						  <ul class="list-group">
+							  <li class="list-group-item clearfix">
+							  	  <%unless current_user.phone_validate?%>
+									  <span>
+										  <a class="btn btn-default bindingbtn" href="/profile/binding_or_unbinding_mobile" role="button"><%=t('page.user.binding')%></a>
+										  未绑定（绑定手机号可用于登录、找回密码）
+									  </span>
+								  <%else%>
+									  <span>
+										  <a class="btn btn-default modifybtn" href="/profile/verified_mobile" role="button"><%=t('page.user.modify')%></a>
+										  <a class="btn btn-default unbindingbtn" href="/profile/binding_or_unbinding_mobile" role="button"><%=t('page.user.unbinding')%></a>
+										  <i class="fa fa-check-circle"></i>已绑定手机：<%=current_user.phone%>
+									  </span>
+								  <%end%>
+								  <h3 class="mobilebinding">手机绑定</h3>
+							  </li>
+							  <li class="list-group-item clearfix">
+							    <%unless current_user.email_validate?%>
+								  <span>
+								  <a class="btn btn-default bindingbtn" href="/profile/binding_or_unbinding_email" role="button"><%=t('page.user.binding')%></a>
+								  未绑定（绑定邮箱可用于登录、找回密码）
+								  </span>
+								  <%else%>
+								  <span>
+									  <a class="btn btn-default modifybtn" href="/profile/verified_email" role="button"><%=t('page.user.modify')%></a>
+									  <a class="btn btn-default unbindingbtn" href="/profile/binding_or_unbinding_email" role="button"><%=t('page.user.unbinding')%></a>
+									  <i class="fa fa-check-circle"></i>已绑定邮箱：<%=current_user.email%>
+								  </span>
+								 <%end%>
+								  <h3 class="emailbinding">邮箱绑定</h3>
+							  </li>
+						  </ul>
+
+						  <!--<ul class="list-group">-->
+							  <!--<li class="list-group-item clearfix">-->
+								  <!--<span>-->
+									  <!--<a class="btn btn-default" href="ModifyMobile1.html" role="button">修改</a>-->
+									  <!--<a class="btn btn-default" href="#" role="button">解绑</a>-->
+									  <!--<i class="fa fa-check-circle"></i>已绑定手机：131****0475-->
+								  <!--</span>-->
+								  <!--<h3 class="mobilebinding">手机绑定</h3>-->
+							  <!--</li>-->
+							  <!--<li class="list-group-item clearfix">-->
+								  <!--<span>-->
+									  <!--<a class="btn btn-default" href="ModifyEmail1.html" role="button">修改</a>-->
+									  <!--<a class="btn btn-default" href="#" role="button">解绑</a>-->
+									  <!--<i class="fa fa-check-circle"></i>已绑定邮箱：ya***@k12ke.com-->
+								  <!--</span>-->
+								  <!--<h3 class="emailbinding">邮箱绑定</h3>-->
+							  <!--</li>-->
+						  <!--</ul>-->
+					  </div>
+
+					 </div>
+
+			    </div>
+			  </div>
+
+		</div>
+	</section>
