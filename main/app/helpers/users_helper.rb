@@ -35,6 +35,14 @@ module UsersHelper
     return menus
   end
 
+  def left_pabel_menus_in_account_binding
+    menus = {
+      registrations: edit_user_registration_path,
+      profiles: account_binding_profile_path
+    }
+    return menus
+  end
+
   def get_role_label
     if current_user.is_pupil?
       I18n.t("dict.pupil")

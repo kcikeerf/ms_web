@@ -21,8 +21,8 @@ class Managers::SubjectCheckpointsController < ApplicationController
   end
 
   def edit    
-    cats = @checkpoint.bank_ckp_cats
-    render json: response_json(200, cats)
+    # cats = @checkpoint.bank_ckp_cats
+    render json: response_json(200)
   end
 
   def update
@@ -68,6 +68,18 @@ class Managers::SubjectCheckpointsController < ApplicationController
     render json: ckps_hash.to_json
   end
 
+  # 指标文件导入
+  def import_ckp_file
+    file, @subject, dimesion = params[:file], params[:subject], params[:dimesion]
+    file_content = IO.readlines(file.path).join('').gsub(/\n|\s+/, '')
+    ckp_hash = JSON.parse(file_content) rescue nil
+    @is_ok = ckp_hash && ckp_hash["data"]
+    if @is_ok
+      BankSubjectCheckpointCkp.generate_ckp(@subject, dimesion, ckp_hash["data"])
+    end
+    File.delete(file.path)
+  end
+
   # private
 
   def set_checkpoint
@@ -75,7 +87,7 @@ class Managers::SubjectCheckpointsController < ApplicationController
   end
 
   def checkpoint_params
-    params.permit(:id, :subject, :str_pid, :dimesion, :checkpoint, :desc, :advice, :str_uid, :is_entity)
+    params.permit(:id, :subject, :str_pid, :dimesion, :checkpoint, :sort, :desc, :advice, :str_uid, :is_entity)
   end
 
   def select_checked(ckps, uids)
