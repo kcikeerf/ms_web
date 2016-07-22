@@ -32,13 +32,17 @@ module UsersHelper
         my_log: my_log_analyzers_path
       }
     end
-    
-    if controller_name == 'registrations' or controller_name == 'profiles'
-      menus = {
-        edit_password: edit_user_registration_path,
-        account_binding: account_binding_profile_path
-      }
-    end
+    return menus
+  end
+
+  def left_pabel_menus_in_account_binding
+    p "********************************"
+    p controller_name
+    p action_name
+    menus = {
+      registrations: edit_user_registration_path,
+      profiles: account_binding_profile_path
+    }
     return menus
   end
 
