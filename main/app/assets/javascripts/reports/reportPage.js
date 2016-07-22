@@ -9,16 +9,6 @@ var reportPage = {
 	init: function(){
 		//给左上角导航添加事件
 		reportPage.bindEvent();
-		$('#reportContent').load('/reports/grade',function(){
-            var default_report_id = $('#report_menus .report_click_menu').attr('report_id');
-			$.get(reportPage.getGradeUrl, 'report_id='+default_report_id, function(data) {
-				if (data.status == '200'){
-					reportPage.Grade.createReport(data);
-				} else {
-					alert('网络出现错误');
-				};
-			});
-		});
 		$('#report_menus .report_click_menu').on('click', function() {
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
@@ -26,9 +16,9 @@ var reportPage = {
 			if(dataType == 'grade'){
 				$('#reportContent').load('/reports/grade',function(){
 					$.get(reportPage.getGradeUrl, params, function(data) {
+						console.log(data);
 						if (data.status == '200'){
 							reportPage.Grade.createReport(data);
-							
 						} else {
 							alert('网络出现错误');
 						};
@@ -57,6 +47,8 @@ var reportPage = {
 				});
 			};
 		});
+		/*默认显示*/
+		$('#report_menus .report_click_menu:first').trigger('click');
 	},
 	/*处理年级数据*/
 	Grade: {
@@ -64,12 +56,13 @@ var reportPage = {
 			//设置年级表头；
 			var basicData = data.data.basic;
 			var gradeNavStr = '学校名称：<span>'+basicData.school+'</span>&nbsp;&nbsp;年级：<span>'+basicData.grade+'</span>&nbsp;&nbsp;'
-						 +'班级数量：<span>'+basicData.klass_count+'</span>&nbsp;&nbsp;年级人数：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;'
-						 +'难度：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;测试类型：<span>'+basicData.quiz_type+'</span>&nbsp;&nbsp;'
-						 +'测试日期：<span>'+basicData.quiz_date+'</span>';
+						+'班级数量：<span>'+basicData.klass_count+'</span>&nbsp;&nbsp;年级人数：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;'
+						+'难度：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;测试类型：<span>'+basicData.quiz_type+'</span>&nbsp;&nbsp;'
+						+'测试日期：<span>'+basicData.quiz_date+'</span>';
 			$('#grade-top-nav').html(gradeNavStr);
 			//创建年级的第一个诊断图;
 			var grade_charts = reportPage.Grade.getGradeDiagnoseData(data.data.charts);
+			console.log(grade_charts);
 			var objArr = [grade_charts.knowledge,grade_charts.skill,grade_charts.ability];
 			var nodeArrLeft = ['knowledge_diagnose_left','skill_diagnose_left','ability_diagnose_left'];
 			var nodeArrRight = ['knowledge_diagnose_right','skill_diagnose_right','ability_diagnose_right'];
@@ -80,7 +73,7 @@ var reportPage = {
 				echartOption.createEchart(optionRight,nodeArrRight[i]);
 			}
 			//创建年级分型图;
-			echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(),'parting-chart');
+			echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(grade_charts.disperse),'parting-chart');
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
 				if($dataId == 'grade-NumScale'){
@@ -264,7 +257,7 @@ var reportPage = {
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_median_percent))
 						},
 						med_avg_diff : reportPage.baseFn.getDiff(obj.knowledge_med_avg_diff)
-					}
+					},
 				},
 				skill : {
 					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.skill_med_avg_diff)),
@@ -275,7 +268,8 @@ var reportPage = {
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_median_percent))
 						},
 						med_avg_diff : reportPage.baseFn.getDiff(obj.skill_med_avg_diff)
-					}
+					},
+					
 				},
 				ability : {
 					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.ability_med_avg_diff)),
@@ -286,7 +280,12 @@ var reportPage = {
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_median_percent))
 						},
 						med_avg_diff : reportPage.baseFn.getDiff(obj.ability_med_avg_diff)
-					}
+					},
+				},
+				disperse : {
+					knowledge : reportPage.Grade.handleDisperse(obj.dimesion_disperse.knowledge),
+					skill : reportPage.Grade.handleDisperse(obj.dimesion_disperse.skill),
+					ability : reportPage.Grade.handleDisperse(obj.dimesion_disperse.ability),
 				}
 			}
 		},
@@ -379,6 +378,27 @@ var reportPage = {
 				ability:reportPage.Grade.handleClassPupilNum(obj.ability),
 			}
 		},
+		//分型图
+		handleDisperse : function(data){
+			var keysArr = reportPage.baseFn.getKeys(data);
+			var valsArr = reportPage.baseFn.getValue(data);
+			var arr = [];
+			var percentArr = [];
+			var maxKey,minKey;
+			for(var i = 0 ; i < keysArr.length; i++){
+				arr.push({
+					name:keysArr[i],value:[valsArr[i].diff_degree,valsArr[i].average_percent]
+				});
+				percentArr.push(valsArr[i].average_percent);
+			};
+			maxKey = keysArr[percentArr.indexOf(Math.max.apply(null,percentArr))];
+			minKey = keysArr[percentArr.indexOf(Math.min.apply(null,percentArr))];
+			return {
+				data_node:arr,
+				maxkey : maxKey,
+				minkey : minKey
+			}
+		},
 		creatGradeScaleArr : function(obj){
 			var goodArr = [],faildArr = [],excellentArr = [];
 			for(var i = 0 ; i < obj.length ; i++){
@@ -387,18 +407,18 @@ var reportPage = {
 		            value:obj[i].excellent_pupil_percent,
 		            yAxisIndex:i,
 		            itemStyle: {
-		              normal: {
-		                barBorderRadius:[20, 0, 0, 20],
-		                color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-		                  offset: 0,
-		                  color: '#086a8e'
-		                }, {
-		                  offset: 1,
-		                  color: '#65026b'
-		                }])
-		              }
+		              	normal: {
+			                barBorderRadius:[20, 0, 0, 20],
+			                color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+			                  offset: 0,
+			                  color: '#086a8e'
+			                }, {
+			                  offset: 1,
+			                  color: '#65026b'
+			                }])
+			            }
 		            },
-		          });
+		        });
 				goodArr.push({
 		            name:'( 60 ≤ 得分率 < 85)',
 		            value:obj[i].good_pupil_percent,
@@ -413,25 +433,25 @@ var reportPage = {
 		                      offset: 1,
 		                      color: '#13ab9b'
 		                    }])
-		                  }
-		                },
-		          });
+		                }
+		            },
+		        });
 				faildArr.push({
-		                        name:'(得分率 < 60)',
-		                        value:obj[i].failed_pupil_percent,
-		                        itemStyle: {
-		                          normal: {
-		                            barBorderRadius: [0, 20, 20, 0],
-		                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-		                              offset: 0,
-		                              color: '#fa8471'
-		                            }, {
-		                              offset: 1,
-		                              color: '#f6f1c5'
-		                            }])
-		                          }
-		                        },
-		                      });
+                    name:'(得分率 < 60)',
+                    value:obj[i].failed_pupil_percent,
+                    itemStyle: {
+                      	normal: {
+                        	barBorderRadius: [0, 20, 20, 0],
+                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+	                          	offset: 0,
+	                          	color: '#fa8471'
+	                        }, {
+	                          offset: 1,
+	                          color: '#f6f1c5'
+	                        }])
+	                    }
+                    },
+                });
 			}
 			return obj  = {
 				excellent:excellentArr,
@@ -528,16 +548,16 @@ var reportPage = {
 		            lineStyle:{normal:{width:1}},
 		            smooth:true,
 		            areaStyle: {
-		              normal: {
-		                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-		                  offset: 0,
-		                  color:colorArr[j] 
-		                }, {
-		                  offset: 1,
-		                  color: '#f4fcfb'
-		                }]),
-		                opacity:0.9,
-		              }},
+		              	normal: {
+		                	color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			                  	offset: 0,
+			                  	color:colorArr[j] 
+		               		}, {
+		                  		offset: 1,
+		                  		color: '#f4fcfb'
+		                	}]),
+		                	opacity:0.9,
+		            }},
 		            data:allArr[j],
 		            z:j+1
 				})
@@ -676,50 +696,50 @@ var reportPage = {
                     value: values[i].excellent_pupil_percent,
                     yAxisIndex:1,
                     itemStyle: {
-                      normal: {
-                        barBorderRadius:[20, 0, 0, 20],
-                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-                          offset: 0,
-                          color: '#086a8e'
-                        }, {
-                          offset: 1,
-                          color: '#65026b'
-                        }])
-                      }
+                      	normal: {
+                        	barBorderRadius:[20, 0, 0, 20],
+                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+	                         		offset: 0,
+	                          		color: '#086a8e'
+                        		}, {
+	                          		offset: 1,
+	                          		color: '#65026b'
+                        	}])
+                      	}
                     },
 				});
 				good.push({
                     name:''+keys[i]+'(60 ≤ 得分率 < 85)',
                     value: values[i].good_pupil_percent,
                     itemStyle: {
-                      normal: {
-                        barBorderRadius:0,
-                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-                          offset: 0,
-                          color: '#71ecd0'
-                        }, {
-                          offset: 1,
-                          color: '#13ab9b'
-                        }])
-                      }
+                      	normal: {
+	                        barBorderRadius:0,
+	                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+	                          	offset: 0,
+	                          	color: '#71ecd0'
+	                        }, {
+	                          	offset: 1,
+	                          	color: '#13ab9b'
+	                        }])
+                      	}
                     },
-                  });
+                });
 				faild.push({
                     name:''+keys[i]+'(得分率 < 60)',
                     value:values[i].failed_pupil_percent,
                     itemStyle: {
-                      normal: {
-                        barBorderRadius: [0, 20, 20, 0],
-                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-                          offset: 0,
-                          color: '#fa8471'
-                        }, {
-                          offset: 1,
-                          color: '#f6f1c5'
-                        }])
-                      }
+                      	normal: {
+	                        barBorderRadius: [0, 20, 20, 0],
+	                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+	                          	offset: 0,
+	                          	color: '#fa8471'
+	                        }, {
+	                          	offset: 1,
+	                          	color: '#f6f1c5'
+	                        }])
+                      	}
                     },
-                  });
+                });
 			};
 			return obj = {
 				excenllent : excellent ,
@@ -1063,18 +1083,5 @@ var reportPage = {
 				return [value];
 			});
 		},
-		/*获取url中?后面传递的参数*/
-		getRequest: function() {
-			var url = location.search; //获取url中"?"符后的字串   
-			var theRequest = new Object();
-			if (url.indexOf("?") != -1) {
-				var str = url.substr(1);
-				strs = str.split("&");
-				for (var i = 0; i < strs.length; i++) {
-					theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-				}
-			}
-			return theRequest;
-		}
 	}
 }
