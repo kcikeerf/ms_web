@@ -762,6 +762,7 @@ class Mongodb::BankPaperPap
         }
 
         qizpoint = Mongodb::BankQizpointQzp.where(_id: hidden_row[qzp_index]).first
+        qizpoint_qiz = qizpoint.nil?? nil : qizpoint.bank_quiz_qiz 
         ckps = qizpoint.bank_checkpoint_ckps
         ckps.each{|ckp|
           next unless ckp
@@ -771,7 +772,10 @@ class Mongodb::BankPaperPap
           param_h[:lv1_ckp] = lv1_ckp.checkpoint
           param_h[:lv2_ckp] = lv2_ckp.checkpoint
           param_h[:lv3_ckp] = ckp.checkpoint
-          param_h[:weights] = 1#ckp.weights.to_f
+          #调整权重系数
+          # 1.单题难度关联
+          #
+          param_h[:weights] = ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.difficulty})
           qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
           qizpoint_score.save!
         }
@@ -872,6 +876,16 @@ class Mongodb::BankPaperPap
    
     end
     region
+  end
+
+  def ckp_weights_modification args={}
+    if args[:dimesion] && args[:weights] && args[:difficulty]
+      result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[args[:dimesion].to_sym][args[:difficulty].to_sym]
+    elsif args[:weights]
+      result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[:default]
+    else
+      result = 1
+    end
   end
 
   #################################Mobile#####################################
