@@ -3,6 +3,8 @@ class ProfilesController < ApplicationController
 	layout 'user', only: [:init, :message, :account_binding, :binding_or_unbinding_mobile, :binding_or_unbinding_email, :binding_or_unbinding_mobile_succeed,:binding_or_unbinding_email_succeed, :verified_mobile,:modify_mobile, :modify_mobile_succeed,:modify_email,:verified_email,:modify_email_succeed]
 	before_action :authenticate_user!
 	before_action :validate_mobile, :validate_email, only: [:init]
+  before_action :validate_mobile_in_binding, only: [:binding_or_unbinding_mobile,:verified_mobile,:modify_mobile]
+  before_action :validate_email_in_binding, only: [:binding_or_unbinding_email,:verified_email,:modify_email] 
 
   # 上传头像
 	def head_image_upload     
@@ -48,20 +50,12 @@ class ProfilesController < ApplicationController
   #手机绑定/解绑
   def binding_or_unbinding_mobile
     if request.post?
-      mobile_auth_number = params[:mobile_auth_number]
-      mobile = params[:user][:phone]
-      if mobile_auth_number.present? && mobile.present?
-        if !Message.check(mobile, 'init_profile', mobile_auth_number)
-          current_user.errors.add(:base, I18n.t('messages.invalid_mobile'))
-          return render action: :binding_or_unbinding_mobile
-        end
-        unless current_user.phone_validate?
-          current_user.update(phone: params[:user][:phone],phone_validate: true)
-        else
-          current_user.update(phone_validate: false)
-        end
-        redirect_to binding_or_unbinding_mobile_succeed_profile_path
+      unless current_user.phone_validate?
+        current_user.update(phone: params[:user][:phone],phone_validate: true)
+      else
+        current_user.update(phone_validate: false)
       end
+      redirect_to binding_or_unbinding_mobile_succeed_profile_path
     end
   end
 
@@ -72,31 +66,15 @@ class ProfilesController < ApplicationController
   #手机验证
   def verified_mobile
     if request.post?
-      mobile_auth_number = params[:mobile_auth_number]
-      mobile = params[:user][:phone]
-      if mobile_auth_number.present? && mobile.present?
-        if !Message.check(mobile, 'init_profile', mobile_auth_number)
-          current_user.errors.add(:base, I18n.t('messages.invalid_mobile'))
-          return render action: :verified_mobile
-        end
-        redirect_to modify_mobile_profile_path
-      end
+      redirect_to modify_mobile_profile_path
     end
   end
 
   #修改手机号
   def modify_mobile
     if request.post?
-      mobile_auth_number = params[:mobile_auth_number]
-      mobile = params[:user][:phone]
-      if mobile_auth_number.present? && mobile.present?
-        if !Message.check(mobile, 'init_profile', mobile_auth_number)
-          current_user.errors.add(:base, I18n.t('messages.invalid_mobile'))
-          return render action: :modify_mobile
-        end
-        current_user.update(phone: params[:user][:phone],phone_validate: true)
-        redirect_to modify_mobile_succeed_profile_path
-      end
+      current_user.update(phone: params[:user][:phone],phone_validate: true)
+      redirect_to modify_mobile_succeed_profile_path
     end
   end
 
@@ -108,21 +86,12 @@ class ProfilesController < ApplicationController
   #邮箱绑定/解绑
   def binding_or_unbinding_email
     if request.post?
-      email = params[:user][:email]
-      email_auth_number = params[:email_auth_number]
-      if email.present? && email_auth_number.present?
-        if $redis.get(email) != email_auth_number
-          current_user.errors.add(:base, I18n.t('messages.invalid_email'))
-          return render action: :binding_or_unbinding_email
-        end
-        $redis.del(email)
-        unless current_user.email_validate?
-          current_user.update(email: params[:user][:email],email_validate: true)
-        else
-          current_user.update(email_validate: false)
-        end
-        redirect_to binding_or_unbinding_email_succeed_profile_path
+      unless current_user.email_validate?
+        current_user.update(email: params[:user][:email],email_validate: true)
+      else
+        current_user.update(email_validate: false)
       end
+      redirect_to binding_or_unbinding_email_succeed_profile_path
     end
   end
 
@@ -133,33 +102,15 @@ class ProfilesController < ApplicationController
   #邮箱验证
   def verified_email
     if request.post?
-      email = params[:user][:email]
-      email_auth_number = params[:email_auth_number]
-      if email.present? && email_auth_number.present?
-        if $redis.get(email) != email_auth_number
-          current_user.errors.add(:base, I18n.t('messages.invalid_email'))
-          return render action: :verified_email
-        end
-        $redis.del(email)
-        redirect_to modify_email_profile_path
-      end
+      redirect_to modify_email_profile_path
     end
   end
 
   #修改邮箱
   def modify_email
     if request.post?
-      email = params[:user][:email]
-      email_auth_number = params[:email_auth_number]
-      if email.present? && email_auth_number.present?
-        if $redis.get(email) != email_auth_number
-          current_user.errors.add(:base, I18n.t('messages.invalid_email'))
-          return render action: :modify_email
-        end
-        $redis.del(email)
-        current_user.update(email: params[:user][:email],email_validate: true)
-        redirect_to modify_email_succeed_profile_path
-      end
+      current_user.update(email: params[:user][:email],email_validate: true)
+      redirect_to modify_email_succeed_profile_path
     end
   end
 
@@ -175,6 +126,37 @@ class ProfilesController < ApplicationController
     return params.require(:teacher).permit(:name, :subject, :school, user: user) if current_user.is_teacher?
     return params.require(:pupil).permit(:name, :subject, :grade, :classroom, :school, user: user) if current_user.is_pupil?
 
+  end
+  
+
+  #绑定／解绑手机验证码验证
+  def validate_mobile_in_binding
+    if request.post?
+      mobile_auth_number = params[:mobile_auth_number]
+      mobile = params[:user][:phone]
+      if mobile_auth_number.present? && mobile.present?
+        if !Message.check(mobile, 'init_profile', mobile_auth_number)
+          current_user.errors.add(:base, I18n.t('messages.invalid_mobile'))
+          #return render action: :binding_or_unbinding_mobile
+          return render :action => "#{action_name}"
+        end
+      end
+    end
+  end
+  
+  #绑定／解绑邮箱验证码验证
+  def validate_email_in_binding
+    if request.post?
+      email = params[:user][:email]
+      email_auth_number = params[:email_auth_number]
+      if email.present? && email_auth_number.present?
+        if $redis.get(email) != email_auth_number
+          current_user.errors.add(:base, I18n.t('messages.invalid_email'))
+          return render :action => "#{action_name}"
+        end
+        $redis.del(email)
+      end
+    end
   end
 
   # 验证手机
