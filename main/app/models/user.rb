@@ -64,35 +64,46 @@ class User < ActiveRecord::Base
     model.save_info(options) if model
   end
 
-  def is_pupil?
-    role?(Common::Role::Pupil)
+  # 生成 是否为角色方法、角色方法
+  Common::Role::NAME_ARR.each do |name|
+    define_method("is_#{name}?") do 
+      role?(name)
+    end
+
+    define_method(name) do
+     role?(name) ? name.camelcase.constantize.find_by(user_id: id) : nil
+    end
   end
 
-  def is_teacher?
-    role?(Common::Role::Teacher)
-  end
+  # def is_pupil?
+  #   role?(Common::Role::Pupil)
+  # end
 
-  def is_analyzer?
-    role?(Common::Role::Analyzer)
-  end
+  # def is_teacher?
+  #   role?(Common::Role::Teacher)
+  # end
+
+  # def is_analyzer?
+  #   role?(Common::Role::Analyzer)
+  # end
+
+  # def pupil
+  #   is_pupil? ? Pupil.where("user_id = ?", self.id).first : nil
+  # end
+
+  # def teacher
+  #   is_teacher? ? Teacher.where("user_id = ?", self.id).first : nil
+  # end
+
+  # def analyzer
+  #   is_analyzer? ? Analyzer.where("user_id = ?", self.id).first : nil
+  # end
 
   def role_obj
     return analyzer if is_analyzer?
     return teacher if is_teacher?
     return pupil if is_pupil?
-  end
-
-  def pupil
-    is_pupil? ? Pupil.where("user_id = ?", self.id).first : nil
-  end
-
-  def teacher
-    is_teacher? ? Teacher.where("user_id = ?", self.id).first : nil
-  end
-
-  def analyzer
-    is_analyzer? ? Analyzer.where("user_id = ?", self.id).first : nil
-  end
+  end  
 
   def role?(r)
     role.name.include? r.to_s

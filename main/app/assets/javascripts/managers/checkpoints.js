@@ -47,16 +47,16 @@ var setting = {
 		if (addBtn) addBtn.on("click", function(){
 			$('.checkpoint').val('');
 			$('.desc').val('');
+			$('#advice').val('');
+			$('#sort').val('');
 			$('#select-box').val('');
 		    $('#dlg').dialog('open');
 		    $('.dimesion').val(treeNode.dimesion);
 		    $('.str_pid').val(treeNode.rid);
 		   	$("#save").on('click',function(){
-		   		console.log($('#select-box').val());
 		   		if($('#select-box').val() != ''){
 		   			$.post('/managers/checkpoints', $("#fm").serialize(), function(data){
 			   		 	if(data.status == 200){
-			   		 		console.log(data.data);
 			   		 		var tree = $.fn.zTree.getZTreeObj(treeNode.dimesion + "_tree");
 			   		 		tree.addNodes(treeNode, data.data)
 			   		 	}else{
@@ -109,8 +109,9 @@ var setting = {
 	function zTreeBeforeEditName(treeId, treeNode){
 		$('#dlg').dialog('open');
 		$('.checkpoint').val(treeNode.checkpoint);
-		treeNode.desc?$('.desc').val(treeNode.desc):$('.desc').val('');
+		treeNode.desc ? $('.desc').val(treeNode.desc) : $('.desc').val('');
 		treeNode.advice ? $('#advice').val(treeNode.advice) : $('#advice').val('');
+		treeNode.sort ? $('#sort').val(treeNode.sort) : $('#sort').val('');
 	  	$.get("/managers/checkpoints/"+treeNode.uid+"/edit",{},function(data){
 			var len = data.data.length;
 			var arr=[];
@@ -219,7 +220,6 @@ var setting = {
 				$texVolume.find('option:gt(0)').remove();
 				$.get('/node_structures/get_units',{subject:$subjectVal,grade:$gradeVal,version:$texTypeVal},function(data){
 					var len = data.length;
-					console.log(len);
 					var str = '';
 					for(var i=0;i<len;i++){
 						str += '<option value="'+data[i].name+'" data-uid="'+data[i].node_uid+'">'+data[i].label+'</option>';
@@ -237,6 +237,7 @@ var setting = {
 				$.fn.zTree.init($("#skill_tree"), setting, null);
 				$.fn.zTree.init($("#ability_tree"), setting, null);
 				$.fn.zTree.init($("#knowledge_tree"), setting, null);
+				$('#file_upload').hide();
 			}else{
 				$.get('/node_structures/get_catalogs_and_tree_data',{node_uid:$uid},function(data){
 					var zNodes_knowledge = data.knowledge.nodes;
@@ -252,6 +253,7 @@ var setting = {
 					}
 					$('#select-box').html(str);
 					$('.node_uid').val($uid);
+					$('#file_upload').show();
 				})
 			}
 		})

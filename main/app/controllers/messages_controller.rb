@@ -23,7 +23,7 @@ class MessagesController < ApplicationController
 	def send_email_auth_number
 		email = params[:email]
 		send_email(email) do 
-			UserMailer.send_auth_number(email).deliver_later
+			UserMailer.send_auth_number(email).deliver#_later
 		end
 	end
 

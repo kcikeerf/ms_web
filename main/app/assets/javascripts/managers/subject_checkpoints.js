@@ -47,15 +47,15 @@ var setting = {
 		if (addBtn) addBtn.on("click", function(){
 			$('.checkpoint').val('');
 			$('.desc').val('');
+			$('#advice').val('');
+			$('#sort').val('');
 			// $('#select-box').val('');
 		    $('#dlg').dialog('open');
 		    $('.dimesion').val(treeNode.dimesion);
 		    $('.str_pid').val(treeNode.rid);
 		   	$("#save").on('click',function(){
-		   		// console.log($('#select-box').val());
 		   			$.post('/managers/subject_checkpoints', $("#fm").serialize(), function(data){
 			   		 	if(data.status == 200){
-			   		 		console.log(data.data);
 			   		 		var tree = $.fn.zTree.getZTreeObj(treeNode.dimesion + "_tree");
 			   		 		tree.addNodes(treeNode, data.data);
 			   		 	}
@@ -107,6 +107,7 @@ var setting = {
 		$('.checkpoint').val(treeNode.checkpoint);
 		treeNode.desc?$('.desc').val(treeNode.desc):$('.desc').val('');
 		treeNode.advice ? $('#advice').val(treeNode.advice) : $('#advice').val('');
+		treeNode.sort ? $('#sort').val(treeNode.sort) : $('#sort').val('');
 	  	$.get("/managers/subject_checkpoints/"+treeNode.uid+"/edit",{},function(data){
 			var len = data.data.length;
 			var arr=[];
@@ -171,6 +172,7 @@ var setting = {
   function get_tree_data(subject){
 		if(subject == ''){
 			init_tree(null, null, null);
+			$('#file_upload').hide();
 		}else{
 			$.get('/node_structures/get_tree_data_by_subject',{subject: subject},function(data){
 				var zNodes_knowledge = data.knowledge.nodes;
@@ -179,6 +181,7 @@ var setting = {
 				init_tree(zNodes_knowledge, zNodes_skill, zNodes_ability);
 
 				$('.subject').val(subject);
+				$('#file_upload').show();
 			})
 		}
 	}
