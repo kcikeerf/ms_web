@@ -32,6 +32,13 @@ module UsersHelper
         my_log: my_log_analyzers_path
       }
     end
+    
+    if controller_name == 'registrations' or controller_name == 'profiles'
+      menus = {
+        edit_password: edit_user_registration_path,
+        account_binding: account_binding_profile_path
+      }
+    end
     return menus
   end
 

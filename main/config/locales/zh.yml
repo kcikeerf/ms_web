@@ -636,6 +636,7 @@ zh:
       my_pupil: '我的学生'
       my_log: '我的日志'
       edit_password: '修改密码'
+      account_binding: '账号绑定'
     user:
       login_placeholder: '请您输入已注册的手机/邮箱'
       current_password: '原密码'

@@ -138,6 +138,12 @@ $(document).on('ready page:load', function (){
 			send_auth_number_sms(mobile, '/messages/send_sms_auth_number', this);
 		});
 
+		//发送绑定手机短信验证码
+		$("#send_binding_mobile_auth_number").on('click', function(){
+			var mobile = $("#user_phone").val();
+			send_auth_number_sms(mobile, '/messages/send_sms_auth_number', this);
+		});
+
 		//发送忘记密码短信验证码
 		$("#send_sms_forgot_password").on('click', function(){
 			var mobile = $("#user_login_password").val();
@@ -165,6 +171,12 @@ $(document).on('ready page:load', function (){
 		//发送邮件验证码
 		$("#send_email_auth_number").on('click', function(){			
 			var email = $("#analyzer_user_email").val();
+			send_auth_number_email(email, '/messages/send_email_auth_number', this)
+		});
+
+		//绑定邮箱发送邮件验证码
+		$("#send_binding_email_auth_number").on('click', function(){			
+			var email = $("#user_email").val();
 			send_auth_number_email(email, '/messages/send_email_auth_number', this)
 		});
 

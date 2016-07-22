@@ -50,7 +50,6 @@ class User < ActiveRecord::Base
       user.save_after(options.merge({user_id: user.id}))
       return [user.name, password]
     end
-
   end
 
   def save_after(options)

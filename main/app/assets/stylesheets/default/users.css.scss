@@ -11,6 +11,65 @@ a:-webkit-any-link {text-decoration:none;color:#333;font-weight:100;}
 .col-offset-3 {margin-left:25%;}
 .col-offset-4 {margin-left:33.33333333%;}*/
 
+body {background:#f4f4f4;font-family:'HanHei TC','PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', Arial, "Hiragino Sans GB", "Microsoft Yahei", 微软雅黑, STHeiti, 华文细黑, sans-serif;font-size:14px;font-weight:400;overflow-y:scroll;}
+textarea {resize: none;}
+.btn {font-weight:100;}
+.btn:focus,.btn:active:focus,.btn.active:focus,.btn.focus,.btn:active.focus,.btn.active.focus {outline:none;}
+a {text-decoration:none;font-size:14px;color:#333;font-weight:300;}
+a:-webkit-any-link {text-decoration:none;color:#333;font-weight:300;}
+
+.col-offset-3 {margin-left:25%;}
+.col-offset-4 {margin-left:33.33333333%;}
+
+.mh50 {margin:0 50px;}
+.mv50 {margin:50px 0;}
+
+.container {width: 1000px;}
+
+
+/* section */
+section {margin:15px 0;}
+section .container {border:1px solid #e8e8e8;background:#fcfcfc;padding:0;}
+section .container .nav {float:left;width:200px;margin-top:20px;}
+section .container .nav-tabs {border:0 none;}
+section .container .nav-tabs>li {float:none;}
+section .container .nav-tabs>li.active .tooltip-arrow {top:50%;right:-5px;margin-top:-5px;border-width:5px 0 5px 5px;border-left-color:#ebebeb;}
+section .container .nav-tabs>li>a {border-radius:0;border:0 none;margin:0;padding-left:30px;}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {background-color:#ebebeb;border:0 none;}
+
+/* 帐号设置 - 修改密码 */
+section .container .panel .panel-heading.bb0 {border-bottom:0 none;padding:10px 0;}
+section .container .panel .panel-body.b1 {border:1px solid #eee;border-radius:2px;}
+#AccountPassword .panel {min-height:500px;}
+#AccountPassword .panel .panel-body {padding:50px 0;}
+#BindingAccount .panel {min-height:500px;}
+#BindingAccount .panel-heading .btn-link {color:#15a892;text-decoration:none;}
+#BindingAccount .panel-body {padding:0;}
+#BindingAccount .panel-body .list-group-item {padding:20px;line-height:40px;border:1px solid #eee;}
+#BindingAccount .panel-body .list-group-item span {color:#868686;width:70%;}
+#BindingAccount .panel-body .list-group-item h3 {display:inline-block;float:left;margin-top:10px;color:#080808;height:20px;line-height:20px;padding-left:35px;}
+#BindingAccount .panel-body .list-group-item .mobilebinding {font-size:16px;background: image-url('mobilebinding.svg') no-repeat 0 center;}
+#BindingAccount .panel-body .list-group-item .emailbinding {font-size:16px;background: image-url('emailbinding.svg') no-repeat 0 center;}
+#BindingAccount .panel-body .list-group-item .btn {float:right;color:#333;margin-top:3px;margin-left:10px;padding:6px 20px;}
+#BindingAccount .panel-body .list-group-item i {color:#7dd888;margin-right:10px;}
+#BindingAccount .succeed {margin-bottom:85px;}
+#BindingAccount .succeed i {display:block;color:#7dd888;font-size:80px;margin-bottom:15px;}
+
+.form-horizontal.accountpassword .form-group .control-label {width:90px;}
+.form-horizontal.accountpassword .form-group .form-control {background:#f9f9f9;border:1px solid #f1f1f1;width:280px}
+.form-horizontal.accountpassword .form-group .btn {margin-left:104px;width:280px;background:#15a892;border:1px solid #15a892;}
+.form-horizontal.accountpassword .form-group .help-block {margin-left:105px;color:#ee5353;}
+
+.form-horizontal.bindingmobile .form-group.sub .btn {background:#15a892;border:1px solid #15a892;color:#fff;}
+.form-horizontal.bindingmobile {padding:50px 0;}
+.form-horizontal.bindingmobile .form-group {width:280px;margin-left:0;margin-right:0;}
+.form-horizontal.bindingmobile .form-group.captcha .form-control {width:136px;}
+.form-horizontal.bindingmobile .form-group.captcha .send {background:#fcfcfc;border:1px solid #eee;width:58px;margin-left:8px;width:136px;font-size:14px;letter-spacing:0.1em;}
+.form-horizontal.bindingmobile .form-group .btn {margin-left:0;width:100%;letter-spacing:0.2em;font-size:16px;}
+.form-horizontal.modifymobile {margin-bottom:50px;}
+section .container .form-horizontal.modifymobile .btn {background:#15a892;border:1px solid #15a892;color:#fff;}
+section .container .form-horizontal.modifymobile .btn:hover {background:#1acbb1;border:1px solid #1acbb1;color:#fff;}
+
 /* 分析员 - 基本信息 */
 section .container .panel {float:left;width:798px;padding:10px 35px;background:#fff;box-shadow:0 0 0;margin:0;border-radius:0;border-left:1px solid #ebebeb}
 section .container .panel .panel-heading {font-size:16px;margin:0;border-bottom:1px solid #e8e8e8;line-height:28px;}
@@ -218,7 +277,7 @@ section .container.page .page-footer {margin:30px 50px;}
 /* 研究员 - 修改密码 */
 .form-horizontal.password .form-group .control-label {width:90px;}
 .form-horizontal.password .form-group .form-control {background:#f9f9f9;border:1px solid #f1f1f1;width:280px}
-.form-horizontal.password .form-group .btn {margin-left:0;width:150px;}
+.form-horizontal.password .form-group .btn {margin-left:0;width:150px;background:#15a892;border:1px solid #15a892;}
 .form-horizontal.password .form-group .help-block {margin-left:105px;color:#ee5353;}
 
 /* 老师 */
