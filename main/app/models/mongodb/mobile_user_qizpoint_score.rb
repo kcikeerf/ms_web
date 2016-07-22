@@ -39,9 +39,20 @@ class Mongodb::MobileUserQizpointScore
     qzp_arr.each{|qzp|
       qizpoint = Mongodb::BankQizpointQzp.where(_id: qzp[:id]).first
       if qizpoint && !qzp[:result].blank? && !qizpoint.answer.blank?
+        test_result = ""
+        test_result = qzp[:result].downcase if qzp[:result]
+        test_result.strip! if test_result
+
         qizpoint_answer = qizpoint.answer.nil?? "" : qizpoint.answer.gsub(/<\/?[^>]*>/, "")
-        qizpoint_answer.gsub!(/\n/, "") if qizpoint_answer
-        test_score = (qzp[:result].strip == qizpoint_answer.strip) ? qizpoint.score : 0
+        qizpoint_answer.gsub!(/[\\\n]/, "") if qizpoint_answer
+        qizpoint_answer.downcase! if qizpoint_answer
+        qizpoint_answer.strip! if qizpoint_answer
+
+        if test_result.blank? || qizpoint_answer.blank?
+          test_score = 0
+        else
+          test_score = (test_result == qizpoint_answer) ? qizpoint.score : 0
+        end
       else
         test_score = 0
       end
