@@ -7,12 +7,13 @@ class Mongodb::MobileUserReportGenerator
     logger.info("=====initialization: begin!=====")
     logger.info("args: #{args}")
     @pap_uid = args[:pap_uid]
-    @pup_uid = args[:pup_uid]
+#    @pup_uid = args[:pup_uid]
     @wx_openid = args[:wx_openid]
     @paper = Mongodb::BankPaperPap.where(_id: @pap_uid).first
-    if @pup_uid
-      @online_test = Mongodb::OnlineTest.where({:pap_uid=> @pap_uid, :user_id=> args[:user_id]}).first
-    elsif @wx_openid
+#    if @pup_uid
+#      @online_test = Mongodb::OnlineTest.where({:pap_uid=> @pap_uid, :user_id=> args[:user_id]}).first
+#    elsif @wx_openid
+    if @wx_openid
       @online_test = Mongodb::OnlineTest.where({:pap_uid=> @pap_uid, :wx_openid=> args[:wx_openid]}).first
     else
       @online_test = nil
@@ -41,7 +42,9 @@ class Mongodb::MobileUserReportGenerator
         current_rank += 1
       end
 
-      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+#      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:wx_openid]
+
       if mobile_report
         mobile_report_h['rank']['my_position'] = current_rank
         mobile_report_h['rank']['total_testers'] = total_tester
@@ -64,7 +67,8 @@ class Mongodb::MobileUserReportGenerator
     }
 
     Mongodb::MobileReportBasedOnTotalAvgResult.where(filter).each{|item|
-      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+#      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:wx_openid]
       if mobile_report
         dimesion = item[:_id][:dimesion]
         lv_ckp = item[:_id][:lv2_ckp]
@@ -88,7 +92,8 @@ class Mongodb::MobileUserReportGenerator
     }
 
     Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.correct_qzp_percent' => 1 }).each{|item|
-      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+#      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:wx_openid]
       if mobile_report
         dimesion = item[:_id][:dimesion]
         lv_ckp = item[:_id][:lv2_ckp]
@@ -116,7 +121,8 @@ class Mongodb::MobileUserReportGenerator
     }
 
     Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.total_correct_qzp_percent' => -1 }).each{|item|
-      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+#      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:wx_openid]
       if mobile_report
         dimesion = item[:_id][:dimesion]
         order = item[:_id][:order]
@@ -140,7 +146,7 @@ class Mongodb::MobileUserReportGenerator
 #      :wx_openid => @wx_openid,
       :pap_uid => @pap_uid
     }
-
+=begin
     map = %Q{
       function(){
         var real_total = this.weights * this.real_score;
@@ -174,6 +180,43 @@ class Mongodb::MobileUserReportGenerator
         emit({pap_uid: this.pap_uid, pup_uid:this.pup_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp}, value_obj);
         emit({pap_uid: this.pap_uid, pup_uid:this.pup_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, order: this.order, lv1_ckp: this.lv1_ckp}, value_obj);
         emit({pap_uid: this.pap_uid, pup_uid:this.pup_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp}, value_obj);
+      }
+    }
+=end
+
+    map = %Q{
+      function(){
+        var real_total = this.weights * this.real_score;
+        var full_total = this.weights * this.full_score;
+
+        var value_obj = {
+          reduced: 0,
+          wx_openids: this.wx_openid,
+          wx_openid: this.wx_openid,
+          total_tester: 1,
+          real_score: this.real_score,
+          full_score: this.full_score,
+          average: this.real_score,
+          average_percent: this.real_score/this.full_score,
+          real_total: real_total,
+          full_total: full_total,
+          full_mark: this.full_score,
+          qzp_uids: this.qzp_uid,
+          qzp_uid: this.qzp_uid,
+          total_qzp_count: 1,
+          correct_qzp_count: 1,
+          correct_qzp_percent: 1
+        };
+        emit({pap_uid: this.pap_uid}, value_obj);
+        emit({pap_uid: this.pap_uid, dimesion: this.dimesion}, value_obj);
+        emit({pap_uid: this.pap_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp}, value_obj);
+        emit({pap_uid: this.pap_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp}, value_obj);
+        emit({pap_uid: this.pap_uid, wx_openid: this.wx_openid}, value_obj);
+        emit({pap_uid: this.pap_uid, wx_openid: this.wx_openid, dimesion: this.dimesion}, value_obj);
+        emit({pap_uid: this.pap_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp}, value_obj);
+        emit({pap_uid: this.pap_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp}, value_obj);
+        emit({pap_uid: this.pap_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, order: this.order, lv1_ckp: this.lv1_ckp}, value_obj);
+        emit({pap_uid: this.pap_uid, wx_openid: this.wx_openid, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp}, value_obj);
       }
     }
 
@@ -318,6 +361,7 @@ class Mongodb::MobileUserReportGenerator
       '_id.pap_uid' => @pap_uid
     }
 
+=begin
     map = %Q{
       function(){
         if(this._id.wx_openid){
@@ -385,6 +429,75 @@ class Mongodb::MobileUserReportGenerator
         }
       }
     }
+=end
+
+    map = %Q{
+      function(){
+        if(this._id.wx_openid){
+          if(this._id.lv1_ckp){
+            emit(
+              {pap_uid: this._id.pap_uid, wx_openid: this._id.wx_openid, dimesion: this._id.dimesion, lv1_ckp: this._id.lv1_ckp},
+              {
+                reduced: 0,
+                average: this.value.average,
+                average_percent: this.value.average_percent,
+                total_average: this.value.total_dim_lv1_avg,
+                total_average_percent: this.value.total_dim_lv1_avg_percent,
+                user_total_diff: (this.value.average_percent - this.value.total_dim_lv1_avg_percent)
+              }
+            );
+          } else if(this._id.lv2_ckp){
+            emit(
+              {pap_uid: this._id.pap_uid, wx_openid: this._id.wx_openid, dimesion: this._id.dimesion, lv2_ckp: this._id.lv2_ckp},
+              {
+                reduced: 0,
+                average: this.value.average,
+                average_percent: this.value.average_percent,
+                total_average: this.value.total_dim_lv2_avg,
+                total_average_percent: this.value.total_dim_lv2_avg_percent,
+                user_total_diff: (this.value.average_percent - this.value.total_dim_lv2_avg_percent)
+              }
+            );
+          } else if(this._id.dimesion){
+            emit(
+              {pap_uid: this._id.pap_uid, wx_openid: this._id.wx_openid, dimesion: this._id.dimesion},
+              {
+                reduced: 0,
+                average: this.value.average,
+                average_percent: this.value.average_percent,
+                total_average: this.value.total_dim_avg,
+                total_average_percent: this.value.total_dim_avg_percent,
+                user_total_diff: (this.value.average_percent - this.value.total_dim_avg_percent)
+              }
+            );
+          } else if(this._id.order){
+            emit(
+              {pap_uid: this._id.pap_uid, wx_openid: this._id.wx_openid, order: this._id.order},
+              {
+                reduced: 0,
+                average: this.value.average,
+                average_percent: this.value.average_percent,
+                total_average: this.value.total_avg,
+                total_average_percent: this.value.total_avg_percent,
+                user_total_diff: (this.value.average_percent - this.value.total_avg_percent)
+              }
+            );
+          } else {
+            emit(
+              {pap_uid: this._id.pap_uid, wx_openid: this._id.wx_openid },
+              {
+                reduced: 0,
+                average: this.value.average,
+                average_percent: this.value.average_percent,
+                total_average: this.value.total_avg,
+                total_average_percent: this.value.total_avg_percent,
+                user_total_diff: (this.value.average_percent - this.value.total_avg_percent)
+              }
+            );
+          }
+        }
+      }
+    }
 
     # 目前无reduce运算
     reduce = %Q{
@@ -398,12 +511,14 @@ class Mongodb::MobileUserReportGenerator
     logger.info("======信息加工2:end===========")
   end
 
-  def get_mobile_user_report pup_uid, wx_openid
+#  def get_mobile_user_report pup_uid, wx_openid
+   def get_mobile_user_report wx_openid
   	#未来因为绑定与未绑定区别时，可作处理
   	# 无pup_id：未绑定用户
   	# 无wx_openid：非微信用户
   	# 无pup_id，有wx_openid: 微信未绑定用户
   	# 
+=begin
   	if !pup_uid.blank?
       mobile_report = Mongodb::PupilMobileReport.where(:pup_uid=> pup_uid, :pap_uid => @pap_uid ).first
       pupil = Pupil.where(uid: pup_uid).first
@@ -416,12 +531,22 @@ class Mongodb::MobileUserReportGenerator
     else
       mobile_report = nil
     end
-  	
+=end
+
+    if !wx_openid.blank?
+      mobile_report = Mongodb::PupilMobileReport.where(:wx_openid=> wx_openid, :pap_uid => @pap_uid ).first
+      username = wx_openid 
+      sex = I18n.t("dict.unknown")
+    else
+      mobile_report = nil
+    end
+
   	unless mobile_report
-  	  if !pup_uid.blank? || !wx_openid.blank?
+#  	  if !pup_uid.blank? || !wx_openid.blank?
+      if !wx_openid.blank?
   	  	params_h= {
           :pap_uid => @pap_uid,
-          :pup_uid => pup_uid,
+#          :pup_uid => pup_uid,
           :wx_openid => wx_openid
         }
         mobile_report = Mongodb::PupilMobileReport.new(params_h)
