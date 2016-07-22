@@ -1,6 +1,6 @@
 <% content_for :head do %>
 	<%= stylesheet_link_tag 'managers/checkpoints', media: 'all', 'data-turbolinks-track' => true %>
-	<%= javascript_include_tag 'managers/checkpoints', 'data-turbolinks-track' => true %>
+	<%= javascript_include_tag 'managers/checkpoints', 'jquery.remotipart', 'data-turbolinks-track' => true %>
 <% end %>
 <div class="shaixuan">
 	<%= select_tag :subject, options_for_select(@subjects), include_blank: true %>
@@ -14,6 +14,8 @@
 	<select name="" id="texVolume">
 		<option value="" ></option>
 	</select>
+
+	<%= render 'managers/subject_checkpoints/import_form', path: import_ckp_file_managers_checkpoints_path %>
 </div>
 <div id="wrap">
 	<span id="knowledge_tree" class="ztree" style="display: block ; width: 30%; float: left;height: 650px; margin: 5px;"></span>
@@ -34,6 +36,10 @@
 		<div class="desc">
 			<label>建议：</label>
 			<input type="text" name="advice" id="advice"/>
+		</div>
+		<div class="sort">
+			<label>排序：</label>
+			<input type="text" name="sort" id="sort"/>
 		</div>
 		<div class="fcats">
 			<label>教材目录：</label>

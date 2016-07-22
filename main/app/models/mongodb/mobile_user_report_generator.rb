@@ -22,11 +22,11 @@ class Mongodb::MobileUserReportGenerator
   end
 
   #计算排名
-  def construct_rank
-    logger.info("======组装排名:begin===========")
+  def construct_simple
+    logger.info("======组装1:begin===========")
     filter = {
       '_id.pap_uid' => @pap_uid,
-      '_id.dimesion' => nil,
+      '_id.dimesion' => "knowledge",
       '_id.order' => nil,
       '_id.lv1_ckp' => nil,
       '_id.lv2_ckp' => nil,
@@ -34,24 +34,16 @@ class Mongodb::MobileUserReportGenerator
     }
 
     total_tester = Mongodb::MobileReportTotalAvgResult.where(filter).count
-    current_rank = 0
-    last_average_percent = 0
-    Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.average_percent' => 1 }).each{|item|
-      if(last_average_percent <= item[:value][:average_percent])
-        last_average_percent = item[:value][:average_percent]
-        current_rank += 1
-      end
-
-#      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
-      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:wx_openid]
-
+    Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.average_percent' => -1 }).each_with_index{|item,index|
+      mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:pup_uid], item[:_id][:wx_openid]
       if mobile_report
-        mobile_report_h['rank']['my_position'] = current_rank
+        mobile_report_h['basic']['score'] = format_float(item[:value][:average])
+        mobile_report_h['rank']['my_position'] = (index + 1)
         mobile_report_h['rank']['total_testers'] = total_tester
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     }
-    logger.info("======组装排名:end===========")
+    logger.info("======组装1:end===========")
   end
 
   #构造诊断图
@@ -558,6 +550,7 @@ class Mongodb::MobileUserReportGenerator
         mobile_report_h["basic"]["levelword2"] = @paper.levelword2
         mobile_report_h["basic"]["quiz_date"] = ""#@online_test.dt_date.nil?? "" : @online_test.dt_date.strftime("%Y-%m-%d %H:%M")
         mobile_report_h["basic"]["score"] = 0
+        mobile_report_h["basic"]["full_score"] = @paper.score
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
     else

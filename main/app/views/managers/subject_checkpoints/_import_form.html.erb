@@ -1,0 +1,7 @@
+<%= form_tag path, id: 'file_upload', style: 'display:none;', remote: true, multipart: true do %>
+	<%= select_tag :dimesion, options_for_select([['知识', 'knowledge'], ['技能', 'skill'], ['能力', 'ability']]) %>
+	<input type="file" name='file'>
+	<input type="hidden" name="subject" class="subject"/>
+	<input type="hidden" name="node_uid" class="node_uid"/>
+	<button type="submit" class="btn btn-default"><%= t("page.submit") %></button>
+<% end %>

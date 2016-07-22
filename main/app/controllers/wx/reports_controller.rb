@@ -1,6 +1,6 @@
 class Wx::ReportsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :wx_authenticate!, :except => [:get_indivisual_report_part]
+  before_action :wx_authenticate!, :except => [:get_indivisual_report_part,:get_indivisual_report_1]
   before_action :wx_set_api_header
 
   def get_indivisual_report_part
@@ -34,12 +34,13 @@ class Wx::ReportsController < ApplicationController
     status = 403
     data = {}
 
-    current_pupil = wx_current_user.pupil
-    if current_pupil.nil?
+    current_pupil = wx_current_user.nil?? nil : wx_current_user.pupil
+    if false #current_pupil.nil?
       status = 500
       data = { message: I18n.t("wx_users.messages.warn.invalid_binding_params") }
     elsif !params[:report_id].blank?
-      target_report = Mongodb::PupilMobileReport.where(:pup_uid=>current_pupil.uid.to_s, :_id => params[:report_id]).first
+      #target_report = Mongodb::PupilMobileReport.where(:pup_uid=>current_pupil.uid.to_s, :_id => params[:report_id]).first
+      target_report = Mongodb::PupilMobileReport.where(:_id => params[:report_id]).first
       status = 200
       if target_report
       	report_json = target_report.report_json.blank?? Common::Report::Format::PupilMobile : target_report.report_json

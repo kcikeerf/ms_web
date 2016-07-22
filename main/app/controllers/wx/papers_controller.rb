@@ -82,7 +82,7 @@ class Wx::PapersController < ApplicationController
         mobile_report_generator.cal_ckp_total_avg
         mobile_report_generator.add_avg_col
         mobile_report_generator.cal_based_on_total_avg
-        mobile_report_generator.construct_rank
+        mobile_report_generator.construct_simple
         mobile_report_generator.construct_ckp_charts
         mobile_report_generator.construct_weak_ckps
         mobile_report_generator.construct_knowledge_weak_ckps
@@ -107,6 +107,8 @@ class Wx::PapersController < ApplicationController
         data = {report_id: mobile_report._id.to_s, message: I18n.t("wx_scores.messages.info.save_success")}
       rescue Exception => ex
       	status = 500
+        logger.info("=====试卷提交过程中发生异常message：#{ex.message}")
+        logger.info("=====试卷提交过程中发生异常bactrace：#{ex.backtrace}")
       	data = {message: I18n.t("wx_scores.messages.error.save_exception")}
       end
     end
