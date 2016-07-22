@@ -387,14 +387,7 @@ var echartOption = {
 			            symbolSize:14,
 			            symbol:'circle',
 			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
-			            data: [
-			              {name:'语音（听）',value:[12, 103]},
-			              {name:'词汇',value:[13, 85]},
-			              {name:'词法',value:[14, 60]},
-			              {name:'句法',value:[38, 33]},
-			              {name:'文章',value:[100, 100]},
-			              {name:'写作',value:[99, 85]}
-			            ],
+			            data: data.knowledge.data_node,
 			            markPoint : {
 			              label:{
 			                normal:{show:true,formatter:'{b}',textStyle:{color:'#fff'}}
@@ -402,7 +395,7 @@ var echartOption = {
 			              data : [
 			                {
 			                  type : 'max',
-			                  name: '语音（听）',
+			                  name: data.knowledge.maxkey,
 			                  label:{
 			                    normal:{position:'insideTop'},
 			                    emphasis:{position:'insideTop'}
@@ -414,7 +407,7 @@ var echartOption = {
 			                },
 			                {
 			                  type : 'min',
-			                  name: '句法',
+			                  name: data.knowledge.minkey,
 			                  label:{
 			                    normal:{position:'insideBottom'},
 			                    emphasis:{position:'insideBottom'}
@@ -433,17 +426,7 @@ var echartOption = {
 			            symbolSize:15,
 			            symbol:'triangle',
 			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
-			            data: [
-			              {name:'认知',value: [131, 82]},
-			              {name:'理解（听）',value:[113, 84]},
-			              {name:'理解（读）',value:[125, 22]},
-			              {name:'信息提取（听）',value:[140, 90]},
-			              {name:'信息提取（读）',value:[165, 81]},
-			              {name:'推理（听）',value:[141, 52]},
-			              {name:'推理（读）',value:[153, 64]},
-			              {name:'分析',value:[133, 34]},
-			              {name:'表达',value:[105, 54]}
-			            ],
+			            data: data.skill.data_node,
 			            markPoint : {
 			              label:{
 			                normal:{show:true,formatter:'{b}',textStyle:{color:'#fff'}}
@@ -451,7 +434,7 @@ var echartOption = {
 			              data : [
 			                {
 			                  type : 'max',
-			                  name: '信息提取（听）',
+			                  name: data.skill.maxkey,
 			                  label:{
 			                    normal:{position:'insideTop'},
 			                    emphasis:{position:'insideTop'}
@@ -463,7 +446,7 @@ var echartOption = {
 			                },
 			                {
 			                  type : 'min',
-			                  name: '理解（读）',
+			                  name: data.skill.minkey,
 			                  label:{
 			                    normal:{position:'insideBottom'},
 			                    emphasis:{position:'insideBottom'}
@@ -482,12 +465,7 @@ var echartOption = {
 			            symbolSize:12,
 			            symbol:'rect',
 			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
-			            data: [
-			              {name:'词汇辨析',value:[38, 96]},
-			              {name:'语言理解',value:[88, 80]},
-			              {name:'逻辑分析',value:[112, 61]},
-			              {name:'人际理解',value:[125, 40]}
-			            ],
+			            data: data.ability.data_node,
 			            markPoint : {
 			              label:{
 			                normal:{show:true,formatter:'{b}',textStyle:{color:'#fff'}}
@@ -495,7 +473,7 @@ var echartOption = {
 			              data : [
 			                {
 			                  type : 'max',
-			                  name: '词汇辨析',
+			                  name: data.ability.maxkey,
 			                  label:{
 			                    normal:{position:'insideTop'},
 			                    emphasis:{position:'insideTop'}
@@ -507,7 +485,7 @@ var echartOption = {
 			                },
 			                {
 			                  type : 'min',
-			                  name: '人际理解',
+			                  name: data.ability.minkey,
 			                  label:{
 			                    normal:{position:'insideBottom'},
 			                    emphasis:{position:'insideBottom'}
