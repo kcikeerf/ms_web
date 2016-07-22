@@ -216,7 +216,18 @@ Rails.application.routes.draw do
 
   resource :profile, only: [] do 
     get 'message'
+    get 'account_binding'
+    get 'binding_or_unbinding_mobile_succeed'
+    get 'binding_or_unbinding_email_succeed'
+    get 'modify_mobile_succeed'
+    get 'modify_email_succeed'
     match 'init', via: [:get, :post]
+    match 'binding_or_unbinding_mobile', via: [:get, :post]
+    match 'binding_or_unbinding_email', via: [:get, :post]
+    match 'verified_email', via: [:get, :post]
+    match 'modify_email', via: [:get, :post]
+    match 'verified_mobile', via: [:get, :post]
+    match 'modify_mobile', via: [:get, :post]
     post 'head_image_upload'
     post 'save_info'
   end

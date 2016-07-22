@@ -125,6 +125,7 @@ GEM
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    kgio (2.10.0)
     libv8 (3.16.14.15)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
@@ -186,6 +187,7 @@ GEM
       activesupport (= 4.2.0)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
+    raindrops (0.16.0)
     rake (11.2.2)
     ransack (1.7.0)
       actionpack (>= 3.0)
@@ -263,6 +265,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
+    unicorn (5.1.0)
+      kgio (~> 2.6)
+      raindrops (~> 0.7)
     warden (1.2.6)
       rack (>= 1.0)
     zip-zip (0.3)
@@ -307,6 +312,7 @@ DEPENDENCIES
   thin
   turbolinks
   uglifier
+  unicorn
   zip-zip
 
 BUNDLED WITH

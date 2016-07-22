@@ -47,6 +47,6 @@ Rails.application.configure do
     port: 25,
     domain: 'exmail.qq.com',
     authentication: :login,
-    user_name:  "zhaoxc@qidianbj.com",
-    password: "xxx" }
+    user_name:  "yinhl@qidianbj.com",
+    password: "52Qinqin" }
 end

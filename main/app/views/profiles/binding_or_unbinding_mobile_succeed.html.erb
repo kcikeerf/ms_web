@@ -1,0 +1,32 @@
+<section>
+		<div class="container clearfix">
+			<!-- Nav tabs -->
+			<%= render 'shared/user/left_menu' %>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="BindingAccount">
+                
+					<div class="panel">
+
+					  <!-- 绑定手机号/解绑手机号  -->
+					  <h1 class="panel-heading bb0 clearfix">
+						  <a href="/profile/account_binding" class="btn btn-link pull-right">返回</a>
+						  <%=current_user.phone_validate? ? '绑定手机号' : '解绑手机号'%> 
+                      </h1>
+					  <div class="panel-body b1">
+						  <div class="succeed mv50">
+							  <p class="text-center">
+								  <i class="glyphicon glyphicon-ok-sign"></i>
+								  <%=current_user.phone_validate? ? '手机号绑定成功' : '手机号解绑成功'%>  
+							  </p>
+						  </div>
+					  </div>
+
+					 </div>
+
+			    </div>
+			  </div>
+
+		</div>
+	</section>
