@@ -182,6 +182,8 @@ class BankCheckpointCkp < ActiveRecord::Base
                     node_uid: node_uid, 
                     checkpoint: params[:checkpoint], 
                     desc: params[:desc],
+                    advice: params[:advice],
+                    sort: params[:sort],
                     is_entity: true,
                     bank_ckp_cats_attributes: params[:cats].presence || [])                 
       
@@ -195,6 +197,19 @@ class BankCheckpointCkp < ActiveRecord::Base
         # BankRid.update_ancestors(target_objs, new_ckp, {is_entity: false})
       end
       return new_ckp.organization_hash
+    end
+
+    # 循坏生成指标
+    def generate_ckp(node_uid, dimesion, ckp_arr, parent_rid = nil)
+      ckp_arr.each do |ckp|
+        ckp.symbolize_keys!
+        name = ckp[:text]
+        new_ckp = save_ckp(node_uid: node_uid, checkpoint: name, dimesion: dimesion, str_pid: parent_rid)
+        ckp_children = ckp[:items]
+        unless ckp_children.blank?
+          generate_ckp(node_uid, dimesion, ckp_children, new_ckp[:rid])
+        end
+      end
     end
 
     def root_node(dimesion)
@@ -253,8 +268,9 @@ class BankCheckpointCkp < ActiveRecord::Base
   #
   def update_ckp params
     bank_ckp_cats.destroy_all
-    
-    update(checkpoint: params[:checkpoint], desc: params[:desc], bank_ckp_cats_attributes: params[:cats].presence || [])
+    ckp_hash = params.extract!(:checkpoint, :desc, :advice, :sort)
+    ckp_hash[:bank_ckp_cats_attributes] = params[:cats].presence || []
+    update(ckp_hash)
     
     return organization_hash
   end
@@ -318,6 +334,8 @@ class BankCheckpointCkp < ActiveRecord::Base
       name: checkpoint,
       is_entity: is_entity,
       advice: advice,
+      desc: desc,
+      sort: sort,
       nocheck: is_entity^1
     }
   end

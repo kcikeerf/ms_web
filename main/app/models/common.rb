@@ -13,6 +13,7 @@ module Common
     Pupil="pupil"
     Teacher="teacher"
     Analyzer="analyzer"
+    NAME_ARR = %w(pupil teacher analyzer)
   end
 
   module Paper
