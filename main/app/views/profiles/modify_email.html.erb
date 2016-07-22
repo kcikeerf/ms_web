@@ -23,7 +23,7 @@
 								  <li><span class="badge">3</span>完成</li>
 							  </ul>
 						  </div>
-						  <%= simple_form_for(current_user, url: modify_email_profile_path, html: {class: 'form-horizontal col-offset-4 modifyemail', method: :post,id: "changepassword"}) do |f| %>
+						  <%= simple_form_for(current_user, url: modify_email_profile_path, html: {class: 'form-horizontal col-offset-4 modifymobile', method: :post,id: "changepassword"}) do |f| %>
 						  
 					       <div class="form-group">
 					            <%= f.text_field :email,:value=>nil, class: 'form-control',placeholder: "请输入新的邮箱"%>
