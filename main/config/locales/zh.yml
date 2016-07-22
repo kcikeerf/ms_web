@@ -635,6 +635,7 @@ zh:
       test_report: '测试报告'
       my_pupil: '我的学生'
       my_log: '我的日志'
+      edit_password: '修改密码'
     user_left_menu_in_account_binding:
       registrations: '修改密码'
       profiles: '账号绑定'
