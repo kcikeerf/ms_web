@@ -1,0 +1,41 @@
+<section>
+		<div class="container clearfix">
+			<!-- Nav tabs -->
+			<%= render 'shared/user/left_menu' %>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="BindingAccount">
+                
+					<div class="panel">
+
+					  <!-- 绑定手机号 -->
+					  <h1 class="panel-heading bb0 clearfix">
+						  <a href="/profile/account_binding" class="btn btn-link pull-right">返回</a>
+						  <%=current_user.phone_validate? ? '解绑手机号' : '绑定手机号'%> 
+                      </h1>
+					  <div class="panel-body b1">
+					    <%= simple_form_for(current_user, url: binding_or_unbinding_mobile_profile_path, html: {class: 'form-horizontal col-offset-4 bindingmobile', method: :post}) do |f| %>
+					       
+					        <div class="form-group">
+					            <%= f.text_field :phone,:value=>current_user.phone_validate? ? current_user.phone : nil,class: 'form-control', placeholder: "请输入要绑定的手机号" %>
+							  </div>
+							<div class="form-group captcha">
+								<%= text_field_tag :mobile_auth_number, '', placeholder: '请输入验证码', class: ' form-control' %><input class="btn send" type="button" value="发送验证码" id="send_binding_mobile_auth_number" data-loading-text="发送中..." data-complete-text="重新获取" >
+							</div>
+
+							<div class="form-group sub">
+								<%= f.button :submit, '确定'%>
+							</div>
+							<%= render 'shared/error_messages', target: current_user %>
+						<% end %>
+					  </div>
+
+					 </div>
+
+			    </div>
+
+			  </div>
+
+		</div>
+	</section>
