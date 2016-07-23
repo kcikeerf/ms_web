@@ -1,0 +1,215 @@
+.zy-banner {
+  width: 100%;
+  min-height: 400px;
+  background-color: $grey;
+  position: relative;
+  background-image: image-url('front-banner.png');
+  padding-top: 90px;
+  padding-bottom: 90px;
+  @media screen and (max-width: 992px) {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  @media screen and (max-width: 768px) {
+    min-height: 300px;
+    background-position: left;
+  }
+  .zy-banner-content {
+    @media screen and (max-width: 992px) {
+      margin-bottom: $padding-lg;
+    }
+    .zy-banner-title {
+      font-size: 56px;
+      letter-spacing: 15px;
+      color: rgb(247, 245, 255);
+      @media screen and (max-width: 992px) {
+        text-align: center;
+      }
+      .zy-banner-subtitle {
+        font-size: 36px;
+        letter-spacing: 10px;
+        @media screen and (max-width: 768px) {
+          display: block;
+          margin: $padding-base 0;
+        }
+      }
+    }
+    .zy-banner-body {
+      font-size: 20px;
+      letter-spacing: 16px;
+      @media screen and (max-width: 992px) {
+        text-align: center;
+      }
+    }
+  }
+
+  .zy-loginbox-container {
+    @media screen and (max-width: 768px) {
+      display: none;
+    }
+    .zy-loginbox {
+      height: 350px;
+      max-width: 400px;
+      background-color: rgb(255, 255, 255);
+      box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 4px;
+      padding: $padding-lg 30px;
+      border-radius: 10px;
+      border-width: 3px;
+      border-style: solid;
+      border-color: rgba(255, 61, 0, 0);
+      @media screen and (max-width: 992px) {
+        margin: auto;
+      }
+      .zy-loginbox-title {
+        text-align: center;
+        margin-bottom: $padding-xlg;
+      }
+      input {
+        /* width: 90%; */
+        height: 40px;
+        /* margin-top: 40px; */
+        /* padding: 5px 10px; */
+        /* box-sizing: content-box; */
+        /* border-radius: 5px; */
+        border: 3px solid rgba(18, 103, 124, 0);
+        /* letter-spacing: 1px; */
+        /* font-size: 16px; */
+        background-color: whitesmoke;
+        box-shadow: none;
+      }
+      button[type=submit] {
+        background-color: #15a892;
+        color: white;
+        border: 3px solid #15a892;
+        letter-spacing: 10px;
+        font-weight: 400;
+        text-align: center;
+        width: 100%;
+      }
+      input[type=checkbox] {
+        margin: 20px 0 0 0;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        float: left;
+        border-radius: 3px;
+      }
+      .zy-rempas {
+        float: left;
+        margin-top: 20px;
+        margin-left: 7px;
+      }
+    }
+  }
+}
+
+.zy-service-container {
+  padding: 0 $padding-base;
+  @media screen and (max-width: 992px) {
+    text-align: center;
+  }
+  .zy-service-title {
+    text-align: center;
+  }
+  .zy-service-img {
+    width: 100%;
+    height: 260px;
+    @media screen and (max-width: 992px) {
+      max-width: 350px;
+      height: auto;
+    }
+    @media screen and (max-width: 768px) {
+      max-width: 250px;
+      height: auto;
+    }
+  }
+  .zy-service-body {
+    p {
+      @media screen and (max-width: 992px) {
+        text-align: center;
+      }
+      @media screen and (max-width: 768px) {
+        text-align: left;
+      }
+    }
+  }
+}
+
+.zy-customer-container {
+  .row {
+    display: flex;
+    align-items: center;
+    @media screen and (max-width: 998px) {
+      display: block;
+    }
+  }
+  .zy-customer-img {
+    img {
+      width: 100%;
+    }
+  }
+  .zy-float-right {
+    flex-direction: row-reverse;
+    .zy-customer-img {
+      float: right;
+      @media screen and (max-width: 998px) {
+        float: none;
+      }
+    }
+  }
+  .zy-customer-content {
+    .zy-customer-title {
+      @media screen and (max-width: 992px) {
+        text-align: center;
+      }
+    }
+    .zy-customer-body {
+      p {
+        @media screen and (max-width: 992px) {
+          text-align: center;
+        }
+        @media screen and (max-width: 768px) {
+          text-align: left;
+        }
+      }
+    }
+  }
+  .zy-customer-content.zy-float-right {
+    float: right;
+    @media screen and (max-width: 998px) {
+      float: none;
+    }
+  }
+}
+
+#zy-section-1 {
+  background-image: image-url('front-bg-1.png');
+}
+#zy-section-2 {
+  background-image: image-url('front-bg-2.png');
+}
+#zy-section-3 {
+   background-image: image-url('front-bg-3.png');
+ }
+#zy-section-4 {
+  background-image: image-url('front-bg-4.png');
+}
+#zy-section-1,
+#zy-section-2,
+#zy-section-3,
+#zy-section-4 {
+  .container {
+    border: none;
+    background: none;
+    padding: 0 $padding-base;
+  }
+  @media screen and (max-width: 768px) {
+    background-image: none;
+  }
+}
+.zy-front-section {
+  margin: 0;
+}
+
+
+
