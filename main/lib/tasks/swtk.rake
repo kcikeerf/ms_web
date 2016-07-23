@@ -1,5 +1,6 @@
 require 'ox'
 require 'roo'
+require 'axlsx'
 
 namespace :swtk do
 
@@ -150,28 +151,140 @@ namespace :swtk do
       str = line.chomp!
       if str
         arr =str.split(",")
+        next if arr[0].blank?
         ckp = BankCheckpointCkp.new({:node_uid => args[:node_uid].strip,
           :dimesion => args[:dimesion].strip,
           :rid=>arr[0],
           :checkpoint => arr[1],
           :advice => "建议",
-          #:weights =>
-          :is_entity => true})
+          :weights => arr[2].nil?? 1:arr[2],
+          :sort => arr[0],
+          :is_entity => false
+        })
         ckp.save
       end
     end
 
     ckps = BankCheckpointCkp.where(node_uid: args[:node_uid])
     ckps.each_with_index{|ckp,index|
+        next unless ckp
 #      result = BankRid.get_all_higher_nodes ckps,ckp
 #      if result.empty?
-        p index
-        BankRid.update_ancestors(ckps,ckp,{:is_entity => false})
+        ckp.update(:is_entity => true) if ckp.children.blank?
      # else
  #       ckp.update(:is_entity => true)
       #end
     }
 
+  end
+
+  desc "deconstruct paper to a status: editting, editted, analyzed"
+  task :deconstruct_paper,[:pap_uid, :back_to]=> :environment do |t, args|
+    if args[:pap_uid].nil? ||  args[:back_to].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:pap_uid].strip!
+    args[:back_to].strip!
+
+    target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
+    if target_pap
+      #get quizs, qizpoint 
+      quizs = target_pap.bank_quiz_qizs
+      qzps = target_pap.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten
+
+      paramh = {}
+      case args[:back_to]
+      when "editting"
+        #clear relations between quiz points and checkpoints
+        qzps.map{|qzp|
+          Mongodb::BankCkpQzp.where(:qzp_uid => qzp._id.to_s).destroy_all
+        }
+        #clear all qizpoints
+        qzps.map{|qzp|
+          qzp.destroy
+        }
+        #clear all quizs
+        quizs.map{|quiz|
+          quiz.destroy
+        }
+        j = JSON.parse(target_pap.paper_json)
+        j["bank_quiz_qizs"].each{|qiz| qiz["bank_qizpoint_qzps"].each{|qzp| qzp["bank_checkpoints_ckps"] = "" }}
+        paramsh = {:paper_status => "editting" ,:paper_json=> j.to_json}
+      when "editted"
+        #clear relations between quiz points and checkpoints
+        qzps.map{|qzp|
+          Mongodb::BankCkpQzp.where(:qzp_uid => qzp._id.to_s).destroy_all
+        }
+        j = JSON.parse(target_pap.paper_json)
+        j["bank_quiz_qizs"].each{|qiz| qiz["bank_qizpoint_qzps"].each{|qzp| qzp["bank_checkpoints_ckps"] = "" }}
+        paramsh = {:paper_status => "editted" ,:paper_json=> j.to_json}
+      when "analyzing"
+        #clear relations between quiz points and checkpoints
+        qzps.map{|qzp|
+          Mongodb::BankCkpQzp.where(:qzp_uid => qzp._id.to_s).destroy_all
+        }
+        paramsh = {:paper_status => "analyzing"}
+     # when "score_imported"
+     #   #do nothing
+      end
+      if ["editting", "editted", "analyzing", "analyzed"].include?(args[:back_to])
+        target_pap.update(paramsh)
+      end
+      puts "done"
+    else
+      puts "Paper not found"
+    end
+  end
+
+  desc "export paper structure"
+  task :export_paper_structure,[:pap_uid,:out]=> :environment do |t, args|
+
+    if args[:pap_uid].nil? || args[:out].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:pap_uid].strip!
+
+    target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
+
+    ckp_objs = BankCheckpointCkp.where(node_uid: target_pap.node_uid)
+    if target_pap
+      if ["analyzed", "score_importing", "score_imported", "report_generating", "report_completed"].include?(target_pap.paper_status)
+        #get quizs, qizpoint 
+        quizs = target_pap.bank_quiz_qizs
+        qzps = target_pap.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten
+
+        begin
+          out_excel = Axlsx::Package.new
+          wb = out_excel.workbook
+
+          wb.add_worksheet name: "Paper Structure" do |sheet|
+            sheet.add_row(["PaperID", target_pap._id.to_s, "Paper Name", target_pap.heading])
+            sheet.add_row(["Quit Point", "Score", "Dimesion", "Checkpoint Path"])
+            qzps.each{|qzp|
+              ckps = qzp.bank_checkpoint_ckps
+              ckps.each{|ckp|
+                next unless ckp
+                ckp_ancestors = BankRid.get_all_higher_nodes ckp_objs, ckp
+                ckp_path = ckp_ancestors.map{|a| a.checkpoint }.join(" >> ") + ">> #{ckp.checkpoint}"
+                #p qzp.order + "::" +ckp.dimesion + "::" + ckp_path
+                sheet.add_row([qzp.order, qzp.score, I18n.t("dict.#{ckp.dimesion}"), ckp_path])
+              }
+            }
+          end
+          out_path = args[:out]
+          out_excel.serialize(out_path)
+        rescue Exception => ex
+          puts ex.message
+          puts ex.backtrace
+          puts "failed"
+        end
+        puts "done"
+      end
+    else
+      puts "Paper not found"
+    end
   end
 
   def save_permission(controller, action)

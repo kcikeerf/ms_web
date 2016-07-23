@@ -55,8 +55,8 @@ zh:
       usr_pwd_file: '学生的用户名密码'
     messages:
       save_paper:
-        success: "试卷（标题；%{heading}）保存成功!"
-        fail: "试卷（标题；%{heading}）保存失败!"
+        success: "试卷（标题：%{heading}）保存成功!"
+        fail: "试卷（原因：%{message}）保存失败!"
         debug: "保存试卷过程中发生异常: %{message}"
       submit_paper:
         success: "试卷（标题；%{heading}）提交成功!"
