@@ -34,11 +34,19 @@ class Mongodb::MobileUserReportGenerator
     }
 
     total_tester = Mongodb::MobileReportTotalAvgResult.where(filter).count
+    first_record = Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.average_percent' => -1 }).to_a[0]
+    last_score = first_record[:value][:average]
+    current_position = 1
     Mongodb::MobileReportTotalAvgResult.where(filter).sort({'value.average_percent' => -1 }).each_with_index{|item,index|
       mobile_report, mobile_report_h = get_mobile_user_report item[:_id][:wx_openid]
       if mobile_report
         mobile_report_h['basic']['score'] = format_float(item[:value][:average])
-        mobile_report_h['rank']['my_position'] = (index + 1)
+        if last_score > item[:value][:average]
+          last_score = item[:value][:average]
+          current_position += 1
+        end
+        logger.info(">>>>>>#{current_position}, #{last_score}")
+        mobile_report_h['rank']['my_position'] = current_position#(index+1)
         mobile_report_h['rank']['total_testers'] = total_tester
         mobile_report.update(:report_json => mobile_report_h.to_json)
       end
