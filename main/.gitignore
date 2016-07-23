@@ -24,3 +24,6 @@
 *.sublime-workspace
 *.sublime-project
 
+# Ignore files related to Passenger
+passenger.3000.pid.lock
+
