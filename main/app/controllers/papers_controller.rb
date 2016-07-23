@@ -66,7 +66,7 @@ class PapersController < ApplicationController
       current_pap.save_pap(current_user.id, params)
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
-      result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :heading=> ex.message)})
+      result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
     end
     render :json => result
   end

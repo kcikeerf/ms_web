@@ -36,7 +36,7 @@ class BankRid < ActiveRecord::Base
     
     cond_arr = []
     [*1..(rid_len/Common::SwtkConstants::CkpStep - 1)].each{|index|
-      cond_arr << "(rid=SUBSTR(rid, 1, #{Common::SwtkConstants::CkpStep* index}) and LENGTH(rid)=#{Common::SwtkConstants::CkpStep* index})" 
+      cond_arr << "(rid=SUBSTR('#{target.rid}', 1, #{Common::SwtkConstants::CkpStep* index}) and LENGTH(rid)=#{Common::SwtkConstants::CkpStep* index})" 
     }
 
     cond_str = cond_arr.join(" or ")
