@@ -103,8 +103,8 @@ class Mongodb::BankQuizQiz
       qiz_point.save_qizpoint bqq
       result << qiz_point._id.to_s
       quiz.bank_qizpoint_qzps.push(qiz_point)
-      if bqq["bank_checkpoints_ckps"]
-        save_qzp_all_ckps qiz_point,bqq["bank_checkpoints_ckps"]
+      unless bqq["bank_checkpoints_ckps"].blank?
+        save_qzp_all_ckps qiz_point,bqq#["bank_checkpoints_ckps"]
       end
     }
     return result
@@ -123,7 +123,8 @@ class Mongodb::BankQuizQiz
 #      self.bank_qizpoint_qzps = []
       self.destroy
     rescue Exception => ex
-      p ex.message
+      logger.debug(ex.message)
+      logger.debug(ex.backtrace)
       return false
     end
     return true
