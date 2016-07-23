@@ -92,18 +92,20 @@ $(function(){
                 type = 2;
             }
             if(data.information){
+                var typeObj = {qi_zhong_ce_shi:"期中测试",qi_mo_ce_shi:"期末测试",mo_ni_ce_shi:"模拟测试",yue_kao:"月考",dan_yuan_ce_shi:"单元测试",xiao_sheng_chu_ce_shi:"小升初测试",xue_ke_neng_li_ce_ping:"学科能力测评"},
+                    levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
                 $(".top_title").text(data.information.heading||"");
                 $(".sub_title").text(data.information.subheading||"");
                 var city = (data.information.province||"")+" "+(data.information.city||"")+" "+(data.information.district||"");
                 $(".info_city p").text(city);
                 $(".info_school p").text(data.information.school);
-                $(".info_type p").text(data.information.quiz_type);
+                $(".info_type p").text(typeObj[data.information.quiz_type]);
                 $(".info_subject p").text(data.information.subject ? data.information.subject.label : "");
                 $(".info_grade p").text(data.information.grade ? data.information.grade.label : "");
                 $(".info_term p").text(data.information.term ? data.information.term.label : "");
                 $(".info_time p").text(data.information.quiz_duration);
                 $(".info_version p").text(data.information.text_version ? data.information.text_version.label : "");
-                $(".info_difficulty p").text(data.information.levelword);
+                $(".info_difficulty p").text(levelObj[data.information.levelword]);
                 $(".info_testTime p").text(data.information.quiz_date);
                 $(".info_score p").text(data.information.score);
             }
@@ -382,6 +384,15 @@ $(function(){
                 });
             }
         });
+        //测试类型、难度、题型下拉选择
+        doc.on("click",".selectCommon .optionList li",function(){
+            $(this).addClass("active").siblings().removeClass("active");
+            $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("values"));
+            if($(this).parents(".part4").length){
+                $(".saveWarp .saveBtn").addClass("active");
+                paper.changeState = true;
+            }
+        });
         //普通下拉选择
         doc.on("click",".optionList li",function(){
             //科目学期等单独绑定
@@ -592,6 +603,11 @@ $(function(){
                                 $(this).parents(".optionWarp").find(".selectVal input").val($(this).text());
                                 return false;
                             }
+                            if($(this).attr("values") == tempObj[k]){
+                                $(this).addClass("active").siblings().removeClass("active").parents(".optionWarp").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("values"));
+                                $(this).parents(".optionWarp").find(".selectVal input").val($(this).text());
+                                return false;
+                            }
                         });
                     }
                     $(".remarks").val(data.desc || "");
@@ -636,9 +652,11 @@ $(function(){
                 var num = $(this).attr("num");
                 if(paper.paperData.bank_quiz_qizs && paper.paperData.bank_quiz_qizs.length && paper.paperData.bank_quiz_qizs[num-1]){
                     var html = "",
-                        data = paper.paperData.bank_quiz_qizs[num-1];
-                    $(".analysis_info .info_type span").text(data.cat || "");
-                    $(".analysis_info .info_difficulty span").text(data.levelword2 || "");
+                        data = paper.paperData.bank_quiz_qizs[num-1],
+                        typeObj = {ting_li_li_jie:"听力理解",dan_xiang_xuan_ze:"单项选择",wan_xing_tian_kong:"完形填空",yue_du_li_jie:"阅读理解",ci_yu_yun_yong:"词语运用",bu_quan_dui_hua:"补全对话",shu_mian_biao_da:"书面表达"},
+                        levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
+                    $(".analysis_info .info_type span").text(typeObj[data.cat] || "");
+                    $(".analysis_info .info_difficulty span").text(levelObj[data.levelword2] || "");
                     $(".analysis_info .info_score span").text(data.score ? data.score+"分" : "");
                     $(".analysis_q .info_right").html(data.text || "");
                     $(".analysis_a .info_right").html(data.answer || "");
@@ -1239,6 +1257,10 @@ $(function(){
                     if(k == "selectScore") $(this).parents(".optionWarp").find(".selectVal input").val(tempObj[k]||0);
                     if($(this).text() == tempObj[k]){
                         $(this).addClass("active").siblings().removeClass("active").parents(".optionWarp").find(".selectVal span").text($(this).text()).attr("values",$(this).text());
+                        return false;
+                    }
+                    if($(this).attr("values") == tempObj[k]){
+                        $(this).addClass("active").siblings().removeClass("active").parents(".optionWarp").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("values"));
                         return false;
                     }
                 });
