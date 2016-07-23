@@ -49,7 +49,7 @@ class ProfilesController < ApplicationController
   def binding_or_unbinding_mobile
     if request.post?
 
-      !current_user.phone_validate? ? current_user.update(phone: params[:user][:phone], phone_validate: true) : current_user.update(phone_validate: false)
+      current_user.phone_validate? ? current_user.update(phone_validate: false) : current_user.update(phone: params[:user][:phone], phone_validate: true)
 
       redirect_to binding_or_unbinding_mobile_succeed_profile_path
     end
@@ -60,19 +60,13 @@ class ProfilesController < ApplicationController
 
   #手机验证
   def verified_mobile
-    if request.post?
-
-      redirect_to modify_mobile_profile_path
-    end
+    redirect_to modify_mobile_profile_path if request.post?
   end
 
   #修改手机号
   def modify_mobile
     if request.post?
-
-      current_user.update(phone: params[:user][:phone], phone_validate: true)
-
-      redirect_to modify_mobile_succeed_profile_path
+      redirect_to modify_mobile_succeed_profile_path if current_user.update(phone: params[:user][:phone], phone_validate: true)
     end
   end
 
@@ -84,7 +78,7 @@ class ProfilesController < ApplicationController
   def binding_or_unbinding_email
     if request.post?
 
-      !current_user.email_validate? ? current_user.update(email: params[:user][:email], email_validate: true) : current_user.update(email_validate: false)
+      current_user.email_validate? ? current_user.update(email_validate: false) : current_user.update(email: params[:user][:email], email_validate: true)
 
       redirect_to binding_or_unbinding_email_succeed_profile_path
     end
@@ -95,19 +89,13 @@ class ProfilesController < ApplicationController
   
   #邮箱验证
   def verified_email
-    if request.post?
-
-      redirect_to modify_email_profile_path
-    end
+    redirect_to modify_email_profile_path if request.post?
   end
 
   #修改邮箱
   def modify_email
     if request.post?
-
-      current_user.update(email: params[:user][:email], email_validate: true)
-
-      redirect_to modify_email_succeed_profile_path
+      redirect_to modify_email_succeed_profile_path if current_user.update(email: params[:user][:email], email_validate: true)
     end
   end
 
