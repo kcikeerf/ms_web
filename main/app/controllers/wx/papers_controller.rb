@@ -24,7 +24,7 @@ class Wx::PapersController < ApplicationController
       	:subject => params[:subject]
       }
 #      current_paper = Mongodb::BankPaperPap.get_a_paper params_h
-      current_paper = Mongodb::BankPaperPap.where(_id: "578453ef98014627f7312f48").first || Mongodb::BankPaperPap.get_a_paper(params_h)
+      current_paper = Mongodb::BankPaperPap.where(_id: "578c8579980146652f56a3a8").first || Mongodb::BankPaperPap.get_a_paper(params_h)
       if current_paper
         paper_h = JSON.parse(current_paper.paper_json)
         # 临时处理，待流程整理后处理
@@ -58,6 +58,7 @@ class Wx::PapersController < ApplicationController
       begin
       	#未来视情况作JOB处理
       	#保存成绩
+        Mongodb::OnlineTest.where({:wx_openid=> params[:wx_openid],:pap_uid => params[:pap_uid]}).destroy_all
       	target_mot = Mongodb::OnlineTest.new({
       	  :pap_uid => params[:pap_uid],
       	  :user_id => wx_current_user.nil?? "" : wx_current_user.id,
@@ -70,12 +71,17 @@ class Wx::PapersController < ApplicationController
         #删除同一试卷的旧得分点
         Mongodb::MobileUserQizpointScore.where({:wx_openid => params[:wx_openid], :pap_uid => params[:pap_uid]}).destroy_all
         Mongodb::MobileUserQizpointScore.save_score params
-
         #分析成绩
+        #Mongodb::MobileReportTotalAvgResult.where({'_id.wx_openid' => params[:wx_openid], '_id.pap_uid' => params[:pap_uid]}).destroy_all
+        Mongodb::MobileReportTotalAvgResult.destroy_all
+        #Mongodb::MobileReportBasedOnTotalAvgResult.where({'_id.wx_openid' => params[:wx_openid], '_id.pap_uid' => params[:pap_uid]}).destroy_all
+        Mongodb::MobileReportBasedOnTotalAvgResult.destroy_all
+        #Mongodb::PupilMobileReport.where({'_id.wx_openid' => params[:wx_openid], '_id.pap_uid' => params[:pap_uid]}).destroy_all
+        Mongodb::PupilMobileReport.destroy_all
         pupil = wx_current_user.nil?? nil : wx_current_user.pupil
         mobile_report_generator = Mongodb::MobileUserReportGenerator.new({
-          	:pap_uid => params[:pap_uid],
-            :pup_uid => pupil.nil?? "" : pupil.uid,
+            :pap_uid => params[:pap_uid],
+#            :pup_uid => pupil.nil?? "" : pupil.uid,
             :wx_openid => params[:wx_openid]
         })
         
