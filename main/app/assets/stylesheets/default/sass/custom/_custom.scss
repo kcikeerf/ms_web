@@ -1,4 +1,7 @@
+@import "button";
 @import "nav";
+@import "front";
+
 
 @charset "utf-8";
 
@@ -20,13 +23,7 @@ a {
   text-decoration: none;
   font-size: 14px;
   color: #333;
-  font-weight: 300;
-}
-
-a:-webkit-any-link {
-  text-decoration: none;
-  color: #333;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .help-block {
@@ -313,13 +310,7 @@ header .container-header .login .dropdown .dropdown-menu .arrow:after {
   background-color: #15a892
 }
 
-.navbar-default .navbar-nav > li, .navbar-default .navbar-nav > li a {
-  color: #333;
-}
 
-.navbar-default .navbar-nav > li:hover, .navbar-default .navbar-nav > li a:hover {
-  color: #15a892;
-}
 
 header .container-header .logout {
   position: absolute;
@@ -1229,28 +1220,7 @@ form {
     border: 0 none;
     border-radius: 0;
   }
-  .navbar-default {
-    background-color: transparent;
-  }
-  .navbar-default .navbar-toggle {
-    margin: 13px 0 0;
-  }
-  .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
-    color: #15a892;
-    background-color: transparent;
-  }
-  .navbar-default .navbar-nav > li > a.btn {
-    background: #15a892;
-    border: 1px solid #15a892;
-    color: #fff;
-    border-radius: 2px;
-    width: 55px;
-    padding: 5px 15px;
-    margin-top: 8px;
-  }
-  .navbar-default .navbar-nav > li > a.btn:hover {
-    background: #1acbb1;
-  }
+
 
   #contact footer {
     position: absolute;
