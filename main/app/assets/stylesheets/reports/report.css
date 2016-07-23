@@ -294,8 +294,11 @@ dt{
 	background:#ececec;
 }
 .data-table tr td.one-level{
+	font-weight:bolder;
 	background:#e1f9f5;
-}.data-table tr td.one-level-content{
+}
+.data-table tr td.one-level-content{
+	font-weight:bolder;
 	background:#f4fdfc;
 }
 /*答题情况表格*/
