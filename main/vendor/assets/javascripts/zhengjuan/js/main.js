@@ -42,7 +42,7 @@ $(function(){
                     } 
                 });
             }else{
-                $(".container").show();
+                $(".zhengjuang .container").show();
                 var template = $(".template_part1").html();
                 $(".contentBody").html(template);
                 //word文件校验
@@ -82,7 +82,7 @@ $(function(){
             } 
         },
         judge : function(data){
-            $(".container").hide().after($(".template_detail").html());
+            $(".zhengjuang .container").hide().after($(".template_detail").html());
             var type = null, tempDom = $("<div></div>").html(data.paper_html);
             if(data.bank_quiz_qizs && data.bank_quiz_qizs.length){
                 type = 4;
@@ -162,7 +162,7 @@ $(function(){
             $(".paper_editor").on("click",function(){
                 var type = $(this).attr("parttype") || "2";
                 $(".paperDetails").remove();
-                $(".container").show();
+                $(".zhengjuang .container").show();
                 $(".paperDetails").remove();
                 switch(type){
                     case "2":
@@ -180,13 +180,13 @@ $(function(){
             });
             //编辑解析
             $(".paper_about .edit_sanwei").on("click",function(){
-                $(".container").show();
+                $(".zhengjuang .container").show();
                 $(".paperDetails").remove();
                 paper.gotoAnalysisDetail();
             });
             //查看试卷问题答案
             $(".lookPaper_q_a").on("click",function(){
-                $(".container").show();
+                $(".zhengjuang .container").show();
                 $(".paperDetails").remove();
                 paper.status = "editted";
                 paper.gotoAnalysisDetail();
@@ -194,7 +194,7 @@ $(function(){
             });
             //查看解析详情
             $(".lookPaper_sanwei").on("click",function(){
-                $(".container").show();
+                $(".zhengjuang .container").show();
                 $(".paperDetails").remove();
                 paper.status = "analyzed";
                 paper.gotoAnalysisDetail();
@@ -1146,7 +1146,7 @@ $(function(){
     }
     //跳转到试卷信息模块
     paper.gotoPaperInfo = function(){
-        $(".container").removeClass("auto");
+        $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 2) $(this).addClass("active");
             else $(this).removeClass("active"); 
@@ -1302,7 +1302,7 @@ $(function(){
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){
-        $(".container").addClass("auto");
+        $(".zhengjuang .container").addClass("auto");
         $(".hide_question, .hide_answer").remove();
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 3) $(this).addClass("active");
@@ -1350,7 +1350,7 @@ $(function(){
     }
     //跳转到单题解析模块
     paper.gotoPaperAnalysis = function(){
-        $(".container").removeClass("auto");
+        $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 4) $(this).addClass("active");
             else $(this).removeClass("active"); 
