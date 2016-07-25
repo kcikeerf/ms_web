@@ -287,6 +287,38 @@ namespace :swtk do
     end
   end
 
+  desc "export paper score"
+  task :export_paper_score,[:pap_uid,:out]=> :environment do |t, args|
+
+    if args[:pap_uid].nil? || args[:out].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:pap_uid].strip!
+
+    target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
+    target_scores = Mongodb::BankQizpointScore.where(pap_uid: args[:pap_uid])
+    begin
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+
+      wb.add_worksheet name: "Scores" do |sheet|
+        sheet.add_row(["PaperID", target_pap._id.to_s, "Paper Name", target_pap.heading])
+        sheet.add_row(["Quit Point", "Full Score", "Real Score", "Dimesion", "Level1 Ckp", "Level2 Ckp", "End Level Ckp", "Weights"])
+        target_scores.each{|score|
+          sheet.add_row([score.order, score.full_score,score.real_score, I18n.t("dict.#{score.dimesion}"), score.lv1_ckp, score.lv2_ckp, score.lv_end_ckp])
+        }
+      end
+      out_path = args[:out]
+      out_excel.serialize(out_path)
+    rescue Exception => ex
+      puts ex.message
+      puts ex.backtrace
+      puts "failed"
+    end
+    puts "done"
+  end
+
   def save_permission(controller, action)
     name = "#{controller}##{action}"
 
