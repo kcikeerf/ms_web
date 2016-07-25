@@ -388,7 +388,9 @@ module Common
 %{ingrade_worse_advice}
 </ol></div></div></div></div></div>
 "
-
+      DisplayLimit = {
+        "default" => 15
+      }
       Grade = {
         #basic information
         "basic" => {
@@ -400,6 +402,93 @@ module Common
           "quiz_type" => "",
           "quiz_date" => "",
           "levelword2" => ""
+        },
+        "display_limit" => {
+          #诊断图
+          "charts" => {
+            "knowledge_3lines" => Common::Report::Format::DisplayLimit["default"],
+            "knowledge_med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+            "skill_3lines" => Common::Report::Format::DisplayLimit["default"],
+            "skill_med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+            "ability_3lines" => Common::Report::Format::DisplayLimit["default"],
+            "ability_med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+            "dimesion_disperse" => -1
+          },
+          #各分数段人数比例
+          "each_level_number" => {
+            "grade_knowledge"=> Common::Report::Format::DisplayLimit["default"],
+            "grade_skill"=> Common::Report::Format::DisplayLimit["default"],
+            "grade_ability"=> Common::Report::Format::DisplayLimit["default"]
+          },
+          #四分位区间表现情况
+          "four_sections" => {
+            "level75"=> {
+              "knowledge" => Common::Report::Format::DisplayLimit["default"],
+              "skill" => Common::Report::Format::DisplayLimit["default"],
+              "ability" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "level50"=> {
+              "knowledge" => Common::Report::Format::DisplayLimit["default"],
+              "skill" => Common::Report::Format::DisplayLimit["default"],
+              "ability" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "level25"=> {
+              "knowledge" => Common::Report::Format::DisplayLimit["default"],
+              "skill" => Common::Report::Format::DisplayLimit["default"],
+              "ability" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "level0"=> {
+              "knowledge" => Common::Report::Format::DisplayLimit["default"],
+              "skill" => Common::Report::Format::DisplayLimit["default"],
+              "ability" => Common::Report::Format::DisplayLimit["default"]
+            }
+          },
+          #各指标水平图
+          "each_checkpoint_horizon" => {
+            "knowledge" => {
+              "average_percent" => Common::Report::Format::DisplayLimit["default"],
+              "median_percent" => Common::Report::Format::DisplayLimit["default"],
+              "med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+              "diff_degree" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "skill" => {
+              "average_percent" => Common::Report::Format::DisplayLimit["default"],
+              "median_percent" => Common::Report::Format::DisplayLimit["default"],
+              "med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+              "diff_degree" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "ability" => {
+              "average_percent" => Common::Report::Format::DisplayLimit["default"],
+              "median_percent" => Common::Report::Format::DisplayLimit["default"],
+              "med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+              "diff_degree" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "total" => {
+              "average_percent" => Common::Report::Format::DisplayLimit["default"],
+              "median_percent" => Common::Report::Format::DisplayLimit["default"],
+              "med_avg_diff" => Common::Report::Format::DisplayLimit["default"],
+              "diff_degree" => Common::Report::Format::DisplayLimit["default"]
+            },
+
+          },
+          #各班分数段人数比例
+          "each_class_pupil_number_chart" => {
+            "knowledge" => {
+              "excellent_pupil_percent" => Common::Report::Format::DisplayLimit["default"],
+              "good_pupil_percent" => Common::Report::Format::DisplayLimit["default"],
+              "failed_pupil_percent" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "skill" => {
+              "excellent_pupil_percent" => Common::Report::Format::DisplayLimit["default"],
+              "good_pupil_percent" => Common::Report::Format::DisplayLimit["default"],
+              "failed_pupil_percent" => Common::Report::Format::DisplayLimit["default"]
+            },
+            "ability" => {
+              "excellent_pupil_percent" => Common::Report::Format::DisplayLimit["default"],
+              "good_pupil_percent" => Common::Report::Format::DisplayLimit["default"],
+              "failed_pupil_percent" => Common::Report::Format::DisplayLimit["default"]
+            }
+          },
         },
         #诊断图
         "charts" => {
@@ -504,47 +593,6 @@ module Common
             "failed_pupil_percent" => {}
           }
         },
-=begin
-        #各班表现情况数据
-        "each_class_data_table" =>{
-          "knowledge" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
-          },
-          "skill" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
-          },
-          "ability" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
-          }
-        },
-        #各班人数比例数据
-        "each_class_pupil_number_table" =>{
-          "knowledge" => {
-            "excellent" =>{},
-            "good" => {},
-            "failed" => {}
-          },
-          "skill" => {
-            "excellent" =>{},
-            "good" => {},
-            "failed" => {}
-          },
-          "ability" => {
-            "excellent" =>{},
-            "good" => {},
-            "failed" => {}
-          }
-        },
-=end
         #各题答对率
         "average_percent" => {
           "failed" => {},
@@ -572,6 +620,19 @@ module Common
           "quiz_type" => "",
           "quiz_date" => "",
           "levelword2" => ""
+        },
+        "display_limit" => {
+          "charts" => {
+            "knowledge_all_lines" => Common::Report::Format::DisplayLimit["default"],
+            "knowledge_gra_cls_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "knowledge_cls_mid_gra_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "skill_all_lines" => Common::Report::Format::DisplayLimit["default"],
+            "skill_gra_cls_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "skill_cls_mid_gra_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "ability_all_lines" => Common::Report::Format::DisplayLimit["default"],
+            "ability_gra_cls_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "ability_cls_mid_gra_avg_diff_line" => Common::Report::Format::DisplayLimit["default"]
+          }
         },
         "dimesion_values" => {
           "knowledge" => {
@@ -683,6 +744,16 @@ module Common
           "sex" => "",          
           "levelword2" => "",
           "quiz_date" => ""
+        },
+        "display_limit" => {
+          "charts" => {
+            "knowledge_radar" => Common::Report::Format::DisplayLimit["default"],
+            "knowledge_pup_gra_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "skill_radar" => Common::Report::Format::DisplayLimit["default"],
+            "skill_pup_gra_avg_diff_line" => Common::Report::Format::DisplayLimit["default"],
+            "ability_radar" => Common::Report::Format::DisplayLimit["default"],
+            "ability_pup_gra_avg_diff_line" => Common::Report::Format::DisplayLimit["default"]
+          }
         },
         #诊断图
         "charts" => {
