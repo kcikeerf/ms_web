@@ -772,6 +772,7 @@ class Mongodb::BankPaperPap
           param_h[:lv1_ckp] = lv1_ckp.checkpoint
           param_h[:lv2_ckp] = lv2_ckp.checkpoint
           param_h[:lv3_ckp] = ckp.checkpoint
+          param_h[:lv_end_ckp] = ckp.checkpoint
           #调整权重系数
           # 1.单题难度关联
           #
