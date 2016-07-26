@@ -51,6 +51,7 @@ class Mongodb::BankPaperPap
 
   field :user_id, type: String
   field :paper_json, type: String
+  field :ckp_type, type: String
   #field :paper_saved_json, type: String
   #field :paper_analyzed_json, type: String
   field :analyze_json, type: String

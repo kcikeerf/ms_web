@@ -96,15 +96,14 @@ class BankCheckpointCkp < ActiveRecord::Base
       level_config.each do |l|
         # p l
         next if (l.first - 1) * Common::SwtkConstants::CkpStep > old_node.rid.size
-        need_nodes = get_nodes_by_rid_length(nodes, l).where("left(rid, ?) = ?", old_node.rid.size, old_node.rid)
-        need_nodes = need_nodes.is_entity if l == level_config.last
+        # 读取数据库
+        # need_nodes = get_nodes_by_rid_length(nodes, l).where("left(rid, ?) = ?", old_node.rid.size, old_node.rid)
+        # need_nodes = need_nodes.is_entity if l == level_config.last
+        
+        need_nodes = get_nodes_by_rid_length(nodes, l).select {|n| n.rid.match(/^#{old_node.rid}/) }
+        need_nodes = need_nodes.select{|n| n.is_entity } if l == level_config.last
         
         return return_node if need_nodes.blank?
-
-        # if l == level_config.last
-        #   need_nodes.is_entity.to_a.each {|node| return_node[:children] << node.organization_hash }
-        #   return_node
-        # end
 
         need_nodes.to_a.each do |node|
           level_config.delete(l)
@@ -121,9 +120,11 @@ class BankCheckpointCkp < ActiveRecord::Base
       if node_level.size > 1
         start_rid_length = (node_level[0] || 0) * Common::SwtkConstants::CkpStep
         end_rid_length = (node_level[1] || 0) * Common::SwtkConstants::CkpStep
-        nodes.where("length(rid) between ? and ?", start_rid_length, end_rid_length)
+        # nodes.where("length(rid) between ? and ?", start_rid_length, end_rid_length)
+        nodes.select {|n| n.rid.length.between?(start_rid_length, end_rid_length) }
       else
-        nodes.where("length(rid) = ?", node_level.first * Common::SwtkConstants::CkpStep)
+        # nodes.where("length(rid) = ?", node_level.first * Common::SwtkConstants::CkpStep)
+        nodes.select {|n| n.rid.length == node_level.first * Common::SwtkConstants::CkpStep}
       end
     end
 
