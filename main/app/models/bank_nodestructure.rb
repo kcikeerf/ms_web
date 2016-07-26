@@ -63,6 +63,11 @@ class BankNodestructure < ActiveRecord::Base
       by_subject(subject).by_grade(grade).where(version: version).map{ |m| { label: I18n.t('dict.' + m.volume), name: m.volume, node_uid: m.uid } }
     end
 
+    # 判断指标是否使用科目指标体系
+    def judge_subject_ckp?
+      bank_nodestructure_subject_ckps.size > 0 ? true : false
+    end
+
   end
 
   def add_ckps(ckps)
