@@ -24,7 +24,7 @@ class Mongodb::BankQizpointQzp
 #  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid"
 #  to_mysql_has_many :bank_checkpoint_ckps, class_name: "BankCheckpointCkp", through: "Mongodb::BankCkpQzp"
 
-  belongs_to :bank_quiz_qiz
+  belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
 

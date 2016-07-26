@@ -319,6 +319,52 @@ namespace :swtk do
     puts "done"
   end
 
+  desc "generate random paper analysis"
+  task :generate_paper_analysis,[:pap_uid]=> :environment do |t, args|
+    if args[:pap_uid].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:pap_uid].strip!
+
+    target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
+    begin
+      j = JSON.parse(target_pap.paper_json)
+      j["bank_quiz_qizs"].each_with_index{|qiz,qiz_index|
+        j["bank_quiz_qizs"][qiz_index]["bank_qizpoint_qzps"].each_with_index{|qzp,qzp_index|
+          qzp_ckp = []
+          ["knowledge", "skill", "ability"].each{|dimesion|
+            ckp = BankCheckpointCkp.where({
+              :node_uid => "728539189095694336", 
+              :dimesion => dimesion, 
+              :is_entity => true}).sample
+            Mongodb::BankCkpQzp.new({:qzp_uid=> qzp["id"], :ckp_uid=> ckp.uid.to_s}).save!
+            qzp_ckp << {"dimesion" => dimesion, "checkpoint"=>ckp.checkpoint, "uid" => ckp.uid}
+          }
+          j["bank_quiz_qizs"][qiz_index]["bank_qizpoint_qzps"][qzp_index]["bank_checkpoints_ckps"] = qzp_ckp
+        }
+      }
+      target_pap.update(:paper_json => j.to_json, :paper_status=> "analyzed")
+=begin
+      qzps = target_pap.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
+      qzps.each{|qzp|
+        ["knowledge", "skill", "ability"].each{|dimesion|
+          ckp = BankCheckpointCkp.where({
+            :node_uid => "728539189095694336", 
+            :dimesion => dimesion, 
+            :is_entity => true}).sample
+          Mongodb::BankCkpQzp.new({:qzp_uid=> qzp._id.to_s, :ckp_uid=> ckp.uid.to_s}).save!
+        }
+      }
+=end
+    rescue Exception => ex
+      puts ex.message
+      puts ex.backtrace
+      puts "failed"
+    end
+    puts "done"
+  end
+
   def save_permission(controller, action)
     name = "#{controller}##{action}"
 
