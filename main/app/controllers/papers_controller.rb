@@ -272,11 +272,16 @@ class PapersController < ApplicationController
     if request.post?# && remotipart_submitted? 
       score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
       if score_file
-        # analyze filled score file
-        str = @paper.analyze_filled_score_file score_file rescue nil
-     
-        @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
-        @paper.update(paper_status: Common::Paper::Status::ScoreImported)
+        begin
+          # analyze filled score file
+          str = @paper.analyze_filled_score_file score_file rescue nil  
+          @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
+          @paper.update(paper_status: Common::Paper::Status::ScoreImported)
+        rescue Exception => ex
+          logger.debug(">>>>>>>>>>>>>>>>>>Exception When Import Filled Score!")
+          logger.debug(ex.message)
+          logger.debug(ex.backtrace)
+        end
       end
     end
    render layout: false

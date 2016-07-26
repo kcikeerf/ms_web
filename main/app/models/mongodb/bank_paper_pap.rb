@@ -777,7 +777,7 @@ class Mongodb::BankPaperPap
           #调整权重系数
           # 1.单题难度关联
           #
-          param_h[:weights] = ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.difficulty})
+          param_h[:weights] = ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.levelword2})
           qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
           qizpoint_score.save!
         }
