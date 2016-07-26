@@ -52,8 +52,15 @@ class NodeStructuresController < ApplicationController
 
   def get_ckp_data
     node = BankNodestructure.find(params[:node_uid])
-    ckp_data = BankCheckpointCkp.get_web_ckps(node.id)
-    render json: ckp_data.to_json
+    ckp_type = 
+      if params[:ckp_type].present?
+        params[:ckp_type] == Common::Paper::Subject_ckp_type
+      else
+        node.judge_subject_ckp? 
+      end
+    ckp_model = ckp_type ? BankSubjectCheckpointCkp : BankCheckpointCkp
+    ckp_data = ckp_model.get_web_ckps(node.id)
+    render json: ckp_data.merge(ckp_type: ckp_type ? Common::Paper::Subject_ckp_type : Common::Paper::Node_ckp_type).to_json
   end
 
   # private

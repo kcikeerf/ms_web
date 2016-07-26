@@ -17,6 +17,9 @@ module Common
   end
 
   module Paper
+    Subject_ckp_type = 'from_subject'
+    Node_ckp_type = 'from_node'
+
     module Constants
       OrderWidth = 5
     end

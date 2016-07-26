@@ -65,7 +65,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     		start_rid_length = (node_level[0] || 0) * Common::SwtkConstants::CkpStep
     		end_rid_length = (node_level[1] || 0) * Common::SwtkConstants::CkpStep
     		# nodes.where("length(rid) between ? and ?", start_rid_length, end_rid_length)
-    		nodes.select {|n| n.rid.length >= start_rid_length && n.rid.length <= end_rid_length }
+    		nodes.select {|n| n.rid.length.between?(start_rid_length, end_rid_length) }
     	else
     		# nodes.where("length(rid) = ?", node_level.first * Common::SwtkConstants::CkpStep)
     		nodes.select {|n| n.rid.length == node_level.first * Common::SwtkConstants::CkpStep}
