@@ -1,0 +1,11 @@
+<%= extends :application do %>
+  <% replace :head_content do %>
+    <%= stylesheet_link_tag 'ztree', media: 'all', 'data-turbolinks-track' => true %>
+    <%#= javascript_include_tag 'ztree', 'data-turbolinks-track' => true %>
+  <% end %>
+
+  <%= yield %>
+
+  <% purge :top, :footer %>
+  
+<% end %>

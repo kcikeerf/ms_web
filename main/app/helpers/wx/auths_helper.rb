@@ -1,0 +1,2 @@
+module Wx::AuthsHelper
+end

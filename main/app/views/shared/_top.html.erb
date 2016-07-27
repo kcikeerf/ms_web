@@ -1,0 +1,76 @@
+<% if current_user %>
+    <header class="navbar navbar-default zy-navbar" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">切换导航</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="知引">
+            <img class="zy-logo" alt="知引" src="<%= image_url('logo-1.png') %>" >
+          </a>
+        </div>
+        <nav role="navigation" class="zy-navbar-nav">
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <% if current_user.is_analyzer? %>
+              <li>
+                <a href="/papers/new" class="btn zy-btn-login">
+                  <i>&#43;</i>
+                  <span><%= t('page.paper.add_paper') %></span>
+                </a>
+              </li>
+              <% end %>
+              <li>
+                <button class="btn zy-btn-user" id="dropdownMenu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <%= current_user.name %>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                  <li class="arrow"></li>
+                  <% user_popup_menus.each do |key, value| %>
+                      <li>
+                        <a href="<%= value %>"><%= t("page.user_left_menu.#{key}") %></a>
+                      </li>
+                  <% end %>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+<% else %>
+    <header class="navbar navbar-default zy-navbar" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">切换导航</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/" title="知引">
+            <img class="zy-logo" alt="知引" src="<%= image_url('logo-1.png') %>" >
+          </a>
+        </div>
+        <nav role="navigation" class="zy-navbar-nav">
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav <% if current_page?('/') %>navbar-right<% end %>">
+              <!--<li><a href="#" class="linkright">什么是三维诊断?</a></li>-->
+              <li><a href="/about_us" class="linkright">关于我们</a></li>
+              <li><a href="/contact" class="linkright">联系我们</a></li>
+            </ul>
+            <% unless current_page?('/') %>
+                <ul class="nav navbar-nav navbar-right">
+                  <li><a href="#" class="btn zy-btn-login" data-toggle="modal" data-target="#loginModal">登录</a></li>
+                </ul>
+            <% end %>
+          </div>
+        </nav>
+
+      </div>
+    </header>
+<% end %>

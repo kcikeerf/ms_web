@@ -1,0 +1,102 @@
+// Variables
+// --------------------------------------------------
+
+$bootstrap-sass-asset-helper: false !default;
+
+//== Colors 颜色
+// 彩色
+$color-main:              #15a892 !default;
+$color-2:                 #498df7 !default;
+$color-3:                 #73a3d3 !default;
+$color-4:                 #f1f8ff !default;
+$color-5:                 #fbfdff !default;
+$color-6:                 #e8cca1 !default;
+$color-7:                 #fefded !default;
+
+// 黑白灰
+$black:                   #212121 !default; // #212121?
+$white:                   #ffffff !default;
+$grey:                    #727272 !default;
+$grey-dark:               #9e9e9e !default;
+$grey-light:              #b6b6b6 !default;
+
+$text-color:           #212121 !default; // 正文字体颜色
+$body-bg:               $white !default;
+
+//== Typography
+//
+//## Font, line-height, and color for body text, headings, and more.
+
+$font-family-sans-serif:  'HanHei TC','PingFang SC', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light', Arial, "Hiragino Sans GB", "Microsoft Yahei", sans-serif !default;
+$font-family-base:        $font-family-sans-serif !default;
+
+$font-size-base:          16px !default;
+$font-size-lg:            20px !default;
+$font-size-md:            18px !default;
+$font-size-sm:            14px !default;
+
+$font-size-h1:            48px !default;
+$font-size-h2:            36px !default;
+$font-size-h3:            24px !default;
+$font-size-h4:            18px !default;
+$font-size-h5:            16px !default;
+$font-size-h6:            14px !default;
+
+$font-weight-base:        300 !default;
+$letter-spacing-base:     0.2 !default;
+$line-height-base:        1.5 !default;
+
+//** By default, this inherits from the `<body>`.
+$headings-font-family:    inherit !default;
+$headings-font-weight:    400 !default;
+$headings-line-height:    1.1 !default;
+$headings-color:           #212121 !default;
+
+
+// Padding
+$padding-base:      10px; // 10px
+$padding-xlg:       20px; // 15px
+$padding-lg:        15px; // 15px
+$padding-sm:        5px; // 5px
+$padding-xs:        2px; // 1px
+
+// Buttons
+$btn-padding-base-vertical:     $padding-base;
+$btn-padding-base-horizontal:   $padding-xlg;
+
+// Basics of a navbar
+$zindex-navbar:               1000 !default;
+$zindex-navbar-fixed:        1030 !default;
+$navbar-height-base:         72px !default;
+$navbar-height-large:        72px !default;
+$navbar-line-height:         23px !default; // ~21px
+$navbar-padding:              15px !default;
+
+// Sidebar
+$sidebar-width:                       250px !default;
+
+
+// Form
+$form-control-height:       40px !default;
+
+// Border highlight
+$border-highlight-width-base:       5px !default;
+
+// Dropdown menu
+$dropdown-padding-x:        5px !default;
+$dropdown-padding-y:        15px !default;
+
+// Line Height
+$line-height-large:         1.3333333 !default; // extra decimals for Win 8.1 Chrome
+$line-height-small:         1.5 !default;
+
+// Radius
+$border-radius-base:        3px !default;
+$border-radius-large:       3px !default;
+$border-radius-small:       3px !default;
+
+// Break points
+$breakpoint-lg:             1177px;
+$breakpoint-md:             768px;
+
+

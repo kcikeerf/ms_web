@@ -1,0 +1,43 @@
+
+<section class="section">
+  <div class="container">
+
+    <div class="loginwrap">
+      <h4 class="modal-title text-center"><%= t('page.login') %></h4>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'form-horizontal', id: 'loginForm'}) do |f| %>
+      <%= hidden_field_tag :url, '' %>
+      <div class="form-group">
+        <div class="col-md-12">
+          <%= f.text_field :login, placeholder: t('page.sign_in.login_placeholder'), class: 'form-control' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <%= f.password_field :password, placeholder: t('page.sign_up.password_placeholder') , class: 'form-control' %>
+          <%= raw "<small class='help-block'>#{alert}</small>" if alert %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary"><%= t('page.login') %></button>
+        </div>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :remember_me, checked: true %> <%= t('page.sign_in.remember_me') %>
+        </label>
+        <label class='pull-right'>
+          <%= link_to t('page.sign_in.forgot_password'), new_user_password_path %>
+        </label>
+      </div>
+      <% end %>
+    </div>
+
+  </div>
+</section>
+<script type="text/javascript">
+  $(document).ready(function(){
+      $('body').attr('id', 'login');
+      $('footer').addClass('pb');
+    })
+</script>

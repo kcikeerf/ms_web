@@ -1,0 +1,115 @@
+<dictionaries>
+<dictionary sid="text_book" caption="text_book" desc="教材版本">
+  <item sid="ren_jiao_ban" caption="ren_jiao_ban" desc="人教版" />
+  <item sid="bei_shi_da_ban" caption="bei_shi_da_ban" desc="北师大版" />
+  <item sid="su_jiao_ban" caption="su_jiao_ban" desc="苏教版" />
+</dictionary>
+<dictionary sid="grade" caption="grade" desc="年级">
+  <item sid="yi_nian_ji" caption="yi_nian_ji" desc="一年级" />
+  <item sid="er_nian_ji" caption="er_nian_ji" desc="二年级" />
+  <item sid="san_nian_ji" caption="san_nian_ji" desc="三年级" />
+  <item sid="si_nian_ji" caption="si_nian_ji" desc="四年级" />
+  <item sid="wu_nian_ji" caption="wu_nian_ji" desc="五年级" />
+  <item sid="liu_nian_ji" caption="liu_nian_ji" desc="六年级" />
+  <item sid="qi_nian_ji" caption="qi_nian_ji" desc="七年级" />
+  <item sid="ba_nian_ji" caption="ba_nian_ji" desc="八年级" />
+  <item sid="jiu_nian_ji" caption="jiu_nian_ji" desc="九年级" />
+  <item sid="gao_yi_nian_ji" caption="gao_yi_nian_ji" desc="高一年级" />
+  <item sid="gao_er_nian_ji" caption="gao_er_nian_ji" desc="高二年级" />
+  <item sid="gao_san_nian_ji" caption="gao_san_nian_ji" desc="高三年级" />
+</dictionary>
+<dictionary sid="classroom" caption="classroom" desc="班级">
+  <item sid="yi_ban" caption="yi_ban" desc="一班" />
+  <item sid="er_ban" caption="er_ban" desc="二班" />
+  <item sid="san_ban" caption="san_ban" desc="三班" />
+  <item sid="si_ban" caption="si_ban" desc="四班" />
+  <item sid="wu_ban" caption="wu_ban" desc="五班" />
+  <item sid="liu_ban" caption="liu_ban" desc="六班" />
+  <item sid="qi_ban" caption="qi_ban" desc="七班" />
+  <item sid="ba_ban" caption="ba_ban" desc="八班" />
+  <item sid="jiu_ban" caption="jiu_ban" desc="九班" />
+  <item sid="shi_ban" caption="shi_ban" desc="十班" />
+  <item sid="shi_yi_ban" caption="shi_yi_ban" desc="十一班" />
+  <item sid="shi_er_ban" caption="shi_er_ban" desc="十二班" />
+  <item sid="shi_san_ban" caption="shi_san_ban" desc="十三班" />
+  <item sid="shi_si_ban" caption="shi_si_ban" desc="十四班" />
+  <item sid="shi_wu_ban" caption="shi_wu_ban" desc="十五班" />
+  <item sid="shi_liu_ban" caption="shi_liu_ban" desc="十六班" />
+  <item sid="shi_qi_ban" caption="shi_qi_ban" desc="十七班" />
+  <item sid="shi_ba_ban" caption="shi_ba_ban" desc="十八班" />
+  <item sid="shi_jiu_ban" caption="shi_jiu_ban" desc="十九班" />
+  <item sid="er_shi_ban" caption="er_shi_ban" desc="二十班" />
+  <item sid="er_shi_yi_ban" caption="er_shi_yi_ban" desc="二十一班" />
+  <item sid="er_shi_er_ban" caption="er_shi_er_ban" desc="二十二班" />
+  <item sid="er_shi_san_ban" caption="er_shi_san_ban" desc="二十三班" />
+  <item sid="er_shi_si_ban" caption="er_shi_si_ban" desc="二十四班" />
+  <item sid="er_shi_wu_ban" caption="er_shi_wu_ban" desc="二十五班" />
+  <item sid="er_shi_liu_ban" caption="er_shi_liu_ban" desc="二十六班" />
+  <item sid="er_shi_qi_ban" caption="er_shi_qi_ban" desc="二十七班" />
+  <item sid="er_shi_ba_ban" caption="er_shi_ba_ban" desc="二十八班" />
+  <item sid="er_shi_jiu_ban" caption="er_shi_jiu_ban" desc="二十九班" />
+  <item sid="san_shi_ban" caption="san_shi_ban" desc="三十班" />
+</dictionary>
+<dictionary sid="volume" caption="volume" desc="课本分册">
+  <item sid="quan_yi_ce" caption="quan_yi_ce" desc="全一册" />
+  <item sid="shang_ce" caption="shang_ce" desc="上册(春季)" />
+  <item sid="xia_ce" caption="xia_ce" desc="下册(秋季)" />
+  <item sid="bi_xiu_1" caption="bi_xiu_1" desc="必修1" />
+  <item sid="bi_xiu_2" caption="bi_xiu_2" desc="必修2" />
+  <item sid="bi_xiu_3" caption="bi_xiu_3" desc="必修3" />
+  <item sid="bi_xiu_4" caption="bi_xiu_4" desc="必修4" />
+  <item sid="bi_xiu_5" caption="bi_xiu_5" desc="必修5" />
+  <item sid="xuan_xiu_1" caption="xuan_xiu_1" desc="选修1" />
+  <item sid="xuan_xiu_2" caption="xuan_xiu_2" desc="选修2" />
+  <item sid="xuan_xiu_3" caption="xuan_xiu_3" desc="选修3" />
+  <item sid="xuan_xiu_4" caption="xuan_xiu_4" desc="选修4" />
+  <item sid="xuan_xiu_5" caption="xuan_xiu_5" desc="选修5" />
+  <item sid="xuan_xiu_6" caption="xuan_xiu_6" desc="选修6" />
+  <item sid="xuan_xiu_7" caption="xuan_xiu_7" desc="选修7" />
+  <item sid="xuan_xiu_8" caption="xuan_xiu_8" desc="选修8" />
+</dictionary>
+<dictionary sid="difficulty" caption="difficulty" desc="难度系数">
+  <item sid="rong_yi" caption="rong_yi" desc="容易" />
+  <item sid="jiao_yi" caption="jiao_yi" desc="较易" />
+  <item sid="zhong_deng" caption="zhong_deng" desc="中等" />
+  <item sid="jiao_nan" caption="jiao_nan" desc="较难" />
+  <item sid="kun_nan" caption="kun_nan" desc="困难" />
+</dictionary>
+<dictionary sid="paper_type" caption="paper_type" desc="试卷类型">
+  <item sid="qi_chu" caption="qi_chu" desc="期初" />
+  <item sid="qi_zhong" caption="qi_zhong" desc="期中" />
+  <item sid="qi_mo" caption="qi_mo" desc="期末" />
+  <item sid="yue_kao" caption="yue_kao" desc="月考" />
+  <item sid="dan_yuan_ce_shi" caption="dan_yuan_ce_shi" desc="单元测试" />
+</dictionary>
+<dictionary sid="report_type" caption="report_type" desc="报告类型">
+  <item sid="xue_sheng_bao_gao" caption="xue_sheng_bao_gao" desc="学生报告" />
+  <item sid="ban_ji_bao_gao" caption="ban_ji_bao_gao" desc="班级报告" />
+  <item sid="nan_ji_bao_gao" caption="nan_ji_bao_gao" desc="年级报告" />
+  <item sid="qu_yu_bao_gao" caption="qu_yu_bao_gao" desc="区域报告" />
+</dictionary>
+<dictionary sid="year" caption="year" desc="年份">
+  <item sid="2000_nian" caption="2000_nian" desc="2000年" />
+  <item sid="2001_nian" caption="2001_nian" desc="2001年" />
+  <item sid="2002_nian" caption="2002_nian" desc="2002年" />
+  <item sid="2003_nian" caption="2003_nian" desc="2003年" />
+  <item sid="2004_nian" caption="2004_nian" desc="2004年" />
+  <item sid="2005_nian" caption="2005_nian" desc="2005年" />
+  <item sid="2006_nian" caption="2006_nian" desc="2006年" />
+  <item sid="2007_nian" caption="2007_nian" desc="2007年" />
+  <item sid="2008_nian" caption="2008_nian" desc="2008年" />
+  <item sid="2009_nian" caption="2009_nian" desc="2009年" />
+  <item sid="2010_nian" caption="2010_nian" desc="2010年" />
+  <item sid="2011_nian" caption="2011_nian" desc="2011年" />
+  <item sid="2012_nian" caption="2012_nian" desc="2012年" />
+  <item sid="2013_nian" caption="2013_nian" desc="2013年" />
+  <item sid="2014_nian" caption="2014_nian" desc="2014年" />
+  <item sid="2015_nian" caption="2015_nian" desc="2015年" />
+  <item sid="2016_nian" caption="2016_nian" desc="2016年" />
+</dictionary>
+<dictionary sid="sex" caption="sex" desc="性别">
+  <item sid="nan" caption="nan" desc="男" />
+  <item sid="nv" caption="nv" desc="女" />
+</dictionary>
+</dictionaries>
+

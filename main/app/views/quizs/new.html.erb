@@ -1,0 +1,7 @@
+<form action='/papers/upload_filled_score_file' method='post' enctype='multipart/form-data'>
+	<%= token_tag form_authenticity_token %>
+	<input type="hidden" name="pap_uid" value="574ea2d1421aa9c22a000002"><br/>
+	Select a  file: <input type="file" name="filled_file"><br />
+
+	<input type="submit" name="submit">
+</form>

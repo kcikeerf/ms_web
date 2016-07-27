@@ -1,0 +1,2569 @@
+<div class="wrapper-md">
+  <h1 class="m-n font-thin h3">学生个人知识情况诊断图</h1>
+</div>
+<div class="wrapper-md">
+  <div class="diagnosis">
+
+      <dl>
+        <dt>知识</dt>
+        <dd class="clearfix">
+
+          <!--<div id="knowledge" class="chart pull-left"></div>
+          <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge'));
+
+            // 指定图表的配置项和数据
+            var option = {
+              color: ['#EB595A','#15a892'],
+              title: {},
+              tooltip: {
+                trigger: 'item',
+              },
+              legend: {
+                right: '0',
+                orient: 'vertical',
+                itemWidth: 24,
+                itemHeight: 2,
+                textStyle: {fontSize: 12},
+                data: ['个人得分率', '年级平均水平'],
+              },
+              textStyle: {
+                color: '#333',
+                fontSize:12
+              },
+              radar: [
+                {
+                  z:2,
+                  indicator: [
+                    { name: '', max: 100},
+                    { name: '', axisLabel:{show:true} ,max: 100},
+                    { name: '', max: 100},
+                    { name: '', max: 100},
+                    { name: '', max: 100}
+                  ],
+                  center: ['50%', '45%'],
+                  radius: '60%',
+                  splitNumber: 2,
+                  splitLine: {show:false},
+                  splitArea: {
+                    areaStyle: {
+                      opacity: 0,
+                    }
+                  },
+                  axisLine: {show:false},
+                  startAngle:45,
+                },
+                {
+                  z:1,
+                  indicator: [
+                    { name: '词汇', max: 100},
+                    { name: '作文', max: 100},
+                    { name: '文章', max: 100},
+                    { name: '对话', max: 100},
+                    { name: '句', max: 100}
+                  ],
+                  center: ['50%', '45%'],
+                  radius: '60%',
+                  splitNumber: 2,
+                  splitArea: {
+                    areaStyle: {
+                      color: ['#fff']
+                    }
+                  },
+                  axisLine: {lineStyle:{color:'#f4f4f4'}},
+                  splitLine: {show:true},
+                }
+              ],
+              series: [
+                {
+                  name: '知识',
+                  type: 'radar',
+                  polarIndex: 1,
+                  data : [
+                    {
+                      value : [95.7, 61.6, 81.4, 92.2, 82.5],
+                      name : '年级平均水平',
+                      symbol : '',
+                      symbolSize: 8,
+                      lineStyle: {normal:{width:0}},
+                      areaStyle: {
+                        normal: {
+                          opacity: 0.55,
+                          color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                            {
+                              color: '#fff',
+                              offset: 0
+                            },
+                            {
+                              color: '#f76f89',
+                              offset: 1
+                            }
+                          ])
+                        }
+                      },
+                      z:1
+                    },
+                    {
+                      value : [68.8, 60.0, 58.5, 90.0, 75.0],
+                      name : '个人得分率',
+                      symbol : '',
+                      symbolSize: 8,
+                      lineStyle: {normal:{width:0}},
+                      areaStyle: {
+                        normal: {
+                          opacity: 0.55,
+                          color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                            {
+                              color: '#64f0db',
+                              offset: 0
+                            },
+                            {
+                              color: '#1aa2ae',
+                              offset: 1
+                            }
+                          ])
+                        }
+                      },
+                      z:2
+                    },
+                  ]
+                }
+              ],
+              animation:false,
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+          </script>-->
+
+          <div id="knowledge" class="chart pull-left"></div>
+          <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge'));
+
+            // 指定图表的配置项和数据
+            var option = {
+              color: ['#EB595A','#15a892'],
+              title: {},
+              tooltip: {
+                trigger: 'item',
+              },
+              legend: {
+                right: '0',
+                orient: 'vertical',
+                itemWidth: 24,
+                itemHeight: 2,
+                textStyle: {fontSize: 12},
+                data: [ '年级平均水平','个人得分率'],
+              },
+              textStyle: {
+                color: '#333',
+                fontSize:12
+              },
+              polar: [
+                {
+                  z:2,
+                  indicator: [
+                    { name: '', max: 100},
+                    { name: '', axisLabel:{show:true} ,max: 100},
+                    { name: '', max: 100},
+                    { name: '', max: 100},
+                    { name: '', max: 100}
+                  ],
+                  center: ['50%', '45%'],
+                  radius: '60%',
+                  splitNumber: 2,
+                  splitLine: {show:false},
+                  splitArea: {
+                    areaStyle: {
+                      opacity: 0,
+                    }
+                  },
+                  axisLine: {show:false},
+                  startAngle:45,
+                },
+                {
+                  z:1,
+                  indicator: [
+                    { name: '词汇', max: 100},
+                    { name: '作文', max: 100},
+                    { name: '文章', max: 100},
+                    { name: '对话', max: 100},
+                    { name: '句', max: 100}
+                  ],
+                  center: ['50%', '45%'],
+                  radius: '60%',
+                  splitNumber: 2,
+                  splitArea: {
+                    areaStyle: {
+                      color: ['#fff']
+                    }
+                  },
+                }
+              ],
+              series: [
+                {
+                  name: '知识',
+                  type: 'radar',
+                  polarIndex: 1,
+                  data : [
+                    {
+                      value : [95.7, 82.5, 92.2, 81.4, 61.6],
+                      name : '年级平均水平',
+                      symbol : '',
+                      symbolSize: 8,
+                      lineStyle: {normal:{width:0}},
+                      areaStyle: {
+                        normal: {
+                          opacity: 0.55,
+                          color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                            {
+                              color: '#fff',
+                              offset: 0
+                            },
+                            {
+                              color: '#f76f89',
+                              offset: 1
+                            }
+                          ])
+                        }
+                      },
+                      z:1
+                    },
+                    {
+                      value : [62.5, 75.0, 72.5, 68.5, 46.7],
+                      name : '个人得分率',
+                      symbol : '',
+                      symbolSize: 8,
+                      lineStyle: {normal:{width:0}},
+                      areaStyle: {
+                        normal: {
+                          opacity: 0.55,
+                          color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                            {
+                              color: '#64f0db',
+                              offset: 0
+                            },
+                            {
+                              color: '#1aa2ae',
+                              offset: 1
+                            }
+                          ])
+                        }
+                      },
+                      z:2
+                    }
+                  ]
+                }
+              ],
+              animation:false,
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+          </script>
+
+          <!--<div id="knowledge" class="chart"></div>
+          <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge'));
+
+            // 指定图表的配置项和数据
+            var option = {
+              color: ['#EB595A','#15a892'],
+              title: {},
+              tooltip: {
+                trigger: 'item',
+              },
+              legend: {
+                right: '0',
+                orient: 'vertical',
+                itemWidth: 30,
+                itemHeight: 3,
+                textStyle: {fontSize: 14},
+                data: ['个人得分率', '年级平均水平'],
+              },
+              textStyle: {
+                color: '#333',
+                fontSize:16
+              },
+              polar: [
+                {
+                  z:2,
+                  indicator: [
+                    { name: '', max: 100},
+                    { name: '', axisLabel:{show:true} ,max: 100},
+                    { name: '', max: 100},
+                    { name: '', max: 100},
+                    { name: '', max: 100}
+                  ],
+                  center: ['50%', '60%'],
+                  splitNumber: 2,
+                  splitLine: {show:false},
+                  splitArea: {
+                    areaStyle: {
+                      opacity: 0,
+                    }
+                  },
+                  axisLine: {show:false},
+                  startAngle:45,
+                },
+                {
+                  z:1,
+                  indicator: [
+                    { name: '词汇', max: 100},
+                    { name: '作文', max: 100},
+                    { name: '文章', max: 100},
+                    { name: '对话', max: 100},
+                    { name: '句', max: 100}
+                  ],
+                  center: ['50%', '60%'],
+                  splitNumber: 2,
+                  splitArea: {
+                    areaStyle: {
+                      color: ['#fff']
+                    }
+                  },
+                }
+              ],
+              series: [
+                {
+                  name: '知识',
+                  type: 'radar',
+                  polarIndex: 1,
+                  data : [
+                    {
+                      value : [95.7, 82.5, 99.2, 81.4, 61.6],
+                      name : '年级平均水平',
+                      symbol : '',
+                      symbolSize: 8,
+                      lineStyle: {normal:{width:0}},
+                      areaStyle: {
+                        normal: {
+                          opacity: 0.55,
+                          color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                            {
+                              color: '#fff',
+                              offset: 0
+                            },
+                            {
+                              color: '#f76f89',
+                              offset: 1
+                            }
+                          ])
+                        }
+                      },
+                      z:1
+                    },
+                    {
+                      value : [90.9, 75.0, 100, 65.4, 87.4],
+                      name : '个人得分率',
+                      symbol : '',
+                      symbolSize: 8,
+                      lineStyle: {normal:{width:0}},
+                      areaStyle: {
+                        normal: {
+                          opacity: 0.55,
+                          color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                            {
+                              color: '#64f0db',
+                              offset: 0
+                            },
+                            {
+                              color: '#1aa2ae',
+                              offset: 1
+                            }
+                          ])
+                        }
+                      },
+                      z:2
+                    },
+                  ]
+                }
+              ],
+              animation:false,
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+          </script>-->
+
+          <!-- Large modal -->
+          <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" id="practice">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close glyphicon glyphicon-remove-circle" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                  <h4 class="modal-title">针对词法中的薄弱项，以下视频内容的学习和专项练习会有助于你的提高：</h4>
+                </div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                  <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">视频学习</a><i></i></li>
+                  <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">专项练习</a><i></i></li>
+                  <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">拓展阅读</a><i></i></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div role="tabpanel" class="tab-pane active" id="home">
+                    <div class="row">
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior.vipabc.com</a>
+                      </div>
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic1.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior.vipabc.com</a>
+                      </div>
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic2.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior.vipabc.com</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="profile">
+                    <div class="row">
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior1.vipabc.com</a>
+                      </div>
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic1.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior1.vipabc.com</a>
+                      </div>
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic2.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior1.vipabc.com</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div role="tabpanel" class="tab-pane" id="messages">
+                    <div class="row">
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior2.vipabc.com</a>
+                      </div>
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic1.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior2.vipabc.com</a>
+                      </div>
+                      <div class="col-xs-6 col-md-4">
+                        <a href="#" class="thumbnail">
+                          <img src="/pupilreport/img/pic2.jpg" alt="...">
+                        </a>
+                        <a href="#">http://junior2.vipabc.com</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--<div id="knowledge_line" class="chart pull-right"></div>
+          <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+            // 指定图表的配置项和数据
+            var option = {
+              color: ['#048a76','#c90303'],
+              textStyle:{fontSize:12},
+              title: {},
+              tooltip : {
+                trigger:'item',
+              },
+              legend: {
+                right:0,
+                orient: 'vertical',
+                data:[
+                  {
+                    name:'个人与年级平均得分率差值正值',
+                    icon:'rect',
+                  },
+                  {
+                    name:'个人与年级平均得分率差值负值',
+                    icon:'rect',
+                  }
+                ],
+                itemWidth:8,
+                itemHeight:8,
+                textStyle: {fontSize: 12}
+              },
+              grid: {
+                left: '10%',
+                right: '0',
+                top:'20%',
+                bottom: '15%',
+              },
+              animation:false,
+              xAxis : [
+                {
+                  type : 'category',
+                  boundaryGap:false,
+                  name: '',
+                  nameLocation: 'start',
+                  nameGap:-40,
+                  splitLine: {show:false},
+                  axisLabel: {show:false},
+                  axisTick: {show:false},
+                  axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                  data : ['','词义','词法','句','','地点','价格','态度','频率','家庭','','个人','记叙文','说明文','议论文',''],
+                }
+              ],
+              yAxis : [
+                {
+                  type : 'value',
+                  axisLine: {show:false},
+                  axisTick: {show:false},
+                  axisLabel: {formatter:'{value}%'},
+                  splitNumber:5,
+                  splitLine: {lineStyle: {color:'#f4f4f4'}},
+                  interval:10,
+                }
+              ],
+              series : [
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  type:'line',
+                  stack: '百分比',
+                  symbol:'circle',
+                  showAllSymbol: true,
+                  symbolSize:0,
+                  lineStyle: {normal: {width:0}},
+                  areaStyle: {
+                    normal: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#51b8c1'
+                      }, {
+                        offset: 1,
+                        color: '#fcfcfc'
+                      }]),
+                      opacity:0.5,
+                    }},
+                  data:[
+                    {value:0,symbolSize:0},
+                    {value:0},
+                    {value:0},
+                    {value:0},
+                    {value:0,symbolSize:0},
+                    {value:2.0,symbolSize:8},
+                    {value:2.0,symbolSize:8},
+                    {value:4.2,symbolSize:8},
+                    {value:2.0,symbolSize:8},
+                    {value:8.0,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0},
+                    {value:0},
+                    {value:0},
+                    {value:0},
+                    {value:0,symbolSize:0}
+                  ],
+                  label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  type:'line',
+                  stack: '百分比',
+                  symbol:'circle',
+                  showAllSymbol: true,
+                  symbolSize:0,
+                  lineStyle: {normal: {width:0}},
+                  areaStyle: {
+                    normal: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#fff'
+                      }, {
+                        offset: 1,
+                        color: '#c90303'
+                      }]),
+                      opacity:0.1,
+                    }},
+                  data:[
+                    {value:0,symbolSize:0},
+                    {value:-28.8,symbolSize:8},
+                    {value:-67.5,symbolSize:8},
+                    {value:-7.5,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0},
+                    {value:0},
+                    {value:0},
+                    {value:0},
+                    {value:0},
+                    {value:0,symbolSize:0},
+                    {value:-19.0,symbolSize:8},
+                    {value:-33.5,symbolSize:8},
+                    {value:-31.3,symbolSize:8},
+                    {value:-46.0,symbolSize:8},
+                    {value:0,symbolSize:0}
+                  ],
+                  label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+                }
+              ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+          </script>-->
+
+          <div id="knowledge_line" class="chart pull-right"></div>
+          <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+            // 指定图表的配置项和数据
+            var option = {
+              color: ['#048a76','#c90303'],
+              textStyle:{fontSize:12},
+              title: {},
+              tooltip : {
+                trigger:'item',
+              },
+              legend: {
+                right:0,
+                orient: 'vertical',
+                data:[
+                  {
+                    name:'个人与年级平均得分率差值正值',
+                    icon:'rect',
+                  },
+                  {
+                    name:'个人与年级平均得分率差值负值',
+                    icon:'rect',
+                  }
+                ],
+                itemWidth:8,
+                itemHeight:8,
+                textStyle: {fontSize: 12}
+              },
+              grid: {
+                left: '10%',
+                right: '0',
+                top:'20%',
+                bottom: '15%',
+              },
+              animation:false,
+              xAxis : [
+                {
+                  type : 'category',
+                  boundaryGap:false,
+                  name: '',
+                  nameLocation: 'start',
+                  nameGap:-40,
+                  splitLine: {show:false},
+                  axisLabel: {show:false},
+                  axisTick: {show:false},
+                  axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                  data : ['','词音','词义','','词法','句','','地点','价格','态度','频率','家庭','个人','','记叙文','说明文','议论文','','非连续',''],
+                }
+              ],
+              yAxis : [
+                {
+                  type : 'value',
+                  axisLine: {show:false},
+                  axisTick: {show:false},
+                  axisLabel: {formatter:'{value}%'},
+                  splitNumber:5,
+                  splitLine: {lineStyle: {color:'#f4f4f4'}},
+                  interval:10,
+                }
+              ],
+              series : [
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  type:'line',
+                  stack: '百分比',
+                  symbol:'circle',
+                  showAllSymbol: true,
+                  symbolSize:8,
+                  lineStyle: {normal: {width:0}},
+                  areaStyle: {
+                    normal: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#51b8c1'
+                      }, {
+                        offset: 1,
+                        color: '#fcfcfc'
+                      }]),
+                      opacity:0.5,
+                    }},
+                  data:[
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:7.5},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:2.0},
+                    {value:2.0},
+                    {value:0,symbolSize:0},
+                    {value:2.0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:2.0},
+                    {value:0,symbolSize:0},
+                  ],
+                  label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  type:'line',
+                  stack: '百分比',
+                  symbol:'circle',
+                  showAllSymbol: true,
+                  symbolSize:0,
+                  lineStyle: {normal: {width:0}},
+                  areaStyle: {
+                    normal: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#fff'
+                      }, {
+                        offset: 1,
+                        color: '#c90303'
+                      }]),
+                      opacity:0.1,
+                    }},
+                  data:[
+                    {value:0,symbolSize:0},
+                    {value:-15.9,symbolSize:8},
+                    {value:-45.5,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0},
+                    {value:-7.5,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0},
+                    {value:0},
+                    {value:-29.1,symbolSize:8},
+                    {value:0},
+                    {value:-58.7,symbolSize:8},
+                    {value:-19.0,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:-23.5,symbolSize:8},
+                    {value:-35.8,symbolSize:8},
+                    {value:-21.0,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0},
+                    {value:0,symbolSize:0},
+                  ],
+                  label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+                }
+              ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+            myChart.on('click', function (params) {
+              // window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+              $('.bs-example-modal-lg').modal('show');
+            })
+          </script>
+
+          <!--<div id="knowledge_line" class="chart center"></div>
+          <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+            // 指定图表的配置项和数据
+            var option = {
+              color: ['#048a76','#c90303'],
+              textStyle:{fontSize:14},
+              title: {},
+              tooltip : {
+                trigger:'item',
+              },
+              legend: {
+                right:0,
+                data:[
+                  {
+                    name:'个人与年级平均得分率差值正值',
+                    icon:'rect',
+                  },
+                  {
+                    name:'个人与年级平均得分率差值负值',
+                    icon:'rect',
+                  }
+                ],
+                itemWidth:8,
+                itemHeight:8,
+              },
+              grid: {
+                left: '10%',
+                right: '0',
+                top:'15%',
+                bottom: '15%',
+              },
+              animation:false,
+              xAxis : [
+                {
+                  type : 'category',
+                  boundaryGap:false,
+                  name: '',
+                  nameLocation: 'start',
+                  nameGap:-40,
+                  splitLine: {show:false},
+                  axisLabel: {show:false},
+                  axisTick: {show:false},
+                  axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                  data : ['','词音','词义','','词法','句','','地点','价格','态度','频率','家庭','个人','','记叙文','说明文','议论文','','非连续',''],
+                }
+              ],
+              yAxis : [
+                {
+                  type : 'value',
+                  axisLine: {show:false},
+                  axisTick: {show:false},
+                  axisLabel: {formatter:'{value}%'},
+                  splitNumber:5,
+                  splitLine: {lineStyle: {color:'#f4f4f4'}},
+                  interval:10,
+                }
+              ],
+              series : [
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  type:'line',
+                  stack: '百分比',
+                  symbol:'',
+                  showSymbol:true,
+                  showAllSymbol: true,
+                  symbolSize:8,
+                  lineStyle: {normal: {width:0}},
+                  areaStyle: {
+                    normal: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#51b8c1'
+                      }, {
+                        offset: 1,
+                        color: '#fcfcfc'
+                      }]),
+                      opacity:0.5,
+                    }},
+                  data:[
+                    {value:0,symbolSize:0},
+                    {value:0.8},
+                    {value:4.5},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:32},
+                    {value:2.0},
+                    {value:4.2},
+                    {value:12.0},
+                    {value:25.0},
+                    {value:6.0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:0,symbolSize:0},
+                    {value:2.0},
+                    {value:0,symbolSize:0},
+                  ],
+                  label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  type:'line',
+                  stack: '百分比',
+                  symbol:'',
+                  showSymbol:true,
+                  showAllSymbol: true,
+                  symbolSize:0,
+                  lineStyle: {normal: {width:0}},
+                  areaStyle: {
+                    normal: {
+                      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: '#fff'
+                      }, {
+                        offset: 1,
+                        color: '#c90303'
+                      }]),
+                      opacity:0.1,
+                    }},
+                  data:[
+                    {value:0,symbolSize:0},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,symbolSize:0},
+                    {value:-25.8,symbolSize:8},
+                    {value:-7.5,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,symbolSize:0},
+                    {value:-29.2,symbolSize:8},
+                    {value:-35.8,symbolSize:8},
+                    {value:-21,symbolSize:8},
+                    {value:0,symbolSize:0},
+                    {value:0,label:{normal:{show:false}}},
+                    {value:0,symbolSize:0}
+                  ],
+                  label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+                }
+              ]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+          </script>-->
+
+        </dd>
+      </dl>
+
+    <dl>
+      <dt>技能</dt>
+      <dd class="clearfix">
+
+        <!--<div id="skill" class="chart pull-left"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('skill'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#EB595A','#15a892'],
+            title: {},
+            tooltip: {
+              trigger: 'item'
+            },
+            legend: {
+              right: '0',
+              orient: 'vertical',
+              itemWidth: 24,
+              itemHeight: 2,
+              textStyle: {fontSize: 12},
+              data: ['个人得分率', '年级平均水平'],
+            },
+            textStyle: {color: '#333', fontSize:12},
+            radar: [
+              {
+                z:2,
+                indicator: [
+                  { name: '', max: 100},
+                  { name: '', axisLabel:{show:true} ,max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100}
+                ],
+                center: ['50%', '45%'],
+                radius: '60%',
+                splitNumber: 2,
+                splitLine: {show:false},
+                splitArea: {
+                  areaStyle: {
+                    opacity: 0,
+                  }
+                },
+                axisLine:{show:false},
+                startAngle:45,
+              },
+              {
+                z:1,
+                indicator: [
+                  { name: '记忆', max: 100},
+                  { name: '表达', max: 100},
+                  { name: '分析', max: 100},
+                  { name: '理解-读', max: 100},
+                  { name: '理解-听', max: 100}
+                ],
+                center: ['50%', '45%'],
+                radius: '60%',
+                splitNumber: 2,
+                splitArea: {
+                  areaStyle: {
+                    color: ['#fff']
+                  }
+                },
+              }
+            ],
+            series: [
+              {
+                name: '技能',
+                type: 'radar',
+                radarIndex: 1,
+                data : [
+                  {
+                    value : [91.7, 61.6, 79.8, 85.2, 89.5],
+                    name : '年级平均水平',
+                    symbol : '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#fff',
+                            offset: 0
+                          },
+                          {
+                            color: '#f76f89',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:1
+                  },
+                  {
+                    value : [66.7, 59.8, 83.5, 65.4, 71.7],
+                    name : '个人得分率',
+                    symbol: '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#64f0db',
+                            offset: 0
+                          },
+                          {
+                            color: '#1aa2ae',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:2
+                  }
+                ]
+              }
+            ],
+            animation:false,
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+        <div id="skill" class="chart pull-left"></div>
+         <script type="text/javascript">
+           // 基于准备好的dom，初始化echarts实例
+           var myChart = echarts.init(document.getElementById('skill'));
+
+           // 指定图表的配置项和数据
+           var option = {
+             color: ['#EB595A','#15a892'],
+             title: {},
+             tooltip: {
+               trigger: 'item'
+             },
+             legend: {
+               right: '0',
+               orient: 'vertical',
+               itemWidth: 24,
+               itemHeight: 2,
+               textStyle: {fontSize: 12},
+               data: ['个人得分率', '年级平均水平'],
+             },
+             textStyle: {color:'#333', fontSize:12},
+             radar: [
+               {
+                 z:2,
+                 indicator: [
+                   { name: '', max: 100},
+                   { name: '', axisLabel:{show:true} ,max: 100},
+                   { name: '', max: 100},
+                   { name: '', max: 100},
+                   { name: '', max: 100}
+                 ],
+                 center: ['50%', '45%'],
+                 radius: '60%',
+                 splitNumber: 2,
+                 splitLine: {show:false},
+                 splitArea: {
+                   areaStyle: {
+                     opacity: 0,
+                   }
+                 },
+                 axisLine:{show:false},
+                 startAngle:45,
+               },
+               {
+                 z:1,
+                 indicator: [
+                   { name: '记忆', max: 100},
+                   { name: '表达', max: 100},
+                   { name: '分析', max: 100},
+                   { name: '理解-读', max: 100},
+                   { name: '理解-听', max: 100}
+                 ],
+                 center: ['50%', '45%'],
+                 radius: '60%',
+                 splitNumber: 2,
+                 splitArea: {
+                   areaStyle: {
+                     color: ['#fff']
+                   }
+                 },
+               }
+             ],
+             series: [
+               {
+                 name: '技能',
+                 type: 'radar',
+                 radarIndex: 1,
+                 data : [
+                   {
+                     value : [91.7, 61.6, 79.8, 85.2, 89.5],
+                     name : '年级平均水平',
+                     symbol : '',
+                     symbolSize: 8,
+                     lineStyle: {normal:{width:0}},
+                     areaStyle: {
+                       normal: {
+                         opacity: 0.55,
+                         color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                           {
+                             color: '#fff',
+                             offset: 0
+                           },
+                           {
+                             color: '#f76f89',
+                             offset: 1
+                           }
+                         ])
+                       }
+                     },
+                     z:1
+                   },
+                   {
+                     value : [100, 46.6, 83.5, 54.8, 95.1],
+                     name : '个人得分率',
+                     symbol: '',
+                     symbolSize: 8,
+                     lineStyle: {normal:{width:0}},
+                     areaStyle: {
+                       normal: {
+                         opacity: 0.55,
+                         color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                           {
+                             color: '#64f0db',
+                             offset: 0
+                           },
+                           {
+                             color: '#1aa2ae',
+                             offset: 1
+                           }
+                         ])
+                       }
+                     },
+                     z:2
+                   }
+                 ]
+               }
+             ],
+             animation:false,
+           };
+
+           // 使用刚指定的配置项和数据显示图表。
+           myChart.setOption(option);
+         </script>
+
+        <!--<div id="knowledge" class="chart"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('knowledge'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#EB595A','#15a892'],
+            title: {},
+            tooltip: {
+              trigger: 'item',
+            },
+            legend: {
+              right: '0',
+              orient: 'vertical',
+              itemWidth: 30,
+              itemHeight: 3,
+              textStyle: {fontSize: 14},
+              data: ['个人得分率', '年级平均水平'],
+            },
+            textStyle: {
+              color: '#333',
+              fontSize:16
+            },
+            polar: [
+              {
+                z:2,
+                indicator: [
+                  { name: '', max: 100},
+                  { name: '', axisLabel:{show:true} ,max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100}
+                ],
+                center: ['50%', '60%'],
+                splitNumber: 2,
+                splitLine: {show:false},
+                splitArea: {
+                  areaStyle: {
+                    opacity: 0,
+                  }
+                },
+                axisLine: {show:false},
+                startAngle:45,
+              },
+              {
+                z:1,
+                indicator: [
+                  { name: '词汇', max: 100},
+                  { name: '作文', max: 100},
+                  { name: '文章', max: 100},
+                  { name: '对话', max: 100},
+                  { name: '句', max: 100}
+                ],
+                center: ['50%', '60%'],
+                splitNumber: 2,
+                splitArea: {
+                  areaStyle: {
+                    color: ['#fff']
+                  }
+                },
+              }
+            ],
+            series: [
+              {
+                name: '知识',
+                type: 'radar',
+                polarIndex: 1,
+                data : [
+                  {
+                    value : [95.7, 82.5, 99.2, 81.4, 61.6],
+                    name : '年级平均水平',
+                    symbol : '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#fff',
+                            offset: 0
+                          },
+                          {
+                            color: '#f76f89',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:1
+                  },
+                  {
+                    value : [90.9, 75.0, 100, 65.4, 87.4],
+                    name : '个人得分率',
+                    symbol : '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#64f0db',
+                            offset: 0
+                          },
+                          {
+                            color: '#1aa2ae',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:2
+                  },
+                ]
+              }
+            ],
+            animation:false,
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+        <!--<div id="skill_line" class="chart pull-right"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('skill_line'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#048a76','#c90303'],
+            textStyle:{fontSize:12},
+            title: {},
+            tooltip : {
+              trigger: 'item'
+            },
+            legend: {
+              right:0,
+              orient: 'vertical',
+              data:[
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  icon:'rect',
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  icon:'rect',
+                }
+              ],
+              itemWidth:8,
+              itemHeight:8,
+            },
+            grid: {
+              left: '10%',
+              right: '0',
+              top:'15%',
+              bottom: '15%',
+            },
+            animation:false,
+            xAxis : [
+              {
+                type : 'category',
+                boundaryGap : true,
+                name: '',
+                nameLocation: 'start',
+                nameGap:-40,
+                splitLine: {show:false},
+                axisLabel: {show:false},
+                axisTick: {show:false},
+                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor:'#21a793',shadowOffsetY:1}},
+                data : ['','（理解-听）\n匹配','','信息提取','','推理','（理解-读）\n匹配','','信息提取','推理','组织','归因','表达','']
+              }
+            ],
+            yAxis : [
+              {
+                type : 'value',
+                axisLine: {show:false},
+                axisTick: {show:false},
+                axisLabel: {formatter:'{value}%'},
+                splitNumber:5,
+                splitLine: {lineStyle: {color:'#f4f4f4'}},
+                interval:10,
+              }
+            ],
+            series : [
+              {
+                name:'个人与年级平均得分率差值正值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#51b8c1'
+                    }, {
+                      offset: 1,
+                      color: '#fcfcfc'
+                    }]),
+                    opacity:0.5,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0.8,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:23.3,symbolSize:8},
+                  {value:4.7,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0},
+                  {value:0},
+                  {value:0},
+                  {value:0},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
+              },
+              {
+                name:'个人与年级平均得分率差值负值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#fff'
+                    }, {
+                      offset: 1,
+                      color: '#c90303'
+                    }]),
+                    opacity:0.1,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:-19.9,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:-24.1,symbolSize:8},
+                  {value:-7.4,symbolSize:8},
+                  {value:-7.7,symbolSize:8},
+                  {value:-35.2,symbolSize:8},
+                  {value:-1.8,symbolSize:8},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+        <div id="skill_line" class="chart pull-right"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('skill_line'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#048a76','#c90303'],
+            textStyle:{fontSize:12},
+            title: {},
+            tooltip : {
+              trigger: 'item'
+            },
+            legend: {
+              right:0,
+              orient: 'vertical',
+              data:[
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  icon:'rect',
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  icon:'rect',
+                }
+              ],
+              itemWidth:8,
+              itemHeight:8,
+            },
+            grid: {
+              left: '10%',
+              right: '0',
+              top:'20%',
+              bottom: '15%',
+            },
+            animation:false,
+            xAxis : [
+              {
+                type : 'category',
+                boundaryGap : true,
+                name: '',
+                nameLocation: 'start',
+                nameGap:-40,
+                splitLine: {show:false},
+                axisLabel: {show:false},
+                axisTick: {show:false},
+                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor:'#21a793',shadowOffsetY:1}},
+                data : ['','（理解-听）\n匹配','信息提取','推理','','（理解-读）\n匹配','信息提取','推理','','组织','归因','','表达','']
+              }
+            ],
+            yAxis : [
+              {
+                type : 'value',
+                axisLine: {show:false},
+                axisTick: {show:false},
+                axisLabel: {formatter:'{value}%'},
+                splitNumber:5,
+                splitLine: {lineStyle: {color:'#f4f4f4'}},
+                interval:10,
+              }
+            ],
+            series : [
+              {
+                name:'个人与年级平均得分率差值正值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:8,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#51b8c1'
+                    }, {
+                      offset: 1,
+                      color: '#fcfcfc'
+                    }]),
+                    opacity:0.5,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0.8},
+                  {value:1.0},
+                  {value:23.3},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:2.6},
+                  {value:4.8},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
+              },
+              {
+                name:'个人与年级平均得分率差值负值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#fff'
+                    }, {
+                      offset: 1,
+                      color: '#c90303'
+                    }]),
+                    opacity:0.1,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0,},
+                  {value:0,},
+                  {value:0,},
+                  {value:0,symbolSize:0},
+                  {value:-45.3,symbolSize:8},
+                  {value:-10.2,symbolSize:8},
+                  {value:-38.9,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:-15.0,symbolSize:8},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>
+
+        <!--<div id="knowledge_line" class="chart center"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#048a76','#c90303'],
+            textStyle:{fontSize:14},
+            title: {},
+            tooltip : {
+              trigger:'item',
+            },
+            legend: {
+              right:0,
+              data:[
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  icon:'rect',
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  icon:'rect',
+                }
+              ],
+              itemWidth:8,
+              itemHeight:8,
+            },
+            grid: {
+              left: '10%',
+              right: '0',
+              top:'15%',
+              bottom: '15%',
+            },
+            animation:false,
+            xAxis : [
+              {
+                type : 'category',
+                boundaryGap:false,
+                name: '',
+                nameLocation: 'start',
+                nameGap:-40,
+                splitLine: {show:false},
+                axisLabel: {show:false},
+                axisTick: {show:false},
+                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                data : ['','词音','词义','','词法','句','','地点','价格','态度','频率','家庭','个人','','记叙文','说明文','议论文','','非连续',''],
+              }
+            ],
+            yAxis : [
+              {
+                type : 'value',
+                axisLine: {show:false},
+                axisTick: {show:false},
+                axisLabel: {formatter:'{value}%'},
+                splitNumber:5,
+                splitLine: {lineStyle: {color:'#f4f4f4'}},
+                interval:10,
+              }
+            ],
+            series : [
+              {
+                name:'个人与年级平均得分率差值正值',
+                type:'line',
+                stack: '百分比',
+                symbol:'',
+                showSymbol:true,
+                showAllSymbol: true,
+                symbolSize:8,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#51b8c1'
+                    }, {
+                      offset: 1,
+                      color: '#fcfcfc'
+                    }]),
+                    opacity:0.5,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0.8},
+                  {value:4.5},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:32},
+                  {value:2.0},
+                  {value:4.2},
+                  {value:12.0},
+                  {value:25.0},
+                  {value:6.0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:2.0},
+                  {value:0,symbolSize:0},
+                ],
+                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+              },
+              {
+                name:'个人与年级平均得分率差值负值',
+                type:'line',
+                stack: '百分比',
+                symbol:'',
+                showSymbol:true,
+                showAllSymbol: true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#fff'
+                    }, {
+                      offset: 1,
+                      color: '#c90303'
+                    }]),
+                    opacity:0.1,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,symbolSize:0},
+                  {value:-25.8,symbolSize:8},
+                  {value:-7.5,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,symbolSize:0},
+                  {value:-29.2,symbolSize:8},
+                  {value:-35.8,symbolSize:8},
+                  {value:-21,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+      </dd>
+    </dl>
+
+    <dl>
+      <dt>能力</dt>
+      <dd class="clearfix">
+
+        <!--<div id="capacity" class="chart pull-left"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('capacity'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#EB595A','#15a892'],
+            title: {},
+            tooltip: {
+              trigger: 'item',
+            },
+            legend: {
+              right: '0',
+              orient: 'vertical',
+              itemWidth: 24,
+              itemHeight: 2,
+              textStyle: {fontSize: 12},
+              data: ['个人得分率', '年级平均水平'],
+            },
+            textStyle: {color:'#333', fontSize:12},
+            radar: [
+              {
+                z:2,
+                indicator: [
+                  { name: '', max: 100},
+                  { name: '', axisLabel:{show:true} ,max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100}
+                ],
+                center: ['50%', '45%'],
+                radius: '50%',
+                splitNumber: 2,
+                splitLine: {show:false},
+                splitArea: {
+                  areaStyle: {
+                    opacity: 0,
+                  }
+                },
+                axisLine:{show:false},
+                startAngle:30,
+              },
+              {
+                z:1,
+                indicator: [
+                  { name: '词汇辨析', max: 100},
+                  { name: '人际理解', max: 100},
+                  { name: '逻辑分析', max: 100},
+                  { name: '语言理解', max: 100}
+                ],
+                center: ['45%', '45%'],
+                radius: '50%',
+                splitNumber: 2,
+                splitArea: {
+                  areaStyle: {
+                    color: ['#fff']
+                  }
+                },
+              }
+            ],
+            series: [
+              {
+                name: '能力',
+                type: 'radar',
+                radarIndex: 1,
+                data : [
+                  {
+                    value : [47.7, 85.2, 74.4, 84.1],
+                    name : '年级平均水平',
+                    symbol : '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#fff',
+                            offset: 0
+                          },
+                          {
+                            color: '#f76f89',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:1
+                  },
+                  {
+                    value : [66.7, 100 , 38.7, 77.3],
+                    name : '个人得分率',
+                    symbol: '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#64f0db',
+                            offset: 0
+                          },
+                          {
+                            color: '#1aa2ae',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:2
+                  }
+                ]
+              }
+            ],
+            animation:false,
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+        <div id="capacity" class="chart pull-left"></div>
+        <script type="text/javascript">
+                  // 基于准备好的dom，初始化echarts实例
+                  var myChart = echarts.init(document.getElementById('capacity'));
+
+                  // 指定图表的配置项和数据
+                  var option = {
+                    color: ['#EB595A','#15a892'],
+                    title: {},
+                    tooltip: {
+                      trigger: 'item',
+                    },
+                    legend: {
+                      right: '0',
+                      orient: 'vertical',
+                      itemWidth: 24,
+                      itemHeight: 2,
+                      textStyle: {fontSize: 12},
+                      data: ['个人得分率', '年级平均水平'],
+                    },
+                    textStyle: {color:'#333', fontSize:12},
+                    radar: [
+                      {
+                        z:2,
+                        indicator: [
+                          { name: '', max: 100},
+                          { name: '', axisLabel:{show:true} ,max: 100},
+                          { name: '', max: 100},
+                          { name: '', max: 100}
+                        ],
+                        center: ['50%', '45%'],
+                        radius: '50%',
+                        splitNumber: 2,
+                        splitLine: {show:false},
+                        splitArea: {
+                          areaStyle: {
+                            opacity: 0,
+                          }
+                        },
+                        axisLine:{show:false},
+                        startAngle:30,
+                      },
+                      {
+                        z:1,
+                        indicator: [
+                          { name: '词汇辨析', max: 100},
+                          { name: '人际理解', max: 100},
+                          { name: '逻辑分析', max: 100},
+                          { name: '语言理解', max: 100}
+                        ],
+                        center: ['50%', '45%'],
+                        radius: '50%',
+                        splitNumber: 2,
+                        splitArea: {
+                          areaStyle: {
+                            color: ['#fff']
+                          }
+                        },
+                      }
+                    ],
+                    series: [
+                      {
+                        name: '能力',
+                        type: 'radar',
+                        radarIndex: 1,
+                        data : [
+                          {
+                            value : [47.7, 85.2, 74.4, 80.1],
+                            name : '年级平均水平',
+                            symbol : '',
+                            symbolSize: 8,
+                            lineStyle: {normal:{width:0}},
+                            areaStyle: {
+                              normal: {
+                                opacity: 0.55,
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                                  {
+                                    color: '#fff',
+                                    offset: 0
+                                  },
+                                  {
+                                    color: '#f76f89',
+                                    offset: 1
+                                  }
+                                ])
+                              }
+                            },
+                            z:1
+                          },
+                          {
+                            value : [36.7, 50.0 , 90.0, 73.2],
+                            name : '个人得分率',
+                            symbol: '',
+                            symbolSize: 8,
+                            lineStyle: {normal:{width:0}},
+                            areaStyle: {
+                              normal: {
+                                opacity: 0.55,
+                                color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                                  {
+                                    color: '#64f0db',
+                                    offset: 0
+                                  },
+                                  {
+                                    color: '#1aa2ae',
+                                    offset: 1
+                                  }
+                                ])
+                              }
+                            },
+                            z:2
+                          }
+                        ]
+                      }
+                    ],
+                    animation:false,
+                  };
+
+                  // 使用刚指定的配置项和数据显示图表。
+                  myChart.setOption(option);
+                </script>
+
+        <!--<div id="knowledge" class="chart"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('knowledge'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#EB595A','#15a892'],
+            title: {},
+            tooltip: {
+              trigger: 'item',
+            },
+            legend: {
+              right: '0',
+              orient: 'vertical',
+              itemWidth: 30,
+              itemHeight: 3,
+              textStyle: {fontSize: 14},
+              data: ['个人得分率', '年级平均水平'],
+            },
+            textStyle: {
+              color: '#333',
+              fontSize:16
+            },
+            polar: [
+              {
+                z:2,
+                indicator: [
+                  { name: '', max: 100},
+                  { name: '', axisLabel:{show:true} ,max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100},
+                  { name: '', max: 100}
+                ],
+                center: ['50%', '60%'],
+                splitNumber: 2,
+                splitLine: {show:false},
+                splitArea: {
+                  areaStyle: {
+                    opacity: 0,
+                  }
+                },
+                axisLine: {show:false},
+                startAngle:45,
+              },
+              {
+                z:1,
+                indicator: [
+                  { name: '词汇', max: 100},
+                  { name: '作文', max: 100},
+                  { name: '文章', max: 100},
+                  { name: '对话', max: 100},
+                  { name: '句', max: 100}
+                ],
+                center: ['50%', '60%'],
+                splitNumber: 2,
+                splitArea: {
+                  areaStyle: {
+                    color: ['#fff']
+                  }
+                },
+              }
+            ],
+            series: [
+              {
+                name: '知识',
+                type: 'radar',
+                polarIndex: 1,
+                data : [
+                  {
+                    value : [95.7, 82.5, 99.2, 81.4, 61.6],
+                    name : '年级平均水平',
+                    symbol : '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#fff',
+                            offset: 0
+                          },
+                          {
+                            color: '#f76f89',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:1
+                  },
+                  {
+                    value : [90.9, 75.0, 100, 65.4, 87.4],
+                    name : '个人得分率',
+                    symbol : '',
+                    symbolSize: 8,
+                    lineStyle: {normal:{width:0}},
+                    areaStyle: {
+                      normal: {
+                        opacity: 0.55,
+                        color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                          {
+                            color: '#64f0db',
+                            offset: 0
+                          },
+                          {
+                            color: '#1aa2ae',
+                            offset: 1
+                          }
+                        ])
+                      }
+                    },
+                    z:2
+                  },
+                ]
+              }
+            ],
+            animation:false,
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+        <!--<div id="capacity_line" class="chart pull-right"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('capacity_line'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#048a76','#c90303'],
+            textStyle:{fontSize:12},
+            title: {},
+            tooltip : {
+              trigger: 'item'
+            },
+            legend: {
+              right:0,
+              orient: 'vertical',
+              data:[
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  icon:'rect',
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  icon:'rect',
+                }
+              ],
+              itemWidth:8,
+              itemHeight:8,
+            },
+            grid: {
+              left: '10%',
+              right: '0',
+              top:'15%',
+              bottom: '15%',
+            },
+            animation:false,
+            xAxis : [
+              {
+                type : 'category',
+                boundaryGap : true,
+                name: '',
+                nameLocation: 'start',
+                nameGap:-40,
+                splitLine: {show:false},
+                axisLabel: {show:false},
+                axisTick: {show:false},
+                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                data : ['','匹配性','','推理性','','结构性','','作者理解','']
+              }
+            ],
+            yAxis : [
+              {
+                type : 'value',
+                axisLine: {show:false},
+                axisTick: {show:false},
+                axisLabel: {formatter:'{value}%'},
+                splitNumber:5,
+                splitLine: {lineStyle: {color:'#f4f4f4'}},
+                interval:10,
+              }
+            ],
+            series : [
+              {
+                name:'个人与年级平均得分率差值正值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#51b8c1'
+                    }, {
+                      offset: 1,
+                      color: '#fcfcfc'
+                    }]),
+                    opacity:0.5,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:6.0,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:14.8,symbolSize:8},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+              },
+              {
+                name:'个人与年级平均得分率差值负值',
+                type:'line',
+                stack: '百分比',
+                symbol:'',
+                showSymbol:true,
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#fff'
+                    }, {
+                      offset: 1,
+                      color: '#c90303'
+                    }]),
+                    opacity:0.1,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:-0.3,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:-24.0,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+        <div id="capacity_line" class="chart pull-right"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('capacity_line'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#048a76','#c90303'],
+            textStyle:{fontSize:12},
+            title: {},
+            tooltip : {
+              trigger: 'item'
+            },
+            legend: {
+              right:0,
+              orient: 'vertical',
+              data:[
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  icon:'rect',
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  icon:'rect',
+                }
+              ],
+              itemWidth:8,
+              itemHeight:8,
+            },
+            grid: {
+              left: '10%',
+              right: '0',
+              top:'20%',
+              bottom: '15%',
+            },
+            animation:false,
+            xAxis : [
+              {
+                type : 'category',
+                boundaryGap : true,
+                name: '',
+                nameLocation: 'start',
+                nameGap:-40,
+                splitLine: {show:false},
+                axisLabel: {show:false},
+                axisTick: {show:false},
+                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                data : ['','匹配性','','推理性','','结构性','','作者理解','']
+              }
+            ],
+            yAxis : [
+              {
+                type : 'value',
+                axisLine: {show:false},
+                axisTick: {show:false},
+                axisLabel: {formatter:'{value}%'},
+                splitNumber:5,
+                splitLine: {lineStyle: {color:'#f4f4f4'}},
+                interval:10,
+              }
+            ],
+            series : [
+              {
+                name:'个人与年级平均得分率差值正值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#51b8c1'
+                    }, {
+                      offset: 1,
+                      color: '#fcfcfc'
+                    }]),
+                    opacity:0.5,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:13,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:26,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+              },
+              {
+                name:'个人与年级平均得分率差值负值',
+                type:'line',
+                stack: '百分比',
+                symbol:'circle',
+                showAllSymbol:true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#fff'
+                    }, {
+                      offset: 1,
+                      color: '#c90303'
+                    }]),
+                    opacity:0.1,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:-14,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0},
+                  {value:0,symbolSize:0},
+                  {value:-14,symbolSize:8},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>
+
+        <!--<div id="knowledge_line" class="chart center"></div>
+        <script type="text/javascript">
+          // 基于准备好的dom，初始化echarts实例
+          var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+          // 指定图表的配置项和数据
+          var option = {
+            color: ['#048a76','#c90303'],
+            textStyle:{fontSize:14},
+            title: {},
+            tooltip : {
+              trigger:'item',
+            },
+            legend: {
+              right:0,
+              data:[
+                {
+                  name:'个人与年级平均得分率差值正值',
+                  icon:'rect',
+                },
+                {
+                  name:'个人与年级平均得分率差值负值',
+                  icon:'rect',
+                }
+              ],
+              itemWidth:8,
+              itemHeight:8,
+            },
+            grid: {
+              left: '10%',
+              right: '0',
+              top:'15%',
+              bottom: '15%',
+            },
+            animation:false,
+            xAxis : [
+              {
+                type : 'category',
+                boundaryGap:false,
+                name: '',
+                nameLocation: 'start',
+                nameGap:-40,
+                splitLine: {show:false},
+                axisLabel: {show:false},
+                axisTick: {show:false},
+                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor: '#21a793',shadowOffsetY:1}},
+                data : ['','词音','词义','','词法','句','','地点','价格','态度','频率','家庭','个人','','记叙文','说明文','议论文','','非连续',''],
+              }
+            ],
+            yAxis : [
+              {
+                type : 'value',
+                axisLine: {show:false},
+                axisTick: {show:false},
+                axisLabel: {formatter:'{value}%'},
+                splitNumber:5,
+                splitLine: {lineStyle: {color:'#f4f4f4'}},
+                interval:10,
+              }
+            ],
+            series : [
+              {
+                name:'个人与年级平均得分率差值正值',
+                type:'line',
+                stack: '百分比',
+                symbol:'',
+                showSymbol:true,
+                showAllSymbol: true,
+                symbolSize:8,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#51b8c1'
+                    }, {
+                      offset: 1,
+                      color: '#fcfcfc'
+                    }]),
+                    opacity:0.5,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0.8},
+                  {value:4.5},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:32},
+                  {value:2.0},
+                  {value:4.2},
+                  {value:12.0},
+                  {value:25.0},
+                  {value:6.0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:0,symbolSize:0},
+                  {value:2.0},
+                  {value:0,symbolSize:0},
+                ],
+                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}}
+              },
+              {
+                name:'个人与年级平均得分率差值负值',
+                type:'line',
+                stack: '百分比',
+                symbol:'',
+                showSymbol:true,
+                showAllSymbol: true,
+                symbolSize:0,
+                lineStyle: {normal: {width:0}},
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#fff'
+                    }, {
+                      offset: 1,
+                      color: '#c90303'
+                    }]),
+                    opacity:0.1,
+                  }},
+                data:[
+                  {value:0,symbolSize:0},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,symbolSize:0},
+                  {value:-25.8,symbolSize:8},
+                  {value:-7.5,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,symbolSize:0},
+                  {value:-29.2,symbolSize:8},
+                  {value:-35.8,symbolSize:8},
+                  {value:-21,symbolSize:8},
+                  {value:0,symbolSize:0},
+                  {value:0,label:{normal:{show:false}}},
+                  {value:0,symbolSize:0}
+                ],
+                label: {normal:{show:true,position:'bottom',textStyle:{color:'#333'},formatter:'{b}'}}
+              }
+            ]
+          };
+
+          // 使用刚指定的配置项和数据显示图表。
+          myChart.setOption(option);
+        </script>-->
+
+      </dd>
+    </dl>
+
+  </div>
+</div>

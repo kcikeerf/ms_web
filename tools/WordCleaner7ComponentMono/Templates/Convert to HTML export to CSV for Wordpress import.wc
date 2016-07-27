@@ -1,0 +1,59 @@
+﻿// WC AUTO GENERATED CODE START - PLEASE DO NOT MODIFY CODE BELOW TILL THE END OF WC AUTO GENERATED CODE END
+// SETTINGS START 
+ignore_case_on();
+set('ConversionEngine','APOLLO');
+set('ConvertOutput','XHTML');
+set('CorrectHTMLStructure','OFF');
+set('SplitPages','OFF');
+set('SplitType','WCPAGESPLIT');
+set('CreateIndexFile','OFF');
+set('ImageType','JPG');
+set('JpgQuality','85');
+set('OverwriteImageDPI','OFF');
+set('KeepImageScaling','ON');
+set('EmbeddedImages','OFF');
+set('ImageDPI','96');
+set('CSSOption','INLINE');
+set('CustomCSS','');
+set('DeleteUnusedCSS','OFF');
+set('DefaultExtension','.csv');
+set('LoadEncoding','AUTO');
+set('SaveEncoding','AUTO');
+set('UTF8BOM','OFF');
+set('EndlineType','WINDOWS');
+set('BackupHtmlFiles','ON');
+set('BodyOnly','ON');
+set('ProcessHTMLInputFile','OFF');
+set('HTMLEntityType','NONE');
+set('CSVFileName','C:\wc_csv_output.csv');
+set('CSVTerminateChar',';');
+set('CSVEncloseChar','"');
+set('CSVEscapeChar','\');
+set('CSVCreateColumnNamesFirstRow','OFF');
+set('CSVAppendHtmlToFile','OFF');
+set('CSVColumns','post_author=1;post_date=date code=public object Code(params object[] Parameters) \n{\n	return DateTime.Now.ToString()\;\n};post_date_gmt=date code=public object Code(params object[] Parameters) \n{\n	return DateTime.Now.ToString()\;\n};post_content=CONTENT;post_title=FILENAME;post_excerpt=;post_status=publish;comment_status=closed;ping_status=closed;post_password=;post_name=TITLE;to_ping=;pinged=;post_modified=date code=public object Code(params object[] Parameters) \n{\n	return DateTime.Now.ToString()\;\n};post_modified_gmt=date code=public object Code(params object[] Parameters) \n{\n	return DateTime.Now.ToString()\;\n};post_content_filtered=;post_parent=0;guid=http://localhost/?p\=1;menu_order=0;post_type=page;post_mime_type=;comment_count=0');
+set('RecompileCustomCode','OFF');
+set('DoNotSaveImages','OFF');
+set('ApolloPreserveTextTables','ON');
+set('ApolloConvertFieldCodesToText','OFF');
+set('DeleteEmptyLines','OFF');
+set('ConvertToImagesSaveType','JUST_IMAGES');
+set('ApolloHeadersAndFootersMode','FIRST_SECTION_HEADER_LAST_SECTION_FOOTER');
+// SETTINGS END
+// COMMENTS START
+// This will convert your file to XHTML 1.0 Transitional and keep all the formatting, e.g. fonts background colors etc and it will export it to CSV file Wordpress wp_posts table format.
+// 
+// How to import CSV into wordpress in PhpMyAdmin:
+// 1) go to wp_posts table and click Import
+// 2) pick csv file created by Word Cleaner that you want to import
+// 3) select CSV using LOAD DATA option
+// 4) paste following column names into Column names field:
+// post_author,post_date,post_date_gmt,post_content,post_title,post_excerpt,post_status,comment_status,ping_status,post_password,post_name,to_ping,pinged,post_modified,post_modified_gmt,post_content_filtered,post_parent,guid,menu_order,post_type,post_mime_type,comment_count
+// 5) Click GO button
+//
+// COMMENTS END
+// CUSTOMCODE START
+
+// CUSTOMCODE END
+// WC AUTO GENERATED CODE END
+// Word Cleaner 7.0.0 PRO

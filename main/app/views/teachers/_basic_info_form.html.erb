@@ -1,0 +1,50 @@
+<section>
+  <dl class="clearfix">
+    <dt><%= t('page.pupil.basic_info') %></dt>
+    <dd class="container-fluid">
+      <span style="float: left;">
+      <ul>
+      <!--ul class="list-inline" id="basic_info"-->
+        <!--li class="col-md-4"-->
+        <li>
+         <label><%= t('activerecord.attributes.teacher.name') %>：</label>
+         <%= @current_user.teacher.name%>
+        </li>
+        <li>
+         <label><%= t('activerecord.attributes.teacher.subject') %>：</label>
+         <%#= @current_user.teacher.subject%>
+        </li>
+        <li>
+         <label><%= t('activerecord.attributes.teacher.school') %>：</label>
+         <%= @current_user.teacher.school%>
+        </li>
+        <li>
+         <label><%= t('activerecord.attributes.user.phone') %>：</label>
+         <%= @current_user.phone%>
+        </li>
+        <li>
+         <label><%= t('activerecord.attributes.user.qq') %>：</label>
+         <%#= @current_user.qq%>
+        </li>
+        <li>
+         <label><%= t('activerecord.attributes.user.wechat') %>：</label>
+         <%#= @current_user.qq%>
+        </li>
+        <li>
+         <label><%= t('activerecord.attributes.user.email') %>：</label>
+         <%= @current_user.email%>
+        </li>
+      </ul>
+      </span>
+      <span style="float: right">
+        <%= image_tag @current_user.image_upload.file.url if @current_user.image_upload && @current_user.image_upload.file  %>
+        <form action='/users/head_image_upload' method='post' enctype='multipart/form-data'>
+          <%= token_tag form_authenticity_token %>
+          <input type="file" name="file"><br />
+          <input type="submit" name="submit" value="upload">
+        </form>
+      </span>
+    </dd>
+  </dl>
+</section>
+

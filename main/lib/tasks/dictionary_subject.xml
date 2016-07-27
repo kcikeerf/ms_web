@@ -1,0 +1,35 @@
+<dictionaries>
+<dictionary subject="yu_wen" caption="yu_wen" desc="语文">
+  <item sid="dan_xiang_xuan_ze" caption="dan_xiang_xuan_ze" desc="单项选择" />
+</dictionary>
+<dictionary subject="shu_xue" caption="shu_xue" desc="数学">
+  <item sid="dan_xiang_xuan_ze" caption="dan_xiang_xuan_ze" desc="单项选择" />
+</dictionary>
+<dictionary subject="ying_yu" caption="ying_yu" desc="英语">
+  <item sid="ting_li_li_jie" caption="ting_li_li_jie" desc="听力理解" />
+  <item sid="dan_xiang_xuan_ze" caption="dan_xiang_xuan_ze" desc="单项选择" />
+  <item sid="wan_xing_tian_kong" caption="wan_xing_tian_kong" desc="完形填空" />
+  <item sid="yue_du_li_jie" caption="yue_du_li_jie" desc="阅读理解" />
+  <item sid="ci_yu_yun_yong" caption="ci_yu_yun_yong" desc="词语运用" />
+  <item sid="bu_quan_dui_hua" caption="bu_quan_dui_hua" desc="补全对话" />
+  <item sid="shu_mian_biao_da" caption="shu_mian_biao_da" desc="书面表达" />
+</dictionary>
+<dictionary subject="li_shi" caption="li_shi" desc="历史">
+</dictionary>
+<dictionary subject="di_li" caption="di_li" desc="地理">
+</dictionary>
+<dictionary subject="wu_li" caption="wu_li" desc="物理">
+</dictionary>
+<dictionary subject="hua_xue" caption="hua_xue" desc="化学">
+</dictionary>
+<dictionary subject="sheng_wu" caption="sheng_wu" desc="生物">
+</dictionary>
+<dictionary subject="si_xiang_pin_de" caption="si_xiang_pin_de" desc="思想品德">
+</dictionary>
+<dictionary subject="zheng_zhi" caption="zheng_zhi" desc="政治">
+</dictionary>
+<dictionary subject="xin_xi_ji_shu" caption="xin_xi_ji_shu" desc="信息技术">
+</dictionary>
+<dictionary subject="ji_shu" caption="ji_shu" desc="技术">
+</dictionary>
+</dictionaries>

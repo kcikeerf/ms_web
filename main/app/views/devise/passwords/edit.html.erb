@@ -1,0 +1,44 @@
+<section>
+  <div class="container clearfix page">
+    <div class="page-header bb0">
+      <h2 class="text-center"><%= t('page.sign_in.forgot_password') %></h2>
+    </div>
+
+    <div class="steptitle">
+      <ul>
+        <li class="highlight"><span class="badge">1</span><%= t('page.user.confirm_name') %></li>
+        <li class="highlight"><span class="badge">2</span><%= t('page.user.security_validate') %></li>
+        <li class="highlight"><span class="badge">3</span><%= t('page.user.reset_password') %></li>
+      </ul>
+    </div>
+
+    <div class="page-body clearfix">
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { class: 'form-horizontal col-offset-3 password', id: 'changepassword', method: :put }) do |f| %>
+        <%= render 'shared/error_messages', target: resource %>
+        <%= f.hidden_field :reset_password_token %>
+        <div class="form-group">
+          <label class="col-md-4"><%= t('page.user.password') %>：</label>
+          <div class="col-md-8">
+            <%= f.password_field :password, class: 'form-control', autofocus: true, placeholder: t('page.user.password_placeholder'), autocomplete: "off" %>
+            <%= error_message(resource, :password) %>       
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="col-md-4"><%= t('page.user.password_confirmation') %>：</label>
+          <div class="col-md-8">
+            <%= f.password_field :password_confirmation, class: 'form-control', autofocus: true, placeholder: t('page.user.password_placeholder'), autocomplete: "off" %>
+            <%= error_message(resource, :password_confirmation) %>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <div class="col-md-4"></div>
+          <div class="col-md-8">
+            <button type="submit" class="btn btn-default" name="signup"><%= t('page.confirm') %></button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>

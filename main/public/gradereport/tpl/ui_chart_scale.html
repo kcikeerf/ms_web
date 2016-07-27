@@ -1,0 +1,1377 @@
+<div class="wrapper-md">
+  <h1 class="m-n font-thin h3">年级知识、技能、能力各分数段人数比例</h1>
+</div>
+<div class="wrapper-md">
+  <div class="scale">
+
+        <dl>
+          <dt>知识</dt>
+          <dd>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="KnowledgeScale" style="width:750px;height:450px"></div>
+            <script type="text/javascript">
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init(document.getElementById('KnowledgeScale'));
+
+              // 指定图表的配置项和数据
+              var option = {
+                tooltip : {
+                  trigger: 'item',
+                  axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow',       // 默认为直线，可选为：'line' | 'shadow'
+                  },
+                  formatter: '{a}<br>{b}: {c}%'
+                },
+                legend: {
+                  top:'0',
+                  right:'10',
+                  width:'120',
+                  orient:'vertical',
+                  data: ['得分率 ≥ 85', '60 ≤ 得分率 < 85','得分率 < 60'],
+                  itemWidth:10,
+                  itemHeight:10,
+                },
+                grid: {
+                  left: '3%',
+                  top: '0%',
+                  right: '22%',
+                  bottom: '3%',
+                  containLabel: true,
+                },
+                xAxis:  {
+                  type: 'value',
+                  splitNumber:10,
+                  axisTick:{show:false},
+                  axisLabel: {formatter:'{value}%',textStyle:{color:'#000',fontSize:14,}},
+                  axisLine:{lineStyle:{color:'#cacaca',width:3,shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:2}},
+                },
+                yAxis: {
+                  type: 'category',
+                  data: ['语音\n（听）','词汇','词法','句法','文章','写作'],
+                  axisLine:{show:false},
+                  axisTick:{show:false},
+                  splitLine:{show:false},
+                  axisLabel: {textStyle:{color:'#000',fontSize:14}},
+                  inverse:true,
+                },
+                series: [
+                  {
+                    name: '得分率 ≥ 85',
+                    type: 'bar',
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'语音\n（听）(得分率 ≥ 85)',
+                        value:89,
+                        yAxisIndex:1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'词汇(得分率 ≥ 85)',
+                        value:92.8,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'词法(得分率 ≥ 85)',
+                        value:78.4,
+                        yAxisIndex:3,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'句法(得分率 ≥ 85)',
+                        value:57.2,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'文章(得分率 ≥ 85)',
+                        value:54.7,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'写作(得分率 ≥ 85)',
+                        value:3.9,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius:[20, 0, 0, 20],
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#086a8e'
+                        }, {
+                          offset: 1,
+                          color: '#65026b'
+                        }])
+                      }
+                    },
+                  },
+                  {
+                    name: '60 ≤ 得分率 < 85',
+                    type: 'bar',
+                    legendHoverLink:false,
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14,}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'语音\n（听）(60 ≤ 得分率 < 85)',
+                        value:8.9,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'词汇(60 ≤ 得分率 < 85)',
+                        value:0,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'词法(60 ≤ 得分率 < 85)',
+                        value:17.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'句法(60 ≤ 得分率 < 85)',
+                        value:23.7,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'文章(60 ≤ 得分率 < 85)',
+                        value:31.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'写作(60 ≤ 得分率 < 85)',
+                        value:55,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      }
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius:0,
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#71ecd0'
+                        }, {
+                          offset: 1,
+                          color: '#13ab9b'
+                        }])
+                      }
+                    },
+                  },
+                  {
+                    name: '得分率 < 60',
+                    type: 'bar',
+                    legendHoverLink:false,
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14,}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'语音\n（听）(得分率 < 60)',
+                        value:2.1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'词汇(得分率 < 60)',
+                        value:7.2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'词法(得分率 < 60)',
+                        value:3.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'句法(得分率 < 60)',
+                        value:19.1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'文章(得分率 < 60)',
+                        value:13.6,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'写作(得分率 < 60)',
+                        value:41.1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      }
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius: [0, 20, 20, 0],
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#fa8471'
+                        }, {
+                          offset: 1,
+                          color: '#f6f1c5'
+                        }])
+                      }
+                    },
+                  }
+                ]
+              };
+
+              // 使用刚指定的配置项和数据显示图表。
+              myChart.setOption(option);
+            </script>
+          </dd>
+        </dl>
+
+        <dl>
+          <dt>技能</dt>
+          <dd>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="SkillScale" style="width:750px;height:660px"></div>
+            <script type="text/javascript">
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init(document.getElementById('SkillScale'));
+
+              // 指定图表的配置项和数据
+              var option = {
+                tooltip : {
+                  trigger: 'item',
+                  axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow',       // 默认为直线，可选为：'line' | 'shadow'
+                  },
+                  formatter: '{a}<br>{b}: {c}%'
+                },
+                legend: {
+                  top:'0',
+                  right:'10',
+                  width:'120',
+                  orient:'vertical',
+                  data: ['得分率 ≥ 85', '60 ≤ 得分率 < 85','得分率 < 60'],
+                  itemWidth:10,
+                  itemHeight:10,
+                },
+                grid: {
+                  left: '3%',
+                  top: '0%',
+                  right: '22%',
+                  bottom: '3%',
+                  containLabel: true,
+                },
+                xAxis:  {
+                  type: 'value',
+                  splitNumber:10,
+                  axisTick:{show:false},
+                  axisLabel: {formatter:'{value}%',textStyle:{color:'#000',fontSize:14,}},
+                  axisLine:{lineStyle:{color:'#cacaca',width:3,shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:2}},
+                },
+                yAxis: {
+                  type: 'category',
+                  data: ['认知','理解\n（听）','理解\n（读）','信息提取\n（听）','信息提取\n（读）','推理\n（听）','推理\n（读）','分析','表达'],
+                  axisLine:{show:false},
+                  axisTick:{show:false},
+                  splitLine:{show:false},
+                  axisLabel: {textStyle:{color:'#000',fontSize:14}},
+                  inverse:true,
+                },
+                series: [
+                  {
+                    name: '得分率 ≥ 85',
+                    type: 'bar',
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'认知(得分率 ≥ 85)',
+                        value:67.8,
+                        yAxisIndex:1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'理解（听）(得分率 ≥ 85)',
+                        value:96.2,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'理解（读）(得分率 ≥ 85)',
+                        value:92.8,
+                        yAxisIndex:3,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'信息提取（听）(得分率 ≥ 85)',
+                        value:83.9,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'信息提取（读）(得分率 ≥ 85)',
+                        value:92.8,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'推理（听）(得分率 ≥ 85)',
+                        value:78.4,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'推理（读）(得分率 ≥ 85)',
+                        value:57.2,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'分析(得分率 ≥ 85)',
+                        value:54.7,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'表达(得分率 ≥ 85)',
+                        value:3,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius:[20, 0, 0, 20],
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#086a8e'
+                        }, {
+                          offset: 1,
+                          color: '#65026b'
+                        }])
+                      }
+                    },
+                  },
+                  {
+                    name: '60 ≤ 得分率 < 85',
+                    type: 'bar',
+                    legendHoverLink:false,
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14,}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'认知(60 ≤ 得分率 < 85)',
+                        value:28.4,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'理解（听）(60 ≤ 得分率 < 85)',
+                        value:3.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'理解（读）(60 ≤ 得分率 < 85)',
+                        value:0,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'信息提取（听）(60 ≤ 得分率 < 85)',
+                        value:13.6,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'信息提取（读）(60 ≤ 得分率 < 85)',
+                        value:0,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'推理（听）(60 ≤ 得分率 < 85)',
+                        value:17.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'推理（读）(60 ≤ 得分率 < 85)',
+                        value:23.7,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'分析(60 ≤ 得分率 < 85)',
+                        value:31.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'表达(60 ≤ 得分率 < 85)',
+                        value:41.5,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius:0,
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#71ecd0'
+                        }, {
+                          offset: 1,
+                          color: '#13ab9b'
+                        }])
+                      }
+                    },
+                  },
+                  {
+                    name: '得分率 < 60',
+                    type: 'bar',
+                    legendHoverLink:false,
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14,}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'认知(得分率 < 60)',
+                        value:3.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'理解（听）(得分率 < 60)',
+                        value:0,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'理解（读）(得分率 < 60)',
+                        value:7.2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'信息提取（听）(得分率 < 60)',
+                        value:4.2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'信息提取（读）(得分率 < 60)',
+                        value:7.2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'推理（听）(得分率 < 60)',
+                        value:3.8,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'推理（读）(得分率 < 60)',
+                        value:19.1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'分析(得分率 < 60)',
+                        value:13.6,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'表达(得分率 < 60)',
+                        value:55.5,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius: [0, 20, 20, 0],
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#fa8471'
+                        }, {
+                          offset: 1,
+                          color: '#f6f1c5'
+                        }])
+                      }
+                    },
+                  }
+                ]
+              };
+
+              // 使用刚指定的配置项和数据显示图表。
+              myChart.setOption(option);
+            </script>
+          </dd>
+        </dl>
+
+        <dl>
+          <dt>能力</dt>
+          <dd>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="CapacityScale" style="width:750px;height:300px"></div>
+            <script type="text/javascript">
+              // 基于准备好的dom，初始化echarts实例
+              var myChart = echarts.init(document.getElementById('CapacityScale'));
+
+              // 指定图表的配置项和数据
+              var option = {
+                tooltip : {
+                  trigger: 'item',
+                  axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow',       // 默认为直线，可选为：'line' | 'shadow'
+                  },
+                  formatter: '{a}<br>{b}: {c}%'
+                },
+                legend: {
+                  top:'0',
+                  right:'10',
+                  width:'120',
+                  orient:'vertical',
+                  data: ['得分率 ≥ 85', '60 ≤ 得分率 < 85','得分率 < 60'],
+                  itemWidth:10,
+                  itemHeight:10,
+                },
+                grid: {
+                  left: '3%',
+                  top: '0%',
+                  right: '22%',
+                  bottom: '3%',
+                  containLabel: true,
+                },
+                xAxis:  {
+                  type: 'value',
+                  splitNumber:10,
+                  axisTick:{show:false},
+                  axisLabel: {formatter:'{value}%',textStyle:{color:'#000',fontSize:14,}},
+                  axisLine:{lineStyle:{color:'#cacaca',width:3,shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:2}},
+                },
+                yAxis: {
+                  type: 'category',
+                  data: ['词汇辨析','语言理解','逻辑分析','人际理解'],
+                  axisLine:{show:false},
+                  axisTick:{show:false},
+                  splitLine:{show:false},
+                  axisLabel: {textStyle:{color:'#000',fontSize:14}},
+                  inverse:true,
+                },
+                series: [
+                  {
+                    name: '得分率 ≥ 85',
+                    type: 'bar',
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'词汇辨析(得分率 ≥ 85)',
+                        value:0.8,
+                        yAxisIndex:1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'语言理解(得分率 ≥ 85)',
+                        value:58.1,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'逻辑分析(得分率 ≥ 85)',
+                        value:5.9,
+                        yAxisIndex:3,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'人际理解(得分率 ≥ 85)',
+                        value:75,
+                        yAxisIndex:2,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:[20, 0, 0, 20],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#086a8e'
+                            }, {
+                              offset: 1,
+                              color: '#65026b'
+                            }])
+                          }
+                        },
+                      }
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius:[20, 0, 0, 20],
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#086a8e'
+                        }, {
+                          offset: 1,
+                          color: '#65026b'
+                        }])
+                      }
+                    },
+                  },
+                  {
+                    name: '60 ≤ 得分率 < 85',
+                    type: 'bar',
+                    legendHoverLink:false,
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14,}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'词汇辨析(60 ≤ 得分率 < 85)',
+                        value:36.4,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'语言理解(60 ≤ 得分率 < 85)',
+                        value:33.5,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'逻辑分析(60 ≤ 得分率 < 85)',
+                        value:25,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'人际理解(60 ≤ 得分率 < 85)',
+                        value:0,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius:0,
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#71ecd0'
+                            }, {
+                              offset: 1,
+                              color: '#13ab9b'
+                            }])
+                          }
+                        },
+                      }
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius:0,
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#71ecd0'
+                        }, {
+                          offset: 1,
+                          color: '#13ab9b'
+                        }])
+                      }
+                    },
+                  },
+                  {
+                    name: '得分率 < 60',
+                    type: 'bar',
+                    legendHoverLink:false,
+                    animation:false,
+                    stack: '总量',
+                    label: {
+                      normal: {
+                        show: true,
+                        position: 'bottom',
+                        textStyle:{color:'#000',fontSize:14,}
+                      }
+                    },
+                    barWidth:20,
+                    data: [
+                      {
+                        name:'词汇辨析(得分率 < 60)',
+                        value:62.7,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'语言理解(得分率 < 60)',
+                        value:8.5,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'逻辑分析(得分率 < 60)',
+                        value:69.1,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      },
+                      {
+                        name:'人际理解(得分率 < 60)',
+                        value:25,
+                        itemStyle: {
+                          normal: {
+                            barBorderRadius: [0, 20, 20, 0],
+                            color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                              offset: 0,
+                              color: '#fa8471'
+                            }, {
+                              offset: 1,
+                              color: '#f6f1c5'
+                            }])
+                          }
+                        },
+                      }
+                    ],
+                    itemStyle: {
+                      normal: {
+                        barBorderRadius: [0, 20, 20, 0],
+                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+                          offset: 0,
+                          color: '#fa8471'
+                        }, {
+                          offset: 1,
+                          color: '#f6f1c5'
+                        }])
+                      }
+                    },
+                  }
+                ]
+              };
+
+              // 使用刚指定的配置项和数据显示图表。
+              myChart.setOption(option);
+            </script>
+          </dd>
+        </dl>
+
+  </div>
+</div>

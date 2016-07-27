@@ -1,0 +1,105 @@
+<div class="re_content w100 sy_sign_up_block">
+  <div class="re_panel bc">
+    <div class="re_top bc">
+      <div class="re_logo bc"></div>
+      <p class="tc f16">创见教育未来</p>
+    </div>
+    <div class="re_bottom bc ohidden email_block" style="<%= 'display: none;' if params[:type] == 'phone' %>">
+      <%= form_for(resource,
+                   as: resource_name,
+                   url: registration_path(resource_name, type: 'email'), 
+                   html: {class: 'ohidden f14', id: 'reg-form-email'}) do |f| %>
+        <%= render 'shared/error_messages', target: resource %>
+        <p>
+        <%= f.text_field :email, maxlength: 30, placeholder: t('page.sign_up.email_placeholder'), id: "reg-form-email_email", required: true %>
+        <%= resource.errors[:email].join(',') %>
+        <span style="display:none;color:orange;" id="reg-form-email_email_verify">
+        <br />
+          请输入正确有效的邮箱
+        </span>
+        </p>
+        <p class="cb">        
+        <%= f.password_field :password, maxlength: 30, placeholder: t('page.sign_up.password_placeholder'), id: "reg-form-email_password" %>
+        <span style="display:none;color:orange;" id="reg-form-email_password_verify">
+        <br />
+          <%= t('page.sign_up.password_placeholder') %>
+        </span>
+        </p>
+        <p>
+          <%= f.text_field :name , maxlength:30, placeholder: t('page.sign_up.nickname'), :id=>"reg-form-email_name" %>
+          <span style="display:none;color:orange;" id="reg-form-email_name_verify">
+        <br />
+          长度不少于2位
+        </span>
+        </p>
+        <p class="re_btn_list ohidden">
+        <%= f.hidden_field :role_name %>
+          <input class="ff role" type="button" value="学校" role_name="school" />
+          <input class="ff role" type="button" value="老师"  role_name="teacher"/>
+          <input class="ff role" type="button" value="学生"  role_name="pupil"/>
+        </p>
+        <p class="re_btn">
+          <input class="f16 cp ff" type="submit" value="<%= t('page.sign_up.register_button') %>" />
+          <span style="display:none;color:orange;" id="reg-form-email_role_verify">
+        <br />
+          请选择角色
+        </span>
+        </p>
+        <p class="email tc f12"><a href="javascript:" id="phone_signup">使用手机注册</a></p>
+      <% end %>
+      <p class="f14 tc"><%= t('page.sign_up.direct_login') %><a href="/users/login"><%= t('page.login') %></a></p>
+    </div>
+
+    <div class="re_bottom bc ohidden phone_block" style="<%= 'display: block;' if params[:type] == 'phone' %>">
+       <%= form_for(resource,
+                   as: resource_name,
+                   url: registration_path(resource_name, type: 'phone'), 
+                   html: {class: 'ohidden f14', id: 'reg-form-phone'}) do |f| %>
+        <%= render 'shared/error_messages', target: resource %>
+        <p>
+        <%= f.text_field :phone, maxlength:11, :placeholder=>"请输入您的11位手机号", :id=>"reg-form-phone_phone" %>
+        </p>
+        <p class="re_note ohidden">
+        <%= text_field_tag :verify_code, '', maxlength:11, :class => 'fl', :placeholder=>"短信验证码", :id=>"reg-form-phone_v_code" %>
+          <input class="fr cp ff" onclick="sign_up_submit('phone')" type="button" value="获取短信验证码"/>
+        </p>
+        <p class="cb">
+        <%= f.password_field :password , maxlength:30, :placeholder=>"请输入8位以上密码", :id=>"reg-form-phone_password" %>
+        </p>
+        <p><%= f.text_field :name , maxlength:30, :placeholder=>"昵称" %></p>
+        <p class="re_btn_list ohidden">
+          <%= f.hidden_field :role_name %>
+          <input class="ff role" type="button" value="学校"  role_name="school" />
+          <input class="ff role" type="button" value="老师"  role_name="teacher" />
+          <input class="ff role" type="button" value="学生"  role_name="pupil" />
+        </p>
+        <p class="re_btn"><input class="f16 cp ff" type="submit" name="" id="" value="立即注册" /></p>
+        <p class="email tc f12"><a href="javascript:" id="email_signup">使用邮箱注册</a></p>
+      <% end %>
+      <p class="f14 tc">如果您已经有账号，请直接<a href="/users/login">登录</a></p>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(".role").click(function(){
+      $(".role").css('background', '#fff');
+      $(this).css('background', '#E0A6A6');
+      $(this).siblings(":first").val($(this).attr('role_name'));
+    });
+
+    $('#phone_signup').on('click', function(){
+      $('.email_block').hide();
+      $('.phone_block').show();
+    });
+
+    $('#email_signup').on('click', function(){
+      $('.phone_block').hide();
+      $('.email_block').show();
+    });
+  })
+  
+  
+  
+
+</script>

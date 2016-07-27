@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+ <head>
+  <title> ztree demo </title>
+  <meta charset="utf-8">
+	<!-- Include font-awesome here, CDN is ok, or locally installed by bower to your project -->
+    <link rel="stylesheet" href="font-awesome-4.5.0/css/font-awesome.min.css">
+    
+    <link rel="stylesheet" href="css/demo.css" type="text/css">
+    <link rel="stylesheet" href="css/awesomeStyle/awesome.css" type="text/css">
+    <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.excheck.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.exedit.js"></script>
+    <script type="text/javascript">
+        <!--
+        var setting = {
+//			async: {
+//				type: "text", 
+//				url: "data.json",
+//				dataType: "json",
+//				success:function(data) {
+//					 $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+//				},
+//				error:function(msg) {
+//					alert("数据加载失败！" + msg);
+//				}
+//			},
+            view: {
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false
+            },
+            check: {
+                enable: true
+                ,chkStyle: 'checkbox'
+                ,radioType: "level"
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+					idKey: "id",
+					pIdKey: "rId",
+					rootPId: null
+                }
+            },
+			callback: {
+				onClick:indexNodes,
+				beforeClick: function(treeId, treeNode) {
+					var zTree = $.fn.zTree.getZTreeObj("tree");
+					if (treeNode.isParent) {
+						demoIframe.attr("src","main.html");
+						return true;
+					} else {
+						demoIframe.attr("src",treeNode.file + ".html");
+						return true;
+					}
+				}
+			},
+            edit: {
+                enable: true
+            }
+        };
+
+        var zNodes =[
+            { id:"000", rId:"", name:"rid 1", open:true},
+            { id:"000000", rId:"000", name:"rid 11", file:"main"},
+            { id:"000000000", rId:"000000", name:"rid 111", file:"main"},
+			{ id:"000000000000", rId:"000000000", name:"rid 1111", file:"main"},
+            { id:"000000000001", rId:"000000000", name:"rid 1112", file:"http://www.sina.com/index"},
+            { id:"000000000002", rId:"000000000", name:"rid 1113", file:"http://www.sohu.com/index"},
+            { id:"000000000003", rId:"000000000", name:"rid 1114", file:"http://www.163.com/index"},
+            { id:"000001", rId:"000001", name:"rid 13",file:"main", isParent:true},
+        ];
+        $(document).ready(function(){
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        });
+		
+		/**
+		 * 获取当前选中的第一个节点在同级节点中的序号
+		 */
+		function indexNodes()
+		{
+			var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+			//获取选中的节点
+			var nodes = treeObj.getSelectedNodes();
+			if (nodes.length>0) 
+			{
+			  for(var i=0;i<nodes.length;i++)
+			  {
+				  var index = nodes[i].getParentNode().id;
+				  $(".treeNodeName").text(index);
+			  }
+			}
+		}
+
+        var newCount = 000;
+        function addHoverDom(treeId, treeNode) {
+            var sObj = $("#" + treeNode.tId + "_span");
+            if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+            var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='add node' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+            var btn = $("#addBtn_"+treeNode.tId);
+            if (btn) btn.bind("click", function(){
+                var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                zTree.addNodes(treeNode, {id:"00" + (newCount++)+ "", pId:treeNode.id, name:"rid" + (newCount++), file:"main"});
+                return false;
+            });
+        };
+        function removeHoverDom(treeId, treeNode) {
+            $("#addBtn_"+treeNode.tId).unbind().remove();
+        };
+		
+		$(document).ready(function(){
+			var t = $("#tree");
+			t = $.fn.zTree.init(t, setting, zNodes);
+			demoIframe = $("#demoIframe");
+			demoIframe.bind("load", loadReady);
+			var zTree = $.fn.zTree.getZTreeObj("tree");
+		});
+		
+		function loadReady() {
+			var bodyH = demoIframe.contents().find("body").get(0).scrollHeight,
+			htmlH = demoIframe.contents().find("html").get(0).scrollHeight,
+			maxH = Math.max(bodyH, htmlH), minH = Math.min(bodyH, htmlH),
+			h = demoIframe.height() >= maxH ? minH:maxH ;
+			if (h < 530) h = 530;
+			demoIframe.height(h);
+		}
+        //-->
+    </script>
+ </head>
+
+<body>
+<div id="wrap">
+	<ul id="treeDemo" class="ztree"></ul>
+    <div id="testIframe">
+    
+        <h2>父节点：<span class="treeNodeName"></span></h2>
+        <iframe id="demoIframe" name="demoIframe" frameborder="0" scrolling="no" src="main.html"></iframe>
+
+    </div>
+</div>
+</body>
+</html>

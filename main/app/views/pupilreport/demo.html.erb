@@ -1,0 +1,17 @@
+<div class="container"><div class="loadingPage">
+<iframe style="border:0 none" width = "100%" height="100%" id="reportShowField" src="/pupilreport/index"></iframe>
+</div></div>
+                <script type="text/javascript">
+                        /*iframe高度自适应*/
+            function reinitIframe(){
+                var iframe = document.getElementById("reportShowField");
+                iframe.scrolling = 'no';
+                try{
+                    var bHeight = iframe.contentWindow.document.body.scrollHeight;
+                    var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+                    var height = Math.max(bHeight, dHeight)+1;
+                    iframe.height =  height;
+                }catch (ex){}
+                }
+            window.setInterval("reinitIframe()", 200);
+        </script>

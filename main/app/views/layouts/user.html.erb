@@ -1,0 +1,14 @@
+<%= extends :application do %>
+
+	<% replace :head_content do %>
+		<%= stylesheet_link_tag 'default/users', media: 'all', 'data-turbolinks-track' => true %>
+		<%= javascript_include_tag 'application', 'users', 'data-turbolinks-track' => true %>
+	<% end %>
+
+	<%= yield %>
+
+	<% append :footer do %>
+		<%= render 'shared/common_dialog' %>
+	<% end %>
+	
+<% end %>
