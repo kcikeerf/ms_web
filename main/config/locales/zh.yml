@@ -1,0 +1,705 @@
+zh:
+  #各功能用label
+  checkpoints:
+    dialog:
+      title: "指标体系设置"
+  images:
+    errors:
+      invalid_size: "图片文件大小超过300KB"
+
+  views:
+    pagination:
+      first: "&laquo; 首页"
+      last: "末页 &raquo;"
+      previous: "&laquo; 上一页"
+      next: "下一页 &raquo;"
+      truncate: "..."
+
+  jobs:
+    status:
+      notinqueue: "未入队列"
+      inqueue: "已入队列"
+      processing: "正在生成"
+      completed: "报告完成"
+
+  messages:
+    invalid_mobile: '短信验证码不正确或已失效'
+    invalid_email: '邮箱验证码不正确或已失效'
+    sms_not_send: '暂时不能发送验证码'
+    email_not_send: '暂时不能发送邮件'
+    sms_send_success: '短信验证码发送成功'
+    email_send_success: '邮件发送成功'
+    bind_auth_number: '你绑定账户的验证码为：'
+    password_auth_number: '你正在找回密码，验证码为：'
+    send_limit: '超出发送次数，请稍后再试'
+
+  papers:
+    status:
+      none: "无"
+      new: "新添试卷"
+      editting: "正在修订"
+      editted: "修订完成"
+      analyzing: "正在解析"
+      analyzed: "解析完成"
+      score_importing: "成绩入库"
+      score_imported: "成绩已导入"
+      report_generating: "报告生成中"
+      report_completed: "报告生成完毕" 
+    name:
+      paper: '原试卷'
+      answer: '原答案'
+      revise_paper: '修正试卷'
+      revise_answer: '修正答案'
+      empty_file: '空成绩表'
+      filled_file: '学生成绩表'
+      usr_pwd_file: '学生的用户名密码'
+    messages:
+      save_paper:
+        success: "试卷（标题：%{heading}）保存成功!"
+        fail: "试卷（原因：%{message}）保存失败!"
+        debug: "保存试卷过程中发生异常: %{message}"
+      submit_paper:
+        success: "试卷（标题；%{heading}）提交成功!"
+        fail: "试卷（标题；%{heading}）提交失败!"
+      save_analyze:
+        success: "试卷解析（标题；%{heading}）保存成功!"
+        fail: "试卷解析（标题；%{heading}）保存失败!"
+      submit_analyze:
+        success: "试卷解析（标题；%{heading}）提交成功!"
+        fail: "试卷解析（标题；%{heading}）提交失败!"
+      upload_score:
+        success: '上传成功'
+        fail: '上传失败'
+  quizs:
+    nosource: "自编"
+    order: "题号"
+    full_score: "满分"
+    messages:
+      create:
+        success: "试题(ID: %{id})创建成功！"
+        fail: "试题(ID: %{id})创建失败！"
+      update:
+        success: "试题(ID: %{id})更新成功！"
+        fail: "试题(ID: %{id})更新失败！"
+      delete:
+        success: "试题(ID: %{id})删除成功！"
+        fail: "试题(ID: %{id})删除失败！"
+      list:
+        invalid_version: "指定教材版本无效，请选择正确的科目，年级！"  
+        invalid_type: "指定题型无效，请选择正确的科目！"
+        invalid_params: "检索条件无效：\n(%{message})"
+        success: "获取试题列表成功！"
+        fail: "获取试题列表失败！"
+  reports:
+    none: "无"
+    total: "总体情况"
+    generic_url: "报告链接"
+    grade_url: "年级报告链接"
+    lower_than: "低"
+    equal_to: "等"
+    higher_than: "高"
+    failed_level: "不及格"
+    good_level: "中等"
+    excellent_level: "优秀"
+  scores:
+    excel:
+      score_title: "成绩录入表"
+      teacher_password_title: "老师的用户名密码"
+      pupil_password_title: "学生的用户名密码"
+    messages:
+      info:
+        old_user: "用户已存在，请使用当前密码"
+        correct_score: "可输入分值范围: %{min} 到 %{max} 之间的数值"
+      warn:
+        score: "请注意:"
+      error:
+        wrong_input: "错误的输入"
+        unknown: "用户未生成，发生未知错误"
+
+  #微信使用labels
+  wx_commons:
+    messages:
+      info:
+
+      warn:
+        invalid_params: "参数无效！"
+      error:
+  wx_users:
+    messages:
+      info:
+        wx_binded: "您的微信账户与三维题库账户绑定成功！"
+
+      warn:
+        not_wx_user: "非有效微信用户!"
+        invalid_pupil: "请确认此学生账户是否存在"
+        invalid_binding_params: "您的微信绑定参数无效！"
+        invalid_wx_user: "你的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
+      error:
+        wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
+
+  wx_papers:
+    messages:
+      info:
+        get_success: "成功获取试卷."
+        no_paper: "未找到合适的试卷."
+      warn:
+
+      error:
+  wx_reports:
+    messages:
+      info:
+        got_report: "成功获取您的报告！"
+        no_report: "您的报告尚未生成。"
+      warn:
+
+      error:
+        got_report_failed: "无法获得您的报告，请联系管理员。"
+  wx_scores:
+    messages:
+      info:
+        save_success: "成绩保存成功。"
+      warn:
+        no_quizs: "发生未知错误，未收到任何试题。"
+      error:
+        save_exception: "成绩保存中发生异常错误!"
+  online_tests:
+    messages:
+      info:
+        save_success: "成绩保存成功。"
+      warn:
+        no_quizs: "发生未知错误，未收到任何试题。"
+      error:
+        save_failed: "在线测试结果保存失败!"
+  #################
+
+  time:
+    formats:
+      default: "%Y-%m-%d %H:%M"
+      long: "%Y-%m-%d %H:%M:%S"
+
+  #字典库用label
+  dict:
+    unknown: "未知"
+    province: "省"
+    city: "市"
+    district: "区"
+    school: "学校"
+    school_number: "学校编号"
+    grade: "年级"
+    classroom: "班级"
+    subject_teacher: "学科教师"
+    head_teacher: "班主任"
+    teacher: "老师"
+    analyzer: "分析员"
+    pupil: "学生"
+    pupil_number: "学号"
+    name: "姓名"
+    sex: "性别"
+    knowledge: "知识"
+    skill: "技能"
+    ability: "能力"
+    text_version: "教材版本"
+    volume: "课本分册"
+    quiz_type: "题型"
+    difficulty: "难度系数"
+    paper_type: "试卷类型"
+    report_type: "报告类型"
+    year: "年份"
+    #教材版本
+    ren_jiao_ban: "人教版"
+    bei_shi_da_ban: "北师大版"
+    su_jiao_ban: "苏教版"
+    #学科
+    yu_web: "语文"
+    shu_xue: "数学"
+    ying_yu: "英语"
+    li_shi: "历史"
+    di_li: "地理"
+    wu_li: "物理"
+    hua_xue: "化学"
+    sheng_wu: "生物"
+    si_xiang_pin_de: "思想品德"
+    zheng_zhi: "政治"
+    xin_xi_ji_shu: "信息技术"
+    ji_shu: "技术"
+    #年级   
+    yi_nian_ji: "一年级"
+    er_nian_ji: "二年级"
+    san_nian_ji: "三年级"
+    si_nian_ji: "四年级"
+    wu_nian_ji: "五年级"
+    liu_nian_ji: "六年级"
+    qi_nian_ji: "七年级"
+    ba_nian_ji: "八年级"
+    jiu_nian_ji: "九年级"
+    gao_yi_nian_ji: "高一年级"
+    gao_er_nian_ji: "高二年级"
+    gao_san_nian_ji: "高三年级"
+    #班级
+    yi_ban: "一班"
+    er_ban: "二班"
+    san_ban: "三班"
+    si_ban: "四班"
+    wu_ban: "五班"
+    liu_ban: "六班"
+    qi_ban: "七班"
+    ba_ban: "八班"
+    jiu_ban: "九班"
+    shi_ban: "十班"
+    shi_yi_ban: "十一班"
+    shi_er_ban: "十二班"
+    shi_san_ban: "十三班"
+    shi_si_ban: "十四班"
+    shi_wu_ban: "十五班"
+    shi_liu_ban: "十六班"
+    shi_qi_ban: "十七班"
+    shi_ba_ban: "十八班"
+    shi_jiu_ban: "十九班"
+    er_shi_ban: "二十班"
+    er_shi_yi_ban: "二十一班"
+    er_shi_er_ban: "二十二班"
+    er_shi_san_ban: "二十三班"
+    er_shi_si_ban: "二十四班"
+    er_shi_wu_ban: "二十五班"
+    er_shi_liu_ban: "二十六班"
+    er_shi_qi_ban: "二十七班"
+    er_shi_ba_ban: "二十八班"
+    er_shi_jiu_ban: "二十九班"
+    san_shi_ban: "三十班"
+    #题型
+    ting_li_li_jie: "听力理解"
+    dan_xiang_xuan_ze: "单项选择"
+    wan_xing_tian_kong: "完形填空"
+    yue_du_li_jie: "阅读理解"
+    ci_yu_yun_yong: "词语运用"
+    bu_quan_dui_hua: "补全对话"
+    shu_mian_biao_da: "书面表达"
+    #分册
+    quan_yi_ce: "全一册"
+    shang_ce: "上册(春季)"
+    xia_ce: "下册(秋季)"
+    #必修
+    bi_xiu_1: "必修1"
+    bi_xiu_2: "必修2"
+    bi_xiu_3: "必修3"
+    bi_xiu_4: "必修4"
+    bi_xiu_5: "必修5"
+    #选修
+    xuan_xiu_1: "选修1"
+    xuan_xiu_2: "选修2"
+    xuan_xiu_3: "选修3"
+    xuan_xiu_4: "选修4"
+    xuan_xiu_5: "选修5"
+    xuan_xiu_6: "选修6"
+    xuan_xiu_7: "选修7"
+    xuan_xiu_8: "选修8"
+    #难度
+    rong_yi: "容易"
+    jiao_yi: "较易"
+    zhong_deng: "中等"
+    jiao_nan: "较难"
+    kun_nan: "困难"
+    #考试类型
+    qi_zhong_ce_shi: "期中测试"
+    qi_mo_ce_shi: " 期末测试"
+    mo_ni_ce_shi: "模拟测试"
+    yue_kao: "月考"
+    dan_yuan_ce_shi: "单元测试"
+    xiao_sheng_chu_ce_shi: "小升初测试"
+    xue_ke_neng_li_ce_ping: "学科能力测评"
+    #报告类型
+    ce_shi_zhen_duan_bao_gao: "测试诊断报告" 
+    xue_sheng_bao_gao: "学生报告"
+    ban_ji_bao_gao: "班级报告"
+    nan_ji_bao_gao: "年级报告"
+    qu_yu_bao_gao: "区域报告"
+    #年份  
+    2000_nian: "2000年"
+    2001_nian: "2001年"
+    2002_nian: "2002年"
+    2003_nian: "2003年"
+    2004_nian: "2004年"
+    2005_nian: "2005年"
+    2006_nian: "2006年"
+    2007_nian: "2007年"
+    2008_nian: "2008年"
+    2009_nian: "2009年"
+    2010_nian: "2010年"
+    2011_nian: "2011年"
+    2012_nian: "2012年"
+    2013_nian: "2013年"
+    2014_nian: "2014年"
+    2015_nian: "2015年"
+    2016_nian: "2016年"
+    #性别
+    nan: "男"
+    nv: "女"
+
+  managers:
+    node_structure: "教材版本"
+    checkpoint: "指标体系"
+    root_node: "根节点"
+
+  #定义active record表及属性的中文标示
+  activerecord:
+    models:
+      bank_checkpoint_ckp: "测评点表"
+      bank_ckp_comment: "测评点评价模版表"
+      bank_ckp_cube: "测评点立体交叉表"
+      bank_dic: "字典表"
+      bank_dic_item: "字典条目表"
+      bank_nodestructure: "课本结构树形表"
+      bank_papertag_ptg: "试卷标签"
+      bank_quiztag_qtg: "试题标签"
+      comment: "评论"
+      role: "角色"
+      user: "用户"
+      pupil: "学生"
+    attributes:
+      bank_checkpoint_ckp:
+        uid: "ID"
+        dimesion: "测评方面"
+        rid: "分组级别"
+        checkpoint: "测评点"
+        is_entity: "实体测评点"
+        desc: "测评内容"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_ckp_comment:
+        uid: "ID"
+        ckp_uid: "实体测评点"
+        ban_uid: "测评点_ID"
+        target: "考察对象"
+        template: "评价模板"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_ckp_cube:
+        nid: "ID"
+        ckp_uid_k: "知识点测评点"
+        ckp_uid_s: "技能测评点"
+        ckp_uid_a: "能力测评点"
+        crosstype: "交叉类型（0-10）" 
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_dic:
+        sid: "ID"
+        caption: "字典显示字"
+        desc: "描述"
+        bank_dic_item: "字典条目表"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_dic_item:
+        sid: "ID"
+        bank_dic: "字典表"
+        caption: "条目显示字"
+        desc: "描述"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_nodestructure:
+        uid: "ID"
+        subject: "学科"
+        version: "版本"
+        grade: "年级"
+        rid: "节点序号"
+        node: "单元／章节"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_node_catalogs:
+         node: '名称'
+      bank_node_catalog:
+        node: '名称'
+      bank_papertag_ptg:
+        sid: "ID"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_quiztag_qtg:
+        sid: "ID"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      role:
+        name: "名字"
+        desc: "描述"
+        permissions: "权限"
+        created_at: "生成时间"
+        updated_at: "更新时间"
+      user:
+        name: "用户名"
+        email: "邮箱"
+        phone: "手机号"
+        qq: "QQ号"
+        wechat: "微信号"
+        password: "密码"
+        password_confirmation: "密码确认"
+        role: "角色" 
+        current_sign_in_at: "当前登录时间" 
+        last_sign_in_at: "最后登录时间"
+        sign_in_count: "登录次数"
+        created_at: "生成时间"
+        updated_at: "更新时间"
+      analyzer:
+        name: "姓名"
+        subject: "学科"
+      teacher:
+        name: "姓名"
+        subject: "学科"
+        school: "学校"
+      pupil:
+        name: "姓名"
+        grade: "年级"
+        classroom: "班级"
+        school: "学校"
+    errors:
+      messages:        
+        inclusion: "不包含于列表中"
+        exclusion: "是保留关键字"
+        invalid: "是无效的"
+        confirmation: "与确认值不匹配"
+        accepted: "必须是可被接受的"
+        empty: "不能留空"
+        blank: "不能为空字符"
+        too_long: "过长（最长为 %{count} 个字符）"
+        too_short: "过短（最短为 %{count} 个字符）"
+        wrong_length: "长度非法（必须为 %{count} 个字符）"
+        taken: "已经被使用"
+        not_a_number: "不是数字"
+        not_an_integer: "必须是整数"
+        greater_than: "必须大于 %{count}"
+        greater_than_or_equal_to: "必须大于或等于 %{count}"
+        equal_to: "必须等于 %{count}"
+        less_than: "必须小于 %{count}"
+        less_than_or_equal_to: "必须小于或等于 %{count}"
+        odd: "必须为单数"
+        even: "必须为双数"
+        record_invalid: "校验失败: %{errors}"
+
+  # active admin使用的默认标示
+  active_admin:
+    dashboard: "控制面板"
+    dashboard_welcome:
+      welcome: "欢迎使用Active Admin. 这是默认的控制面板页."
+      call_to_action: "若要添加新的面板内容, 请修改 'app/admin/dashboard.rb'"
+    view: "查看"
+    edit: "编辑"
+    delete: "删除"
+    delete_confirmation: "确定删除?"
+    new_model: "新建%{model}"
+    edit_model: "编辑%{model}"
+    delete_model: "删除%{model}"
+    details: "%{model}详情"
+    cancel: "取消"
+    empty: "清空"
+    previous: "上一个"
+    next: "下一个"
+    download: "下载:"
+    has_many_new: "新建一个%{model}"
+    has_many_delete: "删除"
+    has_many_remove: "清除"
+    filters:
+      buttons:
+        filter: "过滤"
+        clear: "清除条件"
+      predicates:
+        contains: "包含"
+        equals: "等于"
+        starts_with: "开头"
+        ends_with: "完与"
+        greater_than: "大于"
+        less_than: "小于"
+    status_tag:
+      "yes": "是的"
+      "no": "无"
+    main_content: "请执行 %{model}#main_content 来显示内容."
+    logout: "退出"
+    powered_by: "Powered by %{active_admin} %{version}"
+    sidebars:
+      filters: "所有条件"
+    pagination:
+      empty: "暂时没有%{model}"
+      one: "显示 <b>1</b> %{model}"
+      one_page: "显示 <b>所有 %{n}</b> %{model}"
+      multiple: "显示所有 <b>%{total}</b> %{model}中的<b>%{from}&nbsp;-&nbsp;%{to}</b> 条"
+      multiple_without_total: "%{model}中的<b>%{from}&nbsp;-&nbsp;%{to}</b> 条"
+      entry:
+        one: "条目"
+        other: "条目"
+    any: "任何"
+    blank_slate:
+      content: "暂时还没有%{resource_name}."
+      link: "新建一个"
+    dropdown_actions:
+      button_label: "行动"
+    batch_actions:
+      button_label: "批处理"
+      default_confirmation: "你确定你要这样做？"
+      delete_confirmation: "你确定要删除所有%{plural_model}?"
+      succesfully_destroyed:
+        one: "成功删除 1 %{model}"
+        other: "成功删除 %{count} %{plural_model}"
+      selection_toggle_explanation: "(切换选择)"
+      link: "新建一个"
+      action_label: "%{title} 被选中"
+      labels:
+        destroy: "删除"
+    comments:
+      body: "内容"
+      author: "作者"
+      title: "评论"
+      add: "添加评论"
+      resource: "资源"
+      no_comments_yet: "暂时没有评论"
+      title_content: "(%{count})条评论"
+      errors:
+        empty_text: "评论保存失败，内空不能为空."
+    devise:
+      username:
+        title: "用户名"
+      email:
+        title: "邮箱"
+      subdomain:
+        title: "子域"
+      password:
+        title: "密码"
+      login:
+        title: "登录"
+        remember_me: "记住我"
+        submit: "登录"
+      reset_password:
+        title: "忘记了密码？"
+        submit: "重置我的密码"
+      unlock:
+        title: "重新发送送解锁命令"
+        submit: "重新发送送解锁命令"
+      resend_confirmation_instructions:
+        title: " 重新发送确认指示"
+        submit: " 重新发送确认指示"
+      links:
+        sign_in: "登录"
+        forgot_your_password: "忘记了密码？"
+        sign_in_with_omniauth_provider: "登入%{provider}"
+    access_denied:
+      message: "您无权处理此操作"
+
+  # 页面用label
+  page:
+    site_name: '三维题库系统'
+    login: '登录'
+    register: '注册'
+    edit: '编辑'
+    del: '删除'
+    cancel: '取消'
+    complete: '完成'
+    confirm: '确定'
+    save: "保存"
+    submit: '提交'
+    del_confirm: '你确定要删除么？'
+    warning: '警告'
+    close: '关闭'
+    next: '下一步'
+    captcha: '验证码'
+    input_captcha: '请输入验证码'
+    menu:
+      home: '首页'
+      librarys: '三维题库'
+      auto_paper: '智能组卷'
+      score_report: '成绩报告'
+      online_test: '在线测试'
+      simple_report: '简化版'
+      professional_report: '专业版'
+    sign_up:
+      name: '创见教育未来'
+      email_placeholder: '请输入邮箱地址'
+      password_placeholder: '请输入8位以上密码'
+      nickname: '昵称'
+      register_button: '立即注册'
+      direct_login: '如果您已经有账号，请直接'
+    sign_in:
+      login_placeholder: '请输入用户名／邮箱／电话'
+      remember_me: '记住我'
+      forgot_password: '找回密码'
+      other: '其他方式登录'
+      qq: 'QQ登录'
+      weixin: '微信登录'
+      sian: '新浪微博登录'
+      direct_register: '如果您没有账号，请'
+    user_left_menu:
+      users: '个人主页'
+      exam_papers: '我的卷库'
+      quizs: '我的题库'
+      online_tests: '在线测试'
+      pupils: '我的学生'
+      sys_msgs: '系统消息'
+      logout: '退出登录'
+      personal_center: '个人中心'
+      account_setting: '账号设置'
+      my_home: '我的主页'
+      my_report: "我的报告"
+      my_paper: "我的试卷"
+      test_report: '测试报告'
+      my_pupil: '我的学生'
+      my_log: '我的日志'
+      edit_password: '修改密码'
+    user_left_menu_in_account_binding:
+      registrations: '修改密码'
+      profiles: '账号绑定'
+    user:
+      login_placeholder: '请您输入已注册的手机/邮箱'
+      current_password: '原密码'
+      password: '新密码'
+      password_confirmation: '新密码确认'
+      confirm_name: '确认账号'
+      security_validate: '安全验证'
+      reset_password: '重置密码'
+      password_placeholder: '请输入6-19位字母、数字或符号'
+      binding: '绑定'
+      unbinding: '解绑'
+      modify: '修改'
+      binding_mobile: '绑定手机号'
+      unbinding_mobile: '解绑手机号'
+      binding_email: '绑定邮箱'
+      unbinding_email: '解绑邮箱'
+
+    paper:
+      add_paper: "添加试卷"
+      save: "保存"
+      check: "检查"
+      submit: "提交"
+      download: '下载文件'
+      select_score_tip: '请选择有学生成绩的excel'
+      upload_score: '上传成绩表'
+      score: '成绩表'
+    pupil:
+      basic_info: '个人信息'
+
+    quiz:
+      add: '增加试题'
+      add_analysis: '添加'
+      source: '试题来源'
+      view: '查看答案与解析'
+      touble: '试题难度'
+      view_count: '浏览次数'
+      edit: '编辑'
+      del: '删除'
+      question: '试题'
+      answer: '答案'
+      basic_info: '基本信息'
+      subject: '科目'
+      grade: '年级'
+      version: '教材版本'
+      cat: '题型'
+      trouble: '难度预估'
+      answer_desc: '请在此输入答案说明（可选）'
+      analysis: '分析'
+      score_point: '得分点'
+      small_score: '小分'
+      subjective_item: '主观题'
+      objective_item: '客观题'
+      tip_objective_item: '提示：默认为客观题'
+      cancel: '取消'
+      complete: '完成'
+      three_dimensiona_digital_analysis: '三维解析'
+      inspect_point: '考察点'
+      save: '试题入库'
+      search_placeholder: '请输入关键字进行搜索'
+
+
+

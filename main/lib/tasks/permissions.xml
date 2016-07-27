@@ -1,0 +1,13 @@
+<permissions>
+<controller name="Item">
+ <action name="index" />
+ <action name="new" />
+ <action name="create" />
+</controller>
+<controller name="Product">
+ <action name="index" />
+ <action name="new" />
+ <action name="create" />
+</controller>
+</permissions>
+

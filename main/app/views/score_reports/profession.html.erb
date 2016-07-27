@@ -1,0 +1,1256 @@
+<div id="frontpage" class="page clearfix">
+
+	<section>
+		<header class="clearfix">
+			<h2><a href="/"></a></h2>
+			<h1><b><i></i>英语<i></i></b>学习诊断报告
+				<span>学生个人及测试信息</span>
+			</h1>
+		</header>
+
+		<section>
+			<div id="basicinfo" class="clearfix">
+				<ul>
+					<li><label>姓名：</label>王晓明</li>
+					<li><label>性别：</label>男</li>
+					<li><label>区域：</label>陕西省 - 西安市</li>
+					<li><label>学校：</label>西安交通大学附中</li>
+					<li><label>年级：</label>七年级八班</li>
+					<li><label>电话：</label>18686786600</li>
+					<li><label>出生日期：</label>2007.6.7</li>
+				</ul>
+				<ul>
+					<li><label>测试科目：</label>英语</li>
+					<li><label>测试类型：</label>期中</li>
+					<li><label>测试日期：</label>2016.4.5</li>
+					<li><label>测试时长：</label>60分钟</li>
+				</ul>
+			</div>
+			<div id="diagnosis">
+				<h3>诊断 <small>（本次测试总体表现如下）</small></h3>
+				<div class="wrap">
+					<h4>最佳表现</h4>
+					<p class="text-muted">
+						<b>与自身相比，表现最佳的方面有：</b>
+						知识：对话<br>
+						技能：理解（听）<br>
+						能力：语言理解
+					</p>
+					<p class="text-muted">
+						<b>与群体相比，表现最佳的方面有：</b>
+						知识：对话<br>
+						技能：理解（听）<br>
+						能力：语言理解
+					</p>
+
+					<h4>问题发现</h4>
+					<p class="text-muted">
+						<b>低于年级平均水平较多的方面是：</b>
+						知识：文章、写作<br>
+						技能：分析和理解（读）<br>
+						能力：人际理解
+					</p>
+
+					<h4>原因分析</h4>
+					<p>
+						1. 由于人际理解能力发展不足，无法准确理解作者意图或观点；<br>
+						2. 推理性语言理解能力发展不足。
+					</p>
+				</div>
+			</div>
+			<div id="proposal">
+				<h3>改进建议</h3>
+				<div class="wrap">
+					<p>
+						1. 提高词汇量，多阅读英文文章或作品；<br>
+						2. 多做需要分析句子结构的题目；<br>
+						3. 多做和推理、分析作者思想情感有关的题目。
+					</p>
+				</div>
+			</div>
+		</section>
+
+	</section>
+
+	<section class="center">
+
+		<ul>
+			<li></li>
+			<li class="middle"></li>
+			<li class="bottom"></li>
+		</ul>
+
+		<div id="knowledge" style="width:400px;height:300px;"></div>
+		<script type="text/javascript">
+			// 基于准备好的dom，初始化echarts实例
+			var myChart = echarts.init(document.getElementById('knowledge'));
+
+			// 指定图表的配置项和数据
+			var option = {
+				color: ['#EB595A','#0087D4'],
+				title: {
+					text: '知识', textStyle: {color:'#0092ff',fontWeight:'100',fontSize:24},left:'30'
+				},
+				tooltip: {},
+				legend: {
+					right: '0',
+					orient: 'vertical',
+					itemWidth: 30,
+					itemHeight: 3,
+					textStyle: {fontSize: 14},
+					data: ['个人得分率', '年级平均水平'],
+				},
+				grid: {top:'10%',containLabel:true},
+				textStyle: {color: '#333', fontSize:16},
+				radar: {
+					indicator: [
+					{ name: '词汇', max: 100},
+					{ name: '作文', axisLabel: {show:true,margin:20} ,max: 100},
+					{ name: '文章', max: 100},
+					{ name: '对话', max: 100},
+					{ name: '句', max: 100}
+					],
+					center: ['50%', '60%'],
+					splitNumber: 2,
+					splitArea: {
+						areaStyle: {
+							color: ['#fff']
+						}
+					}
+				},
+				series: [{
+					name: '知识',
+					type: 'radar',
+					data : [
+					{
+						value : [95.7, 82.5, 99.2, 81.4, 61.6],
+						name : '年级平均水平',
+						symbolSize: 0,
+						lineStyle: {normal:{width:0}},
+						areaStyle: {
+							normal: {
+								opacity: 0.65,
+								color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+								{
+									color: '#f9853f',
+									offset: 0
+								},
+								{
+									color: '#f22727',
+									offset: 1
+								}
+								])
+							}
+						},
+					},
+					{
+						value : [90.9, 75.0, 100, 65.4, 87.4],
+						name : '个人得分率',
+						symbol: 'image:///assets/score_reports/circle_blue.png',
+						symbolSize: 5,
+						lineStyle: {normal:{width:0}},
+						areaStyle: {
+							normal: {
+								opacity: 0.65,
+								color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+								{
+									color: '#5beeec',
+									offset: 0
+								},
+								{
+									color: '#0092ff',
+									offset: 1
+								}
+								])
+							}
+						}
+					}
+					]
+				}]
+			};
+
+			// 使用刚指定的配置项和数据显示图表。
+			myChart.setOption(option);
+		</script>
+
+		<div id="skill" style="width:400px;height:300px;margin:25px 0;padding:25px 0;border-top:1px solid #b5b5b5;border-bottom:1px solid #b5b5b5"></div>
+		<script type="text/javascript">
+	        // 基于准备好的dom，初始化echarts实例
+	        var myChart = echarts.init(document.getElementById('skill'));
+
+	        // 指定图表的配置项和数据
+	        var option = {
+	        	color: ['#EB595A','#0087D4'],
+	        	title: {
+	        		text: '技能', textStyle: {color:'#0092ff',fontWeight:'100',fontSize:24},left:'30'
+	        	},
+	        	tooltip: {},
+	        	legend: {
+	        		right: '0',
+	        		orient: 'vertical',
+	        		itemWidth: 30,
+	        		itemHeight: 3,
+	        		textStyle: {fontSize: 14},
+	        		data: ['个人得分率', '年级平均水平'],
+	        	},
+	        	grid: {top:'10%',containLabel:true},
+			    // toolbox: {
+			    //     feature: {
+			    //         saveAsImage: {}
+			    //     }
+			    // },
+			    textStyle: {color: '#333', fontSize:16},
+			    radar: {
+	                // shape: 'circle',
+	                indicator: [
+	                { name: '记忆', max: 100},
+	                { name: '表达', axisLabel: {show:true,margin:20} , max: 100},
+	                { name: '分析', max: 100},
+	                { name: '理解-读', max: 100},
+	                { name: '理解-听', max: 100}
+	                ],
+	                splitNumber: 2,
+	                splitArea: {
+	                	areaStyle: {
+	                		color: ['#fff']
+	                	}
+	                },
+	              },
+	              series: [{
+	              	name: '技能',
+	              	type: 'radar',
+	              	data : [
+	              	{
+	              		value : [91.7, 61.6, 79.8, 85.2, 89.5],
+	              		name : '年级平均水平',
+	              		symbolSize: 0,
+	              		lineStyle: {normal:{width:0}},
+	              		areaStyle: {
+	              			normal: {
+	              				opacity: 0.65,
+	              				color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+	              				{
+	              					color: '#f9853f',
+	              					offset: 0
+	              				},
+	              				{
+	              					color: '#f22727',
+	              					offset: 1
+	              				}
+	              				])
+	              			}
+	              		}
+	              	},
+	              	{
+	              		value : [83.3, 87.1, 50.0, 61.7, 94.6],
+	              		name : '个人得分率',
+	              		symbol: 'image:///assets/score_reports/circle_blue.png',
+	              		symbolSize: 5,
+	              		lineStyle: {normal:{width:0}},
+	              		areaStyle: {
+	              			normal: {
+	              				opacity: 0.65,
+	              				color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+	              				{
+	              					color: '#5beeec',
+	              					offset: 0
+	              				},
+	              				{
+	              					color: '#0092ff',
+	              					offset: 1
+	              				}
+	              				])
+	              			}
+	              		}
+	              	}
+	              	]
+	              }]
+	            };
+
+	        // 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+	      </script>
+
+	      <div id="capacity" style="width:400px;height:300px;margin-top:50px;"></div>
+	      <script type="text/javascript">
+	        // 基于准备好的dom，初始化echarts实例
+	        var myChart = echarts.init(document.getElementById('capacity'));
+
+	        // 指定图表的配置项和数据
+	        var option = {
+	        	color: ['#EB595A','#0087D4'],
+	        	title: {
+	        		text: '能力', textStyle: {color:'#0092ff',fontWeight:'100',fontSize:24},left:'30'
+	        	},
+	        	tooltip: {},
+	        	legend: {
+	        		right: '0',
+	        		orient: 'vertical',
+	        		itemWidth: 30,
+	        		itemHeight: 3,
+	        		textStyle: {fontSize: 14},
+	        		data: ['个人得分率', '年级平均水平'],
+	        	},
+	        	grid: {top:'10%',containLabel:true},
+			    // toolbox: {
+			    //     feature: {
+			    //         saveAsImage: {}
+			    //     }
+			    // },
+			    textStyle: {color: '#333', fontSize:16},
+			    radar: {
+	                // shape: 'circle',
+	                indicator: [
+	                { name: '词汇辨析', max: 100},
+	                { name: '人际理解', axisLabel: {show:true,margin:20} , max: 100},
+	                { name: '逻辑分析', max: 100},
+	                { name: '语言理解', max: 100}
+	                ],
+	                splitNumber: 2,
+	                splitArea: {
+	                	areaStyle: {
+	                		color: ['#fff']
+	                	}
+	                },
+	              },
+	              series: [{
+	              	name: '能力',
+	              	type: 'radar',
+	              	data : [
+	              	{
+	              		value : [47.7, 85.2, 74.4, 80.1],
+	              		name : '年级平均水平',
+	              		symbolSize: 0,
+	              		lineStyle: {normal:{width:0}},
+	              		areaStyle: {
+	              			normal: {
+	              				opacity: 0.65,
+	              				color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+	              				{
+	              					color: '#f9853f',
+	              					offset: 0
+	              				},
+	              				{
+	              					color: '#f22727',
+	              					offset: 1
+	              				}
+	              				])
+	              			}
+	              		}
+	              	},
+	              	{
+	              		value : [36.7, 50.0 , 90.0, 73.2],
+	              		name : '个人得分率',
+	              		symbol: 'image:///assets/score_reports/circle_blue.png',
+	              		symbolSize: 5,
+	              		lineStyle: {normal:{width:0}},
+	              		areaStyle: {
+	              			normal: {
+	              				opacity: 0.65,
+	              				color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+	              				{
+	              					color: '#5beeec',
+	              					offset: 0
+	              				},
+	              				{
+	              					color: '#0092ff',
+	              					offset: 1
+	              				}
+	              				])
+	              			}
+	              		}
+	              	}
+	              	]
+	              }]
+	            };
+
+	        // 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+	      </script>
+
+	    </section>
+
+	    <!-- Large modal -->
+	    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	    	<div class="modal-dialog modal-lg" id="practice">
+	    		<div class="modal-content">
+	    			<div class="modal-header">
+	    				<button type="button" class="close glyphicon glyphicon-remove-circle" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+	    				<h4 class="modal-title">针对词法中的薄弱项，以下视频内容的学习和专项练习会有助于你的提高：</h4>
+	    			</div>
+
+	    			<!-- Nav tabs -->
+	    			<ul class="nav nav-tabs" role="tablist">
+	    				<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">视频学习</a><i></i></li>
+	    				<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">专项练习</a><i></i></li>
+	    				<li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">拓展阅读</a><i></i></li>
+	    			</ul>
+
+	    			<!-- Tab panes -->
+	    			<div class="tab-content">
+	    				<div role="tabpanel" class="tab-pane active" id="home">
+	    					<div class="row">
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior.vipabc.com</a>
+	    						</div>
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic1.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior.vipabc.com</a>
+	    						</div>
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic2.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior.vipabc.com</a>
+	    						</div>
+	    					</div>
+	    				</div>
+	    				<div role="tabpanel" class="tab-pane" id="profile">
+	    					<div class="row">
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior1.vipabc.com</a>
+	    						</div>
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic1.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior1.vipabc.com</a>
+	    						</div>
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic2.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior1.vipabc.com</a>
+	    						</div>
+	    					</div>
+	    				</div>
+	    				<div role="tabpanel" class="tab-pane" id="messages">
+	    					<div class="row">
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior2.vipabc.com</a>
+	    						</div>
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic1.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior2.vipabc.com</a>
+	    						</div>
+	    						<div class="col-xs-6 col-md-4">
+	    							<a href="#" class="thumbnail">
+	    								<img src="/assets/score_reports/pic2.jpg" alt="...">
+	    							</a>
+	    							<a href="#">http://junior2.vipabc.com</a>
+	    						</div>
+	    					</div>
+	    				</div>
+	    			</div>
+	    		</div>
+	    	</div>
+	    </div>
+
+	    <section>
+	    	<div id="knowledge_line" style="width:380px;height:300px;"></div>
+
+	    	<script type="text/javascript">
+	        // 基于准备好的dom，初始化echarts实例
+	        var myChart = echarts.init(document.getElementById('knowledge_line'));
+
+	        // 指定图表的配置项和数据
+	        var option = {
+	        	color: ['#333'],
+	        	title: {},
+	        	tooltip : {
+	        		trigger: 'item'
+	        	},
+	        	legend: {
+	        		data:['个人得分率'],
+	        		show:false,
+	        	},
+			    // toolbox: {
+			    //     feature: {
+			    //         saveAsImage: {}
+			    //     }
+			    // },
+			    grid: {
+			    	left: '13%',
+			    	right: '0',
+			    	bottom: '3%',
+			    	containLabel: true,
+			    },
+			    xAxis : [
+			    {
+			    	type : 'category',
+			    	name: '高于平均水平\n\n低于平均水平',
+			    	nameLocation: 'start',
+			    	splitLine: {show:false},
+			    	axisLabel: {show:false},
+			    	axisTick: {show:false},
+			    	data : ['','词音','词义','','词法','句','','地点','价格','态度','频率','家庭','个人','','记叙文','说明文','议论文','','非连续','']
+			    }
+			    ],
+			    yAxis : [
+			    {
+			    	type : 'value',
+			    	axisLine: {show:false},
+			    	axisTick: {show:false},
+			    	axisLabel: {formatter:'{value}%'},
+			    	splitNumber:5,
+			    	interval:10,
+			    }
+			    ],
+			    series : [
+			    {
+			    	name:'个人得分率-高于平均水平',
+			    	type:'line',
+			    	stack: '百分比',
+			    	symbol:'image:///assets/score_reports/circle_blue.png',
+			    	showSymbol:true,
+			    	showAllSymbol: true,
+			    	symbolSize:5,
+			    	lineStyle: {normal: {width:0}},
+			    	areaStyle: {
+			    		normal: {
+			    			color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			    				offset: 0,
+			    				color: '#3dacff'
+			    			}, {
+			    				offset: 1,
+			    				color: '#b1deff'
+			    			}])
+			    		}},
+			    		data:[
+			    		{value:0,symbolSize:0},
+			    		{value:0.8,label:{normal:{show:true}}},
+			    		{value:4.5,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:32,label:{normal:{show:true}}},
+			    		{value:2.0,label:{normal:{show:true}}},
+			    		{value:4.2,label:{normal:{show:true}}},
+			    		{value:12.0,label:{normal:{show:true}}},
+			    		{value:25.0,label:{normal:{show:true}}},
+			    		{value:6.0,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:2.0,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0},
+			    		],
+			    		hoverAnimation: false,
+			    		LegendHoverLink: true,
+			    		label: {normal:{show:true,formatter:'{b}'}}
+			    	},
+			    	{
+			    		name:'个人得分率-低于平均水平',
+			    		type:'line',
+			    		stack: '百分比',
+			    		symbol:'image:///assets/score_reports/circle_red.png',
+			    		showSymbol:true,
+			    		showAllSymbol: true,
+			    		symbolSize:0,
+			    		lineStyle: {normal: {width:0}},
+			    		areaStyle: {
+			    			normal: {
+			    				color: new echarts.graphic.LinearGradient(0,0, 0,1, [{
+			    					offset: 0,
+			    					color: '#fff'
+			    				}, {
+			    					offset: 1,
+			    					color: '#f7726f'
+			    				}])
+			    			}},
+			    			data:[
+			    			{value:0,symbolSize:0},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,symbolSize:0},
+			    			{value:-25.8,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:-7.5,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:0,symbolSize:0},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,symbolSize:0},
+			    			{value:-29.2,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:-35.8,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:-21,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:0,symbolSize:0},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,symbolSize:0}
+			    			],
+			    			hoverAnimation: false,
+			    			LegendHoverLink: true,
+			    			label: {normal:{show:true,formatter:'{b}'}}
+			    		}
+			    		]
+			    	};
+
+	        // 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+	        myChart.on('click', function (params) {
+				// window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+				$('.bs-example-modal-lg').modal('show');
+			})
+		</script>
+
+		<div id="skill_line" style="width:380px;height:300px;margin:25px 0;padding:25px 0;border-top:1px solid #b5b5b5;border-bottom:1px solid #b5b5b5"></div>
+		<script type="text/javascript">
+	        // 基于准备好的dom，初始化echarts实例
+	        var myChart = echarts.init(document.getElementById('skill_line'));
+
+	        // 指定图表的配置项和数据
+	        var option = {
+	        	color: ['#333'],
+	        	title: {},
+	        	tooltip : {
+	        		trigger: 'item'
+	        	},
+	        	legend: {
+	        		data:['个人得分率'],
+	        		show:false,
+	        	},
+			    // toolbox: {
+			    //     feature: {
+			    //         saveAsImage: {}
+			    //     }
+			    // },
+			    grid: {
+			    	left: '13%',
+			    	right: '0',
+			    	bottom: '3%',
+			    	containLabel: true,
+			    },
+			    xAxis : [
+			    {
+			    	type : 'category',
+			    	name: '高于平均水平\n\n低于平均水平',
+			    	nameLocation: 'start',
+			    	splitLine: {show:false},
+			    	axisLabel: {show:false},
+			    	axisTick: {show:false},
+			    	boundaryGap : true,
+			    	data : ['','(理解-听)\n匹配','信息提取','推理','(理解-读)\n匹配','','信息提取','推理','组织','归因','','表达','']
+			    }
+			    ],
+			    yAxis : [
+			    {
+			    	type : 'value',
+			    	axisLine: {show:false},
+			    	axisTick: {show:false},
+			    	axisLabel: {formatter:'{value}%'},
+			    	splitNumber:5,
+			    	interval:10,
+			    }
+			    ],
+			    series : [
+			    {
+			    	name:'个人得分率-高于平均水平',
+			    	type:'line',
+			    	stack: '百分比',
+			    	symbol:'image:///assets/score_reports/circle_blue.png',
+			    	showSymbol:true,
+			    	showAllSymbol:true,
+			    	symbolSize:5,
+			    	lineStyle: {normal: {width:0}},
+			    	areaStyle: {
+			    		normal: {
+			    			color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			    				offset: 0,
+			    				color: '#3dacff'
+			    			}, {
+			    				offset: 1,
+			    				color: '#b1deff'
+			    			}])
+			    		}},
+			    		data:[
+			    		{value:0,symbolSize:0},
+			    		{value:0.8,label:{normal:{show:true}}},
+			    		{value:0.2,label:{normal:{show:true}}},
+			    		{value:23.3,label:{normal:{show:true}}},
+			    		{value:4.7,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:25.5,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0}
+			    		],
+			    		label: {normal:{show:true,formatter:'{b}'}},
+			    	},
+			    	{
+			    		name:'个人得分率-低于平均水平',
+			    		type:'line',
+			    		stack: '百分比',
+			    		symbol:'image:///assets/score_reports/circle_red.png',
+			    		showSymbol:true,
+			    		showAllSymbol:true,
+			    		symbolSize:0,
+			    		lineStyle: {normal: {width:0}},
+			    		areaStyle: {
+			    			normal: {
+			    				color: new echarts.graphic.LinearGradient(0,0, 0,1, [{
+			    					offset: 0,
+			    					color: '#fff'
+			    				}, {
+			    					offset: 1,
+			    					color: '#f7726f'
+			    				}])
+			    			}},
+			    			data:[
+			    			{value:0,symbolSize:0},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,symbolSize:0},
+			    			{value:-0.9,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:-30.6,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:-24.4,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:-35.2,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:0,symbolSize:0},
+			    			{value:0,symbolSize:0},
+			    			{value:0,symbolSize:0}
+			    			],
+			    			label: {normal:{show:true,formatter:'{b}'}}
+			    		}
+			    		]
+			    	};
+
+	        // 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+	        myChart.on('click', function (params) {
+				// window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+				$('.bs-example-modal-lg').modal('show');
+			})
+		</script>
+
+		<div id="capacity_line" style="width:380px;height:300px;"></div>
+		<script type="text/javascript">
+	        // 基于准备好的dom，初始化echarts实例
+	        var myChart = echarts.init(document.getElementById('capacity_line'));
+
+	        // 指定图表的配置项和数据
+	        var option = {
+	        	color: ['#333'],
+	        	title: { },
+	        	tooltip : {
+	        		trigger: 'item'
+	        	},
+	        	legend: {
+	        		data:['个人得分率'],
+	        		show:false,
+	        	},
+			    // toolbox: {
+			    //     feature: {
+			    //         saveAsImage: {}
+			    //     }
+			    // },
+			    grid: {
+			    	left: '13%',
+			    	right: '0',
+			    	bottom: '3%',
+			    	containLabel: true,
+			    },
+			    xAxis : [
+			    {
+			    	type : 'category',
+			    	name: '高于平均水平\n\n低于平均水平',
+			    	nameLocation: 'start',
+			    	splitLine: {show:false},
+			    	axisLabel: {show:false},
+			    	axisTick: {show:false},
+			    	boundaryGap : true,
+			    	data : ['','匹配性','','推理性','','结构性','','作者理解','']
+			    }
+			    ],
+			    yAxis : [
+			    {
+			    	type : 'value',
+			    	axisLine: {show:false},
+			    	axisTick: {show:false},
+			    	axisLabel: {formatter:'{value}%'},
+			    	splitNumber:5,
+			    	interval:10,
+			    }
+			    ],
+			    series : [
+			    {
+			    	name:'个人得分率-高于平均水平',
+			    	type:'line',
+			    	stack: '百分比',
+			    	symbol:'image:///assets/score_reports/circle_blue.png',
+			    	showSymbol:true,
+			    	showAllSymbol:true,
+			    	symbolSize:5,
+			    	lineStyle: {normal: {width:0}},
+			    	areaStyle: {
+			    		normal: {
+			    			color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+			    				offset: 0,
+			    				color: '#3dacff'
+			    			}, {
+			    				offset: 1,
+			    				color: '#b1deff'
+			    			}])
+			    		}},
+			    		label: {normal:{show:true,formatter:'{b}'}},
+			    		data:[
+
+			    		{value:0,symbolSize:0},
+			    		{value:13,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:26,label:{normal:{show:true}}},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0},
+			    		{value:0,symbolSize:0}
+			    		]
+			    	},
+			    	{
+			    		name:'个人得分率-低于平均水平',
+			    		type:'line',
+			    		stack: '百分比',
+			    		symbol:'image:///assets/score_reports/circle_red.png',
+			    		showSymbol:true,
+			    		showAllSymbol:true,
+			    		symbolSize:0,
+			    		lineStyle: {normal: {width:0}},
+			    		areaStyle: {
+			    			normal: {
+			    				color: new echarts.graphic.LinearGradient(0,0, 0,1, [{
+			    					offset: 0,
+			    					color: '#fff'
+			    				}, {
+			    					offset: 1,
+			    					color: '#f7726f'
+			    				}])
+			    			}},
+			    			label: {normal:{show:true,formatter:'{b}'}},
+			    			data:[
+			    			{value:0,symbolSize:0},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,symbolSize:0},
+			    			{value:-14,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:0,symbolSize:0},
+			    			{value:0,label:{normal:{show:false}}},
+			    			{value:0,symbolSize:0},
+			    			{value:-14,symbolSize:5,label:{normal:{position:'bottom',textStyle:{color:'#333'}}}},
+			    			{value:0,symbolSize:0}
+			    			]
+			    		}
+			    		]
+			    	};
+
+	        // 使用刚指定的配置项和数据显示图表。
+	        myChart.setOption(option);
+	        myChart.on('click', function (params) {
+				// window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(params.name));
+				$('.bs-example-modal-lg').modal('show');
+			})
+		</script>
+	</section>
+
+</div>
+
+<div id="backpage" class="page clearfix">
+	<section>
+		<table>
+			<caption>知 识</caption>
+			<tr>
+				<th class="col1 colbg">知识百<br>分等级</th>
+				<th class="col2" rowspan="2">个人<br>得分<br>率</th>
+				<th class="col3" rowspan="2">年级<br>平均<br>水平</th>
+				<th class="col4" rowspan="2">得分<br>率差<br>值</th>
+				<th class="col5" rowspan="2">满分</th>
+				<th class="col6" rowspan="2">答对<br>考点</th>
+			</tr>
+			<tr>
+				<th class="bluebg">17.9</th>
+			</tr>
+			<tr>
+				<td class="colbg">词汇<small>(小计)</small></td>
+				<td class="rowbg">90.9</td>
+				<td class="rowbg">95.7</td>
+				<td class="rowbg warning">-4.8</td>
+				<td class="rowbg">11</td>
+				<td class="rowbg">10</td>
+			</tr>
+			<tr>
+				<td>词音</td>
+				<td>100</td>
+				<td>99.2</td>
+				<td>0.8</td>
+				<td>5</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td>词义</td>
+				<td>100</td>
+				<td>99.5</td>
+				<td>4.5</td>
+				<td>3</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>词法</td>
+				<td>66.7</td>
+				<td>92.5</td>
+				<td class="warningbg">-25.8</td>
+				<td>3</td>
+				<td>2</td>
+			</tr>
+			<tr>
+				<td class="colbg">句<small>(小计)</small></td>
+				<td class="rowbg">75</td>
+				<td class="rowbg">82.5</td>
+				<td class="rowbg warning">-7.5</td>
+				<td class="rowbg">4</td>
+				<td class="rowbg">3</td>
+			</tr>
+			<tr>
+				<td>句法</td>
+				<td>75</td>
+				<td>82.5</td>
+				<td class="warning">-7.5</td>
+				<td>4</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td class="colbg">对话<small>(小计)</small></td>
+				<td class="rowbg">100</td>
+				<td class="rowbg">99.2</td>
+				<td class="rowbg">18</td>
+				<td class="rowbg">22</td>
+				<td class="rowbg">13</td>
+			</tr>
+			<tr>
+				<td>地点</td>
+				<td>100</td>
+				<td>68.0</td>
+				<td>32.0</td>
+				<td>1.5</td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<td>价格</td>
+				<td>100</td>
+				<td>98.0</td>
+				<td>2.0</td>
+				<td>1.5</td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<td>态度</td>
+				<td>100</td>
+				<td>95.8</td>
+				<td>4.2</td>
+				<td>4.5</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>频率</td>
+				<td>100</td>
+				<td>88.0</td>
+				<td>12.0</td>
+				<td>1.5</td>
+				<td>1</td>
+			</tr>
+			<tr>
+				<td>家庭</td>
+				<td>100</td>
+				<td>75.0</td>
+				<td>25.0</td>
+				<td>3</td>
+				<td>2</td>
+			</tr>
+			<tr>
+				<td>个人</td>
+				<td>100</td>
+				<td>94.0</td>
+				<td>6.0</td>
+				<td>10</td>
+				<td>5</td>
+			</tr>
+			<tr>
+				<td class="colbg">文章<small>(小计)</small></td>
+				<td class="rowbg">65.4</td>
+				<td class="rowbg">81.4</td>
+				<td class="rowbg warning">-16.0</td>
+				<td class="rowbg">68</td>
+				<td class="rowbg">23</td>
+			</tr>
+			<tr>
+				<td>记叙文</td>
+				<td>57.6</td>
+				<td>86.6</td>
+				<td class="warningbg">-29.2</td>
+				<td>33</td>
+				<td>10</td>
+			</tr>
+			<tr>
+				<td>说明文</td>
+				<td>50</td>
+				<td>85.8</td>
+				<td class="warningbg">-35.8</td>
+				<td>11</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>议论文</td>
+				<td>75.0</td>
+				<td>96.0</td>
+				<td class="warningbg">-21.0</td>
+				<td>16</td>
+				<td>6</td>
+			</tr>
+			<tr>
+				<td>非连续</td>
+				<td>100</td>
+				<td>98.9</td>
+				<td>2.0</td>
+				<td>8</td>
+				<td>4</td>
+			</tr>
+			<tr>
+				<td class="colbg">作文<small>(小计)</small></td>
+				<td class="rowbg">87.1</td>
+				<td class="rowbg">61.6</td>
+				<td class="rowbg">25.5</td>
+				<td class="rowbg">18</td>
+				<td class="rowbg">*</td>
+			</tr>
+		</table>
+	</section>
+
+	<section class="tablecenter">
+		<table>
+			<caption>技 能</caption>
+			<tr>
+				<th class="col1 colbg">技能百<br>分等级</th>
+				<th class="col2" rowspan="2">个人<br>得分<br>率</th>
+				<th class="col3" rowspan="2">年级<br>平均<br>水平</th>
+				<th class="col4" rowspan="2">得分<br>率差<br>值</th>
+				<th class="col5" rowspan="2">满分</th>
+				<th class="col6" rowspan="2">答对<br>考点</th>
+			</tr>
+			<tr>
+				<th class="bluebg">17.02</th>
+			</tr>
+			<tr>
+				<td class="colbg">认知-读<small>(小计)</small></td>
+				<td class="rowbg">83.3</td>
+				<td class="rowbg">91.7</td>
+				<td class="rowbg warnin">-8.4</td>
+				<td class="rowbg">6</td>
+				<td class="rowbg">5</td>
+				<tr>
+					<td class="colbg">理解-听<small>(小计)</small></td>
+					<td class="rowbg">94.6</td>
+					<td class="rowbg">89.5</td>
+					<td class="rowbg">5.1</td>
+					<td class="rowbg">28</td>
+					<td class="rowbg">19</td>
+				</tr>
+				<tr>
+					<td>匹配</td>
+					<td>100</td>
+					<td>99.2</td>
+					<td>0.8</td>
+					<td>5</td>
+					<td>5</td>
+				</tr>
+				<tr>
+					<td>信息提取</td>
+					<td>92.9</td>
+					<td>92.7</td>
+					<td>0.2</td>
+					<td>21</td>
+					<td>13</td>
+				</tr>
+				<tr>
+					<td>推理</td>
+					<td>100</td>
+					<td>76.7</td>
+					<td>23.3</td>
+					<td>2</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td class="colbg">理解-读<small>(小计)</small></td>
+					<td class="rowbg">61.7</td>
+					<td class="rowbg">85.2</td>
+					<td class="rowbg warningbg">-23.5</td>
+					<td class="rowbg">60</td>
+					<td class="rowbg">23</td>
+				</tr>
+				<tr>
+					<td>匹配</td>
+					<td>100</td>
+					<td>95.3</td>
+					<td>4.7</td>
+					<td>2</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>信息提取</td>
+					<td>87.5</td>
+					<td>88.4</td>
+					<td>-0.9</td>
+					<td>24</td>
+					<td>14</td>
+				</tr>
+				<tr>
+					<td>推理</td>
+					<td>41.2</td>
+					<td>71.8</td>
+					<td class="warningbg">-30.6</td>
+					<td>34</td>
+					<td>7</td>
+				</tr>
+				<tr>
+					<td class="colbg">分析<small>(小计)</small></td>
+					<td class="rowbg">50.0</td>
+					<td class="rowbg">79.8</td>
+					<td class="rowbg warningbg">-29.8</td>
+					<td class="rowbg">8</td>
+					<td class="rowbg">2</td>
+				</tr>
+				<tr>
+					<td>组织</td>
+					<td>50</td>
+					<td>74.4</td>
+					<td class="warningbg">-24.4</td>
+					<td>4</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td>归因</td>
+					<td>50</td>
+					<td>85.2</td>
+					<td class="warningbg">-35.2</td>
+					<td>4</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td class="colbg">表达<small>(小计)</small></td>
+					<td class="rowbg">87.1</td>
+					<td class="rowbg">61.6</td>
+					<td class="rowbg">25.5</td>
+					<td class="rowbg">18</td>
+					<td class="rowbg">*</td>
+				</tr>
+			</table>
+		</section>
+
+		<section>
+			<table>
+				<caption>能 力</caption>
+				<tr>
+					<th class="col1 colbg">能力百<br>分等级</th>
+					<th class="col2" rowspan="2">个人<br>得分<br>率</th>
+					<th class="col3" rowspan="2">年级<br>平均<br>水平</th>
+					<th class="col4" rowspan="2">得分<br>率差<br>值</th>
+					<th class="col5" rowspan="2">满分</th>
+					<th class="col6" rowspan="2">答对<br>考点</th>
+				</tr>
+				<tr>
+					<th class="bluebg">18.72</th>
+				</tr>
+				<tr>
+					<td class="colbg">词汇辨析</td>
+					<td class="rowbg">36.7</td>
+					<td class="rowbg">47.7</td>
+					<td class="rowbg warning">-11.0</td>
+					<td class="rowbg">3</td>
+					<td class="rowbg">*</td>
+				</tr>
+				<tr>
+					<td class="colbg">语言理解<small>(小计)</small></td>
+					<td class="rowbg">73.2</td>
+					<td class="rowbg">80.1</td>
+					<td class="rowbg warning">-10.9</td>
+					<td class="rowbg">91.5</td>
+					<td class="rowbg">42</td>
+				</tr>
+				<tr>
+					<td>匹配性</td>
+					<td>96.9</td>
+					<td>83.9</td>
+					<td>13</td>
+					<td>55.5</td>
+					<td>3</td>
+				</tr>
+				<tr>
+					<td>推理性</td>
+					<td>44.4</td>
+					<td>74.2</td>
+					<td class="warningbg">-29.8</td>
+					<td>36</td>
+					<td>8</td>
+				</tr>
+				<tr>
+					<td class="colbg">逻辑分析<small>(小计)</small></td>
+					<td class="rowbg">90.0</td>
+					<td class="rowbg">74.4</td>
+					<td class="rowbg">24.4</td>
+					<td class="rowbg">5</td>
+					<td class="rowbg">1</td>
+				</tr>
+				<tr>
+					<td>结构性</td>
+					<td>90.0</td>
+					<td>74.4</td>
+					<td>24.4</td>
+					<td>5</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td class="colbg">人际理解<small>(小计)</small></td>
+					<td class="rowbg">50.0</td>
+					<td class="rowbg">85.2</td>
+					<td class="rowbg warningbg">-35.2</td>
+					<td class="rowbg">5</td>
+					<td class="rowbg">1</td>
+				</tr>
+				<tr>
+					<td>作者理解</td>
+					<td>50.0</td>
+					<td>85.2</td>
+					<td class="warningbg">-35.2</td>
+					<td>5</td>
+					<td>1</td>
+				</tr>
+			</table>
+
+			<dl>
+				<dt>说明</dt>
+				<dd>
+					1. 带*的表示该指标不适用；<br>
+					2. 涂色的数值为低于平均水平20%以上的指标，需要特别关注。
+				</dd>
+			</dl>
+		</section>
+	</div>
+
+	<footer class="vernav"><a href="/score_reports/simple" class="btn btn-primary">简化版</a></footer>

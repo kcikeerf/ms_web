@@ -1,0 +1,40 @@
+<section>
+  <div class="container clearfix page">
+   <div class="page-header bb0">
+    <h2 class="text-center"><%= t('page.sign_in.forgot_password') %></h2>
+  </div>
+
+  <div class="steptitle">
+   <ul>
+     <li class="highlight"><span class="badge">1</span><%= t('page.user.confirm_name') %></li>
+     <li class="highlight"><span class="badge">2</span><%= t('page.user.security_validate') %></li>
+     <li><span class="badge">3</span><%= t('page.user.reset_password') %></li>
+   </ul>
+ </div>
+
+ <div class="page-body clearfix">
+   <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { id: 'changepassword', class: 'form-horizontal col-offset-4 password password_step_two', method: :post }) do |f| %>
+      <%= hidden_field_tag :type, @type %>
+       <div class="form-group">
+        <div class="row">
+          <%#= f.select :login, [@login], {}, { class: 'form-control' } %>
+          <%= f.text_field :login, value: @login, id: 'user_login_password', readonly: true, class: 'form-control' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row captcha">
+          <input type="text" class="form-control" name="auth_number" placeholder="<%= t('page.captcha') %>" />
+          <span>
+              <input class="btn btn-default" id="<%= @is_mobile ? 'send_sms_forgot_password' : 'send_email_forgot_password' %>" type="button" value="<%= @is_mobile ? '发送手机验证码' : '发送验证邮件' %>">
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <button type="submit" class="btn btn-default next"><%= t('page.next') %></button>
+        </div>
+      </div>
+  <% end %>
+</div>
+</div>
+</section>

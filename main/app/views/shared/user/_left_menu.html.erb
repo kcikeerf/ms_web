@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs" role="tablist">
+  <% left_panel_menus.each do |key, value| %>
+    <li role="presentation" class="<%= 'active' if action_name == key.to_s %>">
+      <i class="tooltip-arrow"></i>
+      <%= link_to t("page.user_left_menu.#{key}"), value %>
+    </li>
+  <% end %>
+</ul>

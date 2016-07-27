@@ -1,0 +1,26 @@
+<%= stylesheet_link_tag 'managers/checkpoints', media: 'all', 'data-turbolinks-track' => true %>
+<%= javascript_include_tag 'managers/subject_checkpoints', 'data-turbolinks-track' => true %>
+	<%= hidden_field_tag :subject_ckp, @subject %>
+	<%= hidden_field_tag :node_structure_uid, @node_structure_uid %>
+	<%= hidden_field_tag :node_catalog_uid, @node_catalog_uid %>
+	<a href="#" class="easyui-linkbutton save_button" data-options="iconCls:'icon-save'">保存</a>
+<div id="wrap">
+	<span id="knowledge_tree" class="ztree" style="display: block ; width: 30%; float: left;height: 650px; margin: 5px;"></span>
+	<span id="skill_tree" class="ztree" style="display: block; width: 30%; float: left; height: 650px; margin: 5px;"></span>
+	<span id="ability_tree" class="ztree" style="display: block; width: 30%; float: left;height: 650px;margin: 5px;"></span>
+
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var subject = $('#subject_ckp').val();
+		var node_uid = $('#node_structure_uid').val();
+		
+		if(subject == ''){
+			var catalog_uid = $('#node_catalog_uid').val();
+			get_volume_catalog_tree_data(node_uid, catalog_uid);
+		} else {
+			get_subject_volume_tree_data(subject, node_uid);
+		}
+		
+	})
+</script>

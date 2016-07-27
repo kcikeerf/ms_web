@@ -1,0 +1,203 @@
+<%= form_for @quiz, url: @quiz.new_record? ? single_quiz_save_quizs_path : single_quiz_update_quizs_path, html: {id: 'form'} do |f| %>
+  <%= hidden_field_tag :version_uid %>
+  <%= hidden_field_tag :str_id, @quiz.id unless @quiz.new_record? %>
+  <section>
+   <dl class="clearfix">
+    <dt><%= t('page.quiz.basic_info') %></dt>
+    <dd class="container-fluid">
+     <ul class="list-inline" id="basic_info">
+       <li class="col-md-4">
+         <label><%= t('page.quiz.subject') %>：</label>
+         <%= select_tag :subject, options_for_select(@subjects), include_blank: '--', class: 'form-control', required: true %>         
+       </li>
+       <li class="col-md-4">
+         <label><%= t('page.quiz.grade') %>：</label>
+         <%= select_tag :grade, '', include_blank: '--', class: 'form-control', required: true %>
+       </li>
+       <li class="col-md-4">
+         <label><%= t('page.quiz.version') %>：</label>
+         <%= select_tag :version, '', include_blank: '--', class: 'form-control', required: true %>
+         <%= hidden_field_tag :node_uid, @quiz.node_uid %>
+       </li>
+       <li class="col-md-4">
+         <label><%= t('page.quiz.cat') %>：</label>
+         <%= select_tag :cat, '', include_blank: '--', class: 'form-control', required: true %>
+       </li>
+       <li class="col-md-4">
+         <label><%= t('page.quiz.trouble') %>：</label>
+         <%= select_tag :levelword2, options_for_select(@difficulties, @quiz.levelword2), include_blank: true, class: 'form-control', required: true %>
+       </li>
+       <li class="col-md-12">
+         <label><%= t('page.quiz.source') %>：</label>
+         <input class="form-control" type="test" value="">
+       </li>
+       </ul>
+     </dd>
+   </dl>
+ </section>
+
+ <section>
+   <dl class="clearfix">
+    <dt><%= t('page.quiz.question') %></dt>
+    <dd class="container-fluid">
+     <textarea class="form-control" name="text" rows="3" id="TextArea1"><%= @quiz.text %></textarea>
+   </dd>
+ </dl>
+ <dl class="clearfix">
+  <dt><%= t('page.quiz.answer') %></dt>
+  <dd class="container-fluid">
+   <textarea class="form-control" name="answer" rows="3" id="TextArea2"><%= @quiz.answer %></textarea><br>
+   <textarea class="form-control" name="desc" rows="2" placeholder="<%= t('page.quiz.answer_desc') %>"><%=  @quiz.desc %></textarea>
+ </dd>
+</dl>
+
+<dl class="clearfix">
+  <dt><%= t('page.quiz.analysis') %></dt>
+  <dd class="container-fluid">
+
+    <div class="analyselist">
+    <% if @quiz.new_record? %>
+      <ul class="analyserow list-inline clearfix">
+        <li class="del" style="display: none;"><a href="javascript:void();">&times;</a></li>
+        <li class="first">
+          <p>
+          <label><%= t('page.quiz.score_point') %><span class="num"></span>：</label>
+          <textarea class="form-control" name="bank_qizpoint_qzps[][answer]" rows="2" placeholder="得分点标准答案"></textarea>
+          </p>
+          <p>
+            <label><%= t('page.quiz.small_score') %>：</label>
+            <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a), class: 'form-control' %>
+            <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" /> <%= t('page.quiz.subjective_item') %>
+              <input type="hidden" name="bank_qizpoint_qzps[][type]" value="option2" />
+          </p>
+          
+        </li>
+        <li class="line"></li>
+        <li class="last">
+          <label class="title">
+          	<%= t('page.quiz.three_dimensiona_digital_analysis') %>
+          	<!-- 点击按钮触发模态框 -->
+						<input type="button" id="AAA-btn" class="btn btn-primary btn-lg" data-toggle="modal" href="/checkpoints/dimesion_tree"
+						   			 value="点击">          
+						</label>
+          <p>
+            <span><label><%= t('dict.knowledge') %>：</label><input readonly  type="text" name="knowledge" class="form-control" placeholder="" data-toggle="modal" data-target="#commonDialog" href="/checkpoints/dimesion_tree"></span>
+            <span><label><%= t('dict.skill') %>：</label><input readonly type="text" name="skill" class="form-control" placeholder="" data-toggle="modal" data-target="#commonDialog" href="/checkpoints/dimesion_tree"></span>
+            <span><label><%= t('dict.ability') %>：</label><input readonly type="text" name="capacity" class="form-control" placeholder="" data-toggle="modal" data-target="#commonDialog" href="/checkpoints/dimesion_tree"></span>
+          </p>
+        </li>
+      </ul>
+      <% else %>
+        <% @quiz_hash_data[:bank_qizpoint_qzps].each_with_index do |qzp, i| %>
+          <ul class="analyserow list-inline clearfix">
+          <li class="del" style="display: <%= i < 1 ? 'none' : 'list-item' %>"><a href="javascript:;">&times;</a></li>
+          <li class="first">
+            <p>
+            <label><%= t('page.quiz.score_point') %><span class="num"><%= i + 1 %></span>：</label>
+            <textarea class="form-control" name="bank_qizpoint_qzps[][answer]" rows="2" placeholder="得分点标准答案"><%= qzp['answer'] %></textarea> 
+            </p>
+            <p>
+              <label><%= t('page.quiz.small_score') %>：</label>
+              <%= select_tag 'bank_qizpoint_qzps[][score]', options_for_select((1..5).to_a, qzp['score'].try(:to_i)), class: 'form-control' %>
+              <input type="checkbox" id="inlineCheckbox1" class="qizpoint_type" value="option1" /> <%= t('page.quiz.subjective_item') %>
+              <input type="hidden" name="bank_qizpoint_qzps[][type]" value="option2" />
+            </p>
+            
+          </li>
+          <li class="line"></li>
+          <li class="last">
+            <label class="title"><%= t('page.quiz.three_dimensiona_digital_analysis') %></label>
+            <p>
+              <span>
+                <label><%= t('dict.knowledge') %>：</label>
+                <input readonly  type="text" name="knowledge" class="form-control" value="<%= deal_checkpoint(qzp['bank_checkpoint_ckps'], 'knowledge') %>" data-toggle="modal" data-target=".bs-example-modal-lg">
+              </span>
+              <span>
+                <label><%= t('dict.skill') %>：</label>
+                <input readonly type="text" name="skill" class="form-control"  value="<%= deal_checkpoint(qzp['bank_checkpoint_ckps'], 'skill') %>"  data-toggle="modal" data-target=".bs-example-modal-lg">
+              </span>
+              <span>
+                <label><%= t('dict.ability') %>：</label>
+                <input readonly type="text" name="capacity" class="form-control"  value="<%= deal_checkpoint(qzp['bank_checkpoint_ckps'], 'ability') %>"  data-toggle="modal" data-target=".bs-example-modal-lg">
+              </span>
+              <% qzp['bank_checkpoint_ckps'].each do |ckp| %>
+                <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][deimesion]', ckp['deimesion'] %>
+                <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][rid]', ckp['rid'], class: 'dict_rid' %>
+                <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][uid]', ckp['uid'] %>
+                <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][checkpoint]', ckp['checkpoint'] %>
+              <% end %>
+            </p>
+          </li>
+        </ul>
+        <% end %>
+      <% end %>
+    </div>
+    <p class="add"><button class="btn btn-default" type="button"> <i>+</i> <%= t('page.quiz.add_analysis') %></button></p>
+    
+  </dd>
+</dl>
+</section>
+
+<footer class="confirm">
+  <input class="btn btn-default" type="button" value="<%= t('page.quiz.cancel') %>" onclick="url_to('<%= quiz_list_quizs_path %>');">
+  <input class="btn btn-primary" type="submit" value="<%= t('page.quiz.complete') %>" id="submit_form">
+</footer>
+<% end %>
+<!-- 考察点弹出层 -->
+<div id='myModal' class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+   <%= render 'point_tree' %>
+</div>
+<div id='hidden_analysis' style='display: none'>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][dimesion]' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][rid]', '', class: 'dict_rid' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][uid]' %>
+  <%= hidden_field_tag 'bank_qizpoint_qzps[][bank_checkpoint_ckps][][checkpoint]' %>
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var json_data = <%= raw @subjects_related_data.to_json %>;
+    var quiz_types_data = <%= raw @quize_types.to_json %>;
+    $("#subject").on("change", function(){
+      var $grades = $("#grade");
+      var $quiz_types = $("#cat");
+      $grades.find('option:gt(0)').remove();
+      $quiz_types.find('option:gt(0)').remove();
+      if(this.value == '') return false;
+      // grade and versions
+      var grades = json_data[this.value], index = 0;
+      $.each(grades.items, function(c, grade){
+        $grades.get(0).add(new Option(grade.label, c));
+      });
+      // quize_type
+      $.each(quiz_types_data[this.value], function(i, name) {
+        $quiz_types.get(0).add(new Option(name.label, name.type));
+      });
+
+    });
+
+    $("#grade").on("change", function(){
+      var subject = $("#subject").val();
+
+      var $versions = $("#version");
+
+      if(this.value == ""){
+        $versions.find('option:gt(0)').remove();
+        return false;
+      }
+      $versions.find('option:gt(0)').remove();
+      
+      $.each(json_data[subject].items[this.value].items, function(k, v){
+        $versions.append('<option uid="' + v.node_uid + '" value="' + k +  '">' + v.label + '</option>')//new Option(v.label, k))
+      })
+    })
+    <% unless @quiz.new_record? %>
+      $("#subject").val('<%= @quiz_hash_data[:subject] %>').trigger('change');
+      $("#grade").val('<%= @quiz_hash_data[:grade] %>').trigger('change');
+      $("#cat").val("<%= @quiz[:cat] %>");
+      $("#version").val("<%= @quiz_hash_data[:version] %>").change();
+      CKEDITOR.replace('TextArea1');
+      CKEDITOR.replace('TextArea2');
+    <% end %>
+  }) 
+
+</script>

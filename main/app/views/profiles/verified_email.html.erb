@@ -1,0 +1,53 @@
+<section>
+		<div class="container clearfix">
+			<!-- Nav tabs -->
+			<%= render 'shared/user/left_menu_in_account_binding' %>
+
+			  <!-- Tab panes -->
+			  <div class="tab-content">
+			    <div role="tabpanel" class="tab-pane active" id="BindingAccount">
+                
+					<div class="panel">
+
+					  <!-- 修改手机号 -->
+					  <h1 class="panel-heading bb0 clearfix">
+						  <a href="/profile/account_binding" class="btn btn-link pull-right">返回</a>
+						  修改邮箱
+                      </h1>
+					  <div class="panel-body b1">
+
+						  <div class="steptitle">
+							  <ul>
+								  <li class="highlight"><span class="badge">1</span>验证身份</li>
+								  <li><span class="badge">2</span>修改邮箱</li>
+								  <li><span class="badge">3</span>完成</li>
+							  </ul>
+						  </div>
+						  <%= simple_form_for(current_user, url: verified_email_profile_path, html: {class: 'form-horizontal col-offset-4 modifymobile', method: :post,id: "changepassword"}) do |f| %>
+						 
+					       <div class="form-group">
+					            <%= f.text_field :email, class: 'form-control'%>
+							  </div>
+							  <div class="form-group">
+								  <div class="captcha">
+									   <%= text_field_tag :email_auth_number, '', class: 'form-control', placeholder: '邮箱验证码' %>
+									  <span>
+										<input class="btn send" type="button" value="发送验证码" id="send_binding_email_auth_number" data-loading-text="发送中..." data-complete-text="重新获取" >
+									  </span>
+								  </div>
+							  </div>
+							  <div class="form-group">
+								<%= f.button :submit, '下一步',class: "btn btn-default next"%>
+							</div>
+							 <%= render 'shared/error_messages', target: current_user %>
+						<% end %>
+					  </div>
+
+					 </div>
+
+			    </div>
+
+			  </div>
+
+		</div>
+	</section>

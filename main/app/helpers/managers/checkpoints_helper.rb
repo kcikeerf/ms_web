@@ -1,0 +1,2 @@
+module Managers::CheckpointsHelper
+end

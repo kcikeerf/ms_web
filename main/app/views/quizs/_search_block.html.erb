@@ -1,0 +1,88 @@
+<div class="testbank_search_box" style='height:70px;'>
+		<%= form_tag quiz_list_quizs_path, method: :get, class: 'form-inline' do %>
+		<p>
+			<div class="form-group">
+				<label><%= t('page.quiz.subject') %>：</label>
+				<%= select_tag :subject, options_for_select(@subjects), include_blank: '--', class: 'form-control' %>
+			</div>
+			<div class="form-group">
+				<label><%= t('page.quiz.grade') %>：</label>
+				<%= select_tag :grade, '', include_blank: '--', class: 'form-control' %>
+			</div>
+			<div class="form-group">
+				<label><%= t('page.quiz.version') %>：</label>
+				<%= select_tag :version, '', include_blank: '--', class: 'form-control' %>
+			</div>
+			<div class="form-group">
+				<label><%= t('page.quiz.cat') %>：</label>	
+				<%= select_tag :cat, '', include_blank: '--', class: 'form-control' %>
+			</div>
+
+			<input type="text" name="keywords" value="<%= params[:keywords] %>" class='form-control' placeholder="<%= t('page.quiz.search_placeholder') %>" />
+			<%= submit_tag '提交', class: 'btn btn-default' %>
+		</p>
+		<% end %>
+
+</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    var json_data = <%= raw @subjects_related_data.to_json %>;
+    var quiz_types_data = <%= raw @quize_types.to_json %>;
+
+    $("#subject").on("change", function(){
+
+      var $grades = $("#grade");
+      var $quiz_types = $("#cat");
+
+      $grades.find('option:gt(0)').remove();
+      $quiz_types.find('option:gt(0)').remove();
+
+      if(this.value == '') return false;
+      
+      // grade and versions
+      var grades = json_data[this.value], index = 0;
+  
+      $.each(grades.items, function(c, grade){
+        $grades.get(0).add(new Option(grade.label, c));
+      });
+
+      // quize_type
+      $.each(quiz_types_data[this.value], function(i, name) {
+        $quiz_types.get(0).add(new Option(name.label, name.type));
+      });
+
+    });
+
+    $("#grade").on("change", function(){
+      var subject = $("#subject").val();
+
+      var $versions = $("#version");
+
+      if(this.value == ""){
+        $versions.find('option:gt(0)').remove();
+        return false;
+      }
+
+      $versions.find('option:gt(0)').remove();
+      
+      $.each(json_data[subject].items[this.value].items, function(k, v){
+        $versions.append('<option uid="' + v.node_uid + '" value="' + k +  '">' + v.label + '</option>')//new Option(v.label, k))
+      })
+    })
+    <% unless params[:subject].blank? %>
+    	$("#subject").val('<%= params[:subject] %>').trigger('change');
+    	$("#cat").val("<%= params[:cat] %>");
+    <% end %>
+
+    <% unless params[:grade].blank? %>
+    	$("#grade").val('<%= params[:grade] %>').trigger('change');
+    <% end %>
+
+    <% unless params[:version].blank? %>
+    	$("#version").val('<%= params[:version] %>');
+    <% end %>
+
+  }) 
+
+</script>

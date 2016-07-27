@@ -1,0 +1,51 @@
+<% @page_title = t('page.user_left_menu.quizs') %>
+<div class="myquestionbank ohidden">
+	<h2 class="f16 ohidden"><b class="fl fb"><%= @page_title %></b><span class="fr f12 addquesetion block cp" onclick="url_to('/quizs/single_quiz')"><%= t('page.quiz.add') %></span></h2>
+	 <%= raw success_notice(flash[:notice]) %>
+	<%= render 'search_block' %>
+	<% @quizs.each do |quiz| %>
+	<div class="questionpage">
+		<h3 class="f14"><b><%= quiz['cat_label'] %></b><span>(<%= quiz['source'] %>)</span></h3>
+		<div class="qusetionmate f16">
+			<%= raw quiz['text'] %>
+		</div>
+		<div class="questionInfor f12">
+			<%= link_to t('page.quiz.view'), 'javascript:', class: 'fl block anser_and_analyze', str_uid: quiz['uid'] %>
+			<%= link_to t('page.quiz.edit'), single_quiz_edit_quizs_path(str_id: quiz['uid']), class: 'fl edit' %>  
+			<%= link_to t('page.del'), single_quiz_delete_quizs_path(str_id: quiz['uid']), method: :delete, data: {confirm: t('page.del_confirm'), ok: t('page.confirm'), cancel: t('page.cancel'), name: t('page.warning')}, remote: true, class: 'fl' %>
+			<div class="fl difficulty ohidden">
+				<label class="fl"><%= t('page.quiz.trouble') %>:</label>
+				<ul class="ohidden fl">
+					<%= quiz['levelword2_label'] %>					
+				</ul>
+			</div>
+			<p class="fl">
+				<%= t('page.quiz.view_count') %>:
+				<span>1298</span> 			
+			</p>
+		</div>
+	</div>
+
+<% end %>
+
+<!-- Modal -->
+<div class="modal fade" id="answerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><%= t('page.quiz.view') %></h4>
+      </div>
+      <div class="modal-body">
+      	<div id="answer"><%= t('page.quiz.answer') %>：</div>
+      	<hr />
+      	<div id="answer_desc"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"><%= t('page.close') %></button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+

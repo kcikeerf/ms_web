@@ -1,0 +1,618 @@
+<div class="zhengjuang">
+	<div class="container" >
+		<!-- <div class="navColumn">
+			<ul class="navList clearfix">
+				<li class="active"><span class="text">1.上传试卷</span><span class="line">——</span></li>
+				<li><span class="text">2.试卷信息</span><span class="line">——</span></li>
+				<li><span class="text">3.单题切分</span><span class="line">——</span></li>
+				<li><span class="text">4.单题解析</span><span class="line">——</span></li>
+				<li><span class="text">5.解析结果</span></li>
+			</ul>
+		</div> -->
+		<div class="contentBody"></div>
+	</div>
+</div>
+<!-- 试卷详情模版 -->
+<script type="text/template" class="template_detail">
+	<div class="paperDetails">
+		<h2 class="top_title ellipsis"></h2>
+		<h4 class="sub_title ellipsis"></h4>
+		<div class="detailAll clearfix">
+			<div class="detailWarp detailLeft">
+				<ul class="info_list">
+					<li class="info_city">
+						<label>区域：</label>
+						<p></p>
+					</li>
+					<li class="info_type">
+						<label>测试类型：</label>
+						<p></p>
+					</li>
+					<li class="info_grade">
+						<label>年级：</label>
+						<p></p>
+					</li>
+					<li class="info_time">
+						<label>测试时长：</label>
+						<p></p>
+					</li>
+					<li class="info_difficulty">
+						<label>难度预估：</label>
+						<p></p>
+					</li>
+					<li class="info_score">
+						<label>满分：</label>
+						<p></p>
+					</li>
+				</ul>
+			</div>
+			<div class="detailWarp detailRight">
+				<ul class="info_list">
+					<li class="info_school">
+						<label>学校：</label>
+						<p></p>
+					</li>
+					<li class="info_subject">
+						<label>科目：</label>
+						<p></p>
+					</li>
+					<li class="info_term">
+						<label>学期：</label>
+						<p></p>
+					</li>
+					<li class="info_version">
+						<label>教材版本：</label>
+						<p></p>
+					</li>
+					<li class="info_testTime">
+						<label>考试时间：</label>
+						<p></p>
+					</li>
+					<!--li class="info_range">
+						<label>知识点范围：</label>
+						<div class="table_celle">
+							<p></p>
+							<p></p>
+							<p></p>
+						</div>
+					</li-->
+				</ul>
+			</div>
+		</div>
+		<div class="lookPaperInfo">
+			<a class="lookPaper_q_a" href="javascript:void(0);">查看已修订的试卷、答案详情</a>
+			<a class="lookPaper_sanwei" href="javascript:void(0);">查看试卷三维解析详情</a>
+		</div>
+		<div class="hint">相关文件</div>
+		<a href="javascript:;" geturl="/papers/download_page?type=original_paper_answer" class="download_link link_paper">原始试题、答案下载</a>
+		<a href="javascript:;" geturl="/papers/download_page?type=modified_paper_answer_emptyscore" class="download_link link_form">已修订的试卷、答案、录入表（空）下载</a>
+		<a href="javascript:;" geturl="/papers/download_page?type=imported_score" class="download_link link_grade">学生成绩表下载</a>
+		<a href="javascript:;" geturl="/papers/download_page?type=user_password_reporturl" class="download_link link_user">用户名、密码、报告链接汇总表下载</a>
+		<a href="javascript:;" class="paper_editor">修订试卷</a>
+		<div class="paper_about clearfix">
+			<div class="about_left">
+				<a class="download_list" geturl="/papers/download_page?type=modified_paper_answer_emptyscore" href="javascript:;">下载试卷、答案、录入表（空）</a>
+			</div>
+			<div class="about_right">
+				<a class="edit_sanwei" href="javascript:;">三维解析试卷</a>
+				<a class="load_list" geturl="/papers/import_filled_score" href="javascript:;">导入成绩表</a>
+			</div>
+		</div>
+		<div class="createReport">
+			<a href="javascript:;" class="active">生成报告</a>
+			<div class="progress">
+				<div class="finish"></div>
+			</div>
+			<p class="error"></p>
+		</div>
+		<div class="lookReport">
+			<a href="/reports/new_square" class="active">在线查看报告</a>
+		</div>
+	</div>
+</script>
+<!-- 试卷上传模版 -->
+<script type="text/template" class="template_part1">
+	<div class="part1">
+		<div class="wordUpdate">
+			<div class="updateTitle">试卷入库 - 文件上传</div>
+		</div>
+		<div class="formWarp">
+			<form class="paperForm" action="">
+				<ul class="formList">
+					<li class="clearfix">
+						<label>试卷文件（word）</label>
+						<p class="fileName"></p>
+						<span></span>
+						<input name="doc_path" type="file">
+					</li>
+					<li class="clearfix">
+						<label>答案文件（word）</label>
+						<p class="fileName"></p>
+						<span></span>
+						<input name="answer_path" type="file">
+					</li>
+				</ul>
+			</form>
+		</div>
+		<div class="submitWarp">
+			<a class="submitBtn" href="javascript:void(0);">开始导入</a>
+		</div>
+	</div>
+</script>
+<!-- 试卷信息模版 -->
+<script type="text/template" class="template_part2">
+	<div class="part2">
+		<div class="wordUpdate">
+			<div class="updateTitle">试卷入库 - 基本信息</div>
+		</div>
+		<div class="infoWarp">
+			<div class="paperTitle paperTitle1">
+				<label>试卷主标题&nbsp;:&nbsp;</label><input type="text">
+			</div>
+			<div class="paperTitle paperTitle2">
+				<label>试卷副标题&nbsp;:&nbsp;</label><input type="text">
+			</div>
+			<div class="source">
+				<div class="school">
+					<label>学校&nbsp;:</label><input type="text" placeholder="请输入学校名称">
+				</div>
+			</div>
+			<ul class="infoList">
+				<li>
+					<div class="selectWarp selectProvince clearfix">
+						<p>省&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selectSubject different clearfix">
+						<p>科目&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selecTerm different clearfix">
+						<p>适用学期&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<!--div class="selectWarp selectTime clearfix">
+						<p>考试时长&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>90分钟</li>
+								<li>120分钟</li>
+								<li>150分钟</li>
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selectTestdate clearfix">
+						<p>考试时间&nbsp;:</p>
+						<input class="date_input" type="text"/>
+					</div>
+				</li>
+				<li>
+					<div class="selectWarp selectCity clearfix">
+						<p>市&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selecGrade different clearfix">
+						<p>年级&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<!--div class="selectWarp selectKnowledge different clearfix">
+						<p>知识点范围&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selectTime clearfix">
+						<p>考试时长&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>90分钟</li>
+								<li>120分钟</li>
+								<li>150分钟</li>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selectScore different clearfix">
+						<p>满分&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<input type="text" value="0">
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>100</li>
+								<li>120</li>
+								<li>150</li>
+							</ol>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="selectWarp selectCounty clearfix">
+						<p>区/县&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selectVersion different clearfix">
+						<p>教材版本&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selecType different selectCommon clearfix">
+						<p>测试类型&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li values="qi_zhong_ce_shi">期中测试</li>
+								<li values="qi_mo_ce_shi">期末测试</li>
+								<li values="mo_ni_ce_shi">模拟测试</li>
+								<li values="yue_kao">月考</li>
+								<li values="dan_yuan_ce_shi">单元测试</li>
+								<li values="xiao_sheng_chu_ce_shi">小升初测试</li>
+								<li values="xue_ke_neng_li_ce_ping">学科能力测评</li>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selectDifficulty different selectCommon clearfix">
+						<p>难度预估&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li values="rong_yi">容易</li>
+								<li values="jiao_yi">较易</li>
+								<li values="zhong_deng">中等</li>
+								<li values="jiao_nan">较难</li>
+								<li values="kun_nan">困难</li>
+							</ol>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="submitInfoWarp clearfix">
+			<p>注：您已成功上传试卷文件和答案文件<i></i></p>
+			<a class="infoBtn" href="javascript:void(0);">保存</a>
+		</div>
+	</div>
+</script>
+<!-- 单题切分模版 -->
+<script type="text/template" class="template_part3">
+	<div class="part3">
+		<div class="paperModify">
+			<h5 class="paper_title">2016年第一学期实验一小期末数学试卷</h5>
+			<h3 class="paper_subtitle"></h3>
+			<p class="description"></p>
+		</div>
+		<div class="editorWarp clearfix">
+			<div class="editorCont editorLeft">
+				<h5 class="editorTitle">试卷切题（最小存储单元）</h5>
+				<textarea id="questionEditor" cols="20" rows="2"></textarea>
+			</div>
+			<div class="editorCont editorRight">
+				<h5 class="editorTitle">答案匹配（对应单题）</h5>
+				<textarea id="answerEditor" cols="20" rows="2"></textarea>
+			</div>
+		</div>
+		<p class="statistics">共切出【<span class="questionNum">8</span>】道题，【<span class="answerNum">8</span>】个答案</p>
+		<div class="change historyBtn clearfix">
+			<a class="nextBtn" href="javascript:void(0);">下一步</a>
+			<a class="prevBtn" href="javascript:void(0);">上一步</a>
+			<a class="saveHtml" href="javascript:void(0);">保存</a>
+		</div>
+	</div>
+</script>
+<!-- 单题解析模版 -->
+<script type="text/template" class="template_part4">
+	<div class="part4 clearfix">
+		<div class="sideMenu">
+			<p class="sideTitle">题目列表</p>
+			<ul class="topNav">
+				<li>
+					<p>一、填一填</p>
+					<ol class="subNav">
+						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+					</ol>
+				</li>
+				<li>
+					<p>二、判断</p>
+					<ol class="subNav">
+						<li>4</li>
+						<li>5</li>
+						<li>6</li>
+					</ol>
+				</li>
+				<li>
+					<p>三、选择</p>
+					<ol class="subNav">
+						<li>7</li>
+						<li>8</li>
+						<li>9</li>
+					</ol>
+				</li>
+			</ul>
+			<a class="detection" href="javascript:;">检测</a>
+		</div>
+		<div class="attribute">
+			<div class="paperModify">
+				<h5 class="paper_title">2016年第一学期实验一小期末数学试卷</h5>
+				<h3 class="paper_subtitle">高考零分回家了购房计划</h3>
+				<p class="description"></p>
+			</div>
+                        <div class="questionType" style="padding:0 50px;"></div>
+			<div class="information clearfix">
+				<p class="infoText">基本信息</p>
+				<div class="information1">
+					<div class="selectWarp selectCategory different selectCommon clearfix">
+						<p>题型&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li values="ting_li_li_jie">听力理解</li>
+								<li values="dan_xiang_xuan_ze">单项选择</li>
+								<li values="wan_xing_tian_kong">完形填空</li>
+								<li values="yue_du_li_jie">阅读理解</li>
+								<li values="ci_yu_yun_yong">词语运用</li>
+								<li values="bu_quan_dui_hua">补全对话</li>
+								<li values="shu_mian_biao_da">书面表达</li>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp different selectFullscore clearfix">
+						<p>满分&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<input type="text" value="0">
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+								<li>10</li>
+								<li>15</li>
+								<li>20</li>
+								<li>40</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div class="information1">
+					<div class="selectWarp selectDegree different selectCommon clearfix">
+						<p>难度预估&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li values="rong_yi">容易</li>
+								<li values="jiao_yi">较易</li>
+								<li values="zhong_deng">中等</li>
+								<li values="jiao_nan">较难</li>
+								<li values="kun_nan">困难</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="testQuestions clearfix">
+				<p class="textLabel">试题</p>
+				<div class="textEditor textEditor1">
+					<textarea id="min_question" cols="20" rows="2"></textarea>
+				</div>
+			</div>
+			<div class="testAnswer clearfix">
+				<p class="textLabel">答案</p>
+				<div class="textEditor textEditor2">
+					<textarea id="min_answer" cols="20" rows="2"></textarea>
+					<textarea class="remarks" placeholder="请在此输如答案说明（可选）"></textarea>
+				</div>
+			</div>
+			<div class="analyze clearfix">
+				<p class="textLabel">分析</p>
+				<div class="textLabelWarp">
+					<div class="score">
+						<label>得分点1：</label>
+						<textarea class="scoreAnswer" placeholder="得分点标准答案"></textarea>
+					</div>
+					<div class="scoreRemark clearfix">
+						<div class="selectWarp different scorePart clearfix">
+							<p>小分&nbsp;:</p>
+							<div class="optionWarp">
+								<div class="selectVal">
+									<input type="text" value="0">
+									<i class="icon"></i>
+								</div>
+								<ol class="optionList">
+									<li>1</li>
+									<li>2</li>
+									<li>3</li>
+									<li>4</li>
+									<li>5</li>
+									<li>6</li>
+									<li>7</li>
+									<li>8</li>
+									<li>9</li>
+									<li>10</li>
+									<li>15</li>
+									<li>20</li>
+									<li>40</li>
+								</ol>
+							</div>
+						</div>
+						<p class="textCheckbox"><span></span>是否主观题</p>
+					</div>
+					<!--<div class="threeDimensional clearfix">
+						<p class="dimensional">三维解析</p>
+						<ul class="typeList">
+							<li>
+								<label>知识：</label>
+								<input class="knowledge" type="text">
+							</li>
+							<li>
+								<label>技能：</label>
+								<input class="skill" type="text">
+							</li>
+							<li>
+								<label>能力：</label>
+								<input class="ability" type="text">
+							</li>
+						</ul>
+					</div>-->
+					<a href="javascript:;" class="deleteIcon"></a>
+				</div>
+			</div>
+			<div class="addWarp">
+				<a href="javascript:;" class="addScore">+&nbsp;&nbsp;添加</a>
+			</div>
+			<div class="saveWarp">
+				<a href="javascript:;" class="saveBtn">保存</a>
+			</div>
+			<div class="analysis historyBtn clearfix">
+				<a class="nextBtn" href="javascript:void(0);">提交</a>
+				<a class="prevBtn" href="javascript:void(0);">上一步</a>
+			</div>
+		</div>
+	</div>
+</script>
+<!-- 整卷提交后的解析模版 -->
+<script type="text/template" class="template_analysis">
+	<div class="part4 clearfix">
+		<div class="sideMenu">
+			<p class="sideTitle">题目列表</p>
+			<ul class="topNav">
+			</ul>
+			<a class="detection" href="javascript:;">检测</a>
+		</div>
+		<div class="attribute">
+			<div class="paperModify">
+				<h5 class="paper_title">2016年第一学期实验一小期末数学试卷</h5>
+				<h3 class="paper_subtitle"></h3>
+				<p class="description">大锅饭空间环境</p>
+			</div>
+                        <div class="questionType" style="padding:0 100px;"></div>
+			<ul class="analysis_info">
+				<li class="info_type"><label>题型：</label><span>选择题</span></li>
+				<li class="info_difficulty"><label>难度：</label><span>中等</span></li>
+				<li class="info_score"><label>满分：</label><span>4分</span></li>
+			</ul>
+			<div class="analysis_data analysis_q clearfix">
+				<div class="info_left">试题：</div>
+				<div class="info_right">
+				</div>
+			</div>
+			<div class="analysis_data analysis_a clearfix">
+				<div class="info_left">答案：</div>
+				<div class="info_right">
+				</div>
+			</div>
+			<div class="analysis_data analysis_describe clearfix">
+				<div class="info_left">答案说明：</div>
+				<div class="info_right">
+				</div>
+			</div>
+			<div class="score_part">
+				<div class="score_list clearfix">
+					<div class="score_data analysis_score clearfix">
+						<div class="info_left">得分点：</div>
+						<div class="info_right"></div>
+					</div>
+
+					<div class="score_data analysis_sanwei clearfix">
+						<div class="info_left">三维解析：</div>
+						<div class="info_right">
+							<ul>
+								<li class="info_knowledge"><label>知识：</label><input type="text"></li>
+								<li class="info_skill"><label>技能：</label><input type="text"></li>
+								<li class="info_ability"><label>能力：</label><input type="text"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="sanweiSave historyBtn clearfix">
+				<a class="nextBtn" href="javascript:void(0);">提交</a>
+				<a class="prevBtn" href="javascript:void(0);">保存</a>
+			</div>
+			
+		</div>
+		<input id="node_uid" type="hidden">
+	</div>
+</script>

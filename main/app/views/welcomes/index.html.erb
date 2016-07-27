@@ -1,0 +1,135 @@
+<div class="zy-banner">
+	<div class="container">
+		<div <% if current_user %>class="col-lg-12 col-md-12 col-sm-12"<% else %>class="col-lg-8 col-md-8 col-sm-12"<% end %>>
+			<div class="zy-banner-content">
+				<h1 class="zy-banner-title">三维智能<span class="zy-banner-subtitle">知识引擎</span></h1>
+				<p class="zy-banner-body">努力追求适合每一个学生的教育</p>
+			</div>
+		</div>
+		<% unless current_user %>
+		<div class="col-lg-4 col-md-4 col-sm-12">
+			<div class="zy-loginbox-container">
+				<div class="zy-loginbox">
+					<h3 class="zy-loginbox-title">登录</h3>
+					<form class="form-horizontal" id="new_user" action="/users/login" accept-charset="UTF-8" data-remote="true" method="post"><input name="utf8" type="hidden" value="✓">
+						<input type="hidden" name="url" id="url" value="">
+
+						<div class="form-group">
+							<input placeholder="请输入用户名／邮箱／电话" class="form-control" type="text" name="user[login]" id="user_login">
+						</div>
+						<div class="form-group">
+							<input placeholder="请输入8位以上密码" class="form-control" type="password" name="user[password]" id="user_password">
+							<small class="help-block" id="error_alert"></small>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary">登录</button>
+						</div>
+						<div class="form-group">
+							<label class="pull-right">
+								<a href="/users/password/new">找回密码</a>
+							</label>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<% end %>
+	</div>
+</div>
+
+<section id="zy-section-1" class="zy-front-section">
+	<div class="container zy-service-container">
+		<div class="row">
+			<h2 class="zy-service-title">我们的服务</h2>
+			<hr>
+			<div class="col-lg-4 col-md-4 col-sm-12">
+				<div class="zy-service-container">
+					<img src="<%= image_url('front-service-1.png') %>" class="zy-service-img">
+					<h3 class="zy-service-title">三维诊断报告</h3>
+					<div class="zy-service-body">
+						<p>目前国内唯一与国家课程标准的“三维”教育目标适配的结构化数据诊断报告。</p>
+						<p>知识、技能、能力三维多层数十项指标的可视化呈现，一目了然学生的学情、教师的教情、以及学校的教育质量，同步精准推送解决方案。</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12">
+				<div class="zy-service-container">
+					<img src="<%= image_url('front-service-2.png') %>" class="zy-service-img">
+					<h3 class="zy-service-title">三维题库</h3>
+					<div class="zy-service-body">
+						<p>目前国内唯一对每道试题进行知识、技能、能力三维解析的题库</p>
+						<p>唯一可以一键组成三维试卷的题库</p>
+						<p>唯一真正满足教育测量的信、效度要求的题库</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-4 col-sm-12">
+				<div class="zy-service-container">
+					<img src="<%= image_url('front-service-3.png') %>" class="zy-service-img">
+					<h3 class="zy-service-title">多平台自测</h3>
+					<div class="zy-service-body">
+						<p>PC端、移动端随时自测，三维智能生成学情诊断报告</p>
+						<p>及时查漏补缺，辅以精准推送的解决方案，学习从此简单、高效、低负</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="zy-section-2" class="zy-front-section">
+	<div class="container zy-customer-container">
+		<div class="row">
+			<div class="col-lg-7 col-md-7 col-sm-12 zy-customer-img">
+				<img src="<%= image_url('front-student.png') %>">
+			</div>
+			<div class="col-lg-5 col-md-5 col-sm-12 zy-customer-content">
+				<h1 class="zy-customer-title">
+					对学生和家长
+				</h1>
+				<div class="zy-customer-body">
+					<p>一个可以让在应试环境下苦苦挣扎的学生高效、低负提高成绩的智能化学习平台</p>
+					<p>一个帮助茫然的家长更清楚的认识自己的孩子，省时、省力、省钱地解决孩子学习中遇到的问题的智能化教育平台</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="zy-section-3" class="zy-front-section">
+	<div class="container zy-customer-container">
+		<div class="row zy-float-right">
+			<div class="col-lg-7 col-md-7 col-sm-12 zy-customer-img">
+				<img src="<%= image_url('front-teacher.png') %>">
+			</div>
+			<div class="col-lg-5 col-md-5 col-sm-12 zy-customer-content">
+				<h1 class="zy-customer-title">
+					对教师
+				</h1>
+				<div class="zy-customer-body">
+					<p>一个致力于减轻教师工作负担，使教师们高效、低负完成教学及育人任务的智能化教育平台</p>
+					<p>一个真正实现将教学“艺术”与“科学”完美结合，使教师的幸福感和职业满意度大大提升的平台。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section id="zy-section-4" class="zy-front-section">
+	<div class="container zy-customer-container">
+		<div class="row">
+			<div class="col-lg-7 col-md-7 col-sm-12 zy-customer-img">
+				<img src="<%= image_url('front-school.png') %>">
+			</div>
+			<div class="col-lg-5 col-md-5 col-sm-12 zy-customer-content">
+				<h1 class="zy-customer-title">
+					对学校
+				</h1>
+				<div class="zy-customer-body">
+					<p>一个基于精准诊断，高效、低负提升学校教学质量的智能化教育平台</p>
+					<p>一个以数据为基础，实现学校教研、教管科学化、靶向化的智能教育平台</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

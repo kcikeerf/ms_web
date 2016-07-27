@@ -1,0 +1,5 @@
+<% if @result[:status] == 200 %>
+	url_to('<%= quiz_list_quizs_path %>');
+<% else %>
+	error_show('<%= @result[:message] %>');
+<% end %>

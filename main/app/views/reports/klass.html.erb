@@ -1,0 +1,238 @@
+<div class="container">
+	<!--班级图表左面nav导航部分-->
+	<ul class="chart-nav" id="tab-menu">
+		<li class="tab-btn active" data-id="class-diagnoseEchart">诊断图</li>
+		<li class="tab-btn" data-id="class-NumScale">各分数段人数比例</li>
+		<li>
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">数据表</a>
+			<ul id="collapseOne" class="panel-collapse collapse">
+				<li class="tab-btn" data-id="table-data-knowledge">知识</li>
+				<li class="tab-btn" data-id="table-data-skill">技能</li>
+				<li class="tab-btn" data-id="table-data-ability">能力</li>
+			</ul>
+		</li>
+		<li class="tab-btn" data-id="class-answerCase">答题情况统计</li>
+		<li>
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">报告解读</a>
+			<ul id="collapseTwo" class="panel-collapse collapse">
+				<li class="tab-btn" data-id="report-read-three">三维指标含义解读</li>
+				<li class="tab-btn" data-id="report-read-checkpoint">统计指标解读</li>
+				<li class="tab-btn" data-id="report-read-data">数据解读</li>
+			</ul>
+		</li>
+		<li>
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">测试评价</a>
+			<ul id="collapseThree" class="panel-collapse collapse">
+				<li class="tab-btn" data-id="exam-knowledge">知识</li>
+				<li class="tab-btn" data-id="exam-skill">技能</li>
+				<li class="tab-btn" data-id="exam-ability">能力</li>
+				<li class="tab-btn" data-id="exam-total">总体情况</li>
+			</ul>
+		</li>
+	</ul>
+	<div id="myTabContent" class="tab-content">
+		<div class="report-nav-wrapper">
+			<nav id='class-top-nav' class="reptort-top-nav"></nav>
+		</div>
+		<div class="tab-pane active" id="class-diagnoseEchart">
+			<!--诊断图-->
+			<div class="wrapper-md">
+				<h1 class="m-n font-thin h3">班级学生知识情况诊断图</h1>
+			</div>
+			<div class="wrapper-md pt0">
+				<div class="class-diagnosis">
+					<dl>
+						<dt>知识</dt>
+						<dd class="clearfix">
+							<div id="knowledge_diagnose_left" class="chart"></div>
+							<div id="knowledge_diagnose_center" class="chart center"></div>
+							<div id="knowledge_diagnose_right" class="chart"></div>
+						</dd>
+					</dl>
+					<dl>
+						<dt>技能</dt>
+						<dd class="clearfix">
+							<div id="skill_diagnose_left" class="chart"></div>
+							<div id="skill_diagnose_center" class="chart center"></div>
+							<div id="skill_diagnose_right" class="chart"></div>
+						</dd>
+					</dl>
+					<dl>
+						<dt>能力</dt>
+						<dd class="clearfix">
+							<div id="ability_diagnose_left" class="chart"></div>
+							<div id="ability_diagnose_center" class="chart center"></div>
+							<div id="ability_diagnose_right" class="chart"></div>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane " id="class-NumScale">
+			<!--班级各分数段人数比例-->
+			<div class="wrapper-md">
+				<h1 class="m-n font-thin h3">班级知识、技能、能力各分数段人数比例</h1>
+			</div>
+			<div class="wrapper-md">
+				<div class="class-scale">
+					<div id="scale_dimesions" style="width:750px;height:300px"></div>
+					<dl>
+						<dt>知识班级、年级三率比较</dt>
+						<dd>
+							<div id="scale_knowledge" style="width:259px;height:200px;"></div>
+						</dd>
+					</dl>
+					<dl>
+						<dt>技能班级、年级三率比较</dt>
+						<dd>
+							<div id="scale_skill" style="width:259px;height:200px;"></div>
+						</dd>
+					</dl>
+					<dl>
+						<dt>能力班级、年级三率比较</dt>
+						<dd>
+							<div id="scale_ability" style="width:259px;height:200px;"></div>
+						</dd>
+					</dl>
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane " id="table-data-knowledge">
+			<div class="wrapper-md">
+				<h1 class="font-thin h3">班级知识数据表</h1>
+			</div>
+			<div class="wrapper-md">
+				<div id="table_data" class="clearfix ">
+					<table class="data-table">
+						<tr>
+							<th>知识</th>
+							<th>班级平<br>均值</th>
+							<th>班级平均得<br>分率</th>
+							<th>班级中位数<br>得分率</th>
+							<th>年级平均得<br>分率</th>
+							<th>班级与年级<br>平均得分率<br>差值</th>
+							<th>班级中位数<br>得分率与年<br>级平均差值</th>
+							<th>分化程度</th>
+							<th>满分值</th>
+						</tr>
+						<tbody id="Class_knowledge_table"></tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+		<div class="tab-pane " id="table-data-skill">
+			<div class="wrapper-md">
+			  	<h1 class="font-thin h3">班级技能数据表</h1>
+			</div>
+			<div class="wrapper-md">
+			    <div id="table_data" class="clearfix">
+			        <section class="bt1">
+			            <table class="data-table">
+			                <tr>
+			                    <th class="col1 colbg">技能</th>
+			                    <th class="col2">班级平<br>均值</th>
+			                    <th class="col3">班级平均得<br/>分率</th>
+			                    <th class="col4">班级中位数<br>得分率</th>
+			                    <th class="col4">年级平均得<br>分率</th>
+			                    <th class="col5">班级与年级<br>平均得分率<br>差值</th>
+			                    <th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
+			                    <th class="col7">分化程度</th>
+			                    <th class="col8">满分值</th>
+			                </tr>
+			                <tbody id="Class_skill_table"></tbody>
+			            </table>
+			        </section>
+			    </div>
+			</div>
+		</div>
+		<div class="tab-pane " id="table-data-ability">
+			<div class="wrapper-md">
+			  	<h1 class="font-thin h3">班级能力数据表</h1>
+			</div>
+			<div class="wrapper-md">
+			    <div id="table_data" class="clearfix">
+			        <section class="bt1">
+			            <table class="data-table">
+			                <tr>
+			                    <th class="col1 colbg">能力</th>
+			                    <th class="col2">班级平<br>均值</th>
+			                    <th class="col3">班级平均得<br/>分率</th>
+			                    <th class="col4">班级中位数<br>得分率</th>
+			                    <th class="col4">年级平均得<br>分率</th>
+			                    <th class="col5">班级与年级<br>平均得分率<br>差值</th>
+			                    <th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
+			                    <th class="col7">分化程度</th>
+			                    <th class="col8">满分值</th>
+			                </tr>
+			                <tbody id="Class_ability_table"></tbody>
+			            </table>
+			        </section>
+			    </div>
+			</div>
+		</div>
+		<div class="tab-pane " id="class-answerCase">
+			<div class="wrapper-md">
+			  	<h1 class="font-thin h3">班级学生答题情况统计</h1>
+			  	<small class="m">说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为【0，1】，数值越大，表明答对人数越多。答对率低于0.6的题目是本班的薄弱点，需要重点关注。</small>
+			</div>
+			<div class="wrapper-md">
+			    <div id="table_static" class="clearfix answerCase-table-all">
+			        <section>
+			            <div class="panel-heading">
+			                	答对率 ≥ 0.85的题目
+			            </div>
+			            <table class="static-table">
+			            	<tr>
+			            		<th>题号</th>
+			            		<th>答对率</th>
+			            	</tr>
+			            	<tbody id="class_answer_excellent"></tbody>
+			            </table>
+			        </section>
+			        
+			        <section class="tablecenter">
+			            <div class="panel-heading">
+			                0.6 ≤ 答对率 < 0.85的题目
+			            </div>
+			            <table class="static-table">
+			            	<tr>
+			            		<th>题号</th>
+			            		<th>答对率</th>
+			            	</tr>
+			            	<tbody id="class_answer_good"></tbody>
+			            </table>
+			        </section>
+			    
+			        <section class="wraning" >
+			            <div class="panel-heading">
+			                答对率 < 0.6的题目
+			            </div>
+			            <table class="static-table">
+			            	<tr>
+			            		<th>题号</th>
+			            		<th>答对率</th>
+			            	</tr>
+			            	<tbody id="class_answer_failed"></tbody>
+			            </table>
+			        </section>
+			    </div>
+			</div>
+		</div>
+		<div class="tab-pane report-data" id="report-read-three">
+		</div>
+		<div class="tab-pane report-data" id="report-read-checkpoint">
+		</div>
+		<div class="tab-pane report-data" id="report-read-data">
+		</div>
+		
+		<div class="tab-pane report-data" id="exam-knowledge">
+		</div>
+		<div class="tab-pane report-data" id="exam-skill">
+		</div>
+		<div class="tab-pane report-data" id="exam-ability">
+		</div>
+		<div class="tab-pane report-data" id="exam-total">
+		</div>
+	</div>
+</div>

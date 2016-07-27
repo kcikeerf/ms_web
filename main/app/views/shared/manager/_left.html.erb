@@ -1,0 +1,18 @@
+<div id="left_panel" region='west' split='true' title="导航菜单" style="width:200px;padding:10px;">
+  <div class="easyui-accordion" data-options="fit:true,border:true">
+
+    <% @menus.each do |menu| %>
+      <div title="<%= menu[:name] %>" icon="<%= menu[:icon] %>">
+        <ul>
+          <% menu[:menus].each do |sub_menu| %>
+            <li>
+              <div>
+                <%= link_to sub_menu[:name], 'javascript:void(0)', rel: sub_menu[:id], ref: sub_menu[:url] %>
+              </div>
+            </li> 
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+</div>

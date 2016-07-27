@@ -1,0 +1,422 @@
+@charset "utf-8";
+/*样式重置部分*/
+body{
+	background:#f4f4f4!important;
+	overflow:auto!important;
+}
+.container{
+	width:1000px;
+	padding:0;
+}
+dt{
+	font-weight: normal;
+}
+/*表格部分文字变红，北京变红的样式*/
+.wrong{
+	color:#d00211!important;
+}
+.more-wrong{
+	background:#fde0e0!important;
+	color:#d43b40!important;
+}
+.one-level-wrong{
+	font-weight:bolder;
+}
+/*报告公用部分*/
+.report-container{
+	margin-top:20px;
+	width:1000px;
+	padding:0;
+}
+.report-content{
+	background:#fbfbfb;
+}
+/*试卷名称*/
+.exam-name{
+	width:846px;;
+	height:36px;
+	line-height:36px;
+	text-align:center;
+	float:left;
+}
+.exam-name span{
+	margin-right:100px;
+}
+/*左边导航 start*/
+.chart-nav{
+	width:154px;
+	background:#fbfbfb;
+	color:#333;
+	float:left;
+}
+.chart-nav>li{
+	width:154px;
+	min-height:40px;
+	line-height:40px;
+	border-bottom: 1px solid #eee;
+	padding-left:20px;
+	padding-right:20px;
+	cursor: pointer;
+}
+.chart-nav>li.tab-btn{
+	height:40px;
+	overflow:hidden;
+}
+.chart-nav li.tab-btn:hover{
+	background:#e6e6e6;
+}
+.chart-nav li[data-id].active{
+	background:#e6e6e6;
+}
+.chart-nav>li a{
+	display:block;
+	width:154px;
+	overflow:hidden;
+	padding-left:20px;
+	margin-left:-20px;
+	padding-right:20px;
+	height:40px;
+	line-height:40px;
+	color:inherit;
+	position: relative;
+}
+.chart-nav>li a:hover{
+	background:#e6e6e6;
+}
+.chart-nav>li>a.collapse-open::after{
+	content: "";
+	display:block;
+	width:0; 
+	height:0; 
+	border-width:5px;
+	border-style:solid;
+	border-color:#999  transparent transparent transparent ;
+	font-size:0; line-height:0;
+	color:#999; overflow:hidden;
+	position:absolute;
+	top:18px; right:8px;
+}
+.chart-nav>li>a.collapse-close::after{
+	content: "";
+	display:block;
+	width:0; 
+	height:0; 
+	border-width:5px;
+	border-style:solid;
+	border-color: transparent transparent transparent #999;
+	font-size:0; line-height:0;
+	color:#999; overflow:hidden;
+	position:absolute;
+	top:15px; right:8px;
+}
+.chart-nav li ul{
+	width:154px;
+	margin-left:-20px;
+}
+.chart-nav li ul li{
+	padding-left:20px;
+}
+.chart-nav>li a:focus ,.chart-nav>li a:hover{
+	color:inherit;
+}
+.tab-content{
+	width:842px;
+	float:left;
+	background:#fff;
+	padding-bottom: 50px;
+}
+.tab-content>div.active{
+	display:block;
+}
+.report-nav-wrapper{
+	padding:0 20px;
+}
+.reptort-top-nav{
+	height:60px;
+	line-height:60px;
+	color:#2b2b2b;
+	border-bottom: 1px solid #eee;
+}
+.reptort-top-nav span{
+	color:#333;
+}
+/*图表的header部分*/
+.wrapper-md{
+	padding:30px 20px 0;
+}
+.wrapper-md h1 {
+	font-size:16px;
+	border-left:4px solid #15a892;
+	padding-left:10px;
+	margin:0;
+}
+/*评价部分*/
+.report-data {
+	background:#fff;
+	padding:0;
+}
+.report-data .wrapper-md {
+	padding:40px 20px 0;
+}
+.report-data .wrapper-md.pt0 {
+	padding-top:0;
+}
+.report-data h1 {
+	font-size:16px;
+	border-left:4px solid #15a892;
+	padding-left:10px;
+	margin:10px 0;
+}
+.report-data h3 {
+	font-size:14px;
+}
+.report-data dl {
+	margin:25px 0;
+}
+.report-data dl dt {
+	color:#15a892;
+	margin:20px 0;
+	font-weight:normal;
+}
+.report-data dl dd ol {
+	padding:0;
+	list-style:decimal;
+	margin:0 15px;
+}
+.report-data dl dd ol li {
+	margin:15px 0;
+	line-height:24px;
+}
+.report-data dl dd ul {
+	padding:0;
+	list-style:none;
+}
+.report-data dl dd ul li {
+	background: url('../img/square.png') no-repeat 0 10px;
+	padding-left:10px;
+	margin:15px 0;
+	line-height:24px;
+}
+.padder-lg {
+	padding:0 35px;
+}
+/* 年级知识、技能、能力情况诊断图 */
+.grade-diagnosis dl {
+	margin:0 0 25px 0;
+	padding-left:20px;
+}
+.grade-diagnosis dl dt {
+	color:#050505;
+	margin:20px 0 ;
+}
+.grade-diagnosis .chart {
+	width:48%;
+	height:320px;
+}
+.grade-diagnosis .chart.center {
+	margin:50px 0;
+}
+.typing {
+	background:#efefef;
+	width:100%;
+	height:480px;
+	position:relative;
+}
+.typing Canvas {
+	position:absolute;
+	z-index:0;
+}
+/* 年级四分位区间学生知识、技能、能力表现情况 */
+.grade-interval dl {
+	margin:0 25px;
+	width:800px;
+}
+.grade-interval dl dt {
+	color:#050505;
+	margin:20px 0;
+	font-weight:100;
+}
+.grade-interval .chart {
+	float:left;
+	width:252px;
+	height:210px;
+}
+.grade-interval .chart.center {
+	margin:0 10px;
+}
+.grade-interval .chart canvas{
+	position: absolute;
+	left:0;top:0;
+	width:310px;;
+	height:210px;	
+}
+/* 各班知识、技能、能力各指标表现水平图 */
+.grade-level dl {float:left;width:48%;margin:0 0 25px 0;padding-left:20px;}
+.grade-level dl dt {color:#050505;margin-top:0;}
+.grade-level .chart {width:369px;height:280px}
+/* 各班知识、技能、能力各分数段人数比例图 */
+.grade-percentage dl {width:85%;margin:0 0 25px 0;padding-left:20px;}
+.grade-percentage dl dt {color:#050505;margin-top:0;}
+.grade-percentage .chart {width:669px;height:280px}
+.navbar-header{border:0 none;}
+/*报告解读*/
+.grade-report {background:#fff;padding:0;}
+.grade-report h1 {font-size:16px;border-left:4px solid #15a892;padding-left:10px;margin:10px 0;}
+.grade-report .titleexplain {display:inline-block;font-size:10px;color:#868686;padding-left:15px;}
+.grade-report h3 {font-size:14px;}
+.grade-report dl {margin:25px 0;}
+.grade-report dl dt{color:#15a892;margin:20px 0;font-weight:normal;}
+.grade-report dl dd ol{padding:0;list-style:decimal;margin:0 15px;}
+.grade-report dl dd ol li{margin:15px 0;line-height:24px;}
+.grade-report dl dd ul {padding:0;list-style:none;}
+.grade-report dl dd ul li {background: url('../img/square.png') no-repeat 0 10px;padding-left:10px;margin:15px 0;line-height:24px;}
+.padder-lg {padding:0 35px;}
+/*表格部分*/
+.data-table{
+	width:100%;
+	font-size:12px;
+	text-align:center;
+	border-top:4px solid #15a892;
+}
+.data-table td{
+	border:1px solid #eaeaea;
+	height:30px;
+}
+.data-table th{
+	text-align:center;
+	border:1px solid #eaeaea;
+	background:#fff;
+	min-height:30px;
+	font-weight: 100;
+	padding:8px 0;
+}
+.data-table tr th:first-child{
+	background:#ececec;
+}
+.data-table tr td.one-level{
+	font-weight:bolder;
+	background:#e1f9f5;
+}
+.data-table tr td.one-level-content{
+	font-weight:bolder;
+	background:#f4fdfc;
+}
+/*答题情况表格*/
+.answerCase-table-all{
+	width:100%;
+}
+.answerCase-table-all section{
+	width:250px;
+	float:left;
+	margin-right:15px;
+}
+.answerCase-table-all section:last-child{
+	margin-right:0;
+}
+.static-table{
+	width:100%;
+}
+.static-table td{
+	border:1px solid #eaeaea;
+	text-align:center;
+	height:30px;
+}
+.static-table th{
+	background:#e7faf7;
+	border-bottom: 1px solid #15a892;
+	text-align: center;
+	font-weight: 100;
+	height:30px;
+}
+.static-table tr th:first-child{
+	border-right:1px solid #eaeaea;
+}
+.static-table tbody tr:nth-child(odd){
+	background:#fff;
+}
+.static-table tbody tr:nth-child(even){
+	background:#E7FAF7;
+}
+/*年级表格报告*/
+.grade-titlt{
+	background:#e7faf7;
+}
+.grade-data-table tr:nth-child(odd){
+	background:#f4fdfc;
+}
+.grade-data-table tr:nth-child(even){
+	background:#fff;
+}
+/*班级报告*/
+/* 学生知识、技能、能力情况诊断图 */
+.class-diagnosis {
+	width:820px;
+}
+.class-diagnosis dl {
+	margin:0 15px;
+}
+.class-diagnosis dl dt {
+	color:#050505;
+}
+.class-diagnosis .chart {
+	display:inline-block;
+	width:30%;
+	height:250px;
+}
+.class-diagnosis .chart.center {
+	margin:0 25px;
+}
+.navbar-header{
+	border:0 none;
+}
+/* 各分数段人数比例柱状图 */
+.class-scale dl {
+	display:inline-block;
+	width:259px;
+}
+.class-scale dl dt {
+	border-left:4px solid #15a892;
+	padding-left:8px;
+	color:#000;
+	font-size:14px;
+}
+.class-scale dl dd {
+	width:259px;
+	height:200px;
+}
+/*个人报告*/
+.pupil-diagnosis dl {margin:0 15px;}
+.pupil-diagnosis dl dt {color:#050505;}
+.pupil-diagnosis .chart {float:left;}
+.pupil-diagnosis .chart.pull-left {width:34%;height:400px;}
+.pupil-diagnosis .chart.pull-right {width:65%;height:360px;}
+.pupil-diagnosis .chart.center {margin:50px 0;}
+
+.pupil-data-table{
+	border-top:0 none;
+}
+.pupil-data-table caption{
+	text-align:center;
+	padding:8px 0;
+	font-size:18px;
+	border-top:5px solid #15a892;
+	border-bottom: 1px solid #15a892;
+}
+
+.pupil-report-data {background:#fff;padding:0;}
+.pupil-report-data .wrapper-md {padding:40px 20px 0}
+.pupil-report-data h1 {font-size:16px;border-left:4px solid #15a892;padding-left:10px;margin:10px 0;}
+.pupil-report-data h3 {font-size:16px;margin-bottom:20px;}
+.pupil-report-data h3 small {color:#b5b5b5;}
+.pupil-report-data h4 {color:#15a892;font-size:16px;}
+.pupil-report-data #diagnosis .wrap p.text-muted {line-height:26px;}
+.pupil-report-data #diagnosis .wrap p.text-muted b {display:block;font-weight:normal;color:#333;;}
+.pupil-report-data .wrap ol {padding:0;list-style:inside decimal;}
+.pupil-report-data .wrap ol li {line-height:26px;}
+.pupil-report-data dl {margin:25px 0;}
+.pupil-report-data dl dt {color:#15a892;margin:10px 0;font-weight:normal;}
+.pupil-report-data dl dd ol {padding:0;list-style:decimal;margin:0 15px;}
+.pupil-report-data dl dd ol li {margin:15px 0;line-height:24px;}
+.pupil-report-data dl dd ul {padding:0;list-style:none;}
+.pupil-report-data dl dd ul li {background: url('../img/square.png') no-repeat 0 10px;padding-left:10px;margin:15px 0;line-height:24px;}
+.padder-lg {padding:0 35px;}

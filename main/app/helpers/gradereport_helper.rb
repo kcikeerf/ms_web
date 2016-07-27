@@ -1,0 +1,2 @@
+module GradereportHelper
+end

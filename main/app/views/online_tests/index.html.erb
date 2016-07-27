@@ -1,0 +1,44 @@
+<% @page_title = '在线测试' %>
+<div class="onlinetest">
+	<h2 class="f16 fb">在线测试</h2>
+	<%#= render 'users/search_block' %>
+	<div class="onlinehandle ohidden">
+		<div class="online_list ohidden tc f14">
+			<ul>
+				<li><input type="checkbox" name="online"/></li>
+				<li>编号</li>
+				<li>在线测试</li>
+				<li>参加人数</li>
+				<li>截止日期</li>
+				<li>操作</li>
+			</ul>
+			<ul>
+				<li><input type="checkbox" name="online"/></li>
+				<li>20160308001</li>
+				<li>七年级英语期末考试</li>
+				<li>1</li>
+				<li>-----</li>
+				<li><span>邀请学生</span><span onclick="url_to('/online_tests/send_test')">重新测试</span></li>
+			</ul>
+			<ul>
+				<li><input type="checkbox" name="online"/></li>
+				<li>20160308001</li>
+				<li>七年级英语期末考试</li>
+				<li>1</li>
+				<li>2016.4.20</li>
+				<li><span onclick="url_to_blank('/report/simplereport.html')">测试结果</span><span onclick="url_to('/online_tests/send_test')">重新测试</span></li>
+			</ul>
+		</div>
+		<div class="online_bottom ohidden">
+			<input class="fl cp" type="button" value="全部删除"/>
+			<ul class="pageNum fr ohidden f12 tc">
+				<li>上一页</li>
+				<li class="se_active">1</li>
+				<li>2</li>
+				<li>...</li>
+				<li>6</li>
+				<li>下一页</li>
+			</ul>
+		</div>
+	</div>
+</div>
