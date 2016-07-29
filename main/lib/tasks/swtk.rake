@@ -269,7 +269,7 @@ namespace :swtk do
                 next unless ckp
                 ckp_ancestors = BankRid.get_all_higher_nodes ckp_objs, ckp
                 ckp_path = ckp_ancestors.map{|a| a.checkpoint }.join(" >> ") + ">> #{ckp.checkpoint}"
-#                p qzp.order + "::" +ckp.dimesion + "::" + ckp_path
+                #p qzp.order + "::" +ckp.dimesion + "::" + ckp_path
                 sheet.add_row([qzp.order, qzp.score, I18n.t("dict.#{ckp.dimesion}"), ckp_path])
               }
             }
