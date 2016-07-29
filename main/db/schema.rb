@@ -36,25 +36,18 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "dt_update"
   end
 
-  create_table "bank_checkpoint_ckps", id: false, force: :cascade do |t|
-    t.string   "uid",        limit: 36
+  create_table "bank_checkpoint_ckps", primary_key: "uid", force: :cascade do |t|
     t.string   "dimesion",   limit: 50
     t.string   "rid",        limit: 36
-    t.string   "node_uid",   limit: 36
-    t.text     "advice",     limit: 65535
     t.string   "checkpoint", limit: 200
-    t.integer  "is_entity",  limit: 4
+    t.string   "node_uid",   limit: 36
+    t.boolean  "is_entity",  limit: 1
+    t.text     "advice",     limit: 65535
     t.text     "desc",       limit: 65535
     t.float    "weights",    limit: 24
     t.datetime "dt_add"
     t.datetime "dt_update"
-    t.integer  "sort",       limit: 4,     default: 0
-  end
-
-  create_table "bank_checkpoint_rids", force: :cascade do |t|
-    t.string   "nid",        limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "sort",       limit: 255
   end
 
   create_table "bank_ckp_cats", primary_key: "nid", force: :cascade do |t|
@@ -66,8 +59,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "updated_at"
   end
 
-  create_table "bank_ckp_comments", id: false, force: :cascade do |t|
-    t.string   "uid",       limit: 36
+  create_table "bank_ckp_comments", primary_key: "uid", force: :cascade do |t|
     t.string   "ckp_uid",   limit: 36
     t.string   "ban_uid",   limit: 36
     t.string   "target",    limit: 36
@@ -85,8 +77,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "dt_update"
   end
 
-  create_table "bank_dic_items", id: false, force: :cascade do |t|
-    t.string   "sid",       limit: 50
+  create_table "bank_dic_items", primary_key: "sid", force: :cascade do |t|
     t.string   "dic_sid",   limit: 50
     t.string   "caption",   limit: 200
     t.text     "desc",      limit: 65535
@@ -102,16 +93,14 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "updated_at"
   end
 
-  create_table "bank_dic_quiztypes", id: false, force: :cascade do |t|
-    t.string   "sid",        limit: 50
+  create_table "bank_dic_quiztypes", primary_key: "sid", force: :cascade do |t|
     t.string   "caption",    limit: 200
     t.string   "desc",       limit: 500
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "bank_dics", id: false, force: :cascade do |t|
-    t.string   "sid",       limit: 50
+  create_table "bank_dics", primary_key: "sid", force: :cascade do |t|
     t.string   "caption",   limit: 200
     t.text     "desc",      limit: 65535
     t.datetime "dt_add"
@@ -125,8 +114,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "updated_at",                  null: false
   end
 
-  create_table "bank_node_catalogs", id: false, force: :cascade do |t|
-    t.string   "uid",       limit: 36
+  create_table "bank_node_catalogs", primary_key: "uid", force: :cascade do |t|
     t.string   "node",      limit: 200
     t.string   "node_uid",  limit: 36
     t.datetime "dt_add"
@@ -140,8 +128,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "updated_at",                    null: false
   end
 
-  create_table "bank_nodestructures", id: false, force: :cascade do |t|
-    t.string   "uid",       limit: 36
+  create_table "bank_nodestructures", primary_key: "uid", force: :cascade do |t|
     t.string   "subject",   limit: 50
     t.string   "version",   limit: 50
     t.string   "grade",     limit: 50
@@ -151,14 +138,12 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "dt_update"
   end
 
-  create_table "bank_papertag_ptgs", id: false, force: :cascade do |t|
-    t.string   "sid",       limit: 200
+  create_table "bank_papertag_ptgs", primary_key: "sid", force: :cascade do |t|
     t.datetime "dt_add"
     t.datetime "dt_update"
   end
 
-  create_table "bank_quiztag_qtgs", id: false, force: :cascade do |t|
-    t.string   "sid",       limit: 200
+  create_table "bank_quiztag_qtgs", primary_key: "sid", force: :cascade do |t|
     t.datetime "dt_add"
     t.datetime "dt_update"
   end
@@ -180,7 +165,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.float    "weights",    limit: 24
     t.datetime "dt_add"
     t.datetime "dt_update"
-    t.integer  "sort",       limit: 4,     default: 0
+    t.string   "sort",       limit: 255
   end
 
   add_index "bank_subject_checkpoint_ckps", ["subject"], name: "ckp_subject", using: :btree
@@ -241,6 +226,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.string   "city",          limit: 255
     t.string   "district",      limit: 255
     t.string   "school",        limit: 255
+    t.string   "school_label",  limit: 255
     t.string   "school_number", limit: 255
     t.string   "grade",         limit: 255
     t.string   "class_room",    limit: 255
@@ -271,13 +257,16 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.string   "content",     limit: 255,                 null: false
     t.string   "channel",     limit: 20
     t.boolean  "status",      limit: 1,   default: false
+    t.boolean  "is_valid",    limit: 1,   default: true
     t.string   "kinds",       limit: 30
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.string   "auth_number", limit: 20
     t.datetime "valid_time"
-    t.boolean  "is_valid",    limit: 1,   default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
+
+  add_index "messages", ["channel", "status"], name: "channel", using: :btree
+  add_index "messages", ["mobile", "is_valid", "kinds"], name: "mobile_kinds", using: :btree
 
   create_table "permissions", force: :cascade do |t|
     t.string   "name",          limit: 255
@@ -297,11 +286,11 @@ ActiveRecord::Schema.define(version: 20160721033557) do
   end
 
   create_table "pupils", primary_key: "uid", force: :cascade do |t|
-    t.string   "user_id",    limit: 255
+    t.integer  "user_id",    limit: 4,   null: false
     t.string   "loc_uid",    limit: 255
     t.string   "stu_number", limit: 255
-    t.string   "sex",        limit: 10
     t.string   "name",       limit: 255
+    t.string   "sex",        limit: 10
     t.string   "grade",      limit: 255
     t.string   "classroom",  limit: 255
     t.string   "school",     limit: 255
@@ -333,15 +322,15 @@ ActiveRecord::Schema.define(version: 20160721033557) do
   create_table "score_uploads", force: :cascade do |t|
     t.string   "filled_file",  limit: 255
     t.string   "empty_file",   limit: 255
-    t.string   "usr_pwd_file", limit: 255
     t.string   "ana_uid",      limit: 255
+    t.string   "usr_pwd_file", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "task_lists", primary_key: "uid", force: :cascade do |t|
     t.string   "name",      limit: 255
-    t.string   "type",      limit: 255
+    t.string   "task_type", limit: 255
     t.string   "ana_uid",   limit: 255
     t.string   "pap_uid",   limit: 255
     t.string   "status",    limit: 255
@@ -381,6 +370,7 @@ ActiveRecord::Schema.define(version: 20160721033557) do
     t.datetime "updated_at",                                         null: false
     t.integer  "role_id",                limit: 4
     t.string   "wx_openid",              limit: 255
+    t.string   "wx_token",               limit: 255
   end
 
   add_index "users", ["name"], name: "index_users_on_name", unique: true, using: :btree
