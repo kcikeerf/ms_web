@@ -57,6 +57,7 @@ module Main
     #config.cache_store = :null_store
     #config.perform_caching = false
 
+#    config.cache_store = :redis_store, 'redis://localhost:7000'
     config.active_job.queue_adapter = :sidekiq
     config.active_record.raise_in_transactional_callbacks = true
 

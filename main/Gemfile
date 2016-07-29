@@ -72,8 +72,11 @@ gem 'httparty'
 gem 'kaminari'
 
 #job
-gem 'sidekiq'
+#gem 'sidekiq'
+gem 'redis'
 gem 'redis-namespace'
+gem 'redis-rails'
+gem 'redis-rack-cache'
 
 #form
 gem 'simple_form'
@@ -92,3 +95,5 @@ gem 'rucaptcha'
 gem 'nestive'
 gem 'thin'
 gem 'unicorn'
+
+gem 'actionpack-action_caching'
