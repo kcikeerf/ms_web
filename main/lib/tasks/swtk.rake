@@ -151,13 +151,14 @@ namespace :swtk do
       str = line.chomp!
       if str
         arr =str.split(",")
+        arr_len = arr.size
         next if arr[0].blank?
         ckp = BankCheckpointCkp.new({:node_uid => args[:node_uid].strip,
           :dimesion => args[:dimesion].strip,
           :rid=>arr[0],
-          :checkpoint => arr[1],
+          :checkpoint => arr[1..arr_len-2].join(","),
           :advice => "建议",
-          :weights => arr[2].nil?? 1:arr[2],
+          :weights => arr[-1].nil?? 1:arr[-1],
           :sort => arr[0],
           :is_entity => false
         })
@@ -268,7 +269,7 @@ namespace :swtk do
                 next unless ckp
                 ckp_ancestors = BankRid.get_all_higher_nodes ckp_objs, ckp
                 ckp_path = ckp_ancestors.map{|a| a.checkpoint }.join(" >> ") + ">> #{ckp.checkpoint}"
-                #p qzp.order + "::" +ckp.dimesion + "::" + ckp_path
+#                p qzp.order + "::" +ckp.dimesion + "::" + ckp_path
                 sheet.add_row([qzp.order, qzp.score, I18n.t("dict.#{ckp.dimesion}"), ckp_path])
               }
             }
@@ -304,9 +305,10 @@ namespace :swtk do
 
       wb.add_worksheet name: "Scores" do |sheet|
         sheet.add_row(["PaperID", target_pap._id.to_s, "Paper Name", target_pap.heading])
-        sheet.add_row(["Quit Point", "Full Score", "Real Score", "Dimesion", "Level1 Ckp", "Level2 Ckp", "End Level Ckp", "Weights"])
+        sheet.add_row(["ClassRoom","PupilName","Quit Point", "Full Score", "Real Score", "Dimesion", "Level1 Ckp", "Level2 Ckp", "End Level Ckp", "Weights"])
         target_scores.each{|score|
-          sheet.add_row([score.order, score.full_score,score.real_score, I18n.t("dict.#{score.dimesion}"), score.lv1_ckp, score.lv2_ckp, score.lv_end_ckp])
+          target_pupil=Pupil.where(uid: score.pup_uid).first
+          sheet.add_row([I18n.t("dict.#{score.classroom}"), target_pupil.name, score.order, score.full_score,score.real_score, I18n.t("dict.#{score.dimesion}"), score.lv1_ckp, score.lv2_ckp, score.lv_end_ckp,score.weights])
         }
       end
       out_path = args[:out]
