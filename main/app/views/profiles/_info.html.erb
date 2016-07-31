@@ -1,45 +1,45 @@
 <div class="form-group">
-	<label class="control-label">姓名</label>
+	<label class="control-label"><%= I18n.t("dict.name") %></label>
 	<%= current_user.role_obj.name %>
 </div>
 <% unless current_user.is_pupil? %>
 	<div class="form-group">
-		<label class="control-label">学科</label>
-		<%= current_user.role_obj.subject %>
+		<label class="control-label"><%= I18n.t("dict.subject") %></label>
+		<%= I18n.t("dict.#{current_user.role_obj.nil?? 'unknown': current_user.role_obj.subject}") %>
 	</div>
 <% end %>
 <% if current_user.is_pupil? %>
 	<div class="form-group">
-		<label class="control-label">性别</label>
-		<%= current_user.role_obj.sex %>
+		<label class="control-label"><%= I18n.t("dict.sex") %></label>
+		<%= I18n.t("dict.#{current_user.role_obj.nil?? 'unknown': current_user.role_obj.sex}")  %>
 	</div>
 	<div class="form-group">
-		<label class="control-label">年级</label>
-		<%= current_user.role_obj.grade %>
+		<label class="control-label"><%= I18n.t("dict.grade") %></label>
+		<%= I18n.t("dict.#{current_user.role_obj.nil?? 'unknown': current_user.role_obj.grade}")  %>
 	</div>
 	<div class="form-group">
-		<label class="control-label">班级</label>
-		<%= current_user.role_obj.classroom %>
+		<label class="control-label"><%= I18n.t("dict.classroom") %></label>
+		<%= I18n.t("dict.#{@current_user.role_obj.nil?? 'unknown': @current_user.role_obj.classroom}")  %>
 	</div>
 <% end %>
 <% unless current_user.is_analyzer? %>
 	<div class="form-group">
-		<label class="control-label">学校</label>
+		<label class="control-label"><%= I18n.t("dict.school") %></label>
 		<%= current_user.role_obj.school %>
 	</div>
 <% end %>
 
 <div class="form-group">
-	<label class="control-label">手机号</label>
+	<label class="control-label"><%= I18n.t("dict.school") %></label>
 	<%= current_user.phone %>
 </div>
 <% if current_user.is_teacher? %>
 	<div class="form-group">
-		<label class="control-label">QQ</label>
+		<label class="control-label"><%= I18n.t("activerecord.attributes.user.phone") %></label>
 		<%= current_user.qq %>
 	</div>
 <% end %>
 <div class="form-group">
-	<label class="control-label">邮箱</label>
+	<label class="control-label"><%= I18n.t("activerecord.attributes.user.email") %></label>
 	<%= current_user.email %>
 </div>
