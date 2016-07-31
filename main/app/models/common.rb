@@ -169,11 +169,15 @@ module Common
 
     module ScoreLevel
       Level0 = 0
-      Level25 = 0.25
-      Level50 = 0.5
       Level60 = 0.6
-      Level75 = 0.75
       Level85 = 0.85
+    end
+
+    module FourSection
+      Level0 = 0
+      Level25 = 25
+      Level50 = 50
+      Level75 = 75
     end
 
     module Charts
@@ -1031,6 +1035,69 @@ module Common
       "er_shi_ba_ban" => "28",
       "er_shi_jiu_ban" => "29",
       "san_shi_ban" => "30"
+    }
+
+    SubjectList = {
+      :yu_wen => I18n.t("dict.yu_wen"),
+      :shu_xue => I18n.t("dict.shu_xue"),
+      :ying_yu => I18n.t("dict.ying_yu"),
+      :li_shi => I18n.t("dict.li_shi"),
+      :di_li => I18n.t("dict.di_li"),
+      :wu_li => I18n.t("dict.wu_li"),
+      :hua_xue => I18n.t("dict.hua_xue"),
+      :sheng_wu => I18n.t("dict.sheng_wu"),
+      :si_xiang_pin_de => I18n.t("dict.si_xiang_pin_de"),
+      :zheng_zhi => I18n.t("dict.zheng_zhi"),
+      :xin_xi_ji_shu => I18n.t("dict.xin_xi_ji_shu"),
+      :ji_shu => I18n.t("dict.ji_shu")
+    }
+
+    GradeList = {
+      :yi_nian_ji => I18n.t("dict.yi_nian_ji"),
+      :er_nian_ji => I18n.t("dict.er_nian_ji"),
+      :san_nian_ji => I18n.t("dict.san_nian_ji"),
+      :si_nian_ji => I18n.t("dict.si_nian_ji"),
+      :wu_nian_ji => I18n.t("dict.wu_nian_ji"),
+      :liu_nian_ji => I18n.t("dict.liu_nian_ji"),
+      :qi_nian_ji => I18n.t("dict.qi_nian_ji"),
+      :ba_nian_ji => I18n.t("dict.ba_nian_ji"),
+      :jiu_nian_ji => I18n.t("dict.jiu_nian_ji"),
+      :gao_yi_nian_ji => I18n.t("dict.gao_yi_nian_ji"),
+      :gao_er_nian_ji => I18n.t("dict.gao_er_nian_ji"),
+      :gao_san_nian_ji => I18n.t("dict.gao_san_nian_ji")
+    }
+
+    KlassList = {
+      :yi_ban => I18n.t("dict.yi_ban"),
+      :er_ban => I18n.t("dict.er_ban"),
+      :san_ban => I18n.t("dict.san_ban"),
+      :si_ban => I18n.t("dict.si_ban"),
+      :wu_ban => I18n.t("dict.wu_ban"),
+      :liu_ban => I18n.t("dict.liu_ban"),
+      :qi_ban => I18n.t("dict.qi_ban"),
+      :ba_ban => I18n.t("dict.ba_ban"),
+      :jiu_ban => I18n.t("dict.jiu_ban"),
+      :shi_ban => I18n.t("dict.shi_ban"),
+      :shi_yi_ban => I18n.t("dict.shi_yi_ban"),
+      :shi_er_ban => I18n.t("dict.shi_er_ban"),
+      :shi_san_ban => I18n.t("dict.shi_san_ban"),
+      :shi_si_ban => I18n.t("dict.shi_si_ban"),
+      :shi_wu_ban => I18n.t("dict.shi_wu_ban"),
+      :shi_liu_ban => I18n.t("dict.shi_liu_ban"),
+      :shi_qi_ban => I18n.t("dict.shi_qi_ban"),
+      :shi_ba_ban => I18n.t("dict.shi_ba_ban"),
+      :shi_jiu_ban => I18n.t("dict.shi_jiu_ban"),
+      :er_shi_ban => I18n.t("dict.er_shi_ban"),
+      :er_shi_yi_ban => I18n.t("dict.er_shi_yi_ban"),
+      :er_shi_er_ban => I18n.t("dict.er_shi_er_ban"),
+      :er_shi_san_ban => I18n.t("dict.er_shi_san_ban"),
+      :er_shi_si_ban => I18n.t("dict.er_shi_si_ban"),
+      :er_shi_wu_ban => I18n.t("dict.er_shi_wu_ban"),
+      :er_shi_liu_ban => I18n.t("dict.er_shi_liu_ban"),
+      :er_shi_qi_ban => I18n.t("dict.er_shi_qi_ban"),
+      :er_shi_ba_ban => I18n.t("dict.er_shi_ba_ban"),
+      :er_shi_jiu_ban => I18n.t("dict.er_shi_jiu_ban"),
+      :san_shi_ban => I18n.t("dict.san_shi_ban")
     }
 
     def hanzi2pinyin hanzi_str

@@ -29,12 +29,33 @@ class Mongodb::ReportGenerator
     logger.debug("=====initialization: completed!=====")
   end
 
-  def when_completed
-    @paper.update(paper_status: Common::Paper::Status::ReportCompleted)
-    logger.debug(@paper.paper_status)
+  def clear_old_data
+    logger.debug("=====clear old data: begin=====")
+    filter1 = {
+      :pap_uid => @pap_uid
+    }
+    Mongodb::GradeReport.where(filter1).destroy_all
+    Mongodb::ClassReport.where(filter1).destroy_all
+    Mongodb::PupilReport.where(filter1).destroy_all
+
+    filter2 = {
+      '_id.pap_uid' => @pap_uid
+    }
+    Mongodb::ReportFourSectionPupilNumberResult.where(filter2).destroy_all
+    Mongodb::ReportEachLevelPupilNumberResult.where(filter2).destroy_all
+    Mongodb::ReportStandDevDiffResult.where(filter2).destroy_all
+    Mongodb::ReportTotalAvgResult.where(filter2).destroy_all
+    Mongodb::ReportQuizCommentsResult.where(filter2).destroy_all
+    logger.debug("=====clear old data: end=====")
   end
 
-  # grade class reports
+  def when_completed
+    logger.debug("=====completed: begin=====")
+    @paper.update(paper_status: Common::Paper::Status::ReportCompleted)
+    logger.debug(@paper.paper_status)
+    logger.debug("=====completed: end=====")
+  end
+
   def construct_gra_cls_charts
     logger.info "construct class all charts"
 
@@ -73,7 +94,7 @@ class Mongodb::ReportGenerator
 
         report_h["charts"]["#{dimesion}_all_lines"]["grade_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
         report_h["charts"]["#{dimesion}_all_lines"]["class_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
-        report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:gra_dim_lv1_avg_percent])
+        report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
 
         klass_report.report_json = report_h.to_json
         klass_report.save
@@ -92,7 +113,7 @@ class Mongodb::ReportGenerator
 
         report_h["charts"]["#{dimesion}_3lines"]["grade_median_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent])
         report_h["charts"]["#{dimesion}_3lines"]["grade_diff_degree"][lv1_ckp_key] = convert_2_full_mark(item[:value][:diff_degree])
-        report_h["charts"]["#{dimesion}_med_avg_diff"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent] - item[:value][:average_percent])
+        report_h["charts"]["#{dimesion}_med_avg_diff"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
 
         grade_report.report_json = report_h.to_json
         grade_report.save
@@ -109,7 +130,7 @@ class Mongodb::ReportGenerator
 
         report_h["charts"]["#{dimesion}_all_lines"]["class_median_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent])
         report_h["charts"]["#{dimesion}_all_lines"]["diff_degree"][lv1_ckp_key] = convert_2_full_mark(item[:value][:diff_degree])
-        report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent] - item[:value][:gra_dim_lv1_avg_percent])
+        report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])
 
         klass_report.report_json = report_h.to_json
         klass_report.save
@@ -280,7 +301,7 @@ class Mongodb::ReportGenerator
           data_table[dimesion][lv1_ckp_key]["value"]["cls_average"] = format_float(item[:value][:cls_dim_lv1_avg])
           data_table[dimesion][lv1_ckp_key]["value"]["cls_average_percent"] = convert_2_full_mark(item[:value][:cls_dim_lv1_avg_percent])
           data_table[dimesion][lv1_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-          data_table[dimesion][lv1_ckp_key]["value"]["cls_gra_avg_percent_diff"] = convert_2_full_mark(item[:value][:cls_dim_lv1_avg_percent] - item[:value][:gra_dim_lv1_avg_percent])
+          data_table[dimesion][lv1_ckp_key]["value"]["cls_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:cls_dim_lv1_avg_percent],item[:value][:gra_dim_lv1_avg_percent])
           data_table[dimesion][lv1_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
 
         elsif(item[:_id].keys.include?("lv2_ckp")) 
@@ -290,7 +311,7 @@ class Mongodb::ReportGenerator
           data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_average"] = format_float(item[:value][:cls_dim_lv2_avg])
           data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_average_percent"] = convert_2_full_mark(item[:value][:cls_dim_lv2_avg_percent])
           data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
-          data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_gra_avg_percent_diff"] = convert_2_full_mark(item[:value][:cls_dim_lv2_avg_percent] - item[:value][:gra_dim_lv2_avg_percent])
+          data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:cls_dim_lv2_avg_percent],item[:value][:gra_dim_lv2_avg_percent])
           data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
 
         end
@@ -310,8 +331,8 @@ class Mongodb::ReportGenerator
           pupil_table[dimesion][lv1_ckp_key]["value"]["average"] = format_float(item[:value][:average])
           pupil_table[dimesion][lv1_ckp_key]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
           pupil_table[dimesion][lv1_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-          pupil_table[dimesion][lv1_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:cls_dim_lv1_avg_percent])
-          pupil_table[dimesion][lv1_ckp_key]["value"]["pup_gra_avg_percent_diff"] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:gra_dim_lv1_avg_percent])
+          pupil_table[dimesion][lv1_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_lv1_avg_percent])
+          pupil_table[dimesion][lv1_ckp_key]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
           pupil_table[dimesion][lv1_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
           pupil_table[dimesion][lv1_ckp_key]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
         elsif(item[:_id].keys.include?("lv2_ckp")) 
@@ -321,8 +342,8 @@ class Mongodb::ReportGenerator
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average"] = format_float(item[:value][:average])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
-          pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:cls_dim_lv2_avg_percent])
-          pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_gra_avg_percent_diff"] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:gra_dim_lv2_avg_percent])
+          pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_lv2_avg_percent])
+          pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
           pupil_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
         end
@@ -343,7 +364,7 @@ class Mongodb::ReportGenerator
           next if !ckp_lv2_to_lv1[dimesion].values.include?(lv1_ckp_key)
 
           data_table[dimesion][lv1_ckp_key]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
-          data_table[dimesion][lv1_ckp_key]["value"]["cls_med_gra_avg_percent_diff"] = convert_2_full_mark(item[:value][:median_percent] - item[:value][:gra_dim_lv1_avg_percent])
+          data_table[dimesion][lv1_ckp_key]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])
           data_table[dimesion][lv1_ckp_key]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
 
         elsif(item[:_id].keys.include?("lv2_ckp"))
@@ -352,7 +373,7 @@ class Mongodb::ReportGenerator
           next if !ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_key)
 
           data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
-          data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_med_gra_avg_percent_diff"] = convert_2_full_mark(item[:value][:median_percent] - item[:value][:gra_dim_lv2_avg_percent])
+          data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv2_avg_percent])
           data_table[dimesion][lv1_ckp_key]["items"][lv2_ckp_key]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
 
         end
@@ -425,7 +446,7 @@ class Mongodb::ReportGenerator
         report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
       elsif item[:id].keys.include?("lv2_ckp")
         lv2_ckp_key = item[:_id][:lv2_ckp]
-        report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"][lv2_ckp_key] = convert_2_full_mark(item[:value][:average_percent] - item[:value][:gra_dim_lv2_avg_percent])
+        report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"][lv2_ckp_key] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
       end
       pupil_report.report_json = report_h.to_json
       pupil_report.save
@@ -523,13 +544,12 @@ class Mongodb::ReportGenerator
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.classroom' => nil,
-      '_id.pup_uid' => nil,
       '_id.dimesion' => {'$exists' => true },
       '_id.lv1_ckp' => {'$exists' => true },
       '_id.lv2_ckp' => nil
-    }
+    } 
 
-    Mongodb::ReportEachLevelPupilNumberResult.where(filter).each{|item|
+    Mongodb::ReportFourSectionPupilNumberResult.where(filter).each{|item|
       #grade
       grade_report, report_h = get_grade_report_hash item
       dimesion = item[:_id][:dimesion]
@@ -586,7 +606,7 @@ class Mongodb::ReportGenerator
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
           temp_h = report_h["each_checkpoint_horizon"][dimesion][member][klass] || {}
           if member == "med_avg_diff"
-            temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent] - item[:value][:average_percent])
+            temp_h[lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
           else
             temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value][member.to_sym])
           end
@@ -596,7 +616,7 @@ class Mongodb::ReportGenerator
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
           temp_h = report_h["each_checkpoint_horizon"]["total"][member][klass] || {}
           if member == "med_avg_diff"
-            temp_h[dimesion] = convert_2_full_mark(item[:value][:median_percent] - item[:value][:average_percent])
+            temp_h[dimesion] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
           else
             temp_h[dimesion] = convert_2_full_mark(item[:value][member.to_sym])
           end
@@ -781,7 +801,7 @@ class Mongodb::ReportGenerator
   # 聚合计算: 开始
   #
   # calculate total,average, median, standardation ... of pupil, class and grade
-  def cal_total_average_percent_scores
+  def cal_init1
     return false if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank?)
     filter = {
       :province => @province,
@@ -795,21 +815,27 @@ class Mongodb::ReportGenerator
       function(){
         var real_total = this.weights * this.real_score;
         var full_total = this.weights * this.full_score;
+        var qzp_count = 0;
+        if(real_total == full_total){
+          qzp_count = 1;
+        }
+
         var value_obj = {
-          pup_uids: this.pup_uid,
+          pup_uids: [this.pup_uid],
           pup_uid: this.pup_uid, 
           real_total: real_total, 
-          real_score: this.real_score,
+          real_score: real_total,
+          real_scores: [real_total],
           full_total: full_total,
-          full_score: this.full_score,
-          full_mark: this.full_score,
+          full_score: full_total,
+          full_mark: full_total,
           reduced: 0, 
           pupil_number: 1,
-          average: this.real_score,
-          average_percent: this.real_score/full_total,
-          qzp_uids: this.qzp_uid,
+          average: real_total,
+          average_percent: real_total/full_total,
+          qzp_uids: [this.qzp_uid],
           qzp_uid: this.qzp_uid,
-          qzp_count: 1
+          qzp_count: qzp_count
         };
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, order: this.order}, 
@@ -861,9 +887,10 @@ class Mongodb::ReportGenerator
     reduce = %Q{
       function(key,values){
         var result = {
-          pup_uids: "",
+          pup_uids: [],
           pup_uid: values[0].pup_uid, 
-          real_total: 0, 
+          real_total: 0,
+          real_scores: [], 
           real_score: 0,
           full_total: 0,
           full_score: 0,
@@ -872,30 +899,33 @@ class Mongodb::ReportGenerator
           pupil_number: 0,
           average: 0,
           average_percent: 0,
-          qzp_uids: "",
+          qzp_uids: [],
           qzp_uid: "",
           qzp_count: 0
         };
 
-        var pup_arr = [];
-        var qzp_arr = [];
-
-
         values.forEach(function(value){
           result.real_total += value.real_total;
           result.full_total += value.full_total;
-          pup_arr = result.pup_uids.split(",");
-          pup_arr.pop();
-          if(pup_arr.indexOf(value.pup_uids) == -1 ){
-            result.pup_uids += (value.pup_uids + ",");
-            result.pupil_number += value.pupil_number;
-          }
-          qzp_arr = result.qzp_uids.split(",");
-          qzp_arr.pop();
-          if(value.real_score == value.full_score && qzp_arr.indexOf(value.qzp_uids) == -1){
-            result.qzp_uids += (value.qzp_uids + ",");
-            result.qzp_count += value.qzp_count;
-          }
+
+          value.real_scores.forEach(function(score){
+              result.real_scores.push(score);
+          });
+
+          value.pup_uids.forEach(function(pup_uid){
+            if(result.pup_uids.indexOf(pup_uid) == -1 ){
+              result.pup_uids.push(pup_uid);
+              result.pupil_number += 1;
+            }
+          });
+
+          value.qzp_uids.forEach(function(qzp_uid){
+            if(result.qzp_uids.indexOf(qzp_uid) == -1 && value.real_score == value.full_score){
+              result.qzp_uids.push(qzp_uid);
+              result.qzp_count += 1;
+            }
+          });
+
         });
        
         result.average = result.real_total/result.pupil_number;
@@ -917,7 +947,7 @@ class Mongodb::ReportGenerator
   # gra_dim_lv1_avg_percent: 年级1级指标平均得分率
   # gra_dim_lv2_avg_percent: 年级2级指标平均得分率
   #
-  def add_avg_col
+  def add_materials1
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
@@ -926,10 +956,10 @@ class Mongodb::ReportGenerator
     }
     arr = Mongodb::ReportTotalAvgResult.where(filter).no_timeout # need add filter here, user_id or somethind
 
-    add_avg_col_core 1, arr
+    add_materials1_core 1, arr
   end
 
-  def add_avg_col_core th_index, arr
+  def add_materials1_core th_index, arr
     total_num =arr.size
     arr.each_with_index{|item,index|
       logger.info(">>>>>>thread #{th_index}, current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
@@ -972,17 +1002,391 @@ class Mongodb::ReportGenerator
       end
       unless qzp_score_upt_h.empty?
         results = Mongodb::ReportTotalAvgResult.where(qzp_score_common_cond).no_timeout
-        results.each{|result| result.update_attributes(qzp_score_upt_h)}
+        results.update_all(qzp_score_upt_h)
       end
     }  
   end
 
   #
-  #
-  def cal_each_level_pupil_number
+  # 
+  def cal_init2
     return false if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank?)
     filter = {
-      '_id.pap_uid' => @pap_uid
+      '_id.pap_uid' => @pap_uid,
+      '_id.pup_uid' => {'$exists' => true }
+    }
+
+    map = %Q{
+      function(){
+        if(!this._id.lv1_ckp && !this._id.lv2_ckp){
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              classroom: this._id.classroom, 
+              dimesion: this._id.dimesion},
+            {
+              reduced: 0,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 1,
+              pupil_number: this.value.pupil_number,
+              median_percent: this.value.average_percent,
+              median_number: 1,
+              average: this.value.average,
+              average_percent: this.value.average_percent,
+              average_stack: [this.value.average_percent],
+              cls_dim_avg: this.value.cls_dim_avg,
+              cls_dim_avg_percent: this.value.cls_dim_avg_percent,
+              gra_dim_avg: this.value.gra_dim_avg,
+              gra_dim_avg_percent: this.value.gra_dim_avg_percent
+            }
+          );
+        }
+        if(this._id.lv1_ckp){
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              dimesion: this._id.dimesion, 
+              lv1_ckp: this._id.lv1_ckp},
+            {
+              reduced: 0,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 1,
+              pupil_number: this.value.pupil_number,
+              median_percent: this.value.average_percent,
+              median_number: 1,
+              average: this.value.average,
+              average_percent: this.value.average_percent,
+              average_stack: [this.value.average_percent],
+              gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
+              gra_dim_lv1_avg_percent: this.value.gra_dim_lv1_avg_percent
+            }
+          );
+
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade,
+              pup_uid: this._id.pup_uid,
+              dimesion: this._id.dimesion, 
+              lv1_ckp: this._id.lv1_ckp},
+            {
+              reduced: 0,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 1,
+              pupil_number: this.value.pupil_number,
+              median_percent: this.value.average_percent,
+              median_number: 1,
+              average: this.value.average,
+              average_percent: this.value.average_percent,
+              average_stack: [this.value.average_percent],
+              gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
+              gra_dim_lv1_avg_percent: this.value.gra_dim_lv1_avg_percent
+            }
+          );
+
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              classroom: this._id.classroom, 
+              dimesion: this._id.dimesion, 
+              lv1_ckp: this._id.lv1_ckp},
+            {
+              reduced: 0,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 1,
+              pupil_number: this.value.pupil_number,
+              median_percent: this.value.average_percent,
+              median_number: 1,
+              average: this.value.average,
+              average_percent: this.value.average_percent,
+              average_stack: [this.value.average_percent],
+              cls_dim_lv1_avg: this.value.cls_dim_lv1_avg,
+              cls_dim_lv1_avg_percent: this.value.cls_dim_lv1_avg_percent,
+              gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
+              gra_dim_lv1_avg_percent: this.value.gra_dim_lv1_avg_percent
+            }
+          );
+        }
+        if(this._id.lv2_ckp){
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              dimesion: this._id.dimesion, 
+              lv2_ckp: this._id.lv2_ckp},
+            {
+              reduced: 0,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 1,
+              pupil_number: this.value.pupil_number,
+              median_percent: this.value.average_percent,
+              median_number: 1,
+              average: this.value.average,
+              average_percent: this.value.average_percent,
+              average_stack: [this.value.average_percent],
+              gra_dim_lv2_avg: this.value.gra_dim_lv2_avg,
+              gra_dim_lv2_avg_percent: this.value.gra_dim_lv2_avg_percent
+            }
+          );
+
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              classroom: this._id.classroom, 
+              dimesion: this._id.dimesion, 
+              lv2_ckp: this._id.lv2_ckp},
+            {
+              reduced: 0,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 1,
+              pupil_number: this.value.pupil_number,
+              median_percent: this.value.average_percent,
+              median_number: 1,
+              average: this.value.average,
+              average_percent: this.value.average_percent,
+              average_stack:[this.value.average_percent],
+              cls_dim_lv2_avg: this.value.cls_dim_lv2_avg,
+              cls_dim_lv2_avg_percent: this.value.cls_dim_lv2_avg_percent,
+              gra_dim_lv2_avg: this.value.gra_dim_lv2_avg,
+              gra_dim_lv2_avg_percent: this.value.gra_dim_lv2_avg_percent
+            }
+          );
+        }
+      }
+    }
+
+    reduce = %Q{
+      function(key,values){
+        if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
+          var result = {
+              reduced: 1,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 0,
+              pupil_number: values[0].pupil_number,
+              median_percent: 0,
+              median_number: 0,
+              average: values[0].average,
+              average_percent: values[0].average_percent,
+              average_stack: [],
+              cls_dim_avg: values[0].cls_dim_avg,
+              cls_dim_avg_percent: values[0].cls_dim_avg_percent,
+              gra_dim_avg: values[0].gra_dim_avg,
+              gra_dim_avg_percent: values[0].gra_dim_avg_percent
+          };
+        }
+        if(key.hasOwnProperty('lv1_ckp')){
+          if(key.hasOwnProperty('classroom')){
+            var result = {
+              reduced: 1,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 0,
+              pupil_number: values[0].pupil_number,
+              median_percent: 0,
+              median_number: 0,
+              average: values[0].average,
+              average_percent: values[0].average_percent,
+              average_stack: [],
+              cls_dim_lv1_avg: values[0].cls_dim_lv1_avg,
+              cls_dim_lv1_avg_percent: values[0].cls_dim_lv1_avg_percent,
+              gra_dim_lv1_avg: values[0].gra_dim_lv1_avg,
+              gra_dim_lv1_avg_percent: values[0].gra_dim_lv1_avg_percent
+            };
+          } else {
+            var result = {
+              reduced: 1,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 0,
+              pupil_number: values[0].pupil_number,
+              median_percent: 0,
+              median_number: 0,
+              average: values[0].average,
+              average_percent: values[0].average_percent,
+              average_stack: [],
+              gra_dim_lv1_avg: values[0].gra_dim_lv1_avg,
+              gra_dim_lv1_avg_percent: values[0].gra_dim_lv1_avg_percent
+            };
+          }
+        }
+
+        if(key.hasOwnProperty('lv2_ckp')){
+          if(key.hasOwnProperty('classroom')){
+            var result = {
+              reduced: 1,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 0,
+              pupil_number: values[0].pupil_number,
+              median_percent: 0,
+              median_number: 0,
+              average: values[0].average,
+              average_percent: values[0].average_percent,
+              average_stack: [],
+              cls_dim_lv2_avg: values[0].cls_dim_lv2_avg,
+              cls_dim_lv2_avg_percent: values[0].cls_dim_lv2_avg_percent,
+              gra_dim_lv2_avg: values[0].gra_dim_lv2_avg,
+              gra_dim_lv2_avg_percent: values[0].gra_dim_lv2_avg_percent
+            };
+          } else {
+            var result = {
+              reduced: 1,
+              delta: 0,
+              diff2_sum: 0,
+              stand_dev: 0, 
+              diff_degree: 0,
+              current_pupil_number: 0,
+              pupil_number: values[0].pupil_number,
+              median_percent: 0,
+              median_number: 0,
+              average: values[0].average,
+              average_percent: values[0].average_percent,
+              average_stack: [],
+              gra_dim_lv2_avg: values[0].gra_dim_lv2_avg,
+              gra_dim_lv2_avg_percent: values[0].gra_dim_lv2_avg_percent
+            };
+          }
+        }
+
+        values.forEach(function(value){
+          result.current_pupil_number += value.current_pupil_number;
+          if(key.hasOwnProperty('lv1_ckp')){
+            if(key.hasOwnProperty('classroom')){
+              result.delta += value.average - value.cls_dim_lv1_avg;
+            } else {
+              result.delta += value.average - value.gra_dim_lv1_avg;
+            }
+            result.diff2_sum += Math.pow(result.delta, 2);
+          }
+
+          if(key.hasOwnProperty('lv2_ckp')){
+            if(key.hasOwnProperty('classroom')){
+              result.delta += value.average - value.cls_dim_lv2_avg;
+            } else {
+              result.delta += value.average - value.gra_dim_lv2_avg;
+            }
+            result.diff2_sum += Math.pow(result.delta, 2);
+          }
+          
+          value.average_stack.forEach(function(average){
+            result.average_stack.push(average);
+          });
+        });
+
+        if((result.current_pupil_number&1)==0){
+          result.median_number = result.current_pupil_number/2;
+        } else {
+          result.median_number = parseInt(result.current_pupil_number/2)+1;
+        }
+
+        var sorted_values = result.average_stack.sort(function(a, b){ return a > b});
+        result.median_percent = parseFloat(sorted_values[result.median_number-1]);
+
+        result.current_pupil_number = (result.current_pupil_number == 0) ? 1:result.current_pupil_number;
+
+        result.stand_dev = Math.sqrt(result.diff2_sum/result.current_pupil_number );
+
+        if(key.hasOwnProperty('lv1_ckp')){ 
+          if(key.hasOwnProperty('classroom')){
+            result.diff_degree = result.stand_dev/result.cls_dim_lv1_avg;
+          } else {
+            result.diff_degree = result.stand_dev/result.gra_dim_lv1_avg;
+          }         
+        }
+
+        if(key.hasOwnProperty('lv2_ckp')){ 
+          if(key.hasOwnProperty('classroom')){
+            result.diff_degree = result.stand_dev/result.cls_dim_lv2_avg;
+          } else {
+            result.diff_degree = result.stand_dev/result.gra_dim_lv2_avg;
+          }         
+        }
+        return result;
+      }
+    }
+
+    Mongodb::ReportTotalAvgResult.where(filter).map_reduce(map,reduce).out(:replace => "mongodb_report_stand_dev_diff_results").execute
+  end
+
+  # 
+  #
+  #
+  def add_materials2
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => nil,
+      '_id.pup_uid' => nil,
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv1_ckp' => {'$exists' => true },
+      '_id.lv2_ckp' => nil
+    }
+    arr = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout # need add filter here, user_id or somethind
+
+    add_materials2_core 1, arr
+  end
+
+  def add_materials2_core th_index, arr
+    total_num =arr.size
+    arr.each_with_index{|item,index|
+      logger.info(">>>>>>thread #{th_index}, current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
+      pupil_filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      #'_id.classroom' => nil,
+      '_id.pup_uid' => {'$exists' => true },
+      '_id.dimesion' => item[:_id][:dimesion],
+      '_id.lv1_ckp' => item[:_id][:lv1_ckp],
+      '_id.lv2_ckp' => nil
+      }
+
+      average_arr = item[:value][:average_stack].blank?? [] : item[:value][:average_stack].sort.reverse
+
+      values_h = {
+        'value.grade_rank' => 0,
+        'value.grade_pupil_number' => item[:value][:current_pupil_number]
+      }
+
+      results = Mongodb::ReportStandDevDiffResult.where(pupil_filter).no_timeout
+      results.each{|result|
+        values_h['value.grade_rank'] = average_arr.index(result[:value][:average_percent]) || 0
+        result.update_attributes(values_h)
+      }
+    }  
+  end
+
+  #
+  #
+  def cal_init3
+    return false if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank?)
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.pup_uid' => {'$exists' => true }
     }
 
     map = %Q{
@@ -997,15 +1401,7 @@ class Mongodb::ReportGenerator
           excellent_pupil_number: 0,
           failed_percent: 0,
           good_percent: 0,
-          excellent_percent: 0,
-          level0_number: 0,
-          level25_number: 0,
-          level50_number: 0,
-          level75_number: 0,
-          level0_percent: 0,
-          level25_percent: 0,
-          level50_percent: 0,
-          level75_percent: 0
+          excellent_percent: 0
         }
 
         if( 0.0 <= this.value.average_percent && this.value.average_percent < #{Common::Report::ScoreLevel::Level60} ){
@@ -1014,20 +1410,9 @@ class Mongodb::ReportGenerator
           value_obj.good_pupil_number = 1;
         } else if (#{Common::Report::ScoreLevel::Level85} <= this.value.average_percent && this.value.average_percent <= 1.0){
           value_obj.excellent_pupil_number = 1;
-        }
+        } 
 
-
-        if( 0.0 <= this.value.average_percent && this.value.average_percent <= #{Common::Report::ScoreLevel::Level25} ){
-          value_obj.level0_number = 1;
-        } else if (#{Common::Report::ScoreLevel::Level25} < this.value.average_percent && this.value.average_percent <= #{Common::Report::ScoreLevel::Level50}){
-          value_obj.level25_number = 1;
-        } else if (#{Common::Report::ScoreLevel::Level50} < this.value.average_percent && this.value.average_percent <= #{Common::Report::ScoreLevel::Level75}){
-          value_obj.level50_number = 1;
-        } else if (#{Common::Report::ScoreLevel::Level75} < this.value.average_percent && this.value.average_percent <= 1.0){
-          value_obj.level75_number = 1;
-        }  
-
-        if(this._id.pup_uid && !this._id.lv1_ckp && !this._id.lv2_ckp){
+        if(!this._id.lv1_ckp && !this._id.lv2_ckp){
           emit(
               { pap_uid: this._id.pap_uid,
                 grade: this._id.grade
@@ -1057,7 +1442,7 @@ class Mongodb::ReportGenerator
               value_obj
           );
         }
-        if(this._id.pup_uid && this._id.lv1_ckp){
+        if(this._id.lv1_ckp){
           emit(
               { pap_uid: this._id.pap_uid,
                 grade: this._id.grade, 
@@ -1076,7 +1461,7 @@ class Mongodb::ReportGenerator
               value_obj 
           );
         }
-        if(this._id.pup_uid && this._id.lv2_ckp){
+        if(this._id.lv2_ckp){
           emit(
               { pap_uid: this._id.pap_uid,
                 grade: this._id.grade, 
@@ -1109,7 +1494,90 @@ class Mongodb::ReportGenerator
           excellent_pupil_number: 0,
           failed_percent: 0,
           good_percent: 0,
-          excellent_percent: 0,
+          excellent_percent: 0
+        }
+
+        values.forEach(function(value){
+          result.total_number += value.total_number;
+          result.failed_pupil_number += value.failed_pupil_number;
+          result.good_pupil_number += value.good_pupil_number;
+          result.excellent_pupil_number += value.excellent_pupil_number;
+        });
+
+        result.failed_percent = result.failed_pupil_number/result.total_number;
+        result.good_percent = result.good_pupil_number/result.total_number;
+        result.excellent_percent = result.excellent_pupil_number/result.total_number;
+        return result;
+      }
+    }
+
+    Mongodb::ReportTotalAvgResult.where(filter).map_reduce(map,reduce).out(:replace => "mongodb_report_each_level_pupil_number_results").execute
+  end
+
+  #
+  #
+  def cal_init4
+    return false if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank?)
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      #'_id.classroom' => nil,
+      '_id.pup_uid' => {'$exists' => true },
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv1_ckp' => {'$exists' => true },
+      '_id.lv2_ckp' => nil
+    }
+
+    map = %Q{
+      function(){      
+
+        var value_obj = {
+          reduced: 0,
+          total_number: 1,
+          level0_number: 0,
+          level25_number: 0,
+          level50_number: 0,
+          level75_number: 0,
+          level0_percent: 0,
+          level25_percent: 0,
+          level50_percent: 0,
+          level75_percent: 0
+        };
+
+        if(this.value.grade_rank && this.value.grade_pupil_number && this.value.grade_rank != 0 && this.value.grade_pupil_number!=0){
+          percentile = 100 - (100*this.value.grade_rank - 50)/this.value.grade_pupil_number;
+        } else {
+          percentile = 0;
+        }
+
+        if( 0.0 <= percentile && percentile <= #{Common::Report::FourSection::Level25} ){
+          value_obj.level0_number = 1;
+        } else if (#{Common::Report::FourSection::Level25} < percentile && percentile <= #{Common::Report::FourSection::Level50}){
+          value_obj.level25_number = 1;
+        } else if (#{Common::Report::FourSection::Level50} < percentile && percentile <= #{Common::Report::FourSection::Level75}){
+          value_obj.level50_number = 1;
+        } else if (#{Common::Report::FourSection::Level75} < percentile && percentile <= 100){
+          value_obj.level75_number = 1;
+        }
+
+        if(this._id.lv1_ckp){
+          emit(
+              { pap_uid: this._id.pap_uid,
+                grade: this._id.grade, 
+                dimesion: this._id.dimesion,
+                lv1_ckp: this._id.lv1_ckp
+              }, 
+              value_obj
+          );
+        }
+      }
+    }
+
+    reduce = %Q{
+      function(key,values){
+        var result = {
+          reduced: 1,
+          total_number: 0,
           level0_number: 0,
           level25_number: 0,
           level50_number: 0,
@@ -1122,18 +1590,12 @@ class Mongodb::ReportGenerator
 
         values.forEach(function(value){
           result.total_number += value.total_number;
-          result.failed_pupil_number += value.failed_pupil_number;
-          result.good_pupil_number += value.good_pupil_number;
-          result.excellent_pupil_number += value.excellent_pupil_number;
           result.level0_number += value.level0_number;
           result.level25_number += value.level25_number;
           result.level50_number += value.level50_number;
           result.level75_number += value.level75_number;
         });
 
-        result.failed_percent = result.failed_pupil_number/result.total_number;
-        result.good_percent = result.good_pupil_number/result.total_number;
-        result.excellent_percent = result.excellent_pupil_number/result.total_number;
         result.level0_percent = result.level0_number/result.total_number;
         result.level25_percent = result.level25_number/result.total_number;
         result.level50_percent = result.level50_number/result.total_number;
@@ -1142,314 +1604,8 @@ class Mongodb::ReportGenerator
       }
     }
 
-    Mongodb::ReportTotalAvgResult.where(filter).map_reduce(map,reduce).out(:replace => "mongodb_report_each_level_pupil_number_results").execute
+    Mongodb::ReportStandDevDiffResult.where(filter).map_reduce(map,reduce).out(:replace => "mongodb_report_four_section_pupil_number_results").execute
   end
-
-  #
-  # 
-  def cal_standard_deviation_difference
-    return false if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank?)
-    filter = {
-      '_id.pap_uid' => @pap_uid
-    }
-
-    map = %Q{
-      function(){
-        if(this._id.pup_uid && !this._id.lv1_ckp && !this._id.lv2_ckp){
-          emit(
-            { pap_uid: this._id.pap_uid,
-              grade: this._id.grade, 
-              classroom: this._id.classroom, 
-              dimesion: this._id.dimesion},
-            {
-              reduced: 0,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 1,
-              pupil_number: this.value.pupil_number,
-              median_percent: this.value.average_percent,
-              median_number: 1,
-              average: this.value.average,
-              average_percent: this.value.average_percent,
-              average_stack: this.value.average_percent,
-              cls_dim_avg: this.value.cls_dim_avg,
-              cls_dim_avg_percent: this.value.cls_dim_avg_percent,
-              gra_dim_avg: this.value.gra_dim_avg,
-              gra_dim_avg_percent: this.value.gra_dim_avg_percent
-            }
-          );
-        }
-        if(this._id.pup_uid && this._id.lv1_ckp){
-          emit(
-            { pap_uid: this._id.pap_uid,
-              grade: this._id.grade, 
-              dimesion: this._id.dimesion, 
-              lv1_ckp: this._id.lv1_ckp},
-            {
-              reduced: 0,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 1,
-              pupil_number: this.value.pupil_number,
-              median_percent: this.value.average_percent,
-              median_number: 1,
-              average: this.value.average,
-              average_percent: this.value.average_percent,
-              average_stack: this.value.average_percent,
-              gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
-              gra_dim_lv1_avg_percent: this.value.gra_dim_lv1_avg_percent
-            }
-          );
-
-          emit(
-            { pap_uid: this._id.pap_uid,
-              grade: this._id.grade, 
-              classroom: this._id.classroom, 
-              dimesion: this._id.dimesion, 
-              lv1_ckp: this._id.lv1_ckp},
-            {
-              reduced: 0,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 1,
-              pupil_number: this.value.pupil_number,
-              median_percent: this.value.average_percent,
-              median_number: 1,
-              average: this.value.average,
-              average_percent: this.value.average_percent,
-              average_stack: this.value.average_percent,
-              cls_dim_lv1_avg: this.value.cls_dim_lv1_avg,
-              cls_dim_lv1_avg_percent: this.value.cls_dim_lv1_avg_percent,
-              gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
-              gra_dim_lv1_avg_percent: this.value.gra_dim_lv1_avg_percent
-            }
-          );
-        }
-        if(this._id.pup_uid && this._id.lv2_ckp){
-          emit(
-            { pap_uid: this._id.pap_uid,
-              grade: this._id.grade, 
-              dimesion: this._id.dimesion, 
-              lv2_ckp: this._id.lv2_ckp},
-            {
-              reduced: 0,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 1,
-              pupil_number: this.value.pupil_number,
-              median_percent: this.value.average_percent,
-              median_number: 1,
-              average: this.value.average,
-              average_percent: this.value.average_percent,
-              average_stack: this.value.average_percent,
-              gra_dim_lv2_avg: this.value.gra_dim_lv2_avg,
-              gra_dim_lv2_avg_percent: this.value.gra_dim_lv2_avg_percent
-            }
-          );
-
-          emit(
-            { pap_uid: this._id.pap_uid,
-              grade: this._id.grade, 
-              classroom: this._id.classroom, 
-              dimesion: this._id.dimesion, 
-              lv2_ckp: this._id.lv2_ckp},
-            {
-              reduced: 0,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 1,
-              pupil_number: this.value.pupil_number,
-              median_percent: this.value.average_percent,
-              median_number: 1,
-              average: this.value.average,
-              average_percent: this.value.average_percent,
-              average_stack: this.value.average_percent,
-              cls_dim_lv2_avg: this.value.cls_dim_lv2_avg,
-              cls_dim_lv2_avg_percent: this.value.cls_dim_lv2_avg_percent,
-              gra_dim_lv2_avg: this.value.gra_dim_lv2_avg,
-              gra_dim_lv2_avg_percent: this.value.gra_dim_lv2_avg_percent
-            }
-          );
-        }
-      }
-    }
-
-    reduce = %Q{
-      function(key,values){
-        if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
-          var result = {
-              reduced: 1,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 0,
-              pupil_number: values[0].pupil_number,
-              median_percent: 0,
-              median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
-              average_stack: "",
-              cls_dim_avg: values[0].cls_dim_avg,
-              cls_dim_avg_percent: values[0].cls_dim_avg_percent,
-              gra_dim_avg: values[0].gra_dim_avg,
-              gra_dim_avg_percent: values[0].gra_dim_avg_percent
-          };
-        }
-        if(key.hasOwnProperty('lv1_ckp')){
-          if(key.hasOwnProperty('classroom')){
-            var result = {
-              reduced: 1,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 0,
-              pupil_number: values[0].pupil_number,
-              median_percent: 0,
-              median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
-              average_stack: "",
-              cls_dim_lv1_avg: values[0].cls_dim_lv1_avg,
-              cls_dim_lv1_avg_percent: values[0].cls_dim_lv1_avg_percent,
-              gra_dim_lv1_avg: values[0].gra_dim_lv1_avg,
-              gra_dim_lv1_avg_percent: values[0].gra_dim_lv1_avg_percent
-            };
-          } else {
-            var result = {
-              reduced: 1,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 0,
-              pupil_number: values[0].pupil_number,
-              median_percent: 0,
-              median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
-              average_stack: "",
-              gra_dim_lv1_avg: values[0].gra_dim_lv1_avg,
-              gra_dim_lv1_avg_percent: values[0].gra_dim_lv1_avg_percent
-            };
-          }
-        }
-
-        if(key.hasOwnProperty('lv2_ckp')){
-          if(key.hasOwnProperty('classroom')){
-            var result = {
-              reduced: 1,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 0,
-              pupil_number: values[0].pupil_number,
-              median_percent: 0,
-              median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
-              average_stack: "",
-              cls_dim_lv2_avg: values[0].cls_dim_lv2_avg,
-              cls_dim_lv2_avg_percent: values[0].cls_dim_lv2_avg_percent,
-              gra_dim_lv2_avg: values[0].gra_dim_lv2_avg,
-              gra_dim_lv2_avg_percent: values[0].gra_dim_lv2_avg_percent
-            };
-          } else {
-            var result = {
-              reduced: 1,
-              delta: 0,
-              diff2_sum: 0,
-              stand_dev: 0, 
-              diff_degree: 0,
-              current_pupil_number: 0,
-              pupil_number: values[0].pupil_number,
-              median_percent: 0,
-              median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
-              average_stack: "",
-              gra_dim_lv2_avg: values[0].gra_dim_lv2_avg,
-              gra_dim_lv2_avg_percent: values[0].gra_dim_lv2_avg_percent
-            };
-          }
-        }
-
-        values.forEach(function(value){
-          result.current_pupil_number += value.current_pupil_number;
-          if(key.hasOwnProperty('lv1_ckp')){
-            if(key.hasOwnProperty('classroom')){
-              result.delta += value.average - value.cls_dim_lv1_avg;
-            } else {
-              result.delta += value.average - value.gra_dim_lv1_avg;
-            }
-            result.diff2_sum += Math.pow(result.delta, 2);
-          }
-
-          if(key.hasOwnProperty('lv2_ckp')){
-            if(key.hasOwnProperty('classroom')){
-              result.delta += value.average - value.cls_dim_lv2_avg;
-            } else {
-              result.delta += value.average - value.gra_dim_lv2_avg;
-            }
-            result.diff2_sum += Math.pow(result.delta, 2);
-          }
-          
-          result.average_stack += (value.average_stack + ",");
-        });
-
-        if((result.current_pupil_number&1)==0){
-          result.median_number = result.current_pupil_number/2;
-        } else {
-          result.median_number = parseInt(result.current_pupil_number/2)+1;
-        }
-
-        var value_arr = result.average_stack.split(",");
-        value_arr.pop();
-        var sorted_values = value_arr.sort(function(a, b){ return a > b});
-        result.median_percent = parseFloat(sorted_values[result.median_number-1]);
-
-        result.current_pupil_number = (result.current_pupil_number == 0) ? 1:result.current_pupil_number;
-
-        result.stand_dev = Math.sqrt(result.diff2_sum/result.current_pupil_number );
-
-        if(key.hasOwnProperty('lv1_ckp')){ 
-          if(key.hasOwnProperty('classroom')){
-            result.diff_degree = result.stand_dev/result.cls_dim_lv1_avg;
-          } else {
-            result.diff_degree = result.stand_dev/result.gra_dim_lv1_avg;
-          }         
-        }
-
-        if(key.hasOwnProperty('lv2_ckp')){ 
-          if(key.hasOwnProperty('classroom')){
-            result.diff_degree = result.stand_dev/result.cls_dim_lv2_avg;
-          } else {
-            result.diff_degree = result.stand_dev/result.gra_dim_lv2_avg;
-          }         
-        }
-        return result;
-      }
-    }
-
-    Mongodb::ReportTotalAvgResult.where(filter).map_reduce(map,reduce).out(:replace => "mongodb_report_stand_dev_diff_results").execute
-  end
-
-
-  #
-  # 聚合计算: 结束
-  #
 
 
   private
@@ -1489,7 +1645,6 @@ class Mongodb::ReportGenerator
     return grade_report, report_h
   end
 
-  #取得班级报告
   def get_class_report_hash item
     return nil, {} if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank? || item[:_id][:grade].blank? ||item[:_id][:classroom].blank?)
     klass_param = {
@@ -1540,7 +1695,6 @@ class Mongodb::ReportGenerator
     return klass_report, report_h
   end
 
-  #取得学生报告
   def get_pupil_report_hash item
     return nil, {} if (@province.blank? || @city.blank? || @district.blank? || @school.blank? || @pap_uid.blank? || item[:_id][:pup_uid].blank?)
     pupil_param = {
@@ -1619,8 +1773,15 @@ class Mongodb::ReportGenerator
     ("%0.02f" % value).to_f
   end
 
+  def convert_diff_2_full_mark value1,value2
+    format_float((format_float_4(value1) - format_float_4(value2))*100)
+  end
+
+  def format_float_4 value
+    ("%0.04f" % value).to_f
+  end
+
   def judge_score_level value
-    #达到何水平判断
     if(value >= 0 &&
        value <= Common::Report::ScoreLevel::Level60)
       return I18n.t("reports.failed_level")

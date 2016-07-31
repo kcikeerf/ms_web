@@ -198,6 +198,7 @@ zh:
     knowledge: "知识"
     skill: "技能"
     ability: "能力"
+    subject: "学科"
     text_version: "教材版本"
     volume: "课本分册"
     quiz_type: "题型"
@@ -210,7 +211,7 @@ zh:
     bei_shi_da_ban: "北师大版"
     su_jiao_ban: "苏教版"
     #学科
-    yu_web: "语文"
+    yu_wen: "语文"
     shu_xue: "数学"
     ying_yu: "英语"
     li_shi: "历史"
@@ -597,6 +598,9 @@ zh:
     next: '下一步'
     captcha: '验证码'
     input_captcha: '请输入验证码'
+    common:
+      save: "保存"
+      submit: "提交"
     menu:
       home: '首页'
       librarys: '三维题库'
