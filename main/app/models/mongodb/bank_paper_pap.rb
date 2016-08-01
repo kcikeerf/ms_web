@@ -60,6 +60,12 @@ class Mongodb::BankPaperPap
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
+  index({province: 1, city: 1, district:1}, {background: true})
+  index({grade: 1}, {background: true})
+  index({subject: 1}, {background: true})
+  index({paper_status: 1}, {background: true})
+  index({dt_update:-1},{background: true})
+
   has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
   has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
   has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz"
@@ -491,9 +497,9 @@ class Mongodb::BankPaperPap
       score_row_arr.pop()
       score_row_arr.push(self.score)
 
-      quizs = self.bank_quiz_qizs.sort{|a,b| a.order <=> b.order }
+      quizs = self.bank_quiz_qizs.sort{|a,b| Common::Paper::quiz_order(a.order,b.order) }
       quizs.each{|qiz|
-        qzps = qiz.bank_qizpoint_qzps.sort{|a,b| a.order <=> b.order }
+        qzps = qiz.bank_qizpoint_qzps.sort{|a,b| Common::Paper::quiz_order(a.order,b.order) }
         qzp_count = qzps.size
         qzps.each{|qzp|
           hidden_title_row_arr.push(qzp._id)
