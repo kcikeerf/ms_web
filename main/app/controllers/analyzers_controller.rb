@@ -3,7 +3,6 @@ class AnalyzersController < ApplicationController
 
   before_action :authenticate_user!
   before_action :read_papers#, only: [:my_home, :my_paper]
-
  
   def my_home
     @analyzer = current_user.analyzer
@@ -19,10 +18,17 @@ class AnalyzersController < ApplicationController
   end
 
   def my_paper
-    paper_data = @papers_data.to_a
-    @subjects = deal_label('dict', paper_data.map(&:subject).uniq)
-    @grades = deal_label('dict', paper_data.map(&:grade).uniq)
-    @status = deal_label('papers.status', paper_data.map(&:paper_status).uniq)
+    paper_data = @papers_data
+
+    subject_arr = paper_data.map(&:subject).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::SubjectOrder[a.nil?? "":a.to_sym],Common::Locale::SubjectOrder[b.nil?? "":b.to_sym]) }
+    @subjects = deal_label('dict', subject_arr)
+
+    grade_arr = paper_data.map(&:grade).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::GradeOrder[a.nil?? "":a.to_sym],Common::Locale::GradeOrder[b.nil?? "":b.to_sym]) }
+    @grades = deal_label('dict', grade_arr)
+ 
+    status_arr = paper_data.map(&:paper_status).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::StatusOrder[a.nil?? "":a.to_sym],Common::Locale::StatusOrder[b.nil?? "":b.to_sym]) }
+    @status = deal_label('papers.status', status_arr)
+ 
     province, city, district = params[:region].split('/') unless params[:region].blank?
     @region = params[:region]#deal_label('area', params[:region].split('/')).join('/') unless params[:region].blank?
 
@@ -33,7 +39,6 @@ class AnalyzersController < ApplicationController
       .by_province(province)
       .by_city(city)
       .by_district(district)
-      .order(id: :desc)
       .page(params[:page])
       .per(10)
   end
@@ -45,7 +50,7 @@ class AnalyzersController < ApplicationController
   private
 
   def read_papers
-    @papers_data = Mongodb::BankPaperPap.by_user(current_user.id)
+    @papers_data = Mongodb::BankPaperPap.by_user(current_user.id).order({dt_update: :desc})
   end
   
 end

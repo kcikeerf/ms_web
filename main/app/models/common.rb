@@ -37,6 +37,20 @@ module Common
       ReportCompleted = "report_completed"
     end
 
+    def quiz_order(x,y)
+      reg = /\(([0-9].*?)\)/
+      md = reg.match(x)
+      x_arr = [x.sub(/\(.*/,"").to_i,md[1].to_i]
+      md = reg.match(y)
+      y_arr = [y.sub(/\(.*/,"").to_i,md[1].to_i]
+
+      if x_arr[0] != y_arr[0]
+        return x_arr[0] <=> y_arr[0]
+      else
+        return x_arr[1] <=> y_arr[1]
+      end
+    end
+    module_function :quiz_order
   end
 
   module CheckpointCkp
@@ -1037,6 +1051,51 @@ module Common
       "san_shi_ban" => "30"
     }
 
+    StatusOrder = {
+      :new => "1",
+      :editting => "2",
+      :editted => "3",
+      :analyzing => "4",
+      :analyzed => "5",
+      :score_importing => "6",
+      :score_imported => "7",
+      :report_generating => "8",
+      :report_completed => "9",
+      :none => "10000"
+    }
+
+    SubjectOrder = {
+      :yu_wen => "1",
+      :shu_xue => "2",
+      :ying_yu => "3",
+      :li_shi => "4",
+      :di_li => "5",
+      :wu_li => "6",
+      :hua_xue => "7",
+      :sheng_wu => "8",
+      :si_xiang_pin_de => "9",
+      :zheng_zhi => "10",
+      :xin_xi_ji_shu => "11",
+      :ji_shu => "12",
+      :none => "10000"
+    }
+
+    GradeOrder = {
+      :yi_nian_ji => "1",
+      :er_nian_ji => "2",
+      :san_nian_ji => "3",
+      :si_nian_ji => "4",
+      :wu_nian_ji => "5",
+      :liu_nian_ji => "6",
+      :qi_nian_ji => "7",
+      :ba_nian_ji => "8",
+      :jiu_nian_ji => "9",
+      :gao_yi_nian_ji => "10",
+      :gao_er_nian_ji => "11",
+      :gao_san_nian_ji => "12",
+      :none => "10000"
+    }
+
     SubjectList = {
       :yu_wen => I18n.t("dict.yu_wen"),
       :shu_xue => I18n.t("dict.shu_xue"),
@@ -1113,6 +1172,8 @@ module Common
     module_function :hanzi2abbrev
 
     def mysort(x,y)
+      x = x || ""
+      y = y || ""
       length = (x.length > y.length) ? x.length : y.length
       x = x.rjust(length, '0')
       y = y.rjust(length, '0')
