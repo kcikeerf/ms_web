@@ -1026,8 +1026,9 @@ class Mongodb::ReportGenerator
               dimesion: this._id.dimesion},
             {
               reduced: 0,
-              delta: 0,
+              deltas:[this.value.average - this.value.cls_dim_avg],
               diff2_sum: 0,
+              total_avg: this.value.cls_dim_avg,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 1,
@@ -1052,8 +1053,9 @@ class Mongodb::ReportGenerator
               lv1_ckp: this._id.lv1_ckp},
             {
               reduced: 0,
-              delta: 0,
+              deltas:[this.value.average - this.value.gra_dim_lv1_avg],
               diff2_sum: 0,
+              total_avg: this.value.gra_dim_lv1_avg,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 1,
@@ -1076,8 +1078,9 @@ class Mongodb::ReportGenerator
               lv1_ckp: this._id.lv1_ckp},
             {
               reduced: 0,
-              delta: 0,
+              deltas:[this.value.average - this.value.gra_dim_lv1_avg],
               diff2_sum: 0,
+              total_avg: this.value.gra_dim_lv1_avg,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 1,
@@ -1100,9 +1103,10 @@ class Mongodb::ReportGenerator
               lv1_ckp: this._id.lv1_ckp},
             {
               reduced: 0,
-              delta: 0,
+              deltas:[this.value.average - this.value.cls_dim_lv1_avg],
               diff2_sum: 0,
               stand_dev: 0, 
+              total_avg: this.value.cls_dim_lv1_avg,
               diff_degree: 0,
               current_pupil_number: 1,
               pupil_number: this.value.pupil_number,
@@ -1126,9 +1130,10 @@ class Mongodb::ReportGenerator
               lv2_ckp: this._id.lv2_ckp},
             {
               reduced: 0,
-              delta: 0,
+              deltas:[this.value.average - this.value.gra_dim_lv2_avg],
               diff2_sum: 0,
               stand_dev: 0, 
+              total_avg: this.value.gra_dim_lv2_avg,
               diff_degree: 0,
               current_pupil_number: 1,
               pupil_number: this.value.pupil_number,
@@ -1150,9 +1155,10 @@ class Mongodb::ReportGenerator
               lv2_ckp: this._id.lv2_ckp},
             {
               reduced: 0,
-              delta: 0,
+              deltas:[this.value.average - this.value.cls_dim_lv2_avg],
               diff2_sum: 0,
               stand_dev: 0, 
+              total_avg: this.value.cls_dim_lv2_avg,
               diff_degree: 0,
               current_pupil_number: 1,
               pupil_number: this.value.pupil_number,
@@ -1176,8 +1182,9 @@ class Mongodb::ReportGenerator
         if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
           var result = {
               reduced: 1,
-              delta: 0,
+              deltas:[],
               diff2_sum: 0,
+              total_avg: 0,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 0,
@@ -1197,8 +1204,9 @@ class Mongodb::ReportGenerator
           if(key.hasOwnProperty('classroom')){
             var result = {
               reduced: 1,
-              delta: 0,
+              deltas:[],
               diff2_sum: 0,
+              total_avg: 0,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 0,
@@ -1216,8 +1224,9 @@ class Mongodb::ReportGenerator
           } else {
             var result = {
               reduced: 1,
-              delta: 0,
+              deltas:[],
               diff2_sum: 0,
+              total_avg: 0,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 0,
@@ -1237,8 +1246,9 @@ class Mongodb::ReportGenerator
           if(key.hasOwnProperty('classroom')){
             var result = {
               reduced: 1,
-              delta: 0,
+              deltas:[],
               diff2_sum: 0,
+              total_avg: 0,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 0,
@@ -1256,8 +1266,9 @@ class Mongodb::ReportGenerator
           } else {
             var result = {
               reduced: 1,
-              delta: 0,
+              deltas:[],
               diff2_sum: 0,
+              total_avg: 0,
               stand_dev: 0, 
               diff_degree: 0,
               current_pupil_number: 0,
@@ -1275,32 +1286,16 @@ class Mongodb::ReportGenerator
 
         values.forEach(function(value){
           result.current_pupil_number += value.current_pupil_number;
-          if(key.hasOwnProperty('lv1_ckp')){
-            if(key.hasOwnProperty('classroom')){
-              result.delta += value.average - value.cls_dim_lv1_avg;
-            } else {
-              result.delta += value.average - value.gra_dim_lv1_avg;
-            }
-            result.diff2_sum += Math.pow(result.delta, 2);
-          }
 
-          if(key.hasOwnProperty('lv2_ckp')){
-            if(key.hasOwnProperty('classroom')){
-              result.delta += value.average - value.cls_dim_lv2_avg;
-            } else {
-              result.delta += value.average - value.gra_dim_lv2_avg;
-            }
-            result.diff2_sum += Math.pow(result.delta, 2);
-          }
+          value.deltas.forEach(function(delta){
+            result.diff2_sum += Math.pow(delta, 2);
+            result.deltas.push(delta);
+          });
 
-          if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
-            result.delta += value.average - value.cls_dim_avg;
-            result.diff2_sum += Math.pow(result.delta, 2);
-          }
-          
           value.average_stack.forEach(function(average){
             result.average_stack.push(average);
           });
+
         });
 
         if((result.current_pupil_number&1)==0){
@@ -1314,27 +1309,9 @@ class Mongodb::ReportGenerator
 
         result.current_pupil_number = (result.current_pupil_number == 0) ? 1:result.current_pupil_number;
 
-        result.stand_dev = Math.sqrt(result.diff2_sum/result.current_pupil_number );
+        result.stand_dev = Math.sqrt(result.diff2_sum/(result.current_pupil_number - 1));
 
-        if(key.hasOwnProperty('lv1_ckp')){ 
-          if(key.hasOwnProperty('classroom')){
-            result.diff_degree = result.stand_dev/result.cls_dim_lv1_avg;
-          } else {
-            result.diff_degree = result.stand_dev/result.gra_dim_lv1_avg;
-          }         
-        }
-
-        if(key.hasOwnProperty('lv2_ckp')){ 
-          if(key.hasOwnProperty('classroom')){
-            result.diff_degree = result.stand_dev/result.cls_dim_lv2_avg;
-          } else {
-            result.diff_degree = result.stand_dev/result.gra_dim_lv2_avg;
-          }         
-        }
-
-        if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
-          result.diff_degree = result.stand_dev/result.cls_dim_avg;
-        }
+        result.diff_degree = result.stand_dev/values[0].total_avg;
         return result;
       }
     }
