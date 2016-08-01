@@ -1312,6 +1312,7 @@ class Mongodb::ReportGenerator
         result.stand_dev = Math.sqrt(result.diff2_sum/(result.current_pupil_number - 1));
 
         result.diff_degree = result.stand_dev/values[0].total_avg;
+        result.total_avg = values[0].total_avg;
         return result;
       }
     }
