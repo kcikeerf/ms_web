@@ -1292,6 +1292,11 @@ class Mongodb::ReportGenerator
             }
             result.diff2_sum += Math.pow(result.delta, 2);
           }
+
+          if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
+            result.delta += value.average - value.cls_dim_avg;
+            result.diff2_sum += Math.pow(result.delta, 2);
+          }
           
           value.average_stack.forEach(function(average){
             result.average_stack.push(average);
@@ -1325,6 +1330,10 @@ class Mongodb::ReportGenerator
           } else {
             result.diff_degree = result.stand_dev/result.gra_dim_lv2_avg;
           }         
+        }
+
+        if(!key.hasOwnProperty('lv1_ckp') && !key.hasOwnProperty('lv2_ckp')){
+          result.diff_degree = result.stand_dev/result.cls_dim_avg;
         }
         return result;
       }
