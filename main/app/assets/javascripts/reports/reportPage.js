@@ -62,7 +62,6 @@ var reportPage = {
 			$('#grade-top-nav').html(gradeNavStr);
 			//创建年级的第一个诊断图;
 			var grade_charts = reportPage.Grade.getGradeDiagnoseData(data.data.charts);
-			console.log(grade_charts);
 			var objArr = [grade_charts.knowledge,grade_charts.skill,grade_charts.ability];
 			var nodeArrLeft = ['knowledge_diagnose_left','skill_diagnose_left','ability_diagnose_left'];
 			var nodeArrRight = ['knowledge_diagnose_right','skill_diagnose_right','ability_diagnose_right'];
@@ -215,7 +214,7 @@ var reportPage = {
 		},
 		
 		handleNormTable : function(data){
-			var classNum = reportPage.baseFn.getKeys(data).length;
+			var classArr = reportPage.baseFn.getKeys(data);
 			var classValue = reportPage.baseFn.getValue(data);
 			var normArr = reportPage.baseFn.getKeys(reportPage.baseFn.getValue(data)[0]);
 			var thStr = '<td class="grade-titlt">班级</td>';
@@ -223,8 +222,9 @@ var reportPage = {
 				thStr += '<td>'+normArr[i]+'</td>';
 			}
 			var allStr = '';
-			for(var i = 0 ; i < classNum ; i++){
+			for(var i = 0 ; i < classArr.length ; i++){
 				var str = '';
+				console.log(reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i]));
 				for(var k = 0 ; k < normArr.length ; k++){
 					var iNum = reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i])[k];
 					if(iNum > -20  && iNum < 0){
@@ -239,7 +239,7 @@ var reportPage = {
 				if(classValue[i] == '年级'){
 					str = '<td>年级</td>'+ str ;
 				}else{
-					str = '<td>'+(i+1)+'</td>'+ str ;
+					str = '<td>'+classArr[i]+'</td>'+ str ;
 				}
 				allStr += '<tr>'+str+'</tr>';
 			}
@@ -890,8 +890,8 @@ var reportPage = {
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
 			if(data != null){
-				var qid = reportPage.baseFn.getKeys(data);
-				var correctRatio = reportPage.baseFn.getValue(data);
+				var qid = reportPage.baseFn.getQizKeys(data);
+				var correctRatio = reportPage.baseFn.getQizValue(data);
 				var str = '';
 				for(var i = 0; i < qid.length ; i++){
 					str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i]+'</td></tr>';
@@ -1081,6 +1081,22 @@ var reportPage = {
 		getValue: function(obj) {
 			return $.map(obj, function(value, index) {
 				return [value];
+			});
+		},
+		/*获取答对题的key数组*/
+		getQizKeys: function(obj) {
+			if(obj){
+				return $.map(obj, function(value, index) {
+					return [value[0]];
+				});
+			}else{
+				return [];
+			}
+		},
+		/*获取答对题的value数组*/
+		getQizValue: function(obj) {
+			return $.map(obj, function(value, index) {
+				return [value[1]];
 			});
 		},
 	}
