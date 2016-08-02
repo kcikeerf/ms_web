@@ -17,6 +17,8 @@ module Common
   end
 
   module Paper
+    module_function
+
     Subject_ckp_type = 'from_subject'
     Node_ckp_type = 'from_node'
 
@@ -38,11 +40,8 @@ module Common
     end
 
     def quiz_order(x,y)
-      reg = /\(([0-9].*?)\)/
-      md = reg.match(x)
-      x_arr = [x.sub(/\(.*/,"").to_i,md[1].to_i]
-      md = reg.match(y)
-      y_arr = [y.sub(/\(.*/,"").to_i,md[1].to_i]
+      x_arr = destruct_order x
+      y_arr = destruct_order y
 
       if x_arr[0] != y_arr[0]
         return x_arr[0] <=> y_arr[0]
@@ -50,20 +49,21 @@ module Common
         return x_arr[1] <=> y_arr[1]
       end
     end
-    module_function :quiz_order
+
+    def destruct_order orderStr
+      return ["",""] if orderStr.blank?
+      reg = /\(([0-9].*?)\)/
+      md = reg.match(orderStr)
+      quiz_order = orderStr.sub(/\(.*/,"")
+      quiz_order = quiz_order.blank?? 0:quiz_order.to_i
+      qizpoint_order = md.blank?? 0:md[1].to_i
+      return [quiz_order,qizpoint_order]
+    end
   end
 
   module CheckpointCkp
     module_function
     TYPE = %w{knowledge skill ability}
-
-    def ckp_types_loop(&block)
-      nodes = {}
-      TYPE.each do |t|
-        nodes[t.to_sym] = proc.call(t)
-      end
-      nodes
-    end
 
     DifficultyModifier = {
       :default =>1,
@@ -89,6 +89,45 @@ module Common
         :kun_nan => 1
       }
     }
+
+    def ckp_types_loop(&block)
+      nodes = {}
+      TYPE.each do |t|
+        nodes[t.to_sym] = proc.call(t)
+      end
+      nodes
+    end
+
+    def compare_rid(x,y)
+      result = 0
+      x = x || ""
+      y = y || ""
+      length = (x.length < y.length) ? x.length : y.length
+
+      0.upto(length-1) do |i|
+        if x[i] == y[i]
+          next
+        else
+          if x[i] =~ /[0-9a-z]/
+            if y[i] =~ /[0-9a-z]/
+              result = x[i] <=> y[i]
+            else
+              result = 1
+            end
+          elsif y[i] =~ /[0-9a-z]/
+            result = -1
+          else
+            result = x[i] <=> y[i]
+          end
+        end
+      end
+
+      if x.length == y.length
+        return result
+      else
+        return (x.length > y.length)? 1:-1
+      end
+    end
   end
 
   module School
@@ -616,9 +655,9 @@ module Common
         },
         #各题答对率
         "average_percent" => {
-          "failed" => {},
-          "good" => {},
-          "excellent" => {}
+          "failed" => [],
+          "good" => [],
+          "excellent" => []
         },
         #报告解读
         "report_explanation" =>{
@@ -734,9 +773,9 @@ module Common
         },
         #各题答对率
         "average_percent" => {
-          "failed" => {},
-          "good" => {},
-          "excellent" => {}
+          "failed" => [],
+          "good" => [],
+          "excellent" => []
         },
         #报告解读
         "report_explanation" =>{
@@ -1017,6 +1056,7 @@ module Common
   end
 
   module Locale
+    module_function
 
     KlassMapping ={
       "yi_ban" => "1",
@@ -1163,13 +1203,11 @@ module Common
       PinYin.backend = PinYin::Backend::Simple.new
       PinYin.of_string(hanzi_str).join("_")
     end
-    module_function :hanzi2pinyin
 
     def hanzi2abbrev shanzi_str
       PinYin.backend = PinYin::Backend::Simple.new
       PinYin.abbr(shanzi_str) 
     end
-    module_function :hanzi2abbrev
 
     def mysort(x,y)
       x = x || ""
@@ -1195,6 +1233,5 @@ module Common
         end
       end
     end
-    module_function :mysort
   end
 end
