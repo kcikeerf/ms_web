@@ -93,8 +93,8 @@ class GenerateReportJob < ActiveJob::Base
       job_tracker.update(process: 13/phase_total.to_f)
  
       # 组装 6
-      logger.info "============>>Generate Report: 班级答题情况统计<<<============"
-      robj.construct_cls_each_qizpoint_average_percent
+      logger.info "============>>Generate Report: 年级，班级答题情况统计<<<============"
+      robj.construct_gra_cls_each_qizpoint_average_percent
       job_tracker.update(process: 14/phase_total.to_f)
 
       # 组装 7
