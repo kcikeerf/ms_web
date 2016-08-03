@@ -16,7 +16,6 @@ var reportPage = {
 			if(dataType == 'grade'){
 				$('#reportContent').load('/reports/grade',function(){
 					$.get(reportPage.getGradeUrl, params, function(data) {
-						console.log(data);
 						if (data.status == '200'){
 							reportPage.Grade.createReport(data);
 						} else {
@@ -214,9 +213,9 @@ var reportPage = {
 		},
 		
 		handleNormTable : function(data){
-			var classArr = reportPage.baseFn.getKeys(data);
-			var classValue = reportPage.baseFn.getValue(data);
-			var normArr = reportPage.baseFn.getKeys(reportPage.baseFn.getValue(data)[0]);
+			var classArr = reportPage.baseFn.getArrayKeys(data);
+			var classValue = reportPage.baseFn.getArrayValue(data);
+			var normArr = reportPage.baseFn.getKeys(reportPage.baseFn.getArrayValue(data)[0]);
 			var thStr = '<td class="grade-titlt">班级</td>';
 			for(var i = 0 ; i < normArr.length ; i++){
 				thStr += '<td>'+normArr[i]+'</td>';
@@ -224,9 +223,8 @@ var reportPage = {
 			var allStr = '';
 			for(var i = 0 ; i < classArr.length ; i++){
 				var str = '';
-				console.log(reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i]));
 				for(var k = 0 ; k < normArr.length ; k++){
-					var iNum = reportPage.baseFn.getValue(reportPage.baseFn.getValue(data)[i])[k];
+					var iNum = reportPage.baseFn.getValue(reportPage.baseFn.getArrayValue(data)[i])[k];
 					if(iNum > -20  && iNum < 0){
 						str += '<td class="wrong">'+iNum+'</td>';
 					}else if(iNum < -20 ){
@@ -460,8 +458,8 @@ var reportPage = {
 			}
 		},
 		handleClassPupilNum : function(obj){
-			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.getValue(obj.good_pupil_percent)[0]);
-			var classNameArr = reportPage.baseFn.getKeys(obj.good_pupil_percent);
+			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.getArrayValue(obj.good_pupil_percent)[0]);
+			var classNameArr = reportPage.baseFn.getArrayKeys(obj.good_pupil_percent);
 			var normNum = normkeyArr.length;
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -491,8 +489,8 @@ var reportPage = {
 			};
 		},
 		handleCheckpoint : function(obj){
-			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.getValue(obj.average_percent)[0]);
-			var classNameArr = reportPage.baseFn.getKeys(obj.average_percent);
+			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.getArrayValue(obj.average_percent)[0]);
+			var classNameArr = reportPage.baseFn.getArrayKeys(obj.average_percent);
 			var normNum = normkeyArr.length;
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -528,7 +526,7 @@ var reportPage = {
 			};
 		},
 		handleNorm : function(obj,colorArr,normkeyArr,normNum,classNameArr){
-			var classValue = reportPage.baseFn.getValue(obj);
+			var classValue = reportPage.baseFn.getArrayValue(obj);
 			var classNum = classNameArr.length;
 			var allArr = [];
 			var series = [];
@@ -690,7 +688,7 @@ var reportPage = {
 			var keys = reportPage.baseFn.getKeys(data);
 			var values = reportPage.baseFn.getValue(data);
 			var excellent = [], good = [],faild = [];
-			for(var i = 0 ; i < keys.length ; i++){
+			for(var i = keys.length-1 ; i >=0  ; i--){
 				excellent.push({
 					name:''+keys[i]+'(得分率 ≥ 85)',
                     value: values[i].excellent_pupil_percent,
@@ -754,7 +752,6 @@ var reportPage = {
 	},
 	Pupil: {
 		createReport : function(data){
-			console.log(data);
 			var basicData = data.data.basic;
 			var pupilNavStr = ''+basicData.name+'/'+basicData.sex+'/'+basicData.grade+basicData.classroom+'/'+basicData.school+'/'+basicData.area+'难度:'+basicData.levelword2+'测试日期:'+basicData.quiz_date+'';
 			$('#pupil-top-nav').html(pupilNavStr);
@@ -890,8 +887,8 @@ var reportPage = {
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
 			if(data != null){
-				var qid = reportPage.baseFn.getQizKeys(data);
-				var correctRatio = reportPage.baseFn.getQizValue(data);
+				var qid = reportPage.baseFn.getArrayKeys(data);
+				var correctRatio = reportPage.baseFn.getArrayValue(data);
 				var str = '';
 				for(var i = 0; i < qid.length ; i++){
 					str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i]+'</td></tr>';
@@ -1084,7 +1081,7 @@ var reportPage = {
 			});
 		},
 		/*获取答对题的key数组*/
-		getQizKeys: function(obj) {
+		getArrayKeys: function(obj) {
 			if(obj){
 				return $.map(obj, function(value, index) {
 					return [value[0]];
@@ -1094,7 +1091,7 @@ var reportPage = {
 			}
 		},
 		/*获取答对题的value数组*/
-		getQizValue: function(obj) {
+		getArrayValue: function(obj) {
 			return $.map(obj, function(value, index) {
 				return [value[1]];
 			});
