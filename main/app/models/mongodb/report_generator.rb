@@ -235,9 +235,19 @@ class Mongodb::ReportGenerator
         else
           klass = I18n.t("dict.#{item[:_id][:classroom]}")
           ["failed_pupil_percent", "good_pupil_percent", "excellent_pupil_percent"].each{|member|
-            temp_h = report_h["each_class_pupil_number_chart"][dimesion][member][klass] || {}
-            temp_h[lv1_ckp_key] = result_h[member]
-            report_h["each_class_pupil_number_chart"][dimesion][member][klass] = temp_h
+
+            temp_arr = report_h["each_class_pupil_number_chart"][dimesion][member] || []
+            target_klass = temp_arr.assoc(klass)
+            if klass && target_klass
+              pos = temp_arr.index(target_klass) || temp_arr.size
+              report_h["each_class_pupil_number_chart"][dimesion][member][pos][1][lv1_ckp_key] = result_h[member]
+            elsif klass
+              target_pair = [klass, {lv1_ckp_key => result_h[member]}]
+              report_h["each_class_pupil_number_chart"][dimesion][member] = insert_item_to_a_with_order "klass", temp_arr, target_pair
+            else 
+              next
+            end
+
           }
         end
 
@@ -414,6 +424,7 @@ class Mongodb::ReportGenerator
 
       #统计各题答对率
       level_key = "others"
+      target_pair = [item[:_id][:order],format_float(item[:value][:average_percent])]
       if(0 <= item[:value][:average_percent] && 
        item[:value][:average_percent] <Common::Report::ScoreLevel::Level60)
        level_key = "failed"
@@ -424,7 +435,7 @@ class Mongodb::ReportGenerator
        item[:value][:average_percent] <= 1)
        level_key = "excellent"
       end
-      report_h["average_percent"][level_key] = insert_item_to_a_with_order report_h["average_percent"][level_key],item[:_id][:order],format_float(item[:value][:average_percent])
+      report_h["average_percent"][level_key] = insert_item_to_a_with_order "quiz", report_h["average_percent"][level_key],target_pair
 
       #保存报告
       if target_report
@@ -593,13 +604,37 @@ class Mongodb::ReportGenerator
       klass = I18n.t("dict.#{item[:_id][:classroom]}")
       if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
-        temp_h = report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] || {}
-        temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
-        report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] = temp_h
+        # temp_h = report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] || {}
+        # temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+        # report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] = temp_h
+
+        temp_arr = report_h["each_checkpoint_horizon"][dimesion]["average_percent"] || []
+        target_klass = temp_arr.assoc(klass)
+        if klass && target_klass
+          pos = temp_arr.index(target_klass) || temp_arr.size
+          report_h["each_checkpoint_horizon"][dimesion]["average_percent"][pos][1][lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+        elsif klass
+          target_pair = [klass, {lv1_ckp_key => convert_2_full_mark(item[:value]["average_percent".to_sym])}]
+          report_h["each_checkpoint_horizon"][dimesion]["average_percent"] = insert_item_to_a_with_order "klass", temp_arr, target_pair
+        else 
+          next
+        end
       else
-        temp_h = report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] || {}
-        temp_h[dimesion] = convert_2_full_mark(item[:value]["average_percent".to_sym])
-        report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] = temp_h
+        # temp_h = report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] || {}
+        # temp_h[dimesion] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+        # report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] = temp_h
+        dimesion_label = I18n.t("dict.#{dimesion}")
+        temp_arr = report_h["each_checkpoint_horizon"]["total"]["average_percent"] || []
+        target_klass = temp_arr.assoc(klass)
+        if klass && target_klass
+          pos = temp_arr.index(target_klass) || temp_arr.size
+          report_h["each_checkpoint_horizon"]["total"]["average_percent"][pos][1][dimesion_label] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+        elsif klass
+          target_pair = [klass, {dimesion_label => convert_2_full_mark(item[:value]["average_percent".to_sym])}]
+          report_h["each_checkpoint_horizon"]["total"]["average_percent"] = insert_item_to_a_with_order "klass", temp_arr, target_pair
+        else 
+          next
+        end
       end
       grade_report.report_json = report_h.to_json
       grade_report.save
@@ -612,23 +647,57 @@ class Mongodb::ReportGenerator
       if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
-          temp_h = report_h["each_checkpoint_horizon"][dimesion][member][klass] || {}
+          # temp_h = report_h["each_checkpoint_horizon"][dimesion][member][klass] || {}
+          # if member == "med_avg_diff"
+          #   temp_h[lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
+          # else
+          #   temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value][member.to_sym])
+          # end
+          # report_h["each_checkpoint_horizon"][dimesion][member][klass] = temp_h
+
+          temp_arr = report_h["each_checkpoint_horizon"][dimesion][member] || []
           if member == "med_avg_diff"
-            temp_h[lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
+            target_value = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
           else
-            temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value][member.to_sym])
+            target_value = convert_2_full_mark(item[:value][member.to_sym])
           end
-          report_h["each_checkpoint_horizon"][dimesion][member][klass] = temp_h
+          target_klass = temp_arr.assoc(klass)
+          if klass && target_klass
+            pos = temp_arr.index(target_klass) || temp_arr.size
+            report_h["each_checkpoint_horizon"][dimesion][member][pos][1][lv1_ckp_key] = target_value
+          elsif klass
+            target_pair = [klass, {lv1_ckp_key => target_value}]
+            report_h["each_checkpoint_horizon"][dimesion][member] = insert_item_to_a_with_order "klass", temp_arr, target_pair
+          else 
+            next
+          end
         }
       else
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
-          temp_h = report_h["each_checkpoint_horizon"]["total"][member][klass] || {}
+          # temp_h = report_h["each_checkpoint_horizon"]["total"][member][klass] || {}
+          # if member == "med_avg_diff"
+          #   temp_h[dimesion] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
+          # else
+          #   temp_h[dimesion] = convert_2_full_mark(item[:value][member.to_sym])
+          # end
+          # report_h["each_checkpoint_horizon"]["total"][member][klass] = temp_h
+
+          temp_arr = report_h["each_checkpoint_horizon"]["total"][member] || []
           if member == "med_avg_diff"
-            temp_h[dimesion] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
+            target_value = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
           else
-            temp_h[dimesion] = convert_2_full_mark(item[:value][member.to_sym])
+            target_value = convert_2_full_mark(item[:value][member.to_sym])
           end
-          report_h["each_checkpoint_horizon"]["total"][member][klass] = temp_h
+          target_klass = temp_arr.assoc(klass)
+          if klass && target_klass
+            pos = temp_arr.index(target_klass) || temp_arr.size
+            report_h["each_checkpoint_horizon"]["total"][member][pos][1][dimesion] = target_value
+          elsif klass
+            target_pair = [klass, {dimesion => target_value}]
+            report_h["each_checkpoint_horizon"]["total"][member] = insert_item_to_a_with_order "klass", temp_arr, target_pair
+          else 
+            next
+          end
         }
       end
       grade_report.report_json = report_h.to_json
@@ -1046,6 +1115,7 @@ class Mongodb::ReportGenerator
               median_percent: this.value.average_percent,
               median_number: 1,
               average: this.value.average,
+              average_percent_total: this.value.average_percent,
               average_percent: this.value.average_percent,
               average_stack: [this.value.average_percent],
               cls_dim_avg: this.value.cls_dim_avg,
@@ -1073,6 +1143,7 @@ class Mongodb::ReportGenerator
               median_percent: this.value.average_percent,
               median_number: 1,
               average: this.value.average,
+              average_percent_total: this.value.average_percent,
               average_percent: this.value.average_percent,
               average_stack: [this.value.average_percent],
               gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
@@ -1098,6 +1169,7 @@ class Mongodb::ReportGenerator
               median_percent: this.value.average_percent,
               median_number: 1,
               average: this.value.average,
+              average_percent_total: this.value.average_percent,
               average_percent: this.value.average_percent,
               average_stack: [this.value.average_percent],
               gra_dim_lv1_avg: this.value.gra_dim_lv1_avg,
@@ -1123,6 +1195,7 @@ class Mongodb::ReportGenerator
               median_percent: this.value.average_percent,
               median_number: 1,
               average: this.value.average,
+              average_percent_total: this.value.average_percent,
               average_percent: this.value.average_percent,
               average_stack: [this.value.average_percent],
               cls_dim_lv1_avg: this.value.cls_dim_lv1_avg,
@@ -1150,6 +1223,7 @@ class Mongodb::ReportGenerator
               median_percent: this.value.average_percent,
               median_number: 1,
               average: this.value.average,
+              average_percent_total: this.value.average_percent,
               average_percent: this.value.average_percent,
               average_stack: [this.value.average_percent],
               gra_dim_lv2_avg: this.value.gra_dim_lv2_avg,
@@ -1175,6 +1249,7 @@ class Mongodb::ReportGenerator
               median_percent: this.value.average_percent,
               median_number: 1,
               average: this.value.average,
+              average_percent_total: this.value.average_percent,
               average_percent: this.value.average_percent,
               average_stack:[this.value.average_percent],
               cls_dim_lv2_avg: this.value.cls_dim_lv2_avg,
@@ -1201,8 +1276,9 @@ class Mongodb::ReportGenerator
               pupil_number: values[0].pupil_number,
               median_percent: 0,
               median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
+              average: 0,
+              average_percent_total: 0,
+              average_percent: 0,
               average_stack: [],
               cls_dim_avg: values[0].cls_dim_avg,
               cls_dim_avg_percent: values[0].cls_dim_avg_percent,
@@ -1223,8 +1299,9 @@ class Mongodb::ReportGenerator
               pupil_number: values[0].pupil_number,
               median_percent: 0,
               median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
+              average: 0,
+              average_percent_total: 0,
+              average_percent: 0,
               average_stack: [],
               cls_dim_lv1_avg: values[0].cls_dim_lv1_avg,
               cls_dim_lv1_avg_percent: values[0].cls_dim_lv1_avg_percent,
@@ -1243,8 +1320,9 @@ class Mongodb::ReportGenerator
               pupil_number: values[0].pupil_number,
               median_percent: 0,
               median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
+              average: 0,
+              average_percent_total: 0,
+              average_percent: 0,
               average_stack: [],
               gra_dim_lv1_avg: values[0].gra_dim_lv1_avg,
               gra_dim_lv1_avg_percent: values[0].gra_dim_lv1_avg_percent
@@ -1265,8 +1343,9 @@ class Mongodb::ReportGenerator
               pupil_number: values[0].pupil_number,
               median_percent: 0,
               median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
+              average: 0,
+              average_percent_total: 0,
+              average_percent: 0,
               average_stack: [],
               cls_dim_lv2_avg: values[0].cls_dim_lv2_avg,
               cls_dim_lv2_avg_percent: values[0].cls_dim_lv2_avg_percent,
@@ -1285,8 +1364,9 @@ class Mongodb::ReportGenerator
               pupil_number: values[0].pupil_number,
               median_percent: 0,
               median_number: 0,
-              average: values[0].average,
-              average_percent: values[0].average_percent,
+              average: 0,
+              average_percent_total: 0,
+              average_percent: 0,
               average_stack: [],
               gra_dim_lv2_avg: values[0].gra_dim_lv2_avg,
               gra_dim_lv2_avg_percent: values[0].gra_dim_lv2_avg_percent
@@ -1305,22 +1385,26 @@ class Mongodb::ReportGenerator
           value.average_stack.forEach(function(average){
             result.average_stack.push(average);
           });
+          
+          result.average += value.average;
+          result.average_percent_total += value.average_percent_total;
 
         });
 
+        var sorted_values = result.average_stack.sort(function(a, b){ return a > b});
         if((result.current_pupil_number&1)==0){
           result.median_number = result.current_pupil_number/2;
+          result.median_percent = parseFloat((sorted_values[result.median_number - 1] + sorted_values[result.median_number])/2);
         } else {
           result.median_number = parseInt(result.current_pupil_number/2)+1;
+          result.median_percent = parseFloat(sorted_values[result.median_number-1]);
         }
-
-        var sorted_values = result.average_stack.sort(function(a, b){ return a > b});
-        result.median_percent = parseFloat(sorted_values[result.median_number-1]);
 
         result.current_pupil_number = (result.current_pupil_number == 0) ? 1:result.current_pupil_number;
 
+        result.average = result.average/result.current_pupil_number;
+        result.average_percent = result.average_percent_total/result.current_pupil_number;
         result.stand_dev = Math.sqrt(result.diff2_sum/(result.current_pupil_number - 1));
-
         result.diff_degree = result.stand_dev/values[0].total_avg;
         result.total_avg = values[0].total_avg;
         return result;
@@ -1807,16 +1891,27 @@ class Mongodb::ReportGenerator
 =end
 
   # hash array
-  def insert_item_to_a_with_order target_arr,k,v
+  def insert_item_to_a_with_order type, target_arr, arr
     keys = target_arr.map{|a| a[0]}
     last_key = ""
     keys.each{|key|
-      if Common::Paper::quiz_order(k, key) < 0
-        last_key = key
-        break
+      case type
+      when "quiz"
+        if Common::Paper::quiz_order(arr[0], key) < 0
+          last_key = key
+          break
+        end
+      when "klass"
+        a = Common::Locale.hanzi2pinyin(arr[0])
+        b = Common::Locale.hanzi2pinyin(key)
+        if Common::Locale.mysort(Common::Locale::KlassMapping[a],Common::Locale::KlassMapping[b]) < 0
+          last_key = key
+          break
+        end
       end
+
     }
-    target_arr.insert_before(last_key, [k,v])
+    target_arr.insert_before(last_key, arr)
     return target_arr
   end
 

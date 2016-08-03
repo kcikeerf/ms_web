@@ -611,46 +611,46 @@ module Common
         #各指标水平图
         "each_checkpoint_horizon" => {
           "knowledge" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
+            "average_percent" => [],
+            "median_percent" => [],
+            "med_avg_diff" => [],
+            "diff_degree" => []
           },
           "skill" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
+            "average_percent" => [],
+            "median_percent" => [],
+            "med_avg_diff" => [],
+            "diff_degree" => []
           },
           "ability" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
+            "average_percent" => [],
+            "median_percent" => [],
+            "med_avg_diff" => [],
+            "diff_degree" => []
           },
           "total" => {
-            "average_percent" => {},
-            "median_percent" => {},
-            "med_avg_diff" => {},
-            "diff_degree" => {}
+            "average_percent" => [],
+            "median_percent" => [],
+            "med_avg_diff" => [],
+            "diff_degree" => []
           } 
         },
         #各班分数段人数比例
         "each_class_pupil_number_chart" => {
           "knowledge" => {
-            "excellent_pupil_percent" =>{},
-            "good_pupil_percent" => {},
-            "failed_pupil_percent" => {}
+            "excellent_pupil_percent" =>[],
+            "good_pupil_percent" => [],
+            "failed_pupil_percent" => []
           },
           "skill" => {
-            "excellent_pupil_percent" =>{},
-            "good_pupil_percent" => {},
-            "failed_pupil_percent" => {}
+            "excellent_pupil_percent" =>[],
+            "good_pupil_percent" => [],
+            "failed_pupil_percent" => []
           },
           "ability" => {
-            "excellent_pupil_percent" =>{},
-            "good_pupil_percent" => {},
-            "failed_pupil_percent" => {}
+            "excellent_pupil_percent" =>[],
+            "good_pupil_percent" => [],
+            "failed_pupil_percent" => []
           }
         },
         #各题答对率
