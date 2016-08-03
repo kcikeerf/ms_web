@@ -7,7 +7,7 @@ class Hash
     if pos
       arr.insert(pos, arr)
     else
-      arr << kvpair
+      arr << arr
     end
     replace Hash[arr]
   end
