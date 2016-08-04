@@ -1703,22 +1703,38 @@ class Mongodb::ReportGenerator
       :school => @school,
       :grade => item[:_id][:grade]
     }
-    klass_count = Location.where(grade_param).size
+
     grade_param[:pap_uid] = @pap_uid
     grade_report = Mongodb::GradeReport.where(grade_param).first
     unless grade_report
       grade_report = Mongodb::GradeReport.new(grade_param) 
       report_h = Common::Report::Format::Grade.deep_dup
+
+      grade_param.extract!(:pap_uid)
+      klass_count = Location.where(grade_param).size
+      grade_filter = {
+        '_id.pap_uid' => @pap_uid,
+        '_id.pup_uid' => nil,
+        '_id.grade' => item[:_id][:grade],
+        '_id.classroom' => nil,
+        '_id.dimesion' => "knowledge",
+        '_id.lv1_ckp' => nil,
+        '_id.lv2_ckp' => nil,
+        '_id.order' => nil
+      }
+      target_grade = Mongodb::ReportTotalAvgResult.where(grade_filter).first
+
       #basic information
       report_h["basic"]["subject"] = @paper.subject
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
-      report_h["basic"]["klass_count"] = klass_count
-      report_h["basic"]["quiz_type"] = @paper.quiz_type
+      report_h["basic"]["klass_count"] = klass_count || 0
+      report_h["basic"]["pupil_number"]= target_grade.nil?? I18n.t("dict.unknown") : target_grade[:value][:pupil_number].to_i
+      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d")
-      report_h["basic"]["levelword2"] = @paper.levelword2
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
+      report_h["basic"]["levelword2"] = @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
       grade_report.update(:report_json => report_h.to_json)
     else
       report_h = JSON.parse(grade_report.report_json)
@@ -1741,16 +1757,42 @@ class Mongodb::ReportGenerator
     unless klass_report
       klass_report = Mongodb::ClassReport.new(klass_param) 
       report_h = Common::Report::Format::Klass.deep_dup
+
+      klass_filter = {
+        '_id.pap_uid' => @pap_uid,
+        '_id.pup_uid' => nil,
+        '_id.grade' => item[:_id][:grade],
+        '_id.classroom' => item[:_id][:classroom],
+        '_id.dimesion' => "knowledge",
+        '_id.lv1_ckp' => nil,
+        '_id.lv2_ckp' => nil,
+        '_id.order' => nil
+      }
+      target_klass = Mongodb::ReportTotalAvgResult.where(klass_filter).first
+
+      loc_h = {
+        :province => @province,
+        :city => @city,
+        :district => @district,
+        :school => @school,
+        :grade => item[:_id][:grade],
+        :classroom => item[:_id][:classroom]
+      }
+      target_loc = Location.where(loc_h).first
+
       #basic information
       report_h["basic"]["subject"] = @paper.subject
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
       report_h["basic"]["classroom"] = I18n.t("dict.#{item[:_id][:classroom]}")
-      report_h["basic"]["quiz_type"] = @paper.quiz_type
+      report_h["basic"]["pupil_number"] = target_klass.nil?? I18n.t("dict.unknown") : target_klass[:value][:pupil_number].to_i
+      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d")
-      report_h["basic"]["levelword2"] = @paper.levelword2
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
+      report_h["basic"]["levelword2"] = @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
+      report_h["basic"]["head_teacher"] = (target_loc.nil? || target_loc.head_teacher.nil?)? I18n.t("dict.unknown") : target_loc.head_teacher.name
+      report_h["basic"]["subject_teacher"] = (target_loc.nil? || target_loc.subject_teacher(@paper.subject).nil?)? I18n.t("dict.unknown") : target_loc.subject_teacher(@paper.subject).name
 
       filter = {
         '_id.pap_uid' => @pap_uid,
@@ -1788,22 +1830,26 @@ class Mongodb::ReportGenerator
       :pap_uid => @pap_uid,
       :pup_uid => item[:_id][:pup_uid]
     }
-    pupil = Pupil.where(uid: item[:_id][:pup_uid]).first
     pupil_report = Mongodb::PupilReport.where(pupil_param).first
     unless pupil_report
       pupil_report = Mongodb::PupilReport.new(pupil_param) 
       report_h = Common::Report::Format::Pupil.deep_dup
+
+      pupil = Pupil.where(uid: item[:_id][:pup_uid]).first
+
       #basic information
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
       report_h["basic"]["classroom"] = I18n.t("dict.#{item[:_id][:classroom]}")
-      report_h["basic"]["subject"] = @paper.subject
-      report_h["basic"]["name"] = pupil.nil?? "":pupil.name
-      report_h["basic"]["sex"] = pupil.nil?? "":pupil.sex
+      report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
+      report_h["basic"]["name"] = pupil.nil?? I18n.t("dict.unknown") : pupil.name
+      report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : pupil.sex
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d")
-      report_h["basic"]["levelword2"] = @paper.levelword2
+      report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
+      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
+      report_h["basic"]["levelword2"] =  @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
       pupil_report.update(:report_json => report_h.to_json)
     else
       report_h = JSON.parse(pupil_report.report_json)

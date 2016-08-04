@@ -22,7 +22,7 @@ class Teacher < ActiveRecord::Base
 
 
   def is_class_headteacher?(loc_uid)
-    ctm = ClassTeacherMappings.where(loc_uid: loc_uid, tea_uid: uid).first
+    ctm = ClassTeacherMapping.where(loc_uid: loc_uid, tea_uid: uid).first
     ctm.try(:head_teacher)
   end
 

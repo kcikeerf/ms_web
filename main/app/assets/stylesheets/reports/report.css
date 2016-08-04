@@ -133,9 +133,11 @@ dt{
 }
 .reptort-top-nav{
 	height:60px;
-	line-height:60px;
+	line-height:30px;
 	color:#2b2b2b;
 	border-bottom: 1px solid #eee;
+	word-wrap: break-word;
+	vertical-align: middle;
 }
 .reptort-top-nav span{
 	color:#333;
