@@ -671,7 +671,7 @@ class Mongodb::BankPaperPap
       row = sheet.row(index)
       cells = {
         :grade => Common::Locale.hanzi2pinyin(row[0]),
-        :class_room => Common::Locale.hanzi2pinyin(row[1]),
+        :classroom => Common::Locale.hanzi2pinyin(row[1]),
         :head_teacher => row[2],
         :teacher => row[3],
         :pupil_name => row[4],
@@ -683,7 +683,7 @@ class Mongodb::BankPaperPap
       # get location
       #
       loc_h[:grade] = cells[:grade]
-      loc_h[:class_room] = cells[:class_room]
+      loc_h[:classroom] = cells[:classroom]
       loc = Location.where(loc_h).first
       if loc.nil?
         ## 
@@ -739,6 +739,8 @@ class Mongodb::BankPaperPap
         :loc_uid => loc.uid,
         :name => cells[:pupil_name],
         :stu_number => cells[:stu_number],
+        :grade => cells[:grade],
+        :classroom => cells[:classroom],
         :subject => self.subject,
         :sex => cells[:sex],
         :user_name => format_user_name([loc.school_number,cells[:stu_number]])
@@ -759,7 +761,7 @@ class Mongodb::BankPaperPap
           :district => loc_h[:district],
           :school => loc_h[:school],
           :grade => cells[:grade],
-          :classroom => cells[:class_room],         
+          :classroom => cells[:classroom],         
           :pup_uid => current_pupil.nil?? "":current_pupil.uid,
           :pap_uid => self._id.to_s,
           :qzp_uid => hidden_row[qzp_index],
@@ -776,14 +778,18 @@ class Mongodb::BankPaperPap
           lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
           lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
           param_h[:dimesion] = ckp.dimesion
-          param_h[:lv1_order] = lv1_ckp.sort
+          param_h[:lv1_uid] = lv1_ckp.uid
           param_h[:lv1_ckp] = lv1_ckp.checkpoint
-          param_h[:lv2_order] = lv2_ckp.sort
+          param_h[:lv1_order] = lv1_ckp.sort
+          param_h[:lv2_uid] = lv2_ckp.uid
           param_h[:lv2_ckp] = lv2_ckp.checkpoint
-          param_h[:lv3_order] = ckp.sort
+          param_h[:lv2_order] = lv2_ckp.sort
+          param_h[:lv3_uid] = ckp.uid
           param_h[:lv3_ckp] = ckp.checkpoint
-          param_h[:lv_end_order] = ckp.sort
+          param_h[:lv3_order] = ckp.sort
+          param_h[:lv_end_uid] = ckp.uid
           param_h[:lv_end_ckp] = ckp.checkpoint
+          param_h[:lv_end_order] = ckp.sort
           #调整权重系数
           # 1.单题难度关联
           #
@@ -825,16 +831,40 @@ class Mongodb::BankPaperPap
     }
 
     ret = User.add_user params_h[:user_name],role,params_h
+    target_username = ""
     if (ret.is_a? Array) && ret.empty?
       row_data[role.to_sym][:password] = I18n.t("scores.messages.info.old_user")
       row_data[role.to_sym][:report_url] = generate_url
+      target_username = ret[0]
     elsif (ret.is_a? Array) && !ret.empty?
       row_data[role.to_sym][:password] = ret[1]
       row_data[role.to_sym][:report_url] = generate_url
+      target_username = ret[0]
     else
       row_data[role.to_sym][:password] = generate_url
     end
+    associate_user_and_pap role, target_username
     return row_data[role.to_sym].values
+  end
+
+  def associate_user_and_pap role, username
+    target_user = User.where(name: username).first
+    return false unless target_user
+    case role
+    when "pupil"
+      target_pupil = target_user.pupil
+      return false unless target_pupil
+      pup_uid = target_pupil.uid
+      bpp = Mongodb::BankPupPap.new
+      bpp.save_pup_pap pup_uid, self._id.to_s
+    when "teacher"
+      target_teacher = target_user.teacher
+      return false unless target_teacher
+      tea_uid = target_teacher.uid
+      btp = Mongodb::BankTeaPap.new
+      btp.save_tea_pap tea_uid, self._id.to_s
+    end
+    return true
   end
 
   def generate_url

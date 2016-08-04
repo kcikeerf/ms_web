@@ -6,10 +6,26 @@ class TeachersController < ApplicationController
   end
 
   def my_pupil
+    pupils = current_user.teacher.pupils
+    grade_arr = pupils.all.map(&:grade).uniq.sort{|a,b| 
+      Common::Locale.mysort(Common::Locale::GradeOrder[a.nil?? "":a.to_sym],Common::Locale::GradeOrder[b.nil?? "":b.to_sym]) 
+    }
+    @grades = deal_label('dict', grade_arr)
 
+    klass_arr = pupils.all.map(&:classroom).uniq.sort{|a,b|
+      Common::Locale.mysort(Common::Locale::KlassMapping[a.nil?? "":a.to_sym],Common::Locale::KlassMapping[b.nil?? "":b.to_sym])
+    }
+    @classrooms = deal_label('dict', klass_arr)
+
+    @pupils = pupils.by_grade(params[:grade])
+      .by_classroom(params[:classroom])
+      .by_keyword(params[:keyword])
+      .page(params[:page])
+      .per(Common::Page::PerPage)
   end
 
   def test_report
+    @papers = current_user.teacher.papers.page(params[:page]).per(Common::Page::PerPage)
 
   end
 

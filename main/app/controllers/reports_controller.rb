@@ -44,43 +44,67 @@ class ReportsController < ApplicationController
   def get_grade_report
     params.permit!
 
-    result = response_json
-
-    current_report = Mongodb::GradeReport.where(_id: params[:report_id]).first
-
-    report_json = JSON.parse(current_report.report_json)
-     
-    result = response_json(200, report_json)
-
-    render :json => result
+    status = 403
+    data = {}
+    if params[:report_id].blank?
+      status = 500
+      data = {message: I18n.t("reports.messages.grade.get_report.failed")}
+    else
+      current_report = Mongodb::GradeReport.where(_id: params[:report_id]).first
+      if current_report
+        status = 200
+        report_json = JSON.parse(current_report.report_json)
+        data = {message: I18n.t("reports.messages.grade.get_report.success"), data: report_json}
+      else
+        status = 400
+        data = {message: I18n.t("reports.messages.grade.get_report.failed")}
+      end
+    end
+    render common_json_response(status, data)
   end
 
   def get_class_report
     params.permit!
 
-    result = response_json
-
-    current_report = Mongodb::ClassReport.where(_id: params[:report_id]).first
-
-    report_json = JSON.parse(current_report.report_json)
-     
-    result = response_json(200, report_json)
-
-    render :json => result
+    status = 403
+    data = {}
+    if params[:report_id].blank?
+      status = 500
+      data = {message: I18n.t("reports.messages.class.get_report.failed")}
+    else
+      current_report = Mongodb::ClassReport.where(_id: params[:report_id]).first
+      if current_report
+        status = 200
+        report_json = JSON.parse(current_report.report_json)
+        data = {message: I18n.t("reports.messages.class.get_report.success"), data: report_json}
+      else
+        status = 400
+        data = {message: I18n.t("reports.messages.class.get_report.failed")}
+      end
+    end
+    render common_json_response(status, data)
   end
 
   def get_pupil_report
     params.permit!
  
-    result = response_json
-
-    current_report = Mongodb::PupilReport.where(_id: params[:report_id]).first
-
-    report_json = JSON.parse(current_report.report_json)
-     
-    result = response_json(200, report_json)
-
-    render :json => result
+    status = 403
+    data = {}
+    if params[:report_id].blank?
+      status = 500
+      data = {message: I18n.t("reports.messages.pupil.get_report.failed")}
+    else
+      current_report = Mongodb::PupilReport.where(_id: params[:report_id]).first
+      if current_report
+        status = 200
+        report_json = JSON.parse(current_report.report_json)
+        data = {message: I18n.t("reports.messages.pupil.get_report.success"), data: report_json}
+      else
+        status = 400
+        data = {message: I18n.t("reports.messages.pupil.get_report.failed")}
+      end
+    end
+    render common_json_response(status, data)
   end
 
   # reports index page
@@ -98,14 +122,14 @@ class ReportsController < ApplicationController
     }
     grade_report = Mongodb::GradeReport.where(loc_h).first
 
-    @default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
-    @default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    @default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
+    #@default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
+    #@default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
+    #@default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
     if current_user.is_analyzer?
       @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
     elsif current_user.is_teacher?
-      klass_rooms = current_user.teacher.locations.map{|loc| loc.class_room}
-      loc_h[:class_room] = klass_rooms
+      klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
+      loc_h[:classroom] = klass_rooms
       @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
     elsif current_user.is_pupil?
       @scope_menus = current_user.pupil.report_menu params[:pap_uid]
@@ -163,17 +187,17 @@ class ReportsController < ApplicationController
       :school => Common::Locale.hanzi2pinyin(current_paper.school),
       :grade => current_paper.grade
     }
-    grade_report = Mongodb::GradeReport.where(loc_h).first
-    @default_report_type = "grade"
-    @default_report_id = grade_report._id.to_s
+    #grade_report = Mongodb::GradeReport.where(loc_h).first
+    #@default_report_type = "grade"
+    #@default_report_id = grade_report._id.to_s
     @default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    @default_report_subject = I18n.t("dict.#{current_paper.subject}") # + "&middot" + I18n.t("dict.nian_ji_bao_gao")
+    @default_report_type = (current_paper.subject.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{current_paper.subject}"))
     if current_user.is_analyzer?
-      @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
+      @scope_menus = Location.get_report_menus(Common::Role::Analyzer, params[:pap_uid], loc_h)
     elsif current_user.is_teacher?
-      klass_rooms = current_user.teacher.locations.map{|loc| loc.class_room}
-      loc_h[:class_room] = klass_rooms
-      @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
+      klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
+      loc_h[:classroom] = klass_rooms
+      @scope_menus = Location.get_report_menus(Common::Role::Teacher,params[:pap_uid], loc_h)
     elsif current_user.is_pupil?
       @scope_menus = current_user.pupil.report_menu params[:pap_uid]
     else 

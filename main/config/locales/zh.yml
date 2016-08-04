@@ -101,6 +101,24 @@ zh:
     failed_level: "不及格"
     good_level: "中等"
     excellent_level: "优秀"
+    messages:
+      common:
+        info:
+        warn:
+        error:
+          invalid_params: "请求参数无效！"
+      grade:
+        get_report:
+          success: "成功取得年级报告。"
+          failed: "未能取得有效的年级报告！"
+      class:
+        get_report:
+          success: "成功取得班级报告。"
+          failed: "未能取得有效的班级报告！"
+      pupil:
+        get_report:
+          success: "成功取得个人报告。"
+          failed: "未能取得有效的个人报告！"
   scores:
     excel:
       score_title: "成绩录入表"
@@ -310,7 +328,7 @@ zh:
     xue_ke_neng_li_ce_ping: "学科能力测评"
     #报告类型
     ce_shi_zhen_duan_bao_gao: "测试诊断报告" 
-    xue_sheng_bao_gao: "学生报告"
+    ge_ren_bao_gao: "个人报告"
     ban_ji_bao_gao: "班级报告"
     nan_ji_bao_gao: "年级报告"
     qu_yu_bao_gao: "区域报告"
@@ -704,6 +722,8 @@ zh:
       inspect_point: '考察点'
       save: '试题入库'
       search_placeholder: '请输入关键字进行搜索'
+    reports:
+      report: "报告"
 
 
 
