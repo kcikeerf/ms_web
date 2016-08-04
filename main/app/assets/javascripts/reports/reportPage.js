@@ -12,37 +12,22 @@ var reportPage = {
 		$('#report_menus .report_click_menu').on('click', function() {
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
+            if(!reportId){
+                return false;
+            }
 			var params = "report_id=" + reportId;
 			if(dataType == 'grade'){
 				$('#reportContent').load('/reports/grade',function(){
-					$.get(reportPage.getGradeUrl, params, function(data) {
-						if (data.status == '200'){
-							reportPage.Grade.createReport(data);
-						} else {
-							alert('网络出现错误');
-						};
-					});
+                    reportPage.baseFn.getReportAjax(dataType, reportPage.getGradeUrl,params);
 				});
 			}else if (dataType == 'klass') {
 				$('#reportContent').load('/reports/klass',function(){
-					$.get(reportPage.getClassUrl, params, function(data) {
-						if (data.status == '200'){
-							reportPage.Class.createReport(data);
-						} else {
-							alert('网络出现错误');
-						};
-					});
+                    reportPage.baseFn.getReportAjax(dataType, reportPage.getClassUrl,params);
 				});
 				
 			}else if (dataType == 'pupil') {
 				$('#reportContent').load('/reports/pupil',function(){
-					$.get(reportPage.getPupilUrl, params, function(data) {
-						if (data.status == '200'){
-							reportPage.Pupil.createReport(data);
-						} else {
-							alert('网络出现错误');
-						};
-					});
+                    reportPage.baseFn.getReportAjax("pupil", reportPage.getPupilUrl,params);
 				});
 			};
 		});
@@ -884,6 +869,28 @@ var reportPage = {
 	},
 	/*基础方法*/
 	baseFn: {
+        getReportAjax: function(type, url, params){
+            $.ajax({
+                url: url,
+                type: "GET",
+                data: params,
+                dataType: "json",
+                success: function(data){
+                    $('#reportContent')[0].style = "display: block;"
+                    if(type=="grade"){
+                        reportPage.Grade.createReport(data);
+                    } else if(type=="klass"){
+                        reportPage.Class.createReport(data);
+                    } else if(type=="pupil"){
+                        reportPage.Pupil.createReport(data);
+                    }
+                },
+                error: function(data){
+                    $('#reportContent').html(data.responseJSON.message);
+                    $('#reportContent')[0].style = "display: block;"
+                }
+            }); 
+        },
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
 			if(data != null){

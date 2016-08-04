@@ -30,47 +30,17 @@
 							  </tr>
 							  </thead>
 							  <tbody>
-							  <tr>
-								  <td class="text-left"><a href="javascript:void(0);" title="日志标题一">日志标题一</a></td>
-								  <td>2016.3.26 10:40</td>
-							  </tr>
-							  <tr>
-								  <td class="text-left"><a href="javascript:void(0);" title="日志标题二">日志标题二</a></td>
-								  <td>2016.3.26 10:40</td>
-							  </tr>
-							  <tr>
-								  <td class="text-left"><a href="javascript:void(0);" title="日志标题三">日志标题三</a></td>
-								  <td>2016.3.26 10:40</td>
-							  </tr>
-							  <tr>
-								  <td class="text-left"><a href="javascript:void(0);" title="日志标题四">日志标题四</a></td>
-								  <td>2016.3.26 10:40</td>
-							  </tr>
-							  <tr>
-								  <td class="text-left"><a href="javascript:void(0);" title="日志标题五">日志标题五</a></td>
-								  <td>2016.3.26 10:40</td>
-							  </tr>
+                              <% @papers.each do |paper| %>
+                                  <tr>
+									  <td class="text-left"><a href="/reports/new_square?pap_uid=<%= paper._id.to_s%>" title=""><%= paper.heading%></a></td>
+									  <td><%= paper.dt_update %></td>
+                                  </tr>
+                              <% end %>
 							  </tbody>
 						  </table>
 
 						  <nav class="text-center">
-							  <ul class="pagination">
-								  <li class="disabled">
-									  <a href="#" aria-label="Previous">
-										  <span aria-hidden="true">&laquo;</span>
-									  </a>
-								  </li>
-								  <li class="active"><a href="#">1</a></li>
-								  <li><a href="#">2</a></li>
-								  <li><a href="#">3</a></li>
-								  <li><a href="#">4</a></li>
-								  <li><a href="#">5</a></li>
-								  <li>
-									  <a href="#" aria-label="Next">
-										  <span aria-hidden="true">&raquo;</span>
-									  </a>
-								  </li>
-							  </ul>
+							  <%= paginate @papers %>
 						  </nav>
 					  </div>
 

@@ -4,9 +4,15 @@
 		<div class="diagnostic-report-title clearfix" id="report_menus">
 			<div class="dropdown_box grade-class-menu">
 		      <a class="classMenu" href="#">
-		        <span class="report_click_menu" 
+		        <span 
+<% if current_user.is_teacher? %>
+					  class="report_menu_teacher"
+<% else %>
+                      class="report_click_menu" 
 		              report_id="<%= @scope_menus[:report_id] %>"
-		              data_type="<%= @scope_menus[:data_type] %>">
+		              data_type="<%= @scope_menus[:data_type] %>"
+<% end %>
+		              >
 		<%= @scope_menus[:label]%>
 		        </span> 
 		        <small><%=@scope_menus[:pupil_number]%></small>
@@ -21,6 +27,7 @@
 		          </a>
 		          <small><%=klass[:pupil_number]%></small>
 		         <ul class="submit_menu">
+		            <li class="title"><div><%= I18n.t("dict.ge_ren_bao_gao") %></div></li>
 		  <% klass[:items].each do |pupil| %>
 		            <li class="report_click_menu"  
 		                report_id="<%= pupil[:report_id]%>"
@@ -37,7 +44,7 @@
 			<h1 class="exam-name"><span><%= @default_report_name %></span><b><%=@default_report_subject%></b></h1>
 		</div>
 		<!--诊断报告头部 end-->
-		<div id="reportContent" class="clearfix report-content"></div>
+		<div id="reportContent" class="clearfix report-content" style="display: none;"></div>
 	</div>
 </div>
 <script type="text/javascript">

@@ -39,61 +39,78 @@ class Location < ActiveRecord::Base
     return result
   end
 
-  def self.get_grade_and_children pap_uid, loc_h
+  def self.get_report_menus role, pap_uid, loc_h
     current_paper = Mongodb::BankPaperPap.where(_id: pap_uid).first
-
     report_name, grade_subject, klass_subject, pupil_subject = format_report_title current_paper.heading,current_paper.subject
+    result = {}
+    case role
+    when Common::Role::Analyzer
+      grade_report = Mongodb::GradeReport.where(loc_h).first
+      result ={ :key => loc_h[:grade],
+                :label => I18n.t("dict.nan_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("dict.#{page.reports.report}"),
+                :report_name => report_name,
+                :report_subject => grade_subject,
+                :pupil_number => 0,
+                :report_url => format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
+                :data_type=>"grade",
+                :report_id => grade_report.nil?? "":grade_report._id,#format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
+                :items => []}
+    when Common::Role::Teacher
+      result ={ :key => loc_h[:grade],
+                :label => I18n.t("dict.ban_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
+                :report_name => report_name,
+                :report_subject => grade_subject,
+                :pupil_number => 0,
+                :report_url => nil,
+                :data_type=> nil,
+                :report_id => nil,
+                :items => []}
+    when Common::Role::Pupil
 
-    grade_report = Mongodb::GradeReport.where(loc_h).first
-    result ={ :key => loc_h[:grade],
-              :label => I18n.t("dict.#{loc_h[:grade]}"),
-              :report_name => report_name,
-              :report_subject => grade_subject,
-              :pupil_number => 0,
-              :report_url => format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
-              :data_type=>"grade",
-              :report_id => grade_report.nil?? "":grade_report._id,#format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
-              :items => []}
-    klasses = Location.where(loc_h)#.order(class_room: :ASC) #asc
-    klasses.sort{|a,b| Common::Locale.mysort(Common::Locale::KlassMapping[a.class_room],Common::Locale::KlassMapping[a.class_room]) }
-    klasses.each{|klass|
-       param_h = loc_h.deep_dup
-       param_h[:classroom] = klass.class_room
-       param_h[:pap_uid] = pap_uid
-       klass_report = Mongodb::ClassReport.where(param_h).first
-       klass_pupil_number =  klass.pupils.size
-       klass_h = {
-          :key => klass.class_room,
-          :label => I18n.t("dict.#{klass.class_room}"),
-          :report_name => report_name,
-          :report_subject => klass_subject,
-          :pupil_number => klass_pupil_number, 
-          :report_url => klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
-          :report_id => klass_report.nil?? "":klass_report._id,#klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
-          :data_type => "klass",
-          :items => []
-       }
-       result[:pupil_number] += klass_pupil_number
-       pupils = klass.pupils.sort{|a,b| Common::Locale.mysort a.stu_number,b.stu_number} #asc
-       pupils.each{|pupil|
-         param_h = {}
-         param_h[:pup_uid] = pupil.uid
+    end
+
+    if role == Common::Role::Analyzer || Common::Role::Teacher
+      klasses = Location.where(loc_h)#.order(classroom: :ASC) #asc
+      klasses.sort{|a,b| Common::Locale.mysort(Common::Locale::KlassMapping[a.classroom],Common::Locale::KlassMapping[a.classroom]) }
+      klasses.each{|klass|
+         param_h = loc_h.deep_dup
+         param_h[:classroom] = klass.classroom
          param_h[:pap_uid] = pap_uid
-         pupil_report = Mongodb::PupilReport.where(param_h).first
-         klass_h[:items] << {
-           :key => pupil.stu_number,
-           :label => pupil.name,
-           :report_name => report_name,
-           :report_subject => pupil_subject,
-           :report_url => pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
-           :data_type => "pupil",
-           :report_id => pupil_report.nil?? "":pupil_report._id,#pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
-           :items => []
+         klass_report = Mongodb::ClassReport.where(param_h).first
+         p param_h
+         klass_pupil_number =  klass.pupils.size
+         klass_h = {
+            :key => klass.classroom,
+            :label => I18n.t("dict.#{klass.classroom}")+I18n.t("page.reports.report"),
+            :report_name => report_name,
+            :report_subject => klass_subject,
+            :pupil_number => klass_pupil_number, 
+            :report_url => klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
+            :report_id => klass_report.nil?? "":klass_report._id,#klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
+            :data_type => "klass",
+            :items => []
          }
-       }
-
-       result[:items] << klass_h
-    }
+         result[:pupil_number] += klass_pupil_number
+         pupils = klass.pupils.sort{|a,b| Common::Locale.mysort a.stu_number,b.stu_number} #asc
+         pupils.each{|pupil|
+           param_h = {}
+           param_h[:pup_uid] = pupil.uid
+           param_h[:pap_uid] = pap_uid
+           pupil_report = Mongodb::PupilReport.where(param_h).first
+           klass_h[:items] << {
+             :key => pupil.stu_number,
+             :label => pupil.name,
+             :report_name => report_name,
+             :report_subject => pupil_subject,
+             :report_url => pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
+             :data_type => "pupil",
+             :report_id => pupil_report.nil?? "":pupil_report._id,#pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
+             :items => []
+           }
+         }
+        result[:items] << klass_h
+      }
+    end
     return result
   end
 
