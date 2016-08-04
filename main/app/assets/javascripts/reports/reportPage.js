@@ -42,10 +42,13 @@ var reportPage = {
 		createReport : function(data){
 			//设置年级表头；
 			var basicData = data.data.basic;
-			var gradeNavStr = '学校名称：<span>'+basicData.school+'</span>&nbsp;&nbsp;年级：<span>'+basicData.grade+'</span>&nbsp;&nbsp;'
-						+'班级数量：<span>'+basicData.klass_count+'</span>&nbsp;&nbsp;年级人数：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;'
-						+'难度：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;测试类型：<span>'+basicData.quiz_type+'</span>&nbsp;&nbsp;'
-						+'测试日期：<span>'+basicData.quiz_date+'</span>';
+			var gradeNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
+			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级人数</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
+			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
 			$('#grade-top-nav').html(gradeNavStr);
 			//创建年级的第一个诊断图;
 			var grade_charts = reportPage.Grade.getGradeDiagnoseData(data.data.charts);
@@ -555,10 +558,14 @@ var reportPage = {
 	Class: {
 		createReport : function(data){
 			var basicData = data.data.basic;
-			var classNavStr = '学校名称：<span>'+basicData.school+'</span>&nbsp;&nbsp;班级：<span>'+basicData.classroom+'</span>&nbsp;&nbsp;'
-						 +'班级人数：<span>'+basicData.levelword2+'</span>&nbsp;&nbsp;测试类型：<span>'+basicData.quiz_type+'</span>&nbsp;&nbsp;'
-						 +'班级主任：<span>'+basicData.head_teacher+'</span>&nbsp;&nbsp;科目老师：<span>'+basicData.subject_teacher+'</span>&nbsp;&nbsp;'
-						 +'测试日期：<span>'+basicData.quiz_date+'</span>';
+			var classNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
+			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
+			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
+			    +'</span>&nbsp;&nbsp;<b>科目老师</b>：<span>'+basicData.subject_teacher
+			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>'+basicData.quiz_date
+			    +'</span>';
 			$('#class-top-nav').html(classNavStr);
 			var DiagnoseObj = reportPage.Class.getClassDiagnoseData(data.data.charts);
 			var objArr = [DiagnoseObj.knowledge,DiagnoseObj.skill,DiagnoseObj.ability];
@@ -741,7 +748,15 @@ var reportPage = {
 	Pupil: {
 		createReport : function(data){
 			var basicData = data.data.basic;
-			var pupilNavStr = ''+basicData.name+'/'+basicData.sex+'/'+basicData.grade+basicData.classroom+'/'+basicData.school+'/'+basicData.area+'难度:'+basicData.levelword2+'测试日期:'+basicData.quiz_date+'';
+			var pupilNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>性别</b>：<span>'+basicData.sex
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
+
 			$('#pupil-top-nav').html(pupilNavStr);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
