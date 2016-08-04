@@ -17,7 +17,7 @@ var setting = {
 		data: {
 			simpleData: {
 				enable: true,
-				idKey: "id",
+				idKey: "rid",
 				pIdKey: "pid", //pid父节点唯一标识符属性名称
 				rootPId: null
 			}

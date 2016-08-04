@@ -17,7 +17,7 @@ var setting = {
 		data: {
 			simpleData: {
 				enable: true,
-				idKey: "id",
+				idKey: "rid",
 				pIdKey: "pid", //pid父节点唯一标识符属性名称
 				rootPId: null
 			}
@@ -112,6 +112,7 @@ var setting = {
 		treeNode.desc ? $('.desc').val(treeNode.desc) : $('.desc').val('');
 		treeNode.advice ? $('#advice').val(treeNode.advice) : $('#advice').val('');
 		treeNode.sort ? $('#sort').val(treeNode.sort) : $('#sort').val('');
+                treeNode.uid ? $('.ckp_uid').val(treeNode.uid) : "";
 	  	$.get("/managers/checkpoints/"+treeNode.uid+"/edit",{},function(data){
 			var len = data.data.length;
 			var arr=[];
