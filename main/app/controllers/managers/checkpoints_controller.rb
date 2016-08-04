@@ -50,10 +50,10 @@ class Managers::CheckpointsController < ApplicationController
   private
 
   def set_checkpoint
-    @checkpoint = BankCheckpointCkp.find(params[:id])
+    @checkpoint = BankCheckpointCkp.find(params[:uid])
   end
 
   def checkpoint_params
-    params.permit(:id, :node_uid, :str_pid, :dimesion, :checkpoint, :sort, :desc, :advice, :str_uid, :is_entity, cats: [:cat_uid])
+    params.permit(:uid, :node_uid, :str_pid, :dimesion, :checkpoint, :sort, :desc, :advice, :str_uid, :is_entity, cats: [:cat_uid])
   end
 end
