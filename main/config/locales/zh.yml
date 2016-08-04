@@ -328,9 +328,9 @@ zh:
     xue_ke_neng_li_ce_ping: "学科能力测评"
     #报告类型
     ce_shi_zhen_duan_bao_gao: "测试诊断报告" 
-    ge_ren_bao_gao: "个人报告"
+    ge_ren_bao_gao: "学生报告"
     ban_ji_bao_gao: "班级报告"
-    nan_ji_bao_gao: "年级报告"
+    nian_ji_bao_gao: "年级报告"
     qu_yu_bao_gao: "区域报告"
     #年份  
     2000_nian: "2000年"

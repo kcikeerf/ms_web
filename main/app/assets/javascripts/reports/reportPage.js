@@ -12,6 +12,9 @@ var reportPage = {
 		$('#report_menus .report_click_menu').on('click', function() {
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
+			var reportName = $(this).attr('report_name');
+			console.info(reportName);
+			$('#reportName').html(reportName);
             if(!reportId){
                 return false;
             }

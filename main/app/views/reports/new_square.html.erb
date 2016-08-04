@@ -10,6 +10,7 @@
 <% else %>
                       class="report_click_menu" 
 		              report_id="<%= @scope_menus[:report_id] %>"
+		              report_name="<%= @scope_menus[:report_name]%>"
 		              data_type="<%= @scope_menus[:data_type] %>"
 <% end %>
 		              >
@@ -22,15 +23,17 @@
 		        <li>
 		          <a class="report_click_menu" href="#" 
 		             report_id="<%= klass[:report_id]%>"
+		             report_name="<%= klass[:report_name]%>"
 		             data_type="<%= klass[:data_type] %>">
 		  <%= klass[:label] %>
 		          </a>
 		          <small><%=klass[:pupil_number]%></small>
 		         <ul class="submit_menu">
-		            <li class="title"><div><%= I18n.t("dict.ge_ren_bao_gao") %></div></li>
+		            <li class="title"><div><b><%= I18n.t("dict.ge_ren_bao_gao") %></b></div></li>
 		  <% klass[:items].each do |pupil| %>
 		            <li class="report_click_menu"  
 		                report_id="<%= pupil[:report_id]%>"
+		                report_name="<%= pupil[:report_name]%>"
 		                data_type="<%= pupil[:data_type]%>">
 		    <%= pupil[:label]%>
 		            </li>
@@ -41,7 +44,7 @@
 		      </ul>
 			</div>
 			<!--考试名称-->
-			<h1 class="exam-name"><span><%= @default_report_name %></span><b><%=@default_report_subject%></b></h1>
+			<h1 class="exam-name" id="reportName"></h1>
 		</div>
 		<!--诊断报告头部 end-->
 		<div id="reportContent" class="clearfix report-content" style="display: none;"></div>
