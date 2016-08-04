@@ -326,7 +326,7 @@ class BankCheckpointCkp < ActiveRecord::Base
 
   def organization_hash
     { 
-      id: rid, 
+      id: uid, 
       uid: uid,
       rid: rid,
       pid: rid.slice(0, ((rid.size - 3 < 0) ? 0 :(rid.size - 3))),

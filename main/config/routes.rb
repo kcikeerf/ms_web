@@ -1,14 +1,10 @@
 Rails.application.routes.draw do
-
   devise_for :managers, controllers: {sessions: 'managers/sessions', 
                                       registrations: 'managers/registrations', 
                                       passwords: 'managers/passwords'}, 
                         path_names: { sign_in: 'login', 
                                       sign_out: 'logout' }
 
-  mount RuCaptcha::Engine => "/rucaptcha"
-
-                                    
   namespace :managers do
     root 'mains#index'
 
@@ -16,8 +12,9 @@ Rails.application.routes.draw do
       get 'navigation'
     end
     
-    resources :checkpoints do      
-      collection do 
+    resources :checkpoints, :except => :edit do      
+      collection do
+        get '/:uid/edit',action: :edit, as: 'edit'
         post '/:id/move_node', action: :move_node, as: 'move_node'
         post 'import_ckp_file'
       end
@@ -52,6 +49,7 @@ Rails.application.routes.draw do
     
   end
 
+  mount RuCaptcha::Engine => "/rucaptcha"
   root 'welcomes#index'
   get '/about_us', to: 'welcomes#about_us'
   get '/contact', to: 'welcomes#contact'
