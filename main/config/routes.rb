@@ -12,8 +12,9 @@ Rails.application.routes.draw do
       get 'navigation'
     end
     
-    resources :checkpoints, :except => :edit do      
+    resources :checkpoints, :except => [:edit, :destroy] do      
       collection do
+        delete '/:uid', action: :destroy, as: 'destroy'
         get '/:uid/edit',action: :edit, as: 'edit'
         post '/:id/move_node', action: :move_node, as: 'move_node'
         post 'import_ckp_file'
