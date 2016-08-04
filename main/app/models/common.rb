@@ -9,6 +9,10 @@ module Common
     UploadPrefix = Rails.root.to_s + "/uploads/"
   end
 
+  module Page
+    PerPage = 10
+  end
+
   module Role
     Pupil="pupil"
     Teacher="teacher"

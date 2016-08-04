@@ -29,7 +29,7 @@
 .classMenu span{
 	display:block;
 	float:left;
-	width:70px;
+	width:100px;
 }
 .classMenu span{
 	color:#fff;
@@ -59,7 +59,7 @@
 }
 .dropdown_menu>li a{
 	display:block;
-	width:78px;
+	width:100px;
 	float:left;
 	color:#fff;
 }
@@ -95,7 +95,25 @@
 .dropdown_menu>li>ul.active{
 	bottom: 0;
 }
-.dropdown_menu>li>ul li{
+.dropdown_menu .title>div{
+	display:block;
+	width:100%;
+	text-align: center;
+	border-style: solid;
+	border-color: #15a892;
+	border-width: 0 0 0.5px 0;
+}
+.dropdown_menu .title:hover{
+	color: black;
+	background: white;
+}
+.report_click_menu{
+	width:70px;
+	text-align:center;
+	line-height:30px;
+	float:left;
+}
+.report_menu_teacher{
 	width:70px;
 	text-align:center;
 	line-height:30px;

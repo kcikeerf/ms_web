@@ -30,6 +30,16 @@ class Teacher < ActiveRecord::Base
     class_teacher_mappings.first.location.grade
   end
 
+  def pupils
+    loc_uids = locations.map{|loc| loc.id}
+    Pupil.where(:loc_uid => loc_uids)
+  end
+
+  def papers
+    pap_uids = Mongodb::BankTeaPap.where(tea_uid: self.uid).map{|item| item.pap_uid}
+    Mongodb::BankPaperPap.where(:_id.in =>pap_uids).order({dt_update: :desc})
+  end
+
   def self.save_info(options)
     options = options.extract!(:user_id, :name, :loc_uid, :head_teacher, :subject)
     mapping_hash = {}
