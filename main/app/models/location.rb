@@ -47,8 +47,8 @@ class Location < ActiveRecord::Base
     when Common::Role::Analyzer
       grade_report = Mongodb::GradeReport.where(loc_h).first
       result ={ :key => loc_h[:grade],
-                :label => I18n.t("dict.nan_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("dict.#{page.reports.report}"),
-                :report_name => report_name,
+                :label => I18n.t("dict.nian_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("dict.#{page.reports.report}"),
+                :report_name => format_report_name(current_paper.heading, I18n.t("dict.nian_ji_bao_gao")),
                 :report_subject => grade_subject,
                 :pupil_number => 0,
                 :report_url => format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
@@ -58,7 +58,7 @@ class Location < ActiveRecord::Base
     when Common::Role::Teacher
       result ={ :key => loc_h[:grade],
                 :label => I18n.t("dict.ban_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
-                :report_name => report_name,
+                :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
                 :report_subject => grade_subject,
                 :pupil_number => 0,
                 :report_url => nil,
@@ -77,12 +77,11 @@ class Location < ActiveRecord::Base
          param_h[:classroom] = klass.classroom
          param_h[:pap_uid] = pap_uid
          klass_report = Mongodb::ClassReport.where(param_h).first
-         p param_h
          klass_pupil_number =  klass.pupils.size
          klass_h = {
             :key => klass.classroom,
             :label => I18n.t("dict.#{klass.classroom}")+I18n.t("page.reports.report"),
-            :report_name => report_name,
+            :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
             :report_subject => klass_subject,
             :pupil_number => klass_pupil_number, 
             :report_url => klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
@@ -100,7 +99,7 @@ class Location < ActiveRecord::Base
            klass_h[:items] << {
              :key => pupil.stu_number,
              :label => pupil.name,
-             :report_name => report_name,
+             :report_name => format_report_name(current_paper.heading, I18n.t("dict.ge_ren_bao_gao")),
              :report_subject => pupil_subject,
              :report_url => pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
              :data_type => "pupil",
@@ -121,6 +120,10 @@ class Location < ActiveRecord::Base
     klass_subject = subject_prefix + I18n.t("dict.ban_ji_bao_gao")
     pupil_subject = subject_prefix + I18n.t("dict.ge_ren_bao_gao")
     return report_name,grade_subject,klass_subject,pupil_subject
+  end
+
+  def self.format_report_name heading,suffix
+    heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao") + "(#{suffix})"
   end
 
   def self.format_grade_report_url_params report_id
