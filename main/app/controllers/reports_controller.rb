@@ -190,8 +190,8 @@ class ReportsController < ApplicationController
     #grade_report = Mongodb::GradeReport.where(loc_h).first
     #@default_report_type = "grade"
     #@default_report_id = grade_report._id.to_s
-    @default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    @default_report_type = (current_paper.subject.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{current_paper.subject}"))
+    #@default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
+    #@default_report_type = (current_paper.subject.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{current_paper.subject}"))
     if current_user.is_analyzer?
       @scope_menus = Location.get_report_menus(Common::Role::Analyzer, params[:pap_uid], loc_h)
     elsif current_user.is_teacher?
