@@ -463,6 +463,7 @@ module Common
           "school" => "",
           "grade" => "",
           "klass_count" => "",
+          "pupil_number" => "",
           "quiz_type" => "",
           "quiz_date" => "",
           "levelword2" => ""
@@ -679,6 +680,7 @@ module Common
           "school" => "",
           "grade" => "",
           "classroom" => "",
+          "pupil_number" => "",
           "head_teacher" => "",
           "subject_teacher" => "",
           "quiz_type" => "",
