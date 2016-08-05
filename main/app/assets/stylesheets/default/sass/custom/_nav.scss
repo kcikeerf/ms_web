@@ -64,7 +64,7 @@
   .zy-navbar-nav {
   }
   .navbar-collapse {
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       position: absolute;
       right: 0;
       top: $navbar-height-base + 0.5px;
