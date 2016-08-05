@@ -894,7 +894,7 @@ var reportPage = {
                 data: params,
                 dataType: "json",
                 success: function(data){
-                    $('#reportContent')[0].style = "display: block;"
+                    //$('#reportContent')[0].style = "display: block;"
                     if(type=="grade"){
                         reportPage.Grade.createReport(data);
                     } else if(type=="klass"){
@@ -905,7 +905,7 @@ var reportPage = {
                 },
                 error: function(data){
                     $('#reportContent').html(data.responseJSON.message);
-                    $('#reportContent')[0].style = "display: block;"
+                    //$('#reportContent')[0].style = "display: block;"
                 }
             }); 
         },
