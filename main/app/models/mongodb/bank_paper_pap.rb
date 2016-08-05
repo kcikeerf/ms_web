@@ -772,6 +772,7 @@ class Mongodb::BankPaperPap
 
         qizpoint = Mongodb::BankQizpointQzp.where(_id: hidden_row[qzp_index]).first
         qizpoint_qiz = qizpoint.nil?? nil : qizpoint.bank_quiz_qiz 
+        #next unless qizpoint
         ckps = qizpoint.bank_checkpoint_ckps
         ckps.each{|ckp|
           next unless ckp
@@ -921,9 +922,9 @@ class Mongodb::BankPaperPap
   end
 
   def ckp_weights_modification args={}
-    if args[:dimesion] && args[:weights] && args[:difficulty]
+    if !args[:dimesion].blank? && !args[:weights].blank? && !args[:difficulty].blank?
       result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[args[:dimesion].to_sym][args[:difficulty].to_sym]
-    elsif args[:weights]
+    elsif !args[:weights]
       result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[:default]
     else
       result = 1
