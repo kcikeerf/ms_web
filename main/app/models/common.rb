@@ -257,30 +257,474 @@ module Common
 <div class='clearfix padder-lg'>
 <h3>三维指标含义解释</h3>
 <dl>
+
+
 <dt>技能指标</dt>
 <dd>
 <ol>
-<li>记忆：再认、回忆学过的词汇的音形义、固定词法和句法、时态及语态</li>
-<li>理解：根据听觉、视觉通道所获得的信息，结合语境对单词、句子的意义进行解释和转译</li>
-<li>信息提取：通过听觉、视觉通道将问题中的信息与文中相同的词或暗含的信息相匹配，来找出所要求的新信息</li>
-<li>推理：通过听觉、视觉通道所提供的信息，借助思维的逻辑性、系统性，对文本内容进行推论</li>
-<li>分析-区分：</li>
-<li>分析-组织：将材料分解为其组成部分，并确定这些部分彼此及其与整体结构及目的之间关系</li>
-<li>分析-归因：对文本隐含的观点、倾向、价值或意图的。</li>
-<li>表达：综合运用英语语言知识，以记叙、议论或说明的方式记录事件、表达观点或传递信息</li>
+
+<li>1. 听
+<ol>
+
+<li>1.1 记忆（听）：通过听的方式，从长期记忆取回有关知识的思维过程；
+<ol>
+<li>
+1.1.1再认（听）：通过听的方式，对再次出现的信息能够识别的思维过程；
+<div class='report_explanation_example'>
+示例：从下列选项中找出你所听到的单词或短语。
+</div>
+</li>
+<li>
+1.1.2再现（听）：通过听的方式，从记忆中提取所需信息的思维过程；
+<div class='report_explanation_example'>
+示例：听写单词。
+</div>
+</li>
+</ol>
+</li>
+
+<li>
+1.2 理解（听）：从听的方式中建构意义的思维过程；
+<ol>
+
+<li>
+1.2.1 意义建构（听）：将听到的内容转化成有意义的信息并产生相应的反应的思维过程；
+<div class='report_explanation_example'>
+示例：找出与所听到的句子意义相同的选项。
+</div>
+</li>
+
+<li>
+1.2.2 匹配（听）：找出所听到信息与所看到的信息的一致性，并将两者搭配起来的思维过程；
+<div class='report_explanation_example'>
+示例：听对话，从下面各题所给的图片中选择与对话内容相符的图片。
+</div>
+</li>
+
+<li>
+1.2.3 信息提取（听）：从长篇对话或听力材料中获取信息的思维过程
+<ol>
+<li>
+1.2.3.1 直接提取（听）：从长篇对话或者听力材料中直接获取所需信息的思维过程；
+<div class='report_explanation_example'>
+示例：听短文，选出最恰当的一项。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Where does Mr. Green come from? (    )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. London&nbsp;&nbsp;&nbsp;B. China&nbsp;&nbsp;&nbsp;C. Boston<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原文中有明确的说明：Mr. Green is from London.
+</div>
+</li>
+<li>
+1.2.3.2间接提取（听）：从长篇对话或听力材料中，经过语义转换获取所需信息的思维过程；
+<div class='report_explanation_example'>
+示例：听短文，选出最恰当的一项。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;What does Mr. Green do every night? (    )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. Read books.&nbsp;&nbsp;&nbsp;B.&nbsp;&nbsp;&nbsp;Exercise.&nbsp;&nbsp;&nbsp;C. Learn Chinese<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原文中的说法是：Mr. Green goes to Chinese classes every night.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学生需要将goes to Chinese classes转换成Learn Chinese才能完成匹配。
+</div>
+</li>
+</ol>
+
+<li>
+1.2.4 综合概括（听）：对长篇对话或听力材料的主要内容、主旨进行归纳概括的思维过程；
+<div class='report_explanation_example'>
+示例：What’s the dialogue about？
+</div>
+</li>
+
+<li>
+1.2.5 推理（听）：根据长篇对话或听力材料中的信息，做出超越文本的推测的思维过程；
+<div class='report_explanation_example'>
+示例：Who is the speaker? (&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A manager.&nbsp;&nbsp;&nbsp;B. A teacher.&nbsp;&nbsp;&nbsp;C. A guide.
+</div>
+</li>
+
+</ol>
+</li>
+
+<li>
+1.3 分析（听）：将长篇对话或听力材料分解成各个部分，并确定各部分彼此和与整体结构或目的关系；
+<ol>
+<li>
+1.3.1 区分（听）：对听力材料中高度相似的信息加以分辨，找出符合条件的信息的思维过程；
+<div class='report_explanation_example'>
+示例：According to the speaker, what time will be the shop open at?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. 8:15.&nbsp;&nbsp;&nbsp;B. 8:50.&nbsp;&nbsp;&nbsp;C. 8:45.<br>
+</div>
+</li>
+<li>
+1.3.2 归因（听）：确定听力材料隐含的观点、偏见、价值观或意图的思维过程；
+<div class='report_explanation_example'>
+示例：What’s the speaker’s attitude to the news?
+</div>
+</li>
+
+</ol>
+</li>
+
+</ol>
+</li>
+
+
+<li>2. 读
+<ol>
+
+<li>
+2.1记忆（读）：通过读的方式，从长期记忆取回有关知识的思维过程；
+<ol>
+<li>
+2.1.1再认（读）：通过读的方式，对再次出现的信息能够识别的思维过程；
+<div class='report_explanation_example'>
+示例：为下列单词选出正确的释义
+</div>
+</li>
+<li>
+2.1.2再现（读）：通过读的方式，从记忆中提取所需信息的思维过程；
+<div class='report_explanation_example'>
+示例：
+</div>
+</li>
+</ol>
+</li>
+
+<li>
+2.2 理解（读）：从读的方式中建构意义的思维过程
+<ol>
+<li>
+2.2.1 意义建构（读）：将读到的内容转化成有意义的信息并产生相应的反应的思维过程；
+<div class='report_explanation_example'>
+示例：将下列英文句子翻译成汉语。
+</div>
+</li>
+<li>
+2.2.2 匹配（读）：将信息一致或近似的单词、句子搭配起来的思维过程；
+<div class='report_explanation_example'>
+示例：读句子，从下面各题所给的图片中选择与句子意义相符的图片。
+</div>
+</li>
+<li>
+2.2.3 信息提取（读）：从长篇对话或阅读材料中获取信息的思维过程
+<ol>
+<li>
+2.2.3.1 直接提取（读）：从长篇对话或者阅读材料中直接获取所需信息的思维过程；
+<div class='report_explanation_example'>
+示例：读短文，选出最恰当的一项。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Where does Mr. Green come from? (&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. London&nbsp;&nbsp;&nbsp;B. China&nbsp;&nbsp;&nbsp;C. Boston<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原文中有明确的说明：Mr. Green is from London.
+</div>
+</li>
+<li>
+2.2.3.2间接提取（读）：从长篇对话或阅读材料中，经过语义转换获取所需信息的思维过程；
+<div class='report_explanation_example'>
+示例：读短文，选出最恰当的一项。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;What does Mr. Green do every night? (&nbsp;&nbsp;&nbsp;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. Read books.&nbsp;&nbsp;&nbsp;B. Exercise.&nbsp;&nbsp;&nbsp;C. Learn Chinese<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;原文中的说法是：Mr. Green goes to Chinese classes every night.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;学生需要将goes to Chinese classes转换成Learn Chinese才能完成匹配。<br>
+</div>
+</li>
+</ol>
+</li>
+<li>
+2.2.4 综合概括（读）：对长篇对话或阅读材料的主要内容、主旨进行归纳概括的思维过程；
+<div class='report_explanation_example'>
+示例：What’s the main idea of the article？
+</div>
+</li>
+<li>
+2.2.5 推理（读）：根据长篇对话或阅读材料中的信息，做出超越文本的推测的思维过程；
+<div class='report_explanation_example'>
+示例：What can you infer from paragraph 2? (&nbsp;&nbsp;&nbsp;)
+</div>
+</li>
+</ol>
+</li>
+
+<li>
+2.3 分析（读）：将长篇对话或阅读材料分解成各个部分，并确定各部分彼此和与整体结构或目的关系；
+<ol>
+<li>
+2.3.1 区分（读）：对高度相似的信息加以分辨，找出符合条件的信息的思维过程；
+<div class='report_explanation_example'>
+示例：I a very interesting film last night.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. watched&nbsp;&nbsp;&nbsp;B. saw&nbsp;&nbsp;&nbsp;C. looked at.
+</div>
+</li>
+<li>
+2.3.2 归因（读）：确定阅读材料隐含的观点、偏见、价值观或意图的思维过程；
+<div class='report_explanation_example'>
+示例：The writer wants to tell us to.
+</div>
+</li>
+<li>
+2.3.3 结构剖析（读）：确定词序、句子的成分、文章的结构、写作手法或风格的恰当性等的思维过程；
+<div class='report_explanation_example'>
+示例：E-book ________by more and more people in our daily life now. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. uses&nbsp;&nbsp;&nbsp;B. used&nbsp;&nbsp;&nbsp;C. is used&nbsp;&nbsp;&nbsp;D. was used
+</div>
+</li>
+</ol>
+</li>
+
+</ol>
+</li>
+
+
+<li>3. 写
+<ol>
+
+<li>
+3.1 记忆（写）
+<ol>
+<li>
+3.1.1 抄写：按照给出的原文写下来。
+<div class='report_explanation_example'>
+示例：抄写下面的单词，注意书写美观。
+</div>
+</li>
+<li>
+3.1.2 默写：从长时记忆中提取信息并写下来的过程。
+<div class='report_explanation_example'>
+示例：看图写单词。
+</div>
+</li>
+</ol>
+</li>
+
+<li>
+3.2 应用
+<ol>
+<li>
+3.2.1 模仿：在相似度较高的情境下将学习过的知识，通过书写的方式呈现出来的过程。
+<div class='report_explanation_example'>
+示例：根据要求修改句子：<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（1）He is a good student.(改成否定句)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（2）It’s a nice picture. (对划线部分提问)
+</div>
+</li>
+<li>
+3.2.2 迁移：将学习过的知识在新的情景中以恰当的形式重组，并通过书写的方式呈现出来的过程。
+<div class='report_explanation_example'>
+示例：阅读下面短文，回答问题<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;（短文略）<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Where does Mary live now?  ( In 4 words )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Who does she often try to speak Chinese to? ( In 10 words )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Where is Mary going on Saturday morning? ( In 5 or 6 words )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4. What is she going to do there? ( In 7 or 8 words )<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5. How does she ask the way? ( In 8 words )
+</div>
+</li>
+</ol>
+</li>
+
+<li>
+3.3 表达
+<ol>
+<li>
+3.3.1 记叙性表达：以记人、叙事、写景、状物为主，对社会生活中的人、串、景、物的情态变化和发展进行叙述和描写的表达。
+<div class='report_explanation_example'>
+示例：以“My Friend”为题，写80词的短文。
+</div>
+</li>
+<li>
+3.3.2 说明性表达：对事物的形状、性质、特征、成因、关系、功用等进行解说的表达。
+<div class='report_explanation_example'>
+示例：Write a paragraph to describe your bedroom。
+</div>
+</li>
+<li>
+3.3.3 议论性表达：对事件发表意见、主张和看法的表达。
+<div class='report_explanation_example'>
+示例：许多中学不允许学生带手机到学校，对此要求你有什么看法？写120左右的短文。
+</div>
+</li>
+<li>
+3.3.4 应用性表达：为处理生活、学习、工作中的实际事物而进行的表达。
+<div class='report_explanation_example'>
+示例：时值圣诞节，班级要召开一次联欢会，请针对这一活动，写一个通知。
+</div>
+</li>
+</ol>
+</li>
+
+</ol>
+</li>
+
+
 </ol>
 </dd>
-</dl>
-<dl>
+
+
 <dt>能力指标</dt>
 <dd>
 <ol>
-<li>词汇辨析：再认、回忆学过的词汇的音形义、固定词法和句法、时态及语态</li>
-<li>语言理解：根据听觉、视觉通道所获得的信息，结合语境对单词、句子的意义进行解释和转译</li>
-<li>逻辑分析：通过听觉、视觉通道将问题中的信息与文中相同的词或暗含的信息相匹配，来找出所要求的新信息</li>
-<li>人际理解：通过听觉、视觉通道所提供的信息，借助思维的逻辑性、系统性，对文本内容进行推论</li>
+
+<li>
+1. 语言-言语：有效地运用口头语言及文字的能力;
+<ol>
+
+<li>
+1.1 词汇辨析：对词音、词型、词义、词法进行区分，找出最符合条件的能力。
+<ol>
+<li>
+1.1.1 词音辨析：对单词的发音进行区分，找出最符合条件的能力。
+<div class='report_explanation_example'>
+示例：下列各组单词中有一个单词的划线部分读音与其他两个不同，请把它选出来。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. A. clothes&nbsp;&nbsp;&nbsp;B. potato&nbsp;&nbsp;&nbsp;C. office<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. A. river&nbsp;&nbsp;&nbsp;&nbsp;B. nice&nbsp;&nbsp;&nbsp;C. size
+</div>
+</li>
+<li>
+1.1.2 词型辨析：对单词的拼写形式进行区分，找出最符合条件的能力。
+<div class='report_explanation_example'>
+示例：I can see animals. They’re （&nbsp;&nbsp;&nbsp;）.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. boats&nbsp;&nbsp;&nbsp;B. coats&nbsp;&nbsp;&nbsp;C. goats<br>
+</div>
+</li>
+<li>
+1.1.3 词义辨析：对单词或短语的意义进行区分，找出最符合条件的能力。
+<div class='report_explanation_example'>
+示例：The teacher’s desk is （&nbsp;&nbsp;&nbsp;）classroom.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. in the front of&nbsp;&nbsp;&nbsp;B. in front of&nbsp;&nbsp;&nbsp;C. in front<br>  
+</div>
+</li>
+<li>
+1.1.4 词法辨析：对单词或短语的用法进行区分，找出最符合条件的能力。
+<div class='report_explanation_example'>
+示例：The English novel is quite easy for you. There are （&nbsp;&nbsp;&nbsp;）new words in it.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. a little&nbsp;&nbsp;&nbsp;B. little&nbsp;&nbsp;&nbsp;C. a few&nbsp;&nbsp;&nbsp;D. few
+</div>
+</li>
+</ol>
+</li>
+<li>
+
+<li>
+1.2 语言理解：通过口头语言或文字建构意义，表达思想，实现交流与沟通目的的能力。
+<ol>
+<li>
+1.2.1 建构性理解：将口头语言、文字、图形、符号转化成有意义的信息，并做出相应反应的能力。
+<div class='report_explanation_example'>
+示例：根据图片写句子。
+<img src='/images/report_explanation_ability1.png'>
+</div>
+</li>
+<li>
+1.2.2 匹配性理解：将具有一致性或相关联系的两个事物、观点或其他类似物匹配起来的能力。
+<div class='report_explanation_example'>
+示例：<br>
+Come and see the Indian elephants and tigers from America. The koalas are waiting to meet you, and the monkeys from Thailand are waiting to throw things at you. The cute dogs from Australia are waiting to laugh at you, and the giraffes from Zambia are waiting to look down on you. <br>
+&nbsp;&nbsp;&nbsp;Come and enjoy your special day! Kids!<br>
+<img src='/images/report_explanation_ability2.png' width='60%'>
+<br>
+How many kinds of animals are talked about in the poster(海报)?<br>
+&nbsp;&nbsp;&nbsp;A. 4&nbsp;&nbsp;&nbsp;B. 5&nbsp;&nbsp;&nbsp;C. 6&nbsp;&nbsp;&nbsp;D. 7<br>
+</div>
+</li>
+<li>
+1.2.3 概括性理解：综合各种信息，得出概括性结论的能力。
+<div class='report_explanation_example'>
+示例：The passage is mainly about（&nbsp;&nbsp;&nbsp;）.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. the car in the future&nbsp;&nbsp;&nbsp;B. pollution in the car<br>    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C. gasoline the car needed&nbsp;&nbsp;&nbsp;D. the road in the future
+</div>
+</li>
+<li>
+1.2.4 推理性理解：综合各种信息，得出符合逻辑的推论的能力。
+<div class='report_explanation_example'>
+示例：<br>
+<img src='/images/report_explanation_ability3.png' width='60%'><br>
+根据短文内容，判断正（T）误（F）。<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Janna is thirteen. She has no money, but she can go into the zoo. （&nbsp;&nbsp;&nbsp;）
+</div>
+</li>
+</ol>
+</li>
+
+</li>
+</ol>
+</li>
+
+<li>
+2 数理-逻辑：有效运用数字和推理的能力
+<ol>
+<li>
+2.1 逻辑分析：发现句子、文章内在逻辑结构或逻辑关系或以有逻辑的结构或关系表述事物的能力。
+<ol>
+<li>
+2.1.1 关系分析：发现句子、文章内在逻辑关系或以符合逻辑的关系表述事物的能力。
+<div class='report_explanation_example'>
+示例：你如何看待“中学生不能带手机到学校”的校规？<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;要求：观点明确，论述合理，文章具有逻辑性。
+</div>
+</li>
+<li>
+2.1.2 结构分析：发现句子、文章逻辑结构或以恰当的结构表述事物的能力。
+<div class='report_explanation_example'>
+示例：<br>
+&nbsp;&nbsp;&nbsp;（1） happy life the old live!<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. What a&nbsp;&nbsp;&nbsp;B. What&nbsp;&nbsp;&nbsp;C. How<br>
+&nbsp;&nbsp;&nbsp;（2）The structure of the article is（&nbsp;&nbsp;&nbsp;）.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A. time-ordered&nbsp;&nbsp;&nbsp;B. space-ordered&nbsp;&nbsp;&nbsp;C. event-ordered.
+</div>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+
+<li>
+3 交流-交际：领会和体验他人的情绪、情感、意图、目的能力
+<ol>
+<li>
+3.1 人际理解：通过文本领会和体验他人的情绪、情感、意图、目的的能力。
+<ol>
+<li>
+3.1.1 作者理解：领会和体验作者透过文本表达的情绪、情感、意图、目的等的能力。
+<div class='report_explanation_example'>
+示例：What’s the purpose of the author?
+</div>
+</li>
+<li>
+3.1.2 作品理解：领会和体验文本中人物情绪、情感、意图、目的等的能力。
+<div class='report_explanation_example'>
+示例：According to the article, why did Andy say those words?
+</div>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+
+<li>
+4 自知-自省：自我反思、自我省察、自我表达的能力。
+<ol>
+<li>
+4.1 自我情感认识：对自己情绪反思、觉察及表达的能力。
+</li>
+<li>
+4.2 自我态度认识：对自己对事物的态度的反思、觉察及表达的能力。
+</li>
+<li>
+4.3 自我价值观认识：对自己的价值观的反思、觉察及表达的能力。
+<div class='report_explanation_example'>
+示例：How do you think of “Chinese crossing street”?
+</div>
+</li>
+</ol>
+</li>
+
 </ol>
 </dd>
+
+
+
 </dl>
 </div>
 </div>

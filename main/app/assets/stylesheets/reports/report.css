@@ -422,3 +422,13 @@ dt{
 .pupil-report-data dl dd ul {padding:0;list-style:none;}
 .pupil-report-data dl dd ul li {background: url('../img/square.png') no-repeat 0 10px;padding-left:10px;margin:15px 0;line-height:24px;}
 .padder-lg {padding:0 35px;}
+.report_explanation_example {
+	width: 600px;
+	padding: 10px 10px 10px 10px; 
+	margin: 10px 10px 10px 10px; 
+	border: 1px solid #333333; 
+	border-radius: 10px; 
+	font-style: italic; 
+	font-size: 12px;
+	word-wrap:break-word;
+}
