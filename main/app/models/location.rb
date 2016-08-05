@@ -24,7 +24,7 @@ class Location < ActiveRecord::Base
   end
 
   def subject_teacher subject
-    tea_uid = self.class_teacher_mappings.where(subject: subject).first.tea_uid
+    tea_uid = self.class_teacher_mappings.where(subject: subject, head_teacher: false).first.tea_uid
     return Teacher.where(uid: tea_uid).first
   end
 
