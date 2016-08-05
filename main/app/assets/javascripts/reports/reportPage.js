@@ -45,7 +45,7 @@ var reportPage = {
 			var gradeNavStr = '<b>学校名称</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级人数</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级人数</b>：<span>'+basicData.pupil_number
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
@@ -560,7 +560,7 @@ var reportPage = {
 			var basicData = data.data.basic;
 			var classNavStr = '<b>学校名称</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
-			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.pupil_number
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
 			    +'</span>&nbsp;&nbsp;<b>科目老师</b>：<span>'+basicData.subject_teacher
