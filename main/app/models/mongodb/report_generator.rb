@@ -512,15 +512,15 @@ class Mongodb::ReportGenerator
       }
 
       self_best = {
-        "knowledge" => lv2_dimesion_value_h["knowledge"].map{|a| a["average_percent"]}.max,
-        "skill" => lv2_dimesion_value_h["skill"].map{|a| a["average_percent"]}.max,
-        "ability" => lv2_dimesion_value_h["ability"].map{|a| a["average_percent"]}.max
+        "knowledge" => lv2_dimesion_value_h["knowledge"].map{|a| a["average_percent"]}.compact.max,
+        "skill" => lv2_dimesion_value_h["skill"].map{|a| a["average_percent"]}.compact.max,
+        "ability" => lv2_dimesion_value_h["ability"].map{|a| a["average_percent"]}.compact.max
       }
 
       inclass_best = {
-        "knowledge" => lv2_dimesion_value_h["knowledge"].map{|a| a["pup_cls_avg_percent_diff"]}.max,
-        "skill" => lv2_dimesion_value_h["skill"].map{|a| a["pup_cls_avg_percent_diff"]}.max,
-        "ability" => lv2_dimesion_value_h["ability"].map{|a| a["pup_cls_avg_percent_diff"]}.max
+        "knowledge" => lv2_dimesion_value_h["knowledge"].map{|a| a["pup_cls_avg_percent_diff"]}.compact.max,
+        "skill" => lv2_dimesion_value_h["skill"].map{|a| a["pup_cls_avg_percent_diff"]}.compact.max,
+        "ability" => lv2_dimesion_value_h["ability"].map{|a| a["pup_cls_avg_percent_diff"]}.compact.max
       }
 
       ingrade_worse = {
@@ -531,6 +531,7 @@ class Mongodb::ReportGenerator
 
       ["knowledge", "skill", "ability"].each{|dimesion|
         lv2_dimesion_value_h[dimesion].each_with_index{|member, index|
+          next if member.blank?
           #个人最佳表现
           cond = (member["average_percent"] == self_best[dimesion])
           if cond
