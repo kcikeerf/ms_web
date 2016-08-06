@@ -13,7 +13,6 @@ var reportPage = {
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
 			var reportName = $(this).attr('report_name');
-			console.info(reportName);
 			$('#reportName').html(reportName);
             if(!reportId){
                 return false;
@@ -42,11 +41,11 @@ var reportPage = {
 		createReport : function(data){
 			//设置年级表头；
 			var basicData = data.data.basic;
-			var gradeNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			var gradeNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级人数</b>：<span>'+basicData.pupil_number
-			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>'+basicData.pupil_number
+			    //+'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
 			$('#grade-top-nav').html(gradeNavStr);
@@ -204,9 +203,9 @@ var reportPage = {
 		},
 		
 		handleNormTable : function(data){
-			var classArr = reportPage.baseFn.getArrayKeys(data);
+			var classArr = reportPage.baseFn.getArrayKeysNoModify(data);
 			var classValue = reportPage.baseFn.getArrayValue(data);
-			var normArr = reportPage.baseFn.getKeys(reportPage.baseFn.getArrayValue(data)[0]);
+			var normArr = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.getArrayValue(data)[0]);
 			var thStr = '<td class="grade-titlt">班级</td>';
 			for(var i = 0 ; i < normArr.length ; i++){
 				thStr += '<td>'+normArr[i]+'</td>';
@@ -281,15 +280,15 @@ var reportPage = {
 		getGradeNumScaleData : function(obj){
 			return obj = {
 				knowledge :{
-					yaxis : reportPage.baseFn.getKeys(obj.grade_knowledge),
+					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_knowledge),
 					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_knowledge))
 				},
 				skill : {
-					yaxis : reportPage.baseFn.getKeys(obj.grade_skill),
+					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_skill),
 					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_skill))
 				},
 				ability : {
-					yaxis : reportPage.baseFn.getKeys(obj.grade_ability),
+					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_ability),
 					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_ability))
 				},
 			}
@@ -369,7 +368,7 @@ var reportPage = {
 		},
 		//分型图
 		handleDisperse : function(data){
-			var keysArr = reportPage.baseFn.getKeys(data);
+			var keysArr = reportPage.baseFn.getKeysNoModify(data);
 			var valsArr = reportPage.baseFn.getValue(data);
 			var arr = [];
 			var percentArr = [];
@@ -558,12 +557,12 @@ var reportPage = {
 	Class: {
 		createReport : function(data){
 			var basicData = data.data.basic;
-			var classNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			var classNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.pupil_number
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
-			    +'</span>&nbsp;&nbsp;<b>科目老师</b>：<span>'+basicData.subject_teacher
+			    +'</span>&nbsp;&nbsp;<b>学科老师</b>：<span>'+basicData.subject_teacher
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>'+basicData.quiz_date
 			    +'</span>';
 			$('#class-top-nav').html(classNavStr);
@@ -588,6 +587,10 @@ var reportPage = {
 					var nodeArr = ['scale_dimesions','scale_knowledge','scale_skill','scale_ability'];
 					for(var i = 0 ; i　< objArr.length ; i++){
 						var option = echartOption.getOption.Class.setClassScaleNumOption(objArr[i]);
+						if(i > 0){
+							option.legend = { show: false};
+							option.grid.right = '3%';
+						}
 						echartOption.createEchart(option,nodeArr[i]);
 					};
 				}else if($dataId == 'table-data-knowledge'){
@@ -748,7 +751,7 @@ var reportPage = {
 	Pupil: {
 		createReport : function(data){
 			var basicData = data.data.basic;
-			var pupilNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			var pupilNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
@@ -912,7 +915,7 @@ var reportPage = {
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
 			if(data != null){
-				var qid = reportPage.baseFn.getArrayKeys(data);
+				var qid = reportPage.baseFn.getArrayKeysNoModify(data);
 				var correctRatio = reportPage.baseFn.getArrayValue(data);
 				var str = '';
 				for(var i = 0; i < qid.length ; i++){
@@ -927,7 +930,7 @@ var reportPage = {
 		getTableStr: function(obj, type) {
 			var allStr = '';
 			//创建一级指标table ------ knowledge;
-			var oneArrKey = reportPage.baseFn.getKeys(obj);
+			var oneArrKey = reportPage.baseFn.getKeysNoModify(obj);
 			var oneArrValue = reportPage.baseFn.getValue(obj)
 			var one_len = oneArrKey.length;
 			for (var i = 0; i < one_len; i++) {
@@ -953,9 +956,9 @@ var reportPage = {
 				var oneAllStr = '<tr>' + oneNameStr + oneValueStr + '</tr>';
 				//创建二级指标表格数据
 				if (oneArrValue[i].items && oneArrValue[i].items != null) {
-					var two_len = reportPage.baseFn.getKeys(oneArrValue[i].items).length;
+					var two_len = reportPage.baseFn.getKeysNoModify(oneArrValue[i].items).length;
 					for (var j = 0; j < two_len; j++) {
-						var twoNameStr = '<td>' + reportPage.baseFn.getKeys(oneArrValue[i].items)[j] + '</td>';
+						var twoNameStr = '<td>' + reportPage.baseFn.getKeysNoModify(oneArrValue[i].items)[j] + '</td>';
 						var twoValueStr = '';
 						var twoArrValue = reportPage.baseFn.getValue(oneArrValue[i].items)[j].value;
 						var twoValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(twoArrValue) : reportPage.Pupil.creatPuilValueArr(twoArrValue);
@@ -1094,7 +1097,10 @@ var reportPage = {
 		/*获取对象的key数组*/
 		getKeys: function(obj) {
 			if(obj){
-				return Object.keys(obj);
+				//return Object.keys(obj);
+				return reportPage.baseFn.modifyKey($.map(Object.keys(obj), function(value, index) {
+					return [value];
+				}));
 			}else{
 				return [];
 			}
@@ -1108,9 +1114,9 @@ var reportPage = {
 		/*获取答对题的key数组*/
 		getArrayKeys: function(obj) {
 			if(obj){
-				return $.map(obj, function(value, index) {
+				return reportPage.baseFn.modifyKey($.map(obj, function(value, index) {
 					return [value[0]];
-				});
+				}));
 			}else{
 				return [];
 			}
@@ -1121,5 +1127,45 @@ var reportPage = {
 				return [value[1]];
 			});
 		},
+		/*获取对象的key数组*/
+		getKeysNoModify: function(obj) {
+			if(obj){
+				//return Object.keys(obj);
+				return $.map(Object.keys(obj), function(value, index) {
+					return [value];
+				});
+			}else{
+				return [];
+			}
+		},
+		/*获取答对题的key数组*/
+		getArrayKeysNoModify: function(obj) {
+			if(obj){
+				return $.map(obj, function(value, index) {
+					return [value[0]];
+				});
+			}else{
+				return [];
+			}
+		},
+		modifyKey: function(arr){
+			for(var i =0; i < arr.length; i++){
+				c_arr = arr[i].split("");
+				labelInterval = (c_arr.length > 7)? 2:1;
+				for(var j =0; j < c_arr.length; j++){
+					if(labelInterval == 1){
+					if(c_arr[j] == "（" || c_arr[j] == "("){
+                       c_arr[j] = "︵";
+					} else if(c_arr[j] == "）" || c_arr[j] == ")"){ 
+	     			   c_arr[j] = "︶";
+					}}
+					if((j+1)%labelInterval == 0 ){
+						c_arr[j]+= "\n";
+					}
+				}
+				arr[i] = c_arr.join("");
+			}
+			return arr;
+		}
 	}
 }
