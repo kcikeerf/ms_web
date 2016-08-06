@@ -5,7 +5,9 @@
 		<%= javascript_include_tag 'application', 'users', 'data-turbolinks-track' => true %>
 	<% end %>
 
-	<%= yield %>
+	<main>
+		<%= yield %>
+	</main>
 
 	<% append :footer do %>
 		<%= render 'shared/common_dialog' %>

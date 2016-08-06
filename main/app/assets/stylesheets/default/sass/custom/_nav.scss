@@ -47,13 +47,25 @@
         }
       }
       > button.zy-btn-user {
-        color: #212121;
+        font-size: 24px;
+        color: #727272;
         background: none;
         background-color: transparent;
         border: none;
         margin: $padding-lg 0;
         line-height: $navbar-height-base - (2 * $padding-lg) - (2 * $btn-padding-base-vertical);
         padding: $btn-padding-base-vertical $btn-padding-base-horizontal;
+        &:focus,
+        &.focus {
+          outline: none;
+        }
+        &:active,
+        &.active {
+          &:focus,
+          &.focus {
+            outline: none;
+          }
+        }
         &:active,
         &.active {
           box-shadow: none;
@@ -64,7 +76,7 @@
   .zy-navbar-nav {
   }
   .navbar-collapse {
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 767px) {
       position: absolute;
       right: 0;
       top: $navbar-height-base + 0.5px;
