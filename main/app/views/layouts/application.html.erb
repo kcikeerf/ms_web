@@ -17,7 +17,9 @@
       <%= render 'shared/top' %>
     <% end %>
     <%= render 'shared/user/login' %>
-    <%= yield %>
+    <main>
+      <%= yield %>
+    </main>
     <%= area :footer do %>
       <%= render 'shared/footer' %>
     <% end %>
