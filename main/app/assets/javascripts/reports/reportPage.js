@@ -235,39 +235,43 @@ var reportPage = {
 		},
 		/*获取诊断图的数据*/
 		getGradeDiagnoseData : function(obj){
+			console.log(obj);
 			return obj = {
 				knowledge : {
-					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff)),
+//					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff)),
+					xaxis : reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff),
 					yaxis : {
 						Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_median_percent))
 						},
-						med_avg_diff : reportPage.baseFn.getDiff(obj.knowledge_med_avg_diff)
+						med_avg_diff : reportPage.baseFn.getBarDiff(obj.knowledge_med_avg_diff)
 					},
 				},
 				skill : {
-					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.skill_med_avg_diff)),
+//					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.skill_med_avg_diff)),
+					xaxis : reportPage.baseFn.getKeys(obj.skill_med_avg_diff),
 					yaxis : {
 						Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_median_percent))
 						},
-						med_avg_diff : reportPage.baseFn.getDiff(obj.skill_med_avg_diff)
+						med_avg_diff : reportPage.baseFn.getBarDiff(obj.skill_med_avg_diff)
 					},
 					
 				},
 				ability : {
-					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.ability_med_avg_diff)),
+//					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.ability_med_avg_diff)),
+					xaxis : reportPage.baseFn.getKeys(obj.ability_med_avg_diff),
 					yaxis : {
 						Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_median_percent))
 						},
-						med_avg_diff : reportPage.baseFn.getDiff(obj.ability_med_avg_diff)
+						med_avg_diff : reportPage.baseFn.getBarDiff(obj.ability_med_avg_diff)
 					},
 				},
 				disperse : {
@@ -633,8 +637,8 @@ var reportPage = {
 					yaxis : {
 						all_line : reportPage.Class.getClassDiagnoseAllLine(obj.knowledge_all_lines),
 						diff : {
-							mid:reportPage.baseFn.getDiff(obj.knowledge_cls_mid_gra_avg_diff_line),
-							avg:reportPage.baseFn.getDiff(obj.knowledge_gra_cls_avg_diff_line)
+							mid:reportPage.baseFn.getBarDiff(obj.knowledge_cls_mid_gra_avg_diff_line),
+							avg:reportPage.baseFn.getBarDiff(obj.knowledge_gra_cls_avg_diff_line)
 						}
 					}
 				},
@@ -643,8 +647,8 @@ var reportPage = {
 					yaxis : {
 						all_line : reportPage.Class.getClassDiagnoseAllLine(obj.skill_all_lines),
 						diff : {
-							mid:reportPage.baseFn.getDiff(obj.skill_cls_mid_gra_avg_diff_line),
-							avg:reportPage.baseFn.getDiff(obj.skill_gra_cls_avg_diff_line)
+							mid:reportPage.baseFn.getBarDiff(obj.skill_cls_mid_gra_avg_diff_line),
+							avg:reportPage.baseFn.getBarDiff(obj.skill_gra_cls_avg_diff_line)
 						}
 					}
 				},
@@ -653,8 +657,8 @@ var reportPage = {
 					yaxis : {
 						all_line : reportPage.Class.getClassDiagnoseAllLine(obj.ability_all_lines),
 						diff : {
-							mid:reportPage.baseFn.getDiff(obj.ability_cls_mid_gra_avg_diff_line),
-							avg:reportPage.baseFn.getDiff(obj.ability_gra_cls_avg_diff_line)
+							mid:reportPage.baseFn.getBarDiff(obj.ability_cls_mid_gra_avg_diff_line),
+							avg:reportPage.baseFn.getBarDiff(obj.ability_gra_cls_avg_diff_line)
 						}
 					}
 				}
@@ -761,7 +765,10 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
 
 			$('#pupil-top-nav').html(pupilNavStr);
+			console.log(data.data);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
+			console.log(PupilDiagnoseObj.knowledge.diff.xaxis);
+			console.log(PupilDiagnoseObj.knowledge.diff.yaxis);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
 			var nodeArr_radar = ['pupil_knowledge_radar','pupil_skill_radar','pupil_ability_radar'];
 			var nodeArr_diff = ['pupil_knowledge_diff','pupil_skill_diff','pupil_ability_diff'];
@@ -796,7 +803,7 @@ var reportPage = {
 					},
 					diff : {
 						xaxis : reportPage.baseFn.getKeys(data.charts.knowledge_pup_gra_avg_diff_line),
-						yaxis :	reportPage.baseFn.getDiff(data.charts.knowledge_pup_gra_avg_diff_line),
+						yaxis :	reportPage.baseFn.getBarDiff(data.charts.knowledge_pup_gra_avg_diff_line),
 					}
 				},
 				skill : {
@@ -806,7 +813,7 @@ var reportPage = {
 					},
 					diff : {
 						xaxis : reportPage.baseFn.getKeys(data.charts.skill_pup_gra_avg_diff_line),
-						yaxis :	reportPage.baseFn.getDiff(data.charts.skill_pup_gra_avg_diff_line),
+						yaxis :	reportPage.baseFn.getBarDiff(data.charts.skill_pup_gra_avg_diff_line),
 					}
 				},
 				ability : {
@@ -816,7 +823,7 @@ var reportPage = {
 					},
 					diff : {
 						xaxis : reportPage.baseFn.getKeys(data.charts.ability_pup_gra_avg_diff_line),
-						yaxis :	reportPage.baseFn.getDiff(data.charts.ability_pup_gra_avg_diff_line),
+						yaxis :	reportPage.baseFn.getBarDiff(data.charts.ability_pup_gra_avg_diff_line),
 					}
 				}
 			};
@@ -1044,6 +1051,75 @@ var reportPage = {
 				failed: faildArr
 			}
 		},
+		getBarDiff: function(obj){
+			var arr = reportPage.baseFn.getValue(obj);
+			var len = arr.length;
+			var upArr = [];
+			var downArr = [];
+			for (var i = 0; i < len; i++) {
+				if (arr[i] >= 0) {
+                   upArr.push({
+                   	   value: arr[i],
+                   	   label: {
+                   	   	   normal:{
+                   	   	   	   position: 'top'
+                   	   	   }
+                   	   },
+                   	   itemStyle: {
+                   	   	   normal: {
+                   	           color: "#51b8c1"
+                   	       }
+                   	   }
+                   });
+                   downArr.push({
+                   	   value: 0,
+                   	   label: {
+                   	   	   normal:{
+                   	   	   	   show: false
+                   	   	   }
+                   	   },
+                   	   itemStyle: {
+                   	   	   normal: {
+                   	           //color: "#c90303"
+                   	           color: "#ffffff"
+                   	       }
+                   	   }
+                   });
+				} else if (arr[i] < 0) {
+                   upArr.push({
+                   	   value: 0,
+                   	   label: {
+                   	   	   normal:{
+                   	   	   	   show: false
+                   	   	   }
+                   	   },
+                   	   itemStyle: {
+                   	   	   normal: {
+                   	           //color: "#c90303"
+                   	           color: "#ffffff"
+                   	       }
+                   	   }
+                   });
+                   downArr.push({
+                   	   value: arr[i],
+                   	   label: {
+                   	   	   normal:{
+                   	   	   	   position: 'bottom'
+                   	   	   }
+                   	   },
+                   	   itemStyle: {
+                   	   	   normal: {
+                   	           color: "#c90303"
+                   	       }
+                   	   }
+                   });
+				};
+			};
+			return obj = {
+				up: upArr,
+				down: downArr
+			}
+		},
 		/*处理获取diff正负值*/
 		getDiff: function(obj) {
 			var arr = reportPage.baseFn.getValue(obj);
@@ -1151,7 +1227,7 @@ var reportPage = {
 		modifyKey: function(arr){
 			for(var i =0; i < arr.length; i++){
 				c_arr = arr[i].split("");
-				labelInterval = (c_arr.length > 7)? 2:1;
+				labelInterval = (c_arr.length > 10)? 2:1;
 				for(var j =0; j < c_arr.length; j++){
 					if(labelInterval == 1){
 					if(c_arr[j] == "（" || c_arr[j] == "("){
