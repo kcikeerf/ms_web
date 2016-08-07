@@ -178,10 +178,10 @@ var echartOption = {
 					legend: {
 						right: 0,
 						data: [{
-							name: '中平差值正值',
+							name: '中\n平\n差\n值\n正\n值',
 							icon: 'rect',
 						}, {
-							name: '中平差值负值',
+							name: '中\n平\n差\n值\n负\n值',
 							icon: 'rect',
 						}, ],
 						itemWidth: 6,
@@ -192,7 +192,7 @@ var echartOption = {
 					},
 					grid: {
 						left: '0',
-						right: '3%',
+						right: '30%',
 						bottom: '5%',
 						containLabel: true,
 					},
@@ -248,10 +248,11 @@ var echartOption = {
 						},
 					}],
 					series: [{
-						name: '中平差值正值',
-						type: 'line',
+						name: '中\n平\n差\n值\n正\n值',
+						type: 'bar',
+						barMaxWidth: 10,
 						stack: '百分比',
-						symbol: 'circle',
+						/*symbol: 'circle',
 						showAllSymbol: true,
 						symbolSize: 5,
 						lineStyle: {
@@ -259,7 +260,7 @@ var echartOption = {
 								width: 1
 							}
 						},
-						smooth: true,
+						smooth: true,*/
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -280,10 +281,11 @@ var echartOption = {
 						},
 						LegendHoverLink: true,
 					}, {
-						name: '中平差值负值',
-						type: 'line',
+						name: '中\n平\n差\n值\n负\n值',
+						type: 'bar',
+						barMaxWidth: 10,
 						stack: '百分比',
-						symbol: 'circle',
+						/*symbol: 'circle',
 						showSymbol: true,
 						showAllSymbol: true,
 						symbolSize: 0,
@@ -292,7 +294,7 @@ var echartOption = {
 								width: 0
 							}
 						},
-						smooth: true,
+						smooth: true,*/
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1112,13 +1114,13 @@ var echartOption = {
                   right:0,
                   data:[
                     {
-                      name:'班级与年级平均得分率差值正值',
+                      name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
                       icon:'rect',
                     },
                     {
-                      name:'班级与年级平均得分率差值负值',
+                      name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
                       icon:'rect',
-                    },
+                    }
                   ],
                   itemWidth:6,
                   itemHeight:6,
@@ -1126,8 +1128,8 @@ var echartOption = {
                   orient:'vertical'
                 },
                 grid: {
-                  left: '0',
-                  right: '5%',
+                  left: '5%',
+                  right: '30%',
                   bottom: '5%',
                   containLabel: true,
                 },
@@ -1156,15 +1158,44 @@ var echartOption = {
                   }
                 ],
                 series : [
+                  /*{
+                    name:'班级与年级平均得分率差值',
+                    type:'bar',
+                    barMaxWidth: 10,
+                    barCategoryGap: 30,
+                    //stack: '百分比',
+                    //symbol:'circle',
+                    //showSymbol:true,
+                    //showAllSymbol: true,
+                    //symbolSize:5,
+                    //lineStyle: {normal: {width:0}},
+                    areaStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                          offset: 0,
+                          color: '#51b8c1'
+                        }, {
+                          offset: 1,
+                          color: '#fcfcfc'
+                        }]),
+                        opacity:0.8,
+                      }},
+                    data:data.yaxis.diff.avg,
+                    itemStyle: {
+                      normal: {color:'#51b8c1'}
+                    },
+                    LegendHoverLink: true,
+                  }*/
                   {
-                    name:'班级与年级平均得分率差值正值',
-                    type:'line',
+                    name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1183,14 +1214,15 @@ var echartOption = {
                     LegendHoverLink: true,
                   },
                   {
-                    name:'班级与年级平均得分率差值负值',
-                    type:'line',
+                    name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1207,7 +1239,7 @@ var echartOption = {
                       normal: {color:'#c90303'}
                     },
                     LegendHoverLink: true,
-                  },
+                  }
                 ],
                 animation:false,
               };
@@ -1225,11 +1257,11 @@ var echartOption = {
                   right:0,
                   data:[
                     {
-                      name:'班级中位数得分率与年级平均差值正值',
+                      name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n正\n值',
                       icon:'rect',
                     },
                     {
-                      name:'班级中位数得分率与年级平均差值负值',
+                      name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n负\n值',
                       icon:'rect',
                     }
                   ],
@@ -1240,7 +1272,7 @@ var echartOption = {
                 },
                 grid: {
                   left: '0',
-                  right: '5%',
+                  right: '30%',
                   bottom: '5%',
                   containLabel: true,
                 },
@@ -1270,14 +1302,15 @@ var echartOption = {
                 ],
                 series : [
                   {
-                    name:'班级中位数得分率与年级平均差值正值',
-                    type:'line',
+                    name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n正\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1296,14 +1329,15 @@ var echartOption = {
                     LegendHoverLink: true,
                   },
                   {
-                    name:'班级中位数得分率与年级平均差值负值',
-                    type:'line',
+                    name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n负\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1593,7 +1627,7 @@ var echartOption = {
 		              itemHeight:8,
 		            },
 		            grid: {
-		              left: '5%',
+		              left: '10%',
 		              right: '20%',
 		              top:'30%',
 		              bottom: '15%',
@@ -1625,14 +1659,37 @@ var echartOption = {
 		              }
 		            ],
 		            series : [
+                       /*{
+		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值',
+		                type:'bar',
+		                //stack: '百分比',
+		                //symbol:'circle',
+		                //showAllSymbol:true,
+		                //symbolSize:8,
+		                //lineStyle: {normal: {width:0}},
+		                areaStyle: {
+		                  normal: {
+		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+		                      offset: 0,
+		                      color: '#51b8c1'
+		                    }, {
+		                      offset: 1,
+		                      color: '#fcfcfc'
+		                    }]),
+		                    opacity:0.5,
+		                  }},
+		                data: data.diff.yaxis,
+		                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
+		              }	*/            
 		              {
 		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
-		                type:'line',
+		                type:'bar',
+		                barMaxWidth: 10,
 		                stack: '百分比',
-		                symbol:'circle',
+		                /*symbol:'circle',
 		                showAllSymbol:true,
 		                symbolSize:8,
-		                lineStyle: {normal: {width:0}},
+		                lineStyle: {normal: {width:0}},*/
 		                areaStyle: {
 		                  normal: {
 		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1649,12 +1706,13 @@ var echartOption = {
 		              },
 		              {
 		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
-		                type:'line',
+		                type:'bar',
+		                barMaxWidth: 10,
 		                stack: '百分比',
-		                symbol:'circle',
+		                /*symbol:'circle',
 		                showAllSymbol:true,
 		                symbolSize:0,
-		                lineStyle: {normal: {width:0}},
+		                lineStyle: {normal: {width:0}},*/
 		                areaStyle: {
 		                  normal: {
 		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
