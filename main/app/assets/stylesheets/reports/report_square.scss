@@ -1,0 +1,132 @@
+@charset "utf-8";
+.zy-report-title {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+.zy-chart-container {
+	width: 100%;
+	height: 480px;
+}
+.dropdown_box{
+	width: $sidebar-width;
+	background: #15a892;
+	position: relative;
+	flex-shrink: 0;
+}
+.exam-name{
+	padding-left: 20px;
+	letter-spacing: 1.5px;
+}
+.classMenu{
+	padding: 15px 20px;
+	display: block;
+	font-size: 20px;
+	cursor: pointer;
+}
+.classMenu span{
+	color:#fff;
+}
+.classMenu small{
+	color: #fff;
+	float: right;
+}
+.dropdown_menu{
+	margin: 0;
+	padding: 0;
+	display:none;
+	position: absolute;
+	top: 0;
+	left: $sidebar-width;
+	margin-left: 0;
+	background: #19b8a0;
+	z-index: 100;
+	width: $sidebar-dropdown-width-one;
+	> li {
+		&.active {
+			background:#15a892;
+		}
+		a {
+			display: block;
+			color: #fff;
+			padding: 15px 20px;
+			span {
+				float: right;
+			}
+		}
+		ul.submit_menu {
+			-webkit-box-shadow: 3px 3px 5px #ccc;
+			-moz-box-shadow: 3px 3px 5px #ccc;
+			box-shadow: 3px 3px 5px #ccc;
+			background: #fff;
+			border-top: 1px solid #eee;
+			width: 400px;
+			display: none;
+			position: absolute;
+			left:  $sidebar-dropdown-width-one;
+			top: 0;
+			overflow: hidden;
+			padding: 12px;
+			.title {
+				font-size: 20px;
+				border-style: solid;
+				border-color: #15a892;
+				border-width: 0 0 0.5px 0;
+			}
+			.report_click_menu {
+				padding: 10px 0;
+				text-align: center;
+				width: 33%;
+				float: left;
+				&:hover {
+					color: #fff;
+					background-color: $color-main;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+}
+.grade-top-list{
+	height:60px;
+	line-height:60px;
+	border:1px solid #ccc;
+}
+.grade-top-list li{
+	float:left;
+	line-height:60px;
+}
+#knowledge_line1,#knowledge_line1{
+	width:500px;
+	height:400px;
+}
+/* 报告container */
+.report-content{
+	display: flex;
+}
+
+/* 报告左侧导航栏 */
+.zy-report-leftNav {
+	width: $sidebar-width;
+	flex-shrink: 0;
+}
+.zy-report-title {
+
+}
+.zy-report-subtitle {
+	border-left: 4px solid #15a892;
+	padding-left: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

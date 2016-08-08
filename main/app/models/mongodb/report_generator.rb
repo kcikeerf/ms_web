@@ -1730,6 +1730,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
+      report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
       report_h["basic"]["klass_count"] = klass_count || 0
       report_h["basic"]["pupil_number"]= target_grade.nil?? I18n.t("dict.unknown") : target_grade[:value][:pupil_number].to_i
       report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
@@ -1787,6 +1788,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
       report_h["basic"]["classroom"] = I18n.t("dict.#{item[:_id][:classroom]}")
+      report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
       report_h["basic"]["pupil_number"] = target_klass.nil?? I18n.t("dict.unknown") : target_klass[:value][:pupil_number].to_i
       report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")

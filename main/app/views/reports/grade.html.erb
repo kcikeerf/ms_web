@@ -48,15 +48,18 @@
 		</li>
 	</ul>
 </aside>
+
 <div id="myTabContent" class="tab-content">
 	<div class="report-nav-wrapper">
 		<nav id='grade-top-nav' class="reptort-top-nav"></nav>
 	</div>
+
 	<div class="tab-pane active" id="grade-diagnoseEchart">
 		<!--诊断图-->
+		<h3 class="zy-report-title">年级知识、技能、能力情况诊断图</h3>
 		<div class="container-fluid">
 			<div class="row">
-				<h3>知识</h3>
+				<h3 class="zy-report-subtitle">知识</h3>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 					<div id="knowledge_diagnose_left" class="zy-chart-container"></div>
 				</div>
@@ -65,7 +68,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<h3>知识</h3>
+				<h3 class="zy-report-subtitle">技能</h3>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 					<div id="skill_diagnose_left" class="zy-chart-container"></div>
 				</div>
@@ -74,7 +77,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<h3>知识</h3>
+				<h3 class="zy-report-subtitle">能力</h3>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 					<div id="ability_diagnose_left" class="zy-chart-container"></div>
 				</div>
@@ -82,130 +85,91 @@
 					<div id="ability_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
-		</div>
-
-		<div class="wrapper-md">
-			<div class="grade-diagnosis">
-				<dl>
-					<dt id="aaaa">知识</dt>
-					<dd class="clearfix">
-						<div id="knowledge_diagnose_left" class="chart pull-left"></div>
-						<div id="knowledge_diagnose_right" class="chart pull-right"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>技能</dt>
-					<dd class="clearfix">
-						<div id="skill_diagnose_left" class="chart pull-left"></div>
-						<div id="skill_diagnose_right" class="chart pull-right"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>能力</dt>
-					<dd class="clearfix">
-						<div id="ability_diagnose_left" class="chart pull-left"></div>
-						<div id="ability_diagnose_right" class="chart pull-right"></div>
-					</dd>
-				</dl>
-			</div>
-		</div>
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">年级知识、技能、能力分型图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="typing">
-				<canvas id="parting-chart" width="800" height="450"></canvas>
+			<div class="row">
+				<h3>年级知识、技能、能力分型图</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="parting-chart" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane" id="grade-NumScale">
 		<!--年级各分数段人数比例-->
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">年级知识、技能、能力各分数段人数比例</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="scale">
-				<dl>
-					<dt>知识</dt>
-					<dd>
-						<div id="KnowledgeScale" style="width:750px;height:450px"></div>
-					</dd>
-				</dl>
-
-				<dl>
-					<dt>技能</dt>
-					<dd>
-						<div id="SkillScale" style="width:750px;height:300px"></div>
-					</dd>
-				</dl>
-
-				<dl>
-					<dt>能力</dt>
-					<dd>
-						<div id="AbilityScale" style="width:750px;height:300px"></div>
-					</dd>
-				</dl>
-
+		<h3 class="zy-report-title">年级知识、技能、能力各分数段人数比例</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="KnowledgeScale" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="SkillScale" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="AbilityScale" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-FourSections">
 		<!--四分位区间-->
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">年级四分位区间学生知识、技能、能力表现情况</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-interval">
-				<dl>
-					<dt>百分位为（[75,100]区间（上四分位）学生的各项指标情况</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Four_L75" class="chart"></div>
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Four_L75" class="chart center"></div>
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Four_L75" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>百分位为（50,75]区间（中上四分位）学生的各项指标情况</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Four_L50" class="chart"></div>
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Four_L50" class="chart center"></div>
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Four_L50" class="chart"></div>
-					</dd>
-				</dl>
-
-				<dl>
-					<dt>百分位为（25,50]区间（中下四分位）学生的各项指标情况</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Four_L25" class="chart"></div>
-
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Four_L25" class="chart center"></div>
-
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Four_L25" class="chart"></div>
-					</dd>
-				</dl>
-
-				<dl>
-					<dt>百分位为[0,25]区间（下四分位）学生的各项指标情况</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Four_L0" class="chart"></div>
-
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Four_L0" class="chart center"></div>
-
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Four_L0" class="chart"></div>
-					</dd>
-				</dl>
+		<h3 class="zy-report-title">年级四分位区间学生知识、技能、能力表现情况</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">百分位为（[75,100]区间（上四分位）学生的各项指标情况</h3>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="knowledge_Four_L75" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="skill_Four_L75" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="ability_Four_L75" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">百分位为（50,75]区间（中上四分位）学生的各项指标情况	</h3>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="knowledge_Four_L50" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="skill_Four_L50" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="ability_Four_L50" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">百分位为（25,50]区间（中下四分位）学生的各项指标情况</h3>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="knowledge_Four_L25" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="skill_Four_L25" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="ability_Four_L25" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<h3>百分位为[0,25]区间（下四分位）学生的各项指标情况</h3>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="knowledge_Four_L0" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="skill_Four_L0" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<div id="ability_Four_L0" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
