@@ -949,8 +949,8 @@ var echartOption = {
                   trigger: 'item',
                 },
                 legend: {
-                  top:'0',
-                  right:'3%',
+                  top: 0,
+                  right: 10,
                   width:'220',
                   itemWidth: 6,
                   itemHeight: 6,
@@ -958,10 +958,9 @@ var echartOption = {
                   textStyle: {fontSize:10},
                 },
                 grid: {
-                  left: '0',
-                  top:'25%',
-                  right: '5%',
-                  bottom: '5%',
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
                   containLabel: true,
                 },
                 xAxis : [
@@ -1091,14 +1090,15 @@ var echartOption = {
                   trigger: 'item'
                 },
                 legend: {
-                  right:0,
+				  top: 10,
+                  right: 10,
                   data:[
                     {
-                      name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+                      name:'班级与年级平均得分率差值正值',
                       icon:'rect',
                     },
                     {
-                      name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+                      name:'班级与年级平均得分率差值负值',
                       icon:'rect',
                     }
                   ],
@@ -1108,9 +1108,9 @@ var echartOption = {
                   orient:'vertical'
                 },
                 grid: {
-                  left: '5%',
-                  right: '30%',
-                  bottom: '5%',
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
                   containLabel: true,
                 },
                 xAxis : [
@@ -1145,54 +1145,11 @@ var echartOption = {
                   }
                 ],
                 series : [
-                  /*{
-                    name:'班级与年级平均得分率差值',
-                    type:'bar',
-                    barMaxWidth: 10,
-                    barCategoryGap: 30,
-                    //stack: '百分比',
-                    //symbol:'circle',
-                    //showSymbol:true,
-                    //showAllSymbol: true,
-                    //symbolSize:5,
-                    //lineStyle: {normal: {width:0}},
-                    areaStyle: {
-                      normal: {
-                        color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
-                          offset: 0,
-                          color: '#51b8c1'
-                        }, {
-                          offset: 1,
-                          color: '#fcfcfc'
-                        }]),
-                        opacity:0.8,
-                      }},
-                    data:data.yaxis.diff.avg,
-                    itemStyle: {
-                      normal: {color:'#51b8c1'}
-                    },
-                    LegendHoverLink: true,
-                  }*/
                   {
-                    name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+                    name:'班级与年级平均得分率差值正值',
                     type:'bar',
                     barMaxWidth: 10,
                     stack: '百分比',
-					/*label: {
-						normal: {
-							show: true,
-							position: 'top',
-							textStyle: {
-								color: '#111'
-							}
-						}
-					},*/
-					//label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
-                    /*symbol:'circle',
-                    showSymbol:true,
-                    showAllSymbol: true,
-                    symbolSize:5,
-                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1211,25 +1168,10 @@ var echartOption = {
                     LegendHoverLink: true,
                   },
                   {
-                    name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+                    name:'班级与年级平均得分率差值负值',
                     type:'bar',
                     barMaxWidth: 10,
                     stack: '百分比',
-					/*label: {
-						normal: {
-							show: true,
-							position: 'top',
-							textStyle: {
-								color: '#111'
-							}
-						}
-					},*/
-					//label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
-                    /*symbol:'circle',
-                    showSymbol:true,
-                    showAllSymbol: true,
-                    symbolSize:5,
-                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1261,14 +1203,15 @@ var echartOption = {
                   trigger: 'item'
                 },
                 legend: {
-                  right:0,
+				  top: 10,
+                  right: 10,
                   data:[
                     {
-                      name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n正\n值',
+                      name:'班级中位数得分率与年级平均差值正值',
                       icon:'rect',
                     },
                     {
-                      name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n负\n值',
+                      name:'班级中位数得分率与年级平均差值负值',
                       icon:'rect',
                     }
                   ],
@@ -1278,9 +1221,9 @@ var echartOption = {
                   orient:'vertical'
                 },
                 grid: {
-                  left: '0',
-                  right: '30%',
-                  bottom: '5%',
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
                   containLabel: true,
                 },
                 xAxis : [
@@ -1313,7 +1256,7 @@ var echartOption = {
                 ],
                 series : [
                   {
-                    name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n正\n值',
+                    name:'班级中位数得分率与年级平均差值正值',
                     type:'bar',
                     barMaxWidth: 10,
                     stack: '百分比',
@@ -1349,7 +1292,7 @@ var echartOption = {
                     LegendHoverLink: true,
                   },
                   {
-                    name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n负\n值',
+                    name:'班级中位数得分率与年级平均差值负值',
                     type:'bar',
                     barMaxWidth: 10,
                     stack: '百分比',
@@ -1640,15 +1583,16 @@ var echartOption = {
 		              trigger: 'item'
 		            },
 		            legend: {
-		              right: '0%',
+					  top: 10,
+		              right: 10,
 		              //orient: 'vertical',
 		              data:[
 		                {
-		                  name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+		                  name:'个人与年级平均得分率差值正值',
 		                  icon:'rect',
 		                },
 		                {
-		                  name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+		                  name:'个人与年级平均得分率差值负值',
 		                  icon:'rect',
 		                }
 		              ],
@@ -1656,10 +1600,9 @@ var echartOption = {
 		              itemHeight:8,
 		            },
 		            grid: {
-		              left: '10%',
-		              right: '15%',
-		              top:'30%',
-		              bottom: '15%',
+		              left: 10,
+		              right: 10,
+		              bottom: 10,
 		            },
 		            animation:false,
 		            xAxis : [
@@ -1693,7 +1636,7 @@ var echartOption = {
 		            ],
 		            series : [
 		              {
-		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+		                name:'个人与年级平均得分率差值正值',
 		                type:'bar',
 		                barMaxWidth: 10,
 		                stack: '百分比',
@@ -1712,7 +1655,7 @@ var echartOption = {
 		                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
 		              },
 		              {
-		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+		                name:'个人与年级平均得分率差值负值',
 		                type:'bar',
 		                barMaxWidth: 10,
 		                stack: '百分比',
