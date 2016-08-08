@@ -5,6 +5,7 @@ var reportPage = {
 	Gradedata : null,
 	ClassData : null,
 	PupilData : null,
+	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 	init: function(){
 		//给左上角导航添加事件
@@ -13,7 +14,6 @@ var reportPage = {
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
 			var reportName = $(this).attr('report_name');
-			console.info(reportName);
 			$('#reportName').html(reportName);
             if(!reportId){
                 return false;
@@ -37,16 +37,438 @@ var reportPage = {
 		/*默认显示*/
 		$('#report_menus .report_click_menu:first').trigger('click');
 	},
+	bindEvent: function(){
+		/*顶部导航*/
+		$('.dropdown_box').hover(function() {
+			$('.dropdown_menu>li>ul').attr('class', 'submit_menu');
+			$('.dropdown_menu').show();
+			$('.dropdown_menu>li').on('mouseover', function() {
+				$(this).addClass('active').siblings('li').removeClass('active');
+				$(this).children('ul').show();
+				$(this).siblings('li').children('ul').hide();
+				var screenHeight = Math.floor($(window).height());
+				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height() - $(document).scrollTop());
+				if (bodyHeight > screenHeight) {
+					$(this).children('ul').attr('class', 'active');
+				}
+			});
+		}, function() {
+			$('.dropdown_menu').hide();
+			$('.dropdown_menu>li>ul').hide();
+			$('.dropdown_menu>li').removeClass('active');
+		});
+		/*
+		$(document).on('click','#tab-menu li[data-id]',function(event){
+
+			$select = $(this).attr('data-id');
+			$('#myTabContent div.tab-pane').hide();
+			$('#'+$select+'').fadeIn();
+			$('#tab-menu li[data-id]').each(function(){
+				$(this).removeClass('active');
+			})
+			$(this).addClass('active');
+		});
+		*/
+		$(document).on('click','#xialatab',function(event){
+			var $this = $(this).children('ul');
+			if($this.is(':hidden')){
+				$this.slideDown();
+			}else{
+				$this.slideUp();
+			}
+		});
+		$(document).on('show.bs.collapse','.panel-collapse',function(){
+			$(this).prev().removeClass('collapse-close');
+			$(this).prev().addClass('collapse-open');
+		});
+		$(document).on('hide.bs.collapse','.panel-collapse',function(){
+			$(this).prev().removeClass('collapse-open');
+			$(this).prev().addClass('collapse-close');
+		});
+	},
+	/*基础方法*/
+	baseFn: {
+		getReportAjax: function(type, url, params){
+			$.ajax({
+				url: url,
+				type: "GET",
+				data: params,
+				dataType: "json",
+				success: function(data){
+					$('#reportContent')[0].style = "position:relative;display:flex;"
+					//$('#reportContent')[0].style = "display: block;"
+					if(type=="grade"){
+						reportPage.Grade.createReport(data);
+					} else if(type=="klass"){
+						reportPage.Class.createReport(data);
+					} else if(type=="pupil"){
+						reportPage.Pupil.createReport(data);
+					}
+				},
+				error: function(data){
+					$('#reportContent').html(data.responseJSON.message);
+					$('#reportContent')[0].style = "position:relative;display: flex;"
+					//$('#reportContent')[0].style = "display: block;"
+				}
+			});
+		},
+		/*答题情况*/
+		getAnswerCaseTable : function(data){
+			if(data != null){
+				var qid = reportPage.baseFn.getArrayKeysNoModify(data);
+				var correctRatio = reportPage.baseFn.getArrayValue(data);
+				var str = '';
+				for(var i = 0; i < qid.length ; i++){
+					str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i]+'</td></tr>';
+				};
+				return str;
+			}else{
+				return '';
+			};
+		},
+		/*处理数据表(type是班级还是个人)*/
+		getTableStr: function(obj, type) {
+			var allStr = '';
+			//创建一级指标table ------ knowledge;
+			var oneArrKey = reportPage.baseFn.getKeysNoModify(obj);
+			var oneArrValue = reportPage.baseFn.getValue(obj)
+			var one_len = oneArrKey.length;
+			for (var i = 0; i < one_len; i++) {
+				var oneValueStr = '';
+				var twoAllStr = '';
+				//取得一级指标的键名;
+				one_level_name = oneArrKey[i];
+				var oneNameStr = '<td class="one-level">' + one_level_name + '</td>';
+				//取得一级指标的键值对value；
+				var oneValue = oneArrValue[i].value;
+				var oneValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(oneValue) : reportPage.Pupil.creatPuilValueArr(oneValue);
+				//插入具体数据;
+				for (var k = 0; k < oneValueArr.length; k++) {
+					var iNum = oneValueArr[k];
+					if(iNum < 0 && iNum > -20){
+						oneValueStr += '<td class="one-level-content one-level-wrong wrong">' + iNum + '</td>';
+					}else if(iNum < -20){
+						oneValueStr += '<td class="one-level-content one-level-wrong wrong more-wrong">' + iNum + '</td>';
+					}else{
+						oneValueStr += '<td class="one-level-content">' + iNum + '</td>';
+					};
+				};
+				var oneAllStr = '<tr>' + oneNameStr + oneValueStr + '</tr>';
+				//创建二级指标表格数据
+				if (oneArrValue[i].items && oneArrValue[i].items != null) {
+					var two_len = reportPage.baseFn.getKeysNoModify(oneArrValue[i].items).length;
+					for (var j = 0; j < two_len; j++) {
+						var twoNameStr = '<td>' + reportPage.baseFn.getKeysNoModify(oneArrValue[i].items)[j] + '</td>';
+						var twoValueStr = '';
+						var twoArrValue = reportPage.baseFn.getValue(oneArrValue[i].items)[j].value;
+						var twoValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(twoArrValue) : reportPage.Pupil.creatPuilValueArr(twoArrValue);
+						for (var g = 0; g <twoValueArr.length ; g++) {
+							var iNum = twoValueArr[g];
+							if(iNum < 0 && iNum > -20){
+								twoValueStr += '<td class="wrong">' + iNum + '</td>';
+							}else if(iNum < -20){
+								twoValueStr += '<td class="wrong more-wrong">' + iNum + '</td>';
+							}else{
+								twoValueStr += '<td>' + iNum + '</td>';
+							};
+						};
+						twoAllStr += '<tr>' + twoNameStr + twoValueStr + '</tr>';
+					}
+				} else {
+					return;
+				}
+				allStr += oneAllStr + twoAllStr;
+			}
+			return allStr;
+		},
+		/*处理获取scale图表数据*/
+		getScale : function(obj) {
+			var goodArr = [],
+				faildArr = [],
+				excellentArr = [];
+			for (var i = 0; i < obj.length; i++) {
+				excellentArr.push({
+					name: '(得分率 ≥ 85)',
+					value: obj[i].excellent_pupil_percent,
+					yAxisIndex: i,
+					itemStyle: {
+						normal: {
+							barBorderRadius: [20, 0, 0, 20],
+							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+								offset: 0,
+								color: '#086a8e'
+							}, {
+								offset: 1,
+								color: '#65026b'
+							}])
+						}
+					},
+				});
+				goodArr.push({
+					name: '( 60 ≤ 得分率 < 85)',
+					value: obj[i].good_pupil_percent,
+					yAxisIndex: i,
+					itemStyle: {
+						normal: {
+							barBorderRadius: 0,
+							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+								offset: 0,
+								color: '#71ecd0'
+							}, {
+								offset: 1,
+								color: '#13ab9b'
+							}])
+						}
+					},
+				});
+				faildArr.push({
+					name: '(得分率 < 60)',
+					value: obj[i].failed_pupil_percent,
+					itemStyle: {
+						normal: {
+							barBorderRadius: [0, 20, 20, 0],
+							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+								offset: 0,
+								color: '#fa8471'
+							}, {
+								offset: 1,
+								color: '#f6f1c5'
+							}])
+						}
+					},
+				});
+			}
+			return obj = {
+				excellent: excellentArr,
+				good: goodArr,
+				failed: faildArr
+			}
+		},
+		getBarDiff: function(obj){
+			var arr = reportPage.baseFn.getValue(obj);
+			var len = arr.length;
+			var upArr = [];
+			var downArr = [];
+			for (var i = 0; i < len; i++) {
+				if (arr[i] >= 0) {
+					upArr.push({
+						value: arr[i],
+						label: {
+							normal:{
+								position: 'top'
+							}
+						},
+						itemStyle: {
+							normal: {
+								color: reportPage.defaultColor
+							}
+						}
+					});
+					downArr.push({
+						value: 0,
+						label: {
+							normal:{
+								show: false
+							}
+						},
+						itemStyle: {
+							normal: {
+								//color: "#c90303"
+								color: "#ffffff"
+							}
+						}
+					});
+				} else if (arr[i] < 0) {
+					upArr.push({
+						value: 0,
+						label: {
+							normal:{
+								show: false
+							}
+						},
+						itemStyle: {
+							normal: {
+								//color: "#c90303"
+								color: "#ffffff"
+							}
+						}
+					});
+					downArr.push({
+						value: arr[i],
+						label: {
+							normal:{
+								position: 'bottom'
+							}
+						},
+						itemStyle: {
+							normal: {
+								color: "#c90303"
+							}
+						}
+					});
+				};
+			};
+			return obj = {
+				up: upArr,
+				down: downArr
+			}
+		},
+		/*处理获取diff正负值*/
+		getDiff: function(obj) {
+			var arr = reportPage.baseFn.getValue(obj);
+			var len = arr.length;
+			var upArr = [];
+			var downArr = [];
+			for (var i = 0; i < len; i++) {
+				if (arr[i] >= 0) {
+					upArr.push({
+						value: arr[i],
+						symbolSize: 5
+					});
+					downArr.push({
+						value: 0,
+						symbolSize: 0
+					});
+				} else if (arr[i] < 0) {
+					downArr.push({
+						value: arr[i],
+						symbolSize: 5
+					});
+					upArr.push({
+						value: 0,
+						symbolSize: 0
+					});
+				};
+			};
+			reportPage.baseFn.pushArr(upArr);
+			reportPage.baseFn.pushArr(downArr);
+			return obj = {
+				up: upArr,
+				down: downArr
+			}
+		},
+		pushArr: function(obj) {
+			if (Object.prototype.toString.call(obj[0]) == "[object String]") {
+				obj.push('');
+				obj.unshift('');
+			} else {
+				obj.push({
+					value: 0,
+					symbolSize: 0
+				});
+				obj.unshift({
+					value: 0,
+					symbolSize: 0
+				});
+			};
+			return obj;
+		},
+		/*获取对象的key数组*/
+		getKeys: function(obj) {
+			if(obj){
+				//return Object.keys(obj);
+				return reportPage.baseFn.modifyKey($.map(Object.keys(obj), function(value, index) {
+					return [value];
+				}));
+			}else{
+				return [];
+			}
+		},
+		/*获取对象的value数组*/
+		getValue: function(obj) {
+			return $.map(obj, function(value, index) {
+				return [value];
+			});
+		},
+		/*获取答对题的key数组*/
+		getArrayKeys: function(obj) {
+			if(obj){
+				return reportPage.baseFn.modifyKey($.map(obj, function(value, index) {
+					return [value[0]];
+				}));
+			}else{
+				return [];
+			}
+		},
+		/*获取答对题的value数组*/
+		getArrayValue: function(obj) {
+			return $.map(obj, function(value, index) {
+				return [value[1]];
+			});
+		},
+		getBarValue: function(obj){
+			var arr = reportPage.baseFn.getValue(obj);
+			var len = arr.length;
+			var result = [];
+			for (var i = 0; i < len; i++) {
+				result.push({
+					value: arr[i],
+					label: {
+						normal:{
+							position: 'top'
+						}
+					},
+					itemStyle: {
+						normal: {
+							color: reportPage.defaultColor
+						}
+					}
+				});
+			};
+			return result;
+		},
+		/*获取对象的key数组*/
+		getKeysNoModify: function(obj) {
+			if(obj){
+				//return Object.keys(obj);
+				return $.map(Object.keys(obj), function(value, index) {
+					return [value];
+				});
+			}else{
+				return [];
+			}
+		},
+		/*获取答对题的key数组*/
+		getArrayKeysNoModify: function(obj) {
+			if(obj){
+				return $.map(obj, function(value, index) {
+					return [value[0]];
+				});
+			}else{
+				return [];
+			}
+		},
+		modifyKey: function(arr){
+			for(var i =0; i < arr.length; i++){
+				c_arr = arr[i].split("");
+				labelInterval = (c_arr.length > 10)? 2:1;
+				for(var j =0; j < c_arr.length; j++){
+					if(labelInterval == 1){
+						if(c_arr[j] == "（" || c_arr[j] == "("){
+							c_arr[j] = "︵";
+						} else if(c_arr[j] == "）" || c_arr[j] == ")"){
+							c_arr[j] = "︶";
+						}}
+					if((j+1)%labelInterval == 0 ){
+						c_arr[j]+= "\n";
+					}
+				}
+				arr[i] = c_arr.join("");
+			}
+			return arr;
+		}
+	},
 	/*处理年级数据*/
 	Grade: {
 		createReport : function(data){
 			//设置年级表头；
 			var basicData = data.data.basic;
-			var gradeNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			var gradeNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级人数</b>：<span>'+basicData.pupil_number
-			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>'+basicData.pupil_number
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
+			    //+'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
 			$('#grade-top-nav').html(gradeNavStr);
@@ -66,6 +488,13 @@ var reportPage = {
 
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
+				$('#myTabContent div.tab-pane').hide();
+				$('#'+$dataId+'').fadeIn();
+				$('#tab-menu li[data-id]').each(function(){
+					$(this).removeClass('active');
+				})
+				$(this).addClass('active');
+
 				if($dataId == 'grade-NumScale'){
 					//创建人数比例图
 					var NumScaleObj = reportPage.Grade.getGradeNumScaleData(data.data.each_level_number);
@@ -205,9 +634,9 @@ var reportPage = {
 		},
 		
 		handleNormTable : function(data){
-			var classArr = reportPage.baseFn.getArrayKeys(data);
+			var classArr = reportPage.baseFn.getArrayKeysNoModify(data);
 			var classValue = reportPage.baseFn.getArrayValue(data);
-			var normArr = reportPage.baseFn.getKeys(reportPage.baseFn.getArrayValue(data)[0]);
+			var normArr = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.getArrayValue(data)[0]);
 			var thStr = '<td class="grade-titlt">班级</td>';
 			for(var i = 0 ; i < normArr.length ; i++){
 				thStr += '<td>'+normArr[i]+'</td>';
@@ -237,39 +666,58 @@ var reportPage = {
 		},
 		/*获取诊断图的数据*/
 		getGradeDiagnoseData : function(obj){
+			console.log(obj);
 			return obj = {
 				knowledge : {
-					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff)),
+//					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff)),
+					xaxis : reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff),
 					yaxis : {
-						Alllines : {
+						/*Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_median_percent))
+						},*/
+						Alllines : {
+							grade_average_percent: reportPage.baseFn.getValue(obj.knowledge_3lines.grade_average_percent),
+							grade_diff_degree: reportPage.baseFn.getValue(obj.knowledge_3lines.grade_diff_degree),
+							grade_median_percent: reportPage.baseFn.getValue(obj.knowledge_3lines.grade_median_percent)
 						},
-						med_avg_diff : reportPage.baseFn.getDiff(obj.knowledge_med_avg_diff)
+						med_avg_diff : reportPage.baseFn.getBarDiff(obj.knowledge_med_avg_diff)
 					},
 				},
 				skill : {
-					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.skill_med_avg_diff)),
+//					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.skill_med_avg_diff)),
+					xaxis : reportPage.baseFn.getKeys(obj.skill_med_avg_diff),
 					yaxis : {
-						Alllines : {
+/*						Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_median_percent))
+						},*/
+						Alllines : {
+							grade_average_percent:reportPage.baseFn.getValue(obj.skill_3lines.grade_average_percent),
+							grade_diff_degree:reportPage.baseFn.getValue(obj.skill_3lines.grade_diff_degree),
+							grade_median_percent:reportPage.baseFn.getValue(obj.skill_3lines.grade_median_percent)
 						},
-						med_avg_diff : reportPage.baseFn.getDiff(obj.skill_med_avg_diff)
+						med_avg_diff : reportPage.baseFn.getBarDiff(obj.skill_med_avg_diff)
 					},
 					
 				},
 				ability : {
-					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.ability_med_avg_diff)),
+//					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.ability_med_avg_diff)),
+					xaxis : reportPage.baseFn.getKeys(obj.ability_med_avg_diff),
 					yaxis : {
-						Alllines : {
+						/*Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_median_percent))
+						},*/
+						Alllines : {
+							grade_average_percent: reportPage.baseFn.getValue(obj.ability_3lines.grade_average_percent),
+							grade_diff_degree: reportPage.baseFn.getValue(obj.ability_3lines.grade_diff_degree),
+							grade_median_percent: reportPage.baseFn.getValue(obj.ability_3lines.grade_median_percent)
 						},
-						med_avg_diff : reportPage.baseFn.getDiff(obj.ability_med_avg_diff)
+						med_avg_diff : reportPage.baseFn.getBarDiff(obj.ability_med_avg_diff)
 					},
 				},
 				disperse : {
@@ -282,15 +730,15 @@ var reportPage = {
 		getGradeNumScaleData : function(obj){
 			return obj = {
 				knowledge :{
-					yaxis : reportPage.baseFn.getKeys(obj.grade_knowledge),
+					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_knowledge),
 					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_knowledge))
 				},
 				skill : {
-					yaxis : reportPage.baseFn.getKeys(obj.grade_skill),
+					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_skill),
 					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_skill))
 				},
 				ability : {
-					yaxis : reportPage.baseFn.getKeys(obj.grade_ability),
+					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_ability),
 					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_ability))
 				},
 			}
@@ -300,55 +748,55 @@ var reportPage = {
 				knowledge : {
 					le0 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level0.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level0.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level0.knowledge),
 					},
 					le25 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level25.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level25.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level25.knowledge),
 					},
 					le50 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level50.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level50.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level50.knowledge),
 					},
 					le75 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level75.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level75.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level75.knowledge),
 					}
 				},
 				skill : {
 					le0 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level0.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level0.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level0.skill),
 					},
 					le25 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level25.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level25.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level25.skill),
 					},
 					le50 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level50.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level50.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level50.skill),
 					},
 					le75 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level75.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level75.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level75.skill),
 					}
 				},
 				ability : {
 					le0 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level0.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level0.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level0.ability),
 					},
 					le25 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level25.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level25.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level25.ability),
 					},
 					le50 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level50.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level50.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level50.ability),
 					},
 					le75 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level75.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level75.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level75.ability),
 					}
 				}
 			}
@@ -370,7 +818,7 @@ var reportPage = {
 		},
 		//分型图
 		handleDisperse : function(data){
-			var keysArr = reportPage.baseFn.getKeys(data);
+			var keysArr = reportPage.baseFn.getKeysNoModify(data);
 			var valsArr = reportPage.baseFn.getValue(data);
 			var arr = [];
 			var percentArr = [];
@@ -559,12 +1007,13 @@ var reportPage = {
 	Class: {
 		createReport : function(data){
 			var basicData = data.data.basic;
-			var classNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			var classNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.pupil_number
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
-			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
-			    +'</span>&nbsp;&nbsp;<b>科目老师</b>：<span>'+basicData.subject_teacher
+/*			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
+			    +'</span>&nbsp;&nbsp;<b>学科老师</b>：<span>'+basicData.subject_teacher*/
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>'+basicData.quiz_date
 			    +'</span>';
 			$('#class-top-nav').html(classNavStr);
@@ -583,12 +1032,22 @@ var reportPage = {
 			};
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
+				$('#myTabContent div.tab-pane').hide();
+				$('#'+$dataId+'').fadeIn();
+				$('#tab-menu li[data-id]').each(function(){
+					$(this).removeClass('active');
+				})
+				$(this).addClass('active');
 				if($dataId == 'class-NumScale'){
 					var classScaleObj = reportPage.Class.getClassScaleNumData(data.data.each_level_number);
 					var objArr = [classScaleObj.dimesions,classScaleObj.class_knowledge,classScaleObj.class_skill,classScaleObj.class_ability];
 					var nodeArr = ['scale_dimesions','scale_knowledge','scale_skill','scale_ability'];
 					for(var i = 0 ; i　< objArr.length ; i++){
 						var option = echartOption.getOption.Class.setClassScaleNumOption(objArr[i]);
+						if(i > 0){
+							option.legend = { show: false};
+							option.grid.right = '3%';
+						}
 						echartOption.createEchart(option,nodeArr[i]);
 					};
 				}else if($dataId == 'table-data-knowledge'){
@@ -631,8 +1090,8 @@ var reportPage = {
 					yaxis : {
 						all_line : reportPage.Class.getClassDiagnoseAllLine(obj.knowledge_all_lines),
 						diff : {
-							mid:reportPage.baseFn.getDiff(obj.knowledge_cls_mid_gra_avg_diff_line),
-							avg:reportPage.baseFn.getDiff(obj.knowledge_gra_cls_avg_diff_line)
+							mid:reportPage.baseFn.getBarDiff(obj.knowledge_cls_mid_gra_avg_diff_line),
+							avg:reportPage.baseFn.getBarDiff(obj.knowledge_gra_cls_avg_diff_line)
 						}
 					}
 				},
@@ -641,8 +1100,8 @@ var reportPage = {
 					yaxis : {
 						all_line : reportPage.Class.getClassDiagnoseAllLine(obj.skill_all_lines),
 						diff : {
-							mid:reportPage.baseFn.getDiff(obj.skill_cls_mid_gra_avg_diff_line),
-							avg:reportPage.baseFn.getDiff(obj.skill_gra_cls_avg_diff_line)
+							mid:reportPage.baseFn.getBarDiff(obj.skill_cls_mid_gra_avg_diff_line),
+							avg:reportPage.baseFn.getBarDiff(obj.skill_gra_cls_avg_diff_line)
 						}
 					}
 				},
@@ -651,8 +1110,8 @@ var reportPage = {
 					yaxis : {
 						all_line : reportPage.Class.getClassDiagnoseAllLine(obj.ability_all_lines),
 						diff : {
-							mid:reportPage.baseFn.getDiff(obj.ability_cls_mid_gra_avg_diff_line),
-							avg:reportPage.baseFn.getDiff(obj.ability_gra_cls_avg_diff_line)
+							mid:reportPage.baseFn.getBarDiff(obj.ability_cls_mid_gra_avg_diff_line),
+							avg:reportPage.baseFn.getBarDiff(obj.ability_gra_cls_avg_diff_line)
 						}
 					}
 				}
@@ -749,7 +1208,7 @@ var reportPage = {
 	Pupil: {
 		createReport : function(data){
 			var basicData = data.data.basic;
-			var pupilNavStr = '<b>学校名称</b>：<span>'+basicData.school
+			var pupilNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
@@ -759,7 +1218,10 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
 
 			$('#pupil-top-nav').html(pupilNavStr);
+			console.log(data.data);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
+			console.log(PupilDiagnoseObj.knowledge.diff.xaxis);
+			console.log(PupilDiagnoseObj.knowledge.diff.yaxis);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
 			var nodeArr_radar = ['pupil_knowledge_radar','pupil_skill_radar','pupil_ability_radar'];
 			var nodeArr_diff = ['pupil_knowledge_diff','pupil_skill_diff','pupil_ability_diff'];
@@ -771,6 +1233,12 @@ var reportPage = {
 			}
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
+				$('#myTabContent div.tab-pane').hide();
+				$('#'+$dataId+'').fadeIn();
+				$('#tab-menu li[data-id]').each(function(){
+					$(this).removeClass('active');
+				})
+				$(this).addClass('active');
 				if($dataId == 'improve-sugg'){
 					$('#improve-sugg').html(data.data.quiz_comment);
 				}else if($dataId == 'table-data-knowledge'){
@@ -794,7 +1262,7 @@ var reportPage = {
 					},
 					diff : {
 						xaxis : reportPage.baseFn.getKeys(data.charts.knowledge_pup_gra_avg_diff_line),
-						yaxis :	reportPage.baseFn.getDiff(data.charts.knowledge_pup_gra_avg_diff_line),
+						yaxis :	reportPage.baseFn.getBarDiff(data.charts.knowledge_pup_gra_avg_diff_line),
 					}
 				},
 				skill : {
@@ -804,7 +1272,7 @@ var reportPage = {
 					},
 					diff : {
 						xaxis : reportPage.baseFn.getKeys(data.charts.skill_pup_gra_avg_diff_line),
-						yaxis :	reportPage.baseFn.getDiff(data.charts.skill_pup_gra_avg_diff_line),
+						yaxis :	reportPage.baseFn.getBarDiff(data.charts.skill_pup_gra_avg_diff_line),
 					}
 				},
 				ability : {
@@ -814,7 +1282,7 @@ var reportPage = {
 					},
 					diff : {
 						xaxis : reportPage.baseFn.getKeys(data.charts.ability_pup_gra_avg_diff_line),
-						yaxis :	reportPage.baseFn.getDiff(data.charts.ability_pup_gra_avg_diff_line),
+						yaxis :	reportPage.baseFn.getBarDiff(data.charts.ability_pup_gra_avg_diff_line),
 					}
 				}
 			};
@@ -836,291 +1304,8 @@ var reportPage = {
 		},
 		/*针对个人的字段*/
 		creatPuilValueArr: function(obj) {
-			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
+//			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
+			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score];
 		}
 	},
-	bindEvent: function(){
-		/*顶部导航*/
-		$('.dropdown_box').hover(function() {
-			$('.dropdown_menu>li>ul').attr('class', 'submit_menu');
-			$('.dropdown_menu').show();
-			$('.dropdown_menu>li').on('mouseover', function() {
-				$(this).addClass('active').siblings('li').removeClass('active');
-				$(this).children('ul').show();
-				$(this).siblings('li').children('ul').hide();
-				var screenHeight = Math.floor($(window).height());
-				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height() - $(document).scrollTop());
-				if (bodyHeight > screenHeight) {
-					$(this).children('ul').attr('class', 'active');
-				}
-			});
-		}, function() {
-			$('.dropdown_menu').hide();
-			$('.dropdown_menu>li>ul').hide();
-			$('.dropdown_menu>li').removeClass('active');
-		});
-		$(document).on('click','#tab-menu li[data-id]',function(event){
-			
-			$select = $(this).attr('data-id');
-			$('#myTabContent div.tab-pane').hide();
-			$('#'+$select+'').fadeIn();
-			$('#tab-menu li[data-id]').each(function(){
-				$(this).removeClass('active');
-			})
-			$(this).addClass('active');
-		});
-		$(document).on('click','#xialatab',function(event){
-			var $this = $(this).children('ul');
-			if($this.is(':hidden')){
-				$this.slideDown();
-			}else{
-				$this.slideUp();
-			}
-		});
-		$(document).on('show.bs.collapse','.panel-collapse',function(){
-			$(this).prev().removeClass('collapse-close');
-			$(this).prev().addClass('collapse-open');
-		});
-		$(document).on('hide.bs.collapse','.panel-collapse',function(){
-			$(this).prev().removeClass('collapse-open');
-			$(this).prev().addClass('collapse-close');
-		});
-	},
-	/*基础方法*/
-	baseFn: {
-        getReportAjax: function(type, url, params){
-            $.ajax({
-                url: url,
-                type: "GET",
-                data: params,
-                dataType: "json",
-                success: function(data){
-                    $('#reportContent')[0].style = "position:relative;display:flex;"
-                    if(type=="grade"){
-                        reportPage.Grade.createReport(data);
-                    } else if(type=="klass"){
-                        reportPage.Class.createReport(data);
-                    } else if(type=="pupil"){
-                        reportPage.Pupil.createReport(data);
-                    }
-                },
-                error: function(data){
-                    $('#reportContent').html(data.responseJSON.message);
-                    $('#reportContent')[0].style = "position:relative;display: flex;"
-                }
-            }); 
-        },
-		/*答题情况*/
-		getAnswerCaseTable : function(data){
-			if(data != null){
-				var qid = reportPage.baseFn.getArrayKeys(data);
-				var correctRatio = reportPage.baseFn.getArrayValue(data);
-				var str = '';
-				for(var i = 0; i < qid.length ; i++){
-					str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i]+'</td></tr>';
-				};
-				return str;
-			}else{
-				return '';
-			};
-		},
-		/*处理数据表(type是班级还是个人)*/
-		getTableStr: function(obj, type) {
-			var allStr = '';
-			//创建一级指标table ------ knowledge;
-			var oneArrKey = reportPage.baseFn.getKeys(obj);
-			var oneArrValue = reportPage.baseFn.getValue(obj)
-			var one_len = oneArrKey.length;
-			for (var i = 0; i < one_len; i++) {
-				var oneValueStr = '';
-				var twoAllStr = '';
-				//取得一级指标的键名;
-				one_level_name = oneArrKey[i];
-				var oneNameStr = '<td class="one-level">' + one_level_name + '</td>';
-				//取得一级指标的键值对value；
-				var oneValue = oneArrValue[i].value;
-				var oneValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(oneValue) : reportPage.Pupil.creatPuilValueArr(oneValue);
-				//插入具体数据;
-				for (var k = 0; k < oneValueArr.length; k++) {
-					var iNum = oneValueArr[k];
-					if(iNum < 0 && iNum > -20){
-						oneValueStr += '<td class="one-level-content one-level-wrong wrong">' + iNum + '</td>';
-					}else if(iNum < -20){
-						oneValueStr += '<td class="one-level-content one-level-wrong wrong more-wrong">' + iNum + '</td>';
-					}else{
-						oneValueStr += '<td class="one-level-content">' + iNum + '</td>';
-					};
-				};
-				var oneAllStr = '<tr>' + oneNameStr + oneValueStr + '</tr>';
-				//创建二级指标表格数据
-				if (oneArrValue[i].items && oneArrValue[i].items != null) {
-					var two_len = reportPage.baseFn.getKeys(oneArrValue[i].items).length;
-					for (var j = 0; j < two_len; j++) {
-						var twoNameStr = '<td>' + reportPage.baseFn.getKeys(oneArrValue[i].items)[j] + '</td>';
-						var twoValueStr = '';
-						var twoArrValue = reportPage.baseFn.getValue(oneArrValue[i].items)[j].value;
-						var twoValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(twoArrValue) : reportPage.Pupil.creatPuilValueArr(twoArrValue);
-						for (var g = 0; g <twoValueArr.length ; g++) {
-							var iNum = twoValueArr[g];
-							if(iNum < 0 && iNum > -20){
-								twoValueStr += '<td class="wrong">' + iNum + '</td>';
-							}else if(iNum < -20){
-								twoValueStr += '<td class="wrong more-wrong">' + iNum + '</td>';
-							}else{
-								twoValueStr += '<td>' + iNum + '</td>';
-							};
-						};
-						twoAllStr += '<tr>' + twoNameStr + twoValueStr + '</tr>';
-					}
-				} else {
-					return;
-				}
-				allStr += oneAllStr + twoAllStr;
-			}
-			return allStr;
-		},
-		/*处理获取scale图表数据*/
-		getScale : function(obj) {
-			var goodArr = [],
-				faildArr = [],
-				excellentArr = [];
-			for (var i = 0; i < obj.length; i++) {
-				excellentArr.push({
-					name: '(得分率 ≥ 85)',
-					value: obj[i].excellent_pupil_percent,
-					yAxisIndex: i,
-					itemStyle: {
-						normal: {
-							barBorderRadius: [20, 0, 0, 20],
-							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-								offset: 0,
-								color: '#086a8e'
-							}, {
-								offset: 1,
-								color: '#65026b'
-							}])
-						}
-					},
-				});
-				goodArr.push({
-					name: '( 60 ≤ 得分率 < 85)',
-					value: obj[i].good_pupil_percent,
-					yAxisIndex: i,
-					itemStyle: {
-						normal: {
-							barBorderRadius: 0,
-							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-								offset: 0,
-								color: '#71ecd0'
-							}, {
-								offset: 1,
-								color: '#13ab9b'
-							}])
-						}
-					},
-				});
-				faildArr.push({
-					name: '(得分率 < 60)',
-					value: obj[i].failed_pupil_percent,
-					itemStyle: {
-						normal: {
-							barBorderRadius: [0, 20, 20, 0],
-							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-								offset: 0,
-								color: '#fa8471'
-							}, {
-								offset: 1,
-								color: '#f6f1c5'
-							}])
-						}
-					},
-				});
-			}
-			return obj = {
-				excellent: excellentArr,
-				good: goodArr,
-				failed: faildArr
-			}
-		},
-		/*处理获取diff正负值*/
-		getDiff: function(obj) {
-			var arr = reportPage.baseFn.getValue(obj);
-			var len = arr.length;
-			var upArr = [];
-			var downArr = [];
-			for (var i = 0; i < len; i++) {
-				if (arr[i] >= 0) {
-					upArr.push({
-						value: arr[i],
-						symbolSize: 5
-					});
-					downArr.push({
-						value: 0,
-						symbolSize: 0
-					});
-				} else if (arr[i] < 0) {
-					downArr.push({
-						value: arr[i],
-						symbolSize: 5
-					});
-					upArr.push({
-						value: 0,
-						symbolSize: 0
-					});
-				};
-			};
-			reportPage.baseFn.pushArr(upArr);
-			reportPage.baseFn.pushArr(downArr);
-			return obj = {
-				up: upArr,
-				down: downArr
-			}
-		},
-		pushArr: function(obj) {
-			if (Object.prototype.toString.call(obj[0]) == "[object String]") {
-				obj.push('');
-				obj.unshift('');
-			} else {
-				obj.push({
-					value: 0,
-					symbolSize: 0
-				});
-				obj.unshift({
-					value: 0,
-					symbolSize: 0
-				});
-			};
-			return obj;
-		},
-		/*获取对象的key数组*/
-		getKeys: function(obj) {
-			if(obj){
-				return Object.keys(obj);
-			}else{
-				return [];
-			}
-		},
-		/*获取对象的value数组*/
-		getValue: function(obj) {
-			return $.map(obj, function(value, index) {
-				return [value];
-			});
-		},
-		/*获取答对题的key数组*/
-		getArrayKeys: function(obj) {
-			if(obj){
-				return $.map(obj, function(value, index) {
-					return [value[0]];
-				});
-			}else{
-				return [];
-			}
-		},
-		/*获取答对题的value数组*/
-		getArrayValue: function(obj) {
-			return $.map(obj, function(value, index) {
-				return [value[1]];
-			});
-		},
-	}
 }
