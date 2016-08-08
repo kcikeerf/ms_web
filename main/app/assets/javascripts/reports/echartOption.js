@@ -1626,5 +1626,8 @@ var echartOption = {
 		          };
 			}
 		},
+	},
+	resizeEchart: function() {
+
 	}
 }

@@ -63,6 +63,7 @@ var reportPage = {
 			}
 			//创建年级分型图;
 			echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(grade_charts.disperse),'parting-chart');
+
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
 				if($dataId == 'grade-NumScale'){
@@ -894,7 +895,7 @@ var reportPage = {
                 data: params,
                 dataType: "json",
                 success: function(data){
-                    $('#reportContent')[0].style = "display: block;"
+                    $('#reportContent')[0].style = "position:relative;display:flex;"
                     if(type=="grade"){
                         reportPage.Grade.createReport(data);
                     } else if(type=="klass"){
@@ -905,7 +906,7 @@ var reportPage = {
                 },
                 error: function(data){
                     $('#reportContent').html(data.responseJSON.message);
-                    $('#reportContent')[0].style = "display: block;"
+                    $('#reportContent')[0].style = "position:relative;display: flex;"
                 }
             }); 
         },
