@@ -25,12 +25,10 @@
                  report_name="<%= klass[:report_name] %>"
                  data_type="<%= klass[:data_type] %>">
                 <%= klass[:label] %>
+                <span><%= klass[:pupil_number] %></span>
               </a>
-              <small><%= klass[:pupil_number] %></small>
               <ul class="submit_menu">
-                <li class="title">
-                  <div><b><%= I18n.t("dict.ge_ren_bao_gao") %></b></div>
-                </li>
+                <div class="title"><%= I18n.t("dict.ge_ren_bao_gao") %></div>
                 <% klass[:items].each do |pupil| %>
                     <li class="report_click_menu"
                         report_id="<%= pupil[:report_id] %>"

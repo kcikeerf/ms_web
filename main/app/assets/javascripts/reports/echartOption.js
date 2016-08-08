@@ -17,7 +17,8 @@ var echartOption = {
 						trigger: 'item',
 					},
 					legend: {
-						right: '0',
+						top: 0,
+						right: 10,
 						itemWidth: 6,
 						itemHeight: 6,
 						data: [{
@@ -31,20 +32,21 @@ var echartOption = {
 							icon: 'rect'
 						}],
 						textStyle: {
-							fontSize: 10
+							fontSize: 14
 						}
 					},
 					grid: {
-						left: '0',
-						right: '3%',
-						bottom: '5%',
+						left: 10,
+						right: 10,
+						bottom: 10,
 						containLabel: true,
 					},
 					xAxis: [{
 						type: 'category',
-						boundaryGap: false,
+						//boundaryGap: false,
 						axisTick: {
-							show: false
+							alignWithLabel: true
+							//show: false
 						},
 						data: data.xaxis,
 						axisLine: {
@@ -58,7 +60,7 @@ var echartOption = {
 						axisLabel: {
 							interval: 0,
 							textStyle: {
-								fontSize: 11
+								fontSize: 14
 							}
 						},
 						splitLine: {
@@ -82,7 +84,7 @@ var echartOption = {
 							show: false
 						},
 						mix: '0',
-						max: '120',
+						max: '100',
 						splitLine: {
 							lineStyle: {
 								color: ['#efefef']
@@ -91,15 +93,8 @@ var echartOption = {
 					}],
 					series: [{
 						name: '年级中位数得分率',
-						type: 'line',
-						symbol: 'circle',
-						symbolSize: 5,
-						lineStyle: {
-							normal: {
-								width: 1
-							}
-						},
-						smooth: true,
+						type: 'bar',
+						barMaxWidth: 10,
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -116,15 +111,8 @@ var echartOption = {
 						z: 1
 					}, {
 						name: '年级平均得分率',
-						type: 'line',
-						symbol: 'circle',
-						symbolSize: 5,
-						lineStyle: {
-							normal: {
-								width: 1
-							}
-						},
-						smooth: true,
+						type: 'bar',
+						barMaxWidth: 10,
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -141,15 +129,8 @@ var echartOption = {
 						z: 2
 					}, {
 						name: '年级分化度',
-						type: 'line',
-						symbol: 'circle',
-						symbolSize: 5,
-						lineStyle: {
-							normal: {
-								width: 1
-							}
-						},
-						smooth: true,
+						type: 'bar',
+						barMaxWidth: 10,
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -176,36 +157,39 @@ var echartOption = {
 						trigger: 'item'
 					},
 					legend: {
-						right: 0,
+						show: true,
+						top: 0,
+						right: 10,
 						data: [{
 							name: '中平差值正值',
-							icon: 'rect',
+							icon: 'circle',
 						}, {
 							name: '中平差值负值',
-							icon: 'rect',
+							icon: 'circle',
 						}, ],
 						itemWidth: 6,
 						itemHeight: 6,
 						textStyle: {
-							fontSize: 10
+							fontSize: 14
 						}
 					},
 					grid: {
-						left: '0',
-						right: '3%',
-						bottom: '5%',
+						left: 10,
+						right: 10,
+						bottom: 10,
 						containLabel: true,
 					},
 					xAxis: [{
 						type: 'category',
-						boundaryGap: false,
+						//boundaryGap: false,
 						splitLine: {
 							lineStyle: {
 								color: ['#efefef']
 							}
 						},
 						axisTick: {
-							show: false
+							alignWithLabel: true
+							//show: false
 						},
 						data: data.xaxis,
 						axisLine: {
@@ -219,7 +203,7 @@ var echartOption = {
 						axisLabel: {
 							interval: 0,
 							textStyle: {
-								fontSize: 11
+								fontSize: 14
 							}
 						}
 					}],
@@ -237,6 +221,9 @@ var echartOption = {
 						axisLabel: {
 							formatter: '{value}'
 						},
+						//interval: 10,
+						//min: '-100',
+						//max: '100',
 						splitNumber: 5,
 						splitLine: {
 							lineStyle: {
@@ -246,17 +233,9 @@ var echartOption = {
 					}],
 					series: [{
 						name: '中平差值正值',
-						type: 'line',
+						type: 'bar',
+						barMaxWidth: 10,
 						stack: '百分比',
-						symbol: 'circle',
-						showAllSymbol: true,
-						symbolSize: 5,
-						lineStyle: {
-							normal: {
-								width: 1
-							}
-						},
-						smooth: true,
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -266,7 +245,6 @@ var echartOption = {
 									offset: 1,
 									color: '#15a892'
 								}]),
-								opacity: 0.8,
 							}
 						},
 						data: data.yaxis.med_avg_diff.up,
@@ -278,18 +256,9 @@ var echartOption = {
 						LegendHoverLink: true,
 					}, {
 						name: '中平差值负值',
-						type: 'line',
+						type: 'bar',
+						barMaxWidth: 10,
 						stack: '百分比',
-						symbol: 'circle',
-						showSymbol: true,
-						showAllSymbol: true,
-						symbolSize: 0,
-						lineStyle: {
-							normal: {
-								width: 0
-							}
-						},
-						smooth: true,
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -299,7 +268,6 @@ var echartOption = {
 									offset: 1,
 									color: '#fffefe'
 								}]),
-								opacity: 0.8,
 							}
 						},
 						data: data.yaxis.med_avg_diff.down,
@@ -318,24 +286,20 @@ var echartOption = {
 				return option = {
 			        legend: {
 			          show:true,
-			          top:'0',
-			          right:'8%',
+			          top: 0,
+			          right: 10,
 			          itemWidth: 14,
 			          itemHeight: 14,
 			          data:[{name:'知识',icon:'circle'},{name:'技能',icon:'triangle'},{name:'能力',icon:'rect'}],
 			          textStyle: {fontSize:14}
 			        },
 			        grid: {
-			          left: '3%',
-			          right: '9%',
-			          bottom: '3%',
+			          left: 10,
+			          right: 10,
+			          bottom: 10,
 			          containLabel: true
 			        },
-			        tooltip : {
-			          trigger: 'item',
-			          showDelay : 0,
-			          formatter : '{b}:{c}'
-			        },
+			        tooltip:{},
 			        xAxis : [
 			          {
 			            type : 'value',
@@ -345,7 +309,7 @@ var echartOption = {
 			            scale:true,
 			            min:'0',
 			            max:'200',
-			            splitNumber:10,
+			            splitNumber:20,
 			            axisLabel : {
 			              formatter: '{value}',
 			            },
@@ -366,7 +330,7 @@ var echartOption = {
 			            nameTextStyle:{color:'#000',fontSize:14},
 			            scale:true,
 			            min:'0',
-			            max:'120',
+			            max:'100',
 			            splitNumber:6,
 			            axisLabel : {
 			              formatter: '{value}',
@@ -384,6 +348,17 @@ var echartOption = {
 			          {
 			            name:'知识',
 			            type:'scatter',
+			            label: {
+			            	emphasis: {
+			            		show: true,
+			            		position: 'right',
+			            		formatter: '{b}',
+			            		textStyle: {
+			            			color: '#000',
+			            			fontWeight: 'bold'
+			            		}
+			            	}
+			            },
 			            symbolSize:14,
 			            symbol:'circle',
 			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
@@ -423,6 +398,17 @@ var echartOption = {
 			          {
 			            name:'技能',
 			            type:'scatter',
+			            label: {
+			            	emphasis: {
+			            		show: true,
+			            		position: 'right',
+			            		formatter: '{b}',
+			            		textStyle: {
+			            			color: '#000',
+			            			fontWeight: 'bold'
+			            		}
+			            	}
+			            },	
 			            symbolSize:15,
 			            symbol:'triangle',
 			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
@@ -462,6 +448,17 @@ var echartOption = {
 			          {
 			            name:'能力',
 			            type:'scatter',
+			            label: {
+			            	emphasis: {
+			            		show: true,
+			            		position: 'right',
+			            		formatter: '{b}',
+			            		textStyle: {
+			            			color: '#000',
+			            			fontWeight: 'bold'
+			            		}
+			            	}
+			            },
 			            symbolSize:12,
 			            symbol:'rect',
 			            itemStyle: {normal:{shadowColor:'rgba(0,0,0,0.3)',shadowOffsetX:3,shadowOffsetY:3,shadowBlur:3}},
@@ -522,7 +519,7 @@ var echartOption = {
 						itemHeight: 10,
 					},
 					grid: {
-						left: '3%',
+						left: '10%',
 						top: '0%',
 						right: '22%',
 						bottom: '3%',
@@ -530,7 +527,8 @@ var echartOption = {
 					},
 					xAxis: {
 						type: 'value',
-						splitNumber: 10,
+						splitNumber: 5,
+						max: 100,
 						axisTick: {
 							show: false
 						},
@@ -553,6 +551,7 @@ var echartOption = {
 					},
 					yAxis: {
 						type: 'category',
+						nameLocation: 'start',
 						data: data.yaxis,
 						axisLine: {
 							show: false
@@ -566,10 +565,10 @@ var echartOption = {
 						axisLabel: {
 							textStyle: {
 								color: '#000',
-								fontSize: 14
+								fontSize: 5
 							}
 						},
-						inverse: true,
+						inverse: true
 					},
 					series: [{
 						name: '得分率 ≥ 85',
@@ -579,14 +578,14 @@ var echartOption = {
 						label: {
 							normal: {
 								show: true,
-								position: 'bottom',
+								position: 'inside',
 								textStyle: {
-									color: '#000',
+									color: '#fff',
 									fontSize: 14
 								}
 							}
 						},
-						barWidth: 20,
+						barMaxWidth: 20,
 						data: data.data.excellent,
 						itemStyle: {
 							normal: {
@@ -609,14 +608,14 @@ var echartOption = {
 						label: {
 							normal: {
 								show: true,
-								position: 'bottom',
+								position: 'inside',
 								textStyle: {
 									color: '#000',
 									fontSize: 14,
 								}
 							}
 						},
-						barWidth: 20,
+						barMaxWidth: 20,
 						data: data.data.good,
 						itemStyle: {
 							normal: {
@@ -639,14 +638,14 @@ var echartOption = {
 						label: {
 							normal: {
 								show: true,
-								position: 'bottom',
+								position: 'inside',
 								textStyle: {
 									color: '#000',
 									fontSize: 14,
 								}
 							}
 						},
-						barWidth: 20,
+						barMaxWidth: 20,
 						data: data.data.failed,
 						itemStyle: {
 							normal: {
@@ -682,14 +681,15 @@ var echartOption = {
 					},
 					xAxis: [{
 						type: 'category',
-						boundaryGap: false,
+						//boundaryGap: false,
 						splitLine: {
 							lineStyle: {
 								color: ['#efefef']
 							}
 						},
 						axisTick: {
-							show: false
+							alignWithLabel: true
+							//show: false
 						},
 						data: data.xaxis,
 						axisLine: {
@@ -733,8 +733,17 @@ var echartOption = {
 					}],
 					series: [{
 						name: '技能',
-						type: 'line',
-						symbol: 'circle',
+						type: 'bar',
+						barMaxWidth: 10,
+						label: {
+							normal: {
+								show: true,
+								textStyle: {
+									color: '#111'
+								}
+							}
+						},
+						/*symbol: 'circle',
 						symbolSize: 3,
 						label: {
 							normal: {
@@ -749,7 +758,7 @@ var echartOption = {
 								width: 0
 							}
 						},
-						smooth: true,
+						smooth: true,*/
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -789,7 +798,7 @@ var echartOption = {
 					grid: {
 						left: '0',
 						right: '3%',
-						top: '13%',
+						top: '30%',
 						bottom: '3%',
 						containLabel: true,
 					},
@@ -958,9 +967,12 @@ var echartOption = {
                 xAxis : [
                   {
                     type : 'category',
-                    boundaryGap:false,
                     splitLine: {lineStyle:{color:['#efefef']}},
-                    axisTick: {show:false},
+					//boundaryGap: false,
+					axisTick: {
+						alignWithLabel: true
+						//show: false
+					},
                     data : data.xaxis,
                     axisLine:{lineStyle:{color:'#cacaca',shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:2}},
                     axisLabel:{
@@ -976,17 +988,18 @@ var echartOption = {
                     axisLine: {lineStyle:{color:'#f0f0f0',width:1,}},
                     axisTick: {show:false},
                     mix:'0',
-                    max:'120',
+                    max:'100',
                     splitLine: {lineStyle:{color:['#efefef']}},
                   }
                 ],
                 series : [
                   {
                     name:'分化度',
-                    type:'line',
-                    symbol:'circle',
+                    type:'bar',
+                    barMaxWidth: 5,
+/*                    symbol:'circle',
                     symbolSize:5,
-                    lineStyle:{normal:{width:1}},
+                    lineStyle:{normal:{width:1}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1003,10 +1016,11 @@ var echartOption = {
                   },
                   {
                     name:'班级中位数得分率',
-                    type:'line',
-                    symbol:'circle',
+                    type:'bar',
+                    barMaxWidth: 5,
+/*                    symbol:'circle',
                     symbolSize:5,
-                    lineStyle:{normal:{width:1}},
+                    lineStyle:{normal:{width:1}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1023,10 +1037,11 @@ var echartOption = {
                   },
                   {
                     name:'年级平均得分率',
-                    type:'line',
-                    symbol:'circle',
+                    type:'bar',
+                    barMaxWidth: 5,
+/*                    symbol:'circle',
                     symbolSize:5,
-                    lineStyle:{normal:{width:1}},
+                    lineStyle:{normal:{width:1}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1043,10 +1058,11 @@ var echartOption = {
                   },
                   {
                     name:'班级平均得分率',
-                    type:'line',
-                    symbol:'circle',
+                    type:'bar',
+                    barMaxWidth: 5,
+/*                    symbol:'circle',
                     symbolSize:5,
-                    lineStyle:{normal:{width:1}},
+                    lineStyle:{normal:{width:1}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1078,13 +1094,13 @@ var echartOption = {
                   right:0,
                   data:[
                     {
-                      name:'班级与年级平均得分率差值正值',
+                      name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
                       icon:'rect',
                     },
                     {
-                      name:'班级与年级平均得分率差值负值',
+                      name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
                       icon:'rect',
-                    },
+                    }
                   ],
                   itemWidth:6,
                   itemHeight:6,
@@ -1092,23 +1108,30 @@ var echartOption = {
                   orient:'vertical'
                 },
                 grid: {
-                  left: '0',
-                  right: '5%',
+                  left: '5%',
+                  right: '30%',
                   bottom: '5%',
                   containLabel: true,
                 },
                 xAxis : [
                   {
                     type : 'category',
-                    boundaryGap:false,
+                    //boundaryGap:false,
                     splitLine: {lineStyle:{color:['#efefef']}},
-                    axisTick: {show:false},
+                    axisTick: {
+                    	//show:false
+                    	alignWithLabel: true
+                    },
                     data : data.xaxis,
                     axisLine:{lineStyle:{color:'#cacaca',shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:2}},
                     axisLabel:{
+                   	  margin: 20,
                       interval:0,
                       textStyle:{fontSize:11}
-                    }
+                    }/*
+                    axisLabel:{
+                   	  show: false
+                    }*/
                   }
                 ],
                 yAxis : [
@@ -1122,15 +1145,54 @@ var echartOption = {
                   }
                 ],
                 series : [
+                  /*{
+                    name:'班级与年级平均得分率差值',
+                    type:'bar',
+                    barMaxWidth: 10,
+                    barCategoryGap: 30,
+                    //stack: '百分比',
+                    //symbol:'circle',
+                    //showSymbol:true,
+                    //showAllSymbol: true,
+                    //symbolSize:5,
+                    //lineStyle: {normal: {width:0}},
+                    areaStyle: {
+                      normal: {
+                        color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
+                          offset: 0,
+                          color: '#51b8c1'
+                        }, {
+                          offset: 1,
+                          color: '#fcfcfc'
+                        }]),
+                        opacity:0.8,
+                      }},
+                    data:data.yaxis.diff.avg,
+                    itemStyle: {
+                      normal: {color:'#51b8c1'}
+                    },
+                    LegendHoverLink: true,
+                  }*/
                   {
-                    name:'班级与年级平均得分率差值正值',
-                    type:'line',
+                    name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+					/*label: {
+						normal: {
+							show: true,
+							position: 'top',
+							textStyle: {
+								color: '#111'
+							}
+						}
+					},*/
+					//label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1149,14 +1211,25 @@ var echartOption = {
                     LegendHoverLink: true,
                   },
                   {
-                    name:'班级与年级平均得分率差值负值',
-                    type:'line',
+                    name:'班\n级\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+					/*label: {
+						normal: {
+							show: true,
+							position: 'top',
+							textStyle: {
+								color: '#111'
+							}
+						}
+					},*/
+					//label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
@@ -1173,7 +1246,7 @@ var echartOption = {
                       normal: {color:'#c90303'}
                     },
                     LegendHoverLink: true,
-                  },
+                  }
                 ],
                 animation:false,
               };
@@ -1191,11 +1264,11 @@ var echartOption = {
                   right:0,
                   data:[
                     {
-                      name:'班级中位数得分率与年级平均差值正值',
+                      name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n正\n值',
                       icon:'rect',
                     },
                     {
-                      name:'班级中位数得分率与年级平均差值负值',
+                      name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n负\n值',
                       icon:'rect',
                     }
                   ],
@@ -1206,19 +1279,23 @@ var echartOption = {
                 },
                 grid: {
                   left: '0',
-                  right: '5%',
+                  right: '30%',
                   bottom: '5%',
                   containLabel: true,
                 },
                 xAxis : [
                   {
                     type : 'category',
-                    boundaryGap:false,
+                    //boundaryGap:false,
                     splitLine: {lineStyle:{color:['#ededed']}},
-                    axisTick: {show:false},
+                    axisTick: {
+                    	//show:false
+                    	alignWithLabel: true
+                    },
                     data : data.xaxis,
                     axisLine:{lineStyle:{color:'#cacaca',shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:1}},
                     axisLabel:{
+                      margin: 20,
                       interval:0,
                       textStyle:{fontSize:11}
                     }
@@ -1236,14 +1313,24 @@ var echartOption = {
                 ],
                 series : [
                   {
-                    name:'班级中位数得分率与年级平均差值正值',
-                    type:'line',
+                    name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n正\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+                    /*label: {
+						normal: {
+							show: true,
+							position: 'top',
+							textStyle: {
+								color: '#111'
+							}
+						}
+					},*/
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1262,14 +1349,24 @@ var echartOption = {
                     LegendHoverLink: true,
                   },
                   {
-                    name:'班级中位数得分率与年级平均差值负值',
-                    type:'line',
+                    name:'班\n级\n中\n位\n数\n得\n分\n率\n与\n年\n级\n平\n均\n差\n值\n负\n值',
+                    type:'bar',
+                    barMaxWidth: 10,
                     stack: '百分比',
-                    symbol:'circle',
+                    /*label: {
+						normal: {
+							show: true,
+							position: 'top',
+							textStyle: {
+								color: '#111'
+							}
+						}
+					},*/
+                    /*symbol:'circle',
                     showSymbol:true,
                     showAllSymbol: true,
                     symbolSize:5,
-                    lineStyle: {normal: {width:0}},
+                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1300,19 +1397,26 @@ var echartOption = {
                     },
                     formatter: '{a}<br>{b}: {c}%',
                   },
-                  legend: {
-                    show:false,
-                  },
+				legend: {
+					top: '0',
+					right: '0',
+					width: '120',
+					orient: 'vertical',
+					data: ['得分率 ≥ 85', '60 ≤ 得分率 < 85', '得分率 < 60'],
+					itemWidth: 10,
+					itemHeight: 10,
+				},
                   grid: {
                     left: '6%',
                     top: '0%',
-                    right: '8%',
+                    right: '20%',
                     bottom: '3%',
                     containLabel: true,
                   },
                   xAxis:  {
                     type: 'value',
                     splitNumber:5,
+                    max: 100,
                     axisTick:{show:false},
                     axisLabel: {formatter:'{value}%',textStyle:{color:'#000',fontSize:14,}},
                     axisLine:{lineStyle:{color:'#cacaca',shadowColor:'#cacaca',shadowOffsetX:0,shadowOffsetY:2}}
@@ -1334,11 +1438,11 @@ var echartOption = {
                       label: {
                         normal: {
                           show: true,
-                          position: 'bottom',
-                          textStyle:{color:'#000',fontSize:14,}
+                          position: 'inside',
+                          textStyle:{color:'#fff',fontSize:14,}
                         }
                       },
-                      barWidth:28,
+                      barMaxWidth: 30,
                       data: data.data.excenllent,
                       itemStyle: {
                         normal: {
@@ -1362,11 +1466,11 @@ var echartOption = {
                       label: {
                         normal: {
                           show: true,
-                          position: 'bottom',
+                          position: 'inside',
                           textStyle:{color:'#000',fontSize:14,}
                         }
                       },
-                      barWidth:28,
+                      barMaxWidth: 30,
                       data: data.data.good,
                       itemStyle: {
                         normal: {
@@ -1390,11 +1494,11 @@ var echartOption = {
                       label: {
                         normal: {
                           show: true,
-                          position: 'bottom',
+                          position: 'inside',
                           textStyle:{color:'#000',fontSize:14,}
                         }
                       },
-                      barWidth:28,
+                      barMaxWidth: 30,
                       data: data.data.faild,
                       itemStyle: {
                         normal: {
@@ -1423,12 +1527,18 @@ var echartOption = {
 		                trigger: 'item',
 		              },
 		              legend: {
-		                right: '0',
+		                right: '0%',
 		                orient: 'vertical',
 		                itemWidth: 24,
 		                itemHeight: 2,
 		                textStyle: {fontSize: 12},
-		                data: [ '年级平均水平','个人得分率'],
+		                data: [ '年级平均水平','个人得分率']
+		              },
+		              grid: {
+		                left: '5%',
+		                right: '5%',
+		                top:'10%',
+		                bottom: '15%',
 		              },
 		              textStyle: {
 		                color: '#333',
@@ -1530,15 +1640,15 @@ var echartOption = {
 		              trigger: 'item'
 		            },
 		            legend: {
-		              right:0,
-		              orient: 'vertical',
+		              right: '0%',
+		              //orient: 'vertical',
 		              data:[
 		                {
-		                  name:'个人与年级平均得分率差值正值',
+		                  name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
 		                  icon:'rect',
 		                },
 		                {
-		                  name:'个人与年级平均得分率差值负值',
+		                  name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
 		                  icon:'rect',
 		                }
 		              ],
@@ -1547,45 +1657,46 @@ var echartOption = {
 		            },
 		            grid: {
 		              left: '10%',
-		              right: '0',
-		              top:'20%',
+		              right: '15%',
+		              top:'30%',
 		              bottom: '15%',
 		            },
 		            animation:false,
 		            xAxis : [
 		              {
 		                type : 'category',
-		                boundaryGap : true,
-		                name: '',
-		                nameLocation: 'start',
-		                nameGap:-40,
+		                //boundaryGap : true,
+	                    axisTick: {
+	                    	//show:false
+	                    	alignWithLabel: true
+	                    },
+		                //name: '',
+		                //nameLocation: 'start',
+		                //nameGap:-40,
 		                splitLine: {show:false},
 		                axisLabel: {show:false},
-		                axisTick: {show:false},
-		                axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor:'#21a793',shadowOffsetY:1}},
+		                //axisTick: {show:false},
+		                //axisLine: {onZero:true,lineStyle:{color:'#cacaca',width:4,shadowColor:'#21a793',shadowOffsetY:1}},
 		                data : data.diff.xaxis
 		              }
 		            ],
 		            yAxis : [
 		              {
 		                type : 'value',
+		                splitNumber: 5,
 		                axisLine: {show:false},
 		                axisTick: {show:false},
 		                axisLabel: {formatter:'{value}%'},
 		                splitNumber:5,
-		                splitLine: {lineStyle: {color:'#f4f4f4'}},
-		                interval:10,
+		                splitLine: {lineStyle: {color:'#f4f4f4'}}
 		              }
 		            ],
 		            series : [
 		              {
-		                name:'个人与年级平均得分率差值正值',
-		                type:'line',
+		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
+		                type:'bar',
+		                barMaxWidth: 10,
 		                stack: '百分比',
-		                symbol:'circle',
-		                showAllSymbol:true,
-		                symbolSize:8,
-		                lineStyle: {normal: {width:0}},
 		                areaStyle: {
 		                  normal: {
 		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1601,13 +1712,14 @@ var echartOption = {
 		                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
 		              },
 		              {
-		                name:'个人与年级平均得分率差值负值',
-		                type:'line',
+		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
+		                type:'bar',
+		                barMaxWidth: 10,
 		                stack: '百分比',
-		                symbol:'circle',
+		                /*symbol:'circle',
 		                showAllSymbol:true,
 		                symbolSize:0,
-		                lineStyle: {normal: {width:0}},
+		                lineStyle: {normal: {width:0}},*/
 		                areaStyle: {
 		                  normal: {
 		                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1626,8 +1738,5 @@ var echartOption = {
 		          };
 			}
 		},
-	},
-	resizeEchart: function() {
-
 	}
 }
