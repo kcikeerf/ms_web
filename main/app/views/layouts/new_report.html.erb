@@ -15,4 +15,10 @@
     <%#= render 'common/footer' %>
     <%= render 'shared/common_dialog' %>
   </body>
+  <%= javascript_include_tag 'create_report', 'data-turbolinks-track' => true %>
+  <script type="text/javascript">
+    $(function () {
+      reportPage.init();
+    })
+  </script>
 </html>
