@@ -863,7 +863,8 @@ var reportPage = {
 		},
 		/*针对个人的字段*/
 		creatPuilValueArr: function(obj) {
-			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
+//			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
+			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score];
 		}
 	},
 	bindEvent: function(){
