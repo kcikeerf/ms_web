@@ -286,6 +286,7 @@ zh:
     er_shi_jiu_ban: "二十九班"
     san_shi_ban: "三十班"
     #题型
+    question_type: "题型"
     ting_li_li_jie: "听力理解"
     dan_xiang_xuan_ze: "单项选择"
     wan_xing_tian_kong: "完形填空"
@@ -313,12 +314,15 @@ zh:
     xuan_xiu_7: "选修7"
     xuan_xiu_8: "选修8"
     #难度
+    levelword2: "预估难度"
     rong_yi: "容易"
     jiao_yi: "较易"
     zhong_deng: "中等"
     jiao_nan: "较难"
     kun_nan: "困难"
     #考试类型
+    quiz_type: "测试类型"
+    qi_chu_ce_shi: "期初测试"
     qi_zhong_ce_shi: "期中测试"
     qi_mo_ce_shi: " 期末测试"
     mo_ni_ce_shi: "模拟测试"
