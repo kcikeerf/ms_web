@@ -5,6 +5,7 @@ var reportPage = {
 	Gradedata : null,
 	ClassData : null,
 	PupilData : null,
+	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 	init: function(){
 		//给左上角导航添加事件
@@ -45,6 +46,7 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>'+basicData.pupil_number
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    //+'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
@@ -241,10 +243,15 @@ var reportPage = {
 //					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff)),
 					xaxis : reportPage.baseFn.getKeys(obj.knowledge_med_avg_diff),
 					yaxis : {
-						Alllines : {
+						/*Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.knowledge_3lines.grade_median_percent))
+						},*/
+						Alllines : {
+							grade_average_percent: reportPage.baseFn.getValue(obj.knowledge_3lines.grade_average_percent),
+							grade_diff_degree: reportPage.baseFn.getValue(obj.knowledge_3lines.grade_diff_degree),
+							grade_median_percent: reportPage.baseFn.getValue(obj.knowledge_3lines.grade_median_percent)
 						},
 						med_avg_diff : reportPage.baseFn.getBarDiff(obj.knowledge_med_avg_diff)
 					},
@@ -253,10 +260,15 @@ var reportPage = {
 //					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.skill_med_avg_diff)),
 					xaxis : reportPage.baseFn.getKeys(obj.skill_med_avg_diff),
 					yaxis : {
-						Alllines : {
+/*						Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.skill_3lines.grade_median_percent))
+						},*/
+						Alllines : {
+							grade_average_percent:reportPage.baseFn.getValue(obj.skill_3lines.grade_average_percent),
+							grade_diff_degree:reportPage.baseFn.getValue(obj.skill_3lines.grade_diff_degree),
+							grade_median_percent:reportPage.baseFn.getValue(obj.skill_3lines.grade_median_percent)
 						},
 						med_avg_diff : reportPage.baseFn.getBarDiff(obj.skill_med_avg_diff)
 					},
@@ -266,10 +278,15 @@ var reportPage = {
 //					xaxis : reportPage.baseFn.pushArr(reportPage.baseFn.getKeys(obj.ability_med_avg_diff)),
 					xaxis : reportPage.baseFn.getKeys(obj.ability_med_avg_diff),
 					yaxis : {
-						Alllines : {
+						/*Alllines : {
 							grade_average_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_average_percent)),
 							grade_diff_degree: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_diff_degree)),
 							grade_median_percent: reportPage.baseFn.pushArr(reportPage.baseFn.getValue(obj.ability_3lines.grade_median_percent))
+						},*/
+						Alllines : {
+							grade_average_percent: reportPage.baseFn.getValue(obj.ability_3lines.grade_average_percent),
+							grade_diff_degree: reportPage.baseFn.getValue(obj.ability_3lines.grade_diff_degree),
+							grade_median_percent: reportPage.baseFn.getValue(obj.ability_3lines.grade_median_percent)
 						},
 						med_avg_diff : reportPage.baseFn.getBarDiff(obj.ability_med_avg_diff)
 					},
@@ -302,55 +319,55 @@ var reportPage = {
 				knowledge : {
 					le0 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level0.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level0.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level0.knowledge),
 					},
 					le25 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level25.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level25.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level25.knowledge),
 					},
 					le50 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level50.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level50.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level50.knowledge),
 					},
 					le75 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level75.knowledge),
-						yaxis : reportPage.baseFn.getValue(obj.level75.knowledge),
+						yaxis : reportPage.baseFn.getBarValue(obj.level75.knowledge),
 					}
 				},
 				skill : {
 					le0 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level0.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level0.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level0.skill),
 					},
 					le25 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level25.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level25.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level25.skill),
 					},
 					le50 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level50.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level50.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level50.skill),
 					},
 					le75 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level75.skill),
-						yaxis : reportPage.baseFn.getValue(obj.level75.skill),
+						yaxis : reportPage.baseFn.getBarValue(obj.level75.skill),
 					}
 				},
 				ability : {
 					le0 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level0.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level0.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level0.ability),
 					},
 					le25 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level25.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level25.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level25.ability),
 					},
 					le50 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level50.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level50.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level50.ability),
 					},
 					le75 : {
 						xaxis : reportPage.baseFn.getKeys(obj.level75.ability),
-						yaxis : reportPage.baseFn.getValue(obj.level75.ability),
+						yaxis : reportPage.baseFn.getBarValue(obj.level75.ability),
 					}
 				}
 			}
@@ -564,9 +581,10 @@ var reportPage = {
 			var classNavStr = '<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.pupil_number
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
-			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
-			    +'</span>&nbsp;&nbsp;<b>学科老师</b>：<span>'+basicData.subject_teacher
+/*			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
+			    +'</span>&nbsp;&nbsp;<b>学科老师</b>：<span>'+basicData.subject_teacher*/
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>'+basicData.quiz_date
 			    +'</span>';
 			$('#class-top-nav').html(classNavStr);
@@ -1067,7 +1085,7 @@ var reportPage = {
                    	   },
                    	   itemStyle: {
                    	   	   normal: {
-                   	           color: "#51b8c1"
+                   	           color: reportPage.defaultColor
                    	       }
                    	   }
                    });
@@ -1202,6 +1220,27 @@ var reportPage = {
 			return $.map(obj, function(value, index) {
 				return [value[1]];
 			});
+		},
+		getBarValue: function(obj){
+			var arr = reportPage.baseFn.getValue(obj);
+			var len = arr.length;
+			var result = [];
+			for (var i = 0; i < len; i++) {
+               result.push({
+               	   value: arr[i],
+               	   label: {
+               	   	   normal:{
+               	   	   	   position: 'top'
+               	   	   }
+               	   },
+               	   itemStyle: {
+               	   	   normal: {
+               	           color: reportPage.defaultColor
+               	       }
+               	   }
+               });
+			};
+			return result;
 		},
 		/*获取对象的key数组*/
 		getKeysNoModify: function(obj) {

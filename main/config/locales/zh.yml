@@ -295,8 +295,8 @@ zh:
     shu_mian_biao_da: "书面表达"
     #分册
     quan_yi_ce: "全一册"
-    shang_ce: "上册(春季)"
-    xia_ce: "下册(秋季)"
+    shang_ce: "春季"
+    xia_ce: "秋季"
     #必修
     bi_xiu_1: "必修1"
     bi_xiu_2: "必修2"
