@@ -95,7 +95,7 @@ var reportPage = {
 				data: params,
 				dataType: "json",
 				success: function(data){
-					$('#reportContent')[0].style = "position:relative;display:flex;"
+					//$('#reportContent')[0].style = "position:relative;display:flex;"
 					//$('#reportContent')[0].style = "display: block;"
 					if(type=="grade"){
 						reportPage.Grade.createReport(data);
@@ -107,7 +107,7 @@ var reportPage = {
 				},
 				error: function(data){
 					$('#reportContent').html(data.responseJSON.message);
-					$('#reportContent')[0].style = "position:relative;display: flex;"
+					//$('#reportContent')[0].style = "position:relative;display: flex;"
 					//$('#reportContent')[0].style = "display: block;"
 				}
 			});
