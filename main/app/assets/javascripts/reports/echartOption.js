@@ -565,7 +565,7 @@ var echartOption = {
 						axisLabel: {
 							textStyle: {
 								color: '#000',
-								fontSize: 5
+								fontSize: 14
 							}
 						},
 						inverse: true
