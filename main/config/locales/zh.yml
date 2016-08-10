@@ -1,6 +1,13 @@
 zh:
   #各功能用label
   checkpoints:
+    label:
+      knowledge:
+        total: "知识总分"
+      skill:
+        total: "技能总分"
+      ability:
+        total: "能力总分"
     dialog:
       title: "指标体系设置"
   images:
