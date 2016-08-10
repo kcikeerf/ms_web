@@ -1,4 +1,5 @@
 var echartOption = {
+	defaultColor: "#51b8c1",
 	/*创建Echart*/
 	createEchart: function(optionObj, Node) {
 		var myChart = echarts.init(document.getElementById(Node));
@@ -732,12 +733,22 @@ var echartOption = {
 						},
 					}],
 					series: [{
-						name: '技能',
+						//name: '技能',
+						name:'四分位',
 						type: 'bar',
 						barMaxWidth: 10,
 						label: {
 							normal: {
 								show: true,
+								textStyle: {
+									color: echartOption.defaultColor
+								}
+							}
+						},
+						label: {
+							normal: {
+								show: true,
+								position: 'top',
 								textStyle: {
 									color: '#111'
 								}
@@ -758,7 +769,7 @@ var echartOption = {
 								width: 0
 							}
 						},
-						smooth: true,*/
+						smooth: true,
 						areaStyle: {
 							normal: {
 								color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -770,10 +781,10 @@ var echartOption = {
 								}]),
 								opacity: 0.8,
 							}
-						},
+						},*/
 						data: data.yaxis,
 					}, ],
-					color: ['#06917c'],
+					color: [echartOption.defaultColor],
 					animation: false,
 				};
 			},
@@ -1501,7 +1512,7 @@ var echartOption = {
 		                    }
 		                  },
 		                  axisLine: {show:false},
-		                  startAngle:45,
+		                  startAngle:90,
 		                },
 		                {
 		                  z:1,
@@ -1514,6 +1525,7 @@ var echartOption = {
 		                      color: ['#fff']
 		                    }
 		                  },
+		                  startAngle:90
 		                }
 		              ],
 		              series: [
