@@ -64,7 +64,8 @@ class Mongodb::ReportGenerator
       '_id.pup_uid' => nil,
       '_id.grade' => {'$exists' => true },
       '_id.dimesion' => {'$exists' => true },
-      '_id.lv1_ckp' => {'$exists' => true }
+      '_id.lv1_ckp' => {'$exists' => true },
+      '_id.lv2_ckp' => nil
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
@@ -74,10 +75,14 @@ class Mongodb::ReportGenerator
       if !item[:_id].keys.include?("classroom")
 
         grade_report, report_h = get_grade_report_hash item
-        lv1_ckp_key = item[:_id][:lv1_ckp].to_sym
+        lv1_ckp_key = item[:_id][:lv1_ckp]
+        lv1_ckp_order = item[:_id][:lv1_order]
         dimesion = item[:_id][:dimesion]
 
-        report_h["charts"]["#{dimesion}_3lines"]["grade_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+        #report_h["charts"]["#{dimesion}_3lines"]["grade_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_3lines"]["grade_average_percent"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:average_percent])}]
+        report_h["charts"]["#{dimesion}_3lines"]["grade_average_percent"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
 
         grade_report.report_json = report_h.to_json
         grade_report.save
@@ -90,11 +95,24 @@ class Mongodb::ReportGenerator
 
         klass_report, report_h = get_class_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp].to_sym
+        lv1_ckp_order = item[:_id][:lv1_order]
         dimesion = item[:_id][:dimesion]
 
-        report_h["charts"]["#{dimesion}_all_lines"]["grade_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-        report_h["charts"]["#{dimesion}_all_lines"]["class_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
-        report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
+        #report_h["charts"]["#{dimesion}_all_lines"]["grade_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_all_lines"]["grade_average_percent"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])}]
+        report_h["charts"]["#{dimesion}_all_lines"]["grade_average_percent"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+
+        #report_h["charts"]["#{dimesion}_all_lines"]["class_average_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_all_lines"]["class_average_percent"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:average_percent])}]
+        report_h["charts"]["#{dimesion}_all_lines"]["class_average_percent"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+#        report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])}]
+        report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
 
         klass_report.report_json = report_h.to_json
         klass_report.save
@@ -109,11 +127,23 @@ class Mongodb::ReportGenerator
 
         grade_report, report_h = get_grade_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp].to_sym
+        lv1_ckp_order = item[:_id][:lv1_order]
         dimesion = item[:_id][:dimesion]
 
-        report_h["charts"]["#{dimesion}_3lines"]["grade_median_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent])
-        report_h["charts"]["#{dimesion}_3lines"]["grade_diff_degree"][lv1_ckp_key] = convert_2_full_mark(item[:value][:diff_degree])
-        report_h["charts"]["#{dimesion}_med_avg_diff"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
+        #report_h["charts"]["#{dimesion}_3lines"]["grade_median_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_3lines"]["grade_median_percent"] || []
+        target_pair = [lv1_ckp_order ,{lv1_ckp_key => convert_2_full_mark(item[:value][:median_percent])}]
+        report_h["charts"]["#{dimesion}_3lines"]["grade_median_percent"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+        #report_h["charts"]["#{dimesion}_3lines"]["grade_diff_degree"][lv1_ckp_key] = convert_2_full_mark(item[:value][:diff_degree])
+        temp_arr = report_h["charts"]["#{dimesion}_3lines"]["grade_diff_degree"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:diff_degree])}]
+        report_h["charts"]["#{dimesion}_3lines"]["grade_diff_degree"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+        #report_h["charts"]["#{dimesion}_med_avg_diff"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_med_avg_diff"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])}]
+        report_h["charts"]["#{dimesion}_med_avg_diff"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
 
         grade_report.report_json = report_h.to_json
         grade_report.save
@@ -126,15 +156,88 @@ class Mongodb::ReportGenerator
 
         klass_report, report_h = get_class_report_hash item
         lv1_ckp_key = item[:_id][:lv1_ckp]
+        lv1_ckp_order = item[:_id][:lv1_order]
         dimesion = item[:_id][:dimesion]
 
-        report_h["charts"]["#{dimesion}_all_lines"]["class_median_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent])
-        report_h["charts"]["#{dimesion}_all_lines"]["diff_degree"][lv1_ckp_key] = convert_2_full_mark(item[:value][:diff_degree])
-        report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])
+        #report_h["charts"]["#{dimesion}_all_lines"]["class_median_percent"][lv1_ckp_key] = convert_2_full_mark(item[:value][:median_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_all_lines"]["class_median_percent"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:median_percent])}]
+        report_h["charts"]["#{dimesion}_all_lines"]["class_median_percent"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+        #report_h["charts"]["#{dimesion}_all_lines"]["diff_degree"][lv1_ckp_key] = convert_2_full_mark(item[:value][:diff_degree])
+        temp_arr = report_h["charts"]["#{dimesion}_all_lines"]["diff_degree"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:diff_degree])}]
+        report_h["charts"]["#{dimesion}_all_lines"]["diff_degree"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+        #report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"][lv1_ckp_key] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])
+        temp_arr = report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])}]
+        report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
 
         klass_report.report_json = report_h.to_json
         klass_report.save
       end
+    }
+
+    #add dimesioin total
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.pup_uid' => nil,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => {'$exists' => true },
+      '_id.dimesion' => {'$exists' => true },
+      '_id.order' => nil,
+      '_id.lv1_ckp' => nil,
+      '_id.lv2_ckp' => nil
+    }
+
+    Mongodb::ReportTotalAvgResult.where(filter).each{|item|
+        klass_report, report_h = get_class_report_hash item
+        dimesion = item[:_id][:dimesion]
+        report_h["charts"]["#{dimesion}_all_lines"]["grade_average_percent"].push([
+            Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label] => convert_2_full_mark(item[:value][:gra_dim_avg_percent])
+            }
+        ])
+        report_h["charts"]["#{dimesion}_all_lines"]["class_average_percent"].push([
+            Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label] => convert_2_full_mark(item[:value][:average_percent])
+            }
+        ])
+        report_h["charts"]["#{dimesion}_gra_cls_avg_diff_line"].push([
+            Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label] => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_avg_percent])
+            }
+        ])
+        klass_report.report_json = report_h.to_json
+        klass_report.save
+    }
+    Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
+        klass_report, report_h = get_class_report_hash item
+        dimesion = item[:_id][:dimesion]
+        report_h["charts"]["#{dimesion}_all_lines"]["class_median_percent"].push([
+            Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label] => convert_2_full_mark(item[:value][:median_percent])
+            }
+        ])
+        report_h["charts"]["#{dimesion}_all_lines"]["diff_degree"].push([
+            Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label] => convert_2_full_mark(item[:value][:diff_degree])
+            }
+        ])
+        report_h["charts"]["#{dimesion}_cls_mid_gra_avg_diff_line"].push([
+            Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label] => convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_avg_percent])
+            }
+        ])
+        klass_report.report_json = report_h.to_json
+        klass_report.save
     }
   end
 
@@ -223,6 +326,7 @@ class Mongodb::ReportGenerator
         grade_report, report_h = get_grade_report_hash item
         dimesion = item[:_id][:dimesion]
         lv1_ckp_key = item[:_id][:lv1_ckp]
+        lv1_ckp_order = item[:_id][:lv1_order]
 
         result_h = {
           "failed_pupil_percent" => convert_2_hundred(item[:value][:failed_percent]),
@@ -240,9 +344,14 @@ class Mongodb::ReportGenerator
             target_klass = temp_arr.assoc(klass)
             if klass && target_klass
               pos = temp_arr.index(target_klass) || temp_arr.size
-              report_h["each_class_pupil_number_chart"][dimesion][member][pos][1][lv1_ckp_key] = result_h[member]
+              
+              #report_h["each_class_pupil_number_chart"][dimesion][member][pos][1][lv1_ckp_key] = result_h[member]
+              temp_arr = report_h["each_class_pupil_number_chart"][dimesion][member][pos][1] || []
+              target_pair = [lv1_ckp_order, {lv1_ckp_key => result_h[member]}]
+              report_h["each_class_pupil_number_chart"][dimesion][member][pos][1] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
             elsif klass
-              target_pair = [klass, {lv1_ckp_key => result_h[member]}]
+              target_pair = [klass, [[lv1_ckp_order, {lv1_ckp_key => result_h[member]}]]]
               report_h["each_class_pupil_number_chart"][dimesion][member] = insert_item_to_a_with_order "klass", temp_arr, target_pair
             else 
               next
@@ -302,27 +411,56 @@ class Mongodb::ReportGenerator
 
         klass_report, kreport_h = get_class_report_hash item
         dimesion = item[:_id][:dimesion]
-        kdata_dim_table = kreport_h["data_table"][dimesion].keys.empty?? data_table[dimesion].deep_dup : kreport_h["data_table"][dimesion]
+        kdata_dim_table = kreport_h["data_table"][dimesion].empty?? data_table[dimesion].deep_dup : kreport_h["data_table"][dimesion]
         if(item[:_id].keys.include?("lv1_ckp"))
           lv1_ckp_key = item[:_id][:lv1_ckp]
-          next if !ckp_lv2_to_lv1[dimesion].values.include?(lv1_ckp_key)
+          lv1_ckp_order = item[:_id][:lv1_order]
+          next unless lv1_ckp_order
+          lv1_obj = kdata_dim_table.assoc(lv1_ckp_order)
+          pos = kdata_dim_table.index(lv1_obj)
+          next unless pos
 
-          kdata_dim_table[lv1_ckp_key]["value"]["cls_average"] = format_float(item[:value][:cls_dim_lv1_avg])
-          kdata_dim_table[lv1_ckp_key]["value"]["cls_average_percent"] = convert_2_full_mark(item[:value][:cls_dim_lv1_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["value"]["cls_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:cls_dim_lv1_avg_percent],item[:value][:gra_dim_lv1_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
+          kdata_dim_table[pos][1]["label"] = lv1_ckp_key
+          kdata_dim_table[pos][1]["value"]["cls_average"] = format_float(item[:value][:cls_dim_lv1_avg])
+          kdata_dim_table[pos][1]["value"]["cls_average_percent"] = convert_2_full_mark(item[:value][:cls_dim_lv1_avg_percent])
+          kdata_dim_table[pos][1]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
+          kdata_dim_table[pos][1]["value"]["cls_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:cls_dim_lv1_avg_percent],item[:value][:gra_dim_lv1_avg_percent])
+          kdata_dim_table[pos][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
 
         elsif(item[:_id].keys.include?("lv2_ckp")) 
           lv2_ckp_key = item[:_id][:lv2_ckp]
-          lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_key]
-          next if !ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_key)
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_average"] = format_float(item[:value][:cls_dim_lv2_avg])
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_average_percent"] = convert_2_full_mark(item[:value][:cls_dim_lv2_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:cls_dim_lv2_avg_percent],item[:value][:gra_dim_lv2_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
+          lv2_ckp_order = item[:_id][:lv2_order]
+          lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
+          lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
+          next unless lv1_ckp_order
+          lv1_obj = kdata_dim_table.assoc(lv1_ckp_order)
+          pos_lv1 = kdata_dim_table.index(lv1_obj);
+          next unless pos_lv1
+          lv2_obj = kdata_dim_table[pos_lv1][1]["items"].assoc(lv2_ckp_order)
+          pos_lv2 = kdata_dim_table[pos_lv1][1]["items"].index(lv2_obj)
+          next unless pos_lv2
 
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["label"] = lv2_ckp_key
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["cls_average"] = format_float(item[:value][:cls_dim_lv2_avg])
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["cls_average_percent"] = convert_2_full_mark(item[:value][:cls_dim_lv2_avg_percent])
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["cls_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:cls_dim_lv2_avg_percent],item[:value][:gra_dim_lv2_avg_percent])
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
+
+        else
+          kdata_dim_table.unshift([Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              "label" => Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label],
+              "value" => {
+                "cls_average" => format_float(item[:value][:cls_dim_avg]),
+                "cls_average_percent" => convert_2_full_mark(item[:value][:cls_dim_avg_percent]),
+                "gra_average_percent" => convert_2_full_mark(item[:value][:gra_dim_avg_percent]),
+                "cls_gra_avg_percent_diff" => convert_diff_2_full_mark(item[:value][:cls_dim_avg_percent],item[:value][:gra_dim_avg_percent]),
+                "full_score" => format_float(item[:value][:full_mark])
+              },
+              "items" => []
+            }
+          ])
         end
         kreport_h["data_table"][dimesion] = kdata_dim_table
         klass_report.report_json = kreport_h.to_json
@@ -334,28 +472,64 @@ class Mongodb::ReportGenerator
 
         pupil_report, pupil_report_h = get_pupil_report_hash item
         dimesion = item[:_id][:dimesion]
-        pupil_dim_table = pupil_report_h["data_table"][dimesion].keys.empty?? data_table[dimesion].deep_dup : pupil_report_h["data_table"][dimesion]
+        pupil_dim_table = pupil_report_h["data_table"][dimesion].empty?? data_table[dimesion].deep_dup : pupil_report_h["data_table"][dimesion]
         if(item[:_id].keys.include?("lv1_ckp"))
           lv1_ckp_key = item[:_id][:lv1_ckp]
-          next if !ckp_lv2_to_lv1[dimesion].values.include?(lv1_ckp_key)
-          pupil_dim_table[lv1_ckp_key]["value"]["average"] = format_float(item[:value][:average])
-          pupil_dim_table[lv1_ckp_key]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
-          pupil_dim_table[lv1_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-          pupil_dim_table[lv1_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_lv1_avg_percent])
-          pupil_dim_table[lv1_ckp_key]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
-          pupil_dim_table[lv1_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
-          pupil_dim_table[lv1_ckp_key]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
+          lv1_ckp_order = item[:_id][:lv1_order]
+          next unless lv1_ckp_order
+          
+          lv1_obj = pupil_dim_table.assoc(lv1_ckp_order)
+          pos = pupil_dim_table.index(lv1_obj)
+          next unless pos
+
+          pupil_dim_table[pos][1]["label"] = lv1_ckp_key
+          pupil_dim_table[pos][1]["value"]["average"] = format_float(item[:value][:average])
+          pupil_dim_table[pos][1]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
+          pupil_dim_table[pos][1]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
+          pupil_dim_table[pos][1]["value"]["pup_cls_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_lv1_avg_percent])
+          pupil_dim_table[pos][1]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
+          pupil_dim_table[pos][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
+          pupil_dim_table[pos][1]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
+
         elsif(item[:_id].keys.include?("lv2_ckp")) 
           lv2_ckp_key = item[:_id][:lv2_ckp]
-          lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_key]
-          next if !ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_key)
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average"] = format_float(item[:value][:average])
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_cls_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_lv2_avg_percent])
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["full_score"] = format_float(item[:value][:full_mark])
-          pupil_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
+          lv2_ckp_order = item[:_id][:lv2_order]
+          lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
+          lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
+          next unless lv1_ckp_order
+          lv1_obj = pupil_dim_table.assoc(lv1_ckp_order)
+          pos_lv1 = pupil_dim_table.index(lv1_obj);
+          next unless pos_lv1
+          lv2_obj = pupil_dim_table[pos_lv1][1]["items"].assoc(lv2_ckp_order)
+          pos_lv2 = pupil_dim_table[pos_lv1][1]["items"].index(lv2_obj)
+          next unless pos_lv2
+
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["label"] = lv2_ckp_key
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["average"] = format_float(item[:value][:average])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["pup_cls_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_lv2_avg_percent])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
+        else
+=begin
+          pupil_dim_table.unshift([Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
+            {
+              "label" => Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label],
+              "value" => {
+                "average" => format_float(item[:value][:average]),
+                "average_percent" => convert_2_full_mark(item[:value][:average_percent]),
+                "gra_average_percent" => convert_2_full_mark(item[:value][:gra_dim_avg_percent]),
+                "pup_cls_avg_percent_diff" => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_avg_percent]),
+                "pup_gra_avg_percent_diff" => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_avg_percent]),
+                "full_score" => format_float(item[:value][:full_mark]),
+                "correct_qzp_count" => format_float(item[:value][:qzp_count])
+              },
+              "items" => []
+            }
+          ]) 
+=end
         end
         pupil_report_h["data_table"][dimesion] = pupil_dim_table
         pupil_report.report_json = pupil_report_h.to_json
@@ -369,24 +543,42 @@ class Mongodb::ReportGenerator
 
         klass_report, kreport_h = get_class_report_hash item
         dimesion = item[:_id][:dimesion]
-        kdata_dim_table = kreport_h["data_table"][dimesion].keys.empty?? data_table[dimesion].deep_dup : kreport_h["data_table"][dimesion]
+        kdata_dim_table = kreport_h["data_table"][dimesion].empty?? data_table[dimesion].deep_dup : kreport_h["data_table"][dimesion]
         if(item[:_id].keys.include?("lv1_ckp"))
           lv1_ckp_key = item[:_id][:lv1_ckp]
-          next if !ckp_lv2_to_lv1[dimesion].values.include?(lv1_ckp_key)
+          lv1_ckp_order = item[:_id][:lv1_order]
+          next unless lv1_ckp_order
+          lv1_obj = kdata_dim_table.assoc(lv1_ckp_order)
+          pos = kdata_dim_table.index(lv1_obj)
+          next unless pos
 
-          kdata_dim_table[lv1_ckp_key]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
-          kdata_dim_table[lv1_ckp_key]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
+          kdata_dim_table[pos][1]["label"] = lv1_ckp_key
+          kdata_dim_table[pos][1]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
+          kdata_dim_table[pos][1]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv1_avg_percent])
+          kdata_dim_table[pos][1]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
 
         elsif(item[:_id].keys.include?("lv2_ckp"))
           lv2_ckp_key = item[:_id][:lv2_ckp]
-          lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_key]
-          next if !ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_key)
+          lv2_ckp_order = item[:_id][:lv2_order]
+          lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
+          lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
+          next unless lv1_ckp_order
+          lv1_obj = kdata_dim_table.assoc(lv1_ckp_order)
+          pos_lv1 = kdata_dim_table.index(lv1_obj);
+          next unless pos_lv1
+          lv2_obj = kdata_dim_table[pos_lv1][1]["items"].assoc(lv2_ckp_order)
+          pos_lv2 = kdata_dim_table[pos_lv1][1]["items"].index(lv2_obj)
+          next unless pos_lv2
 
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv2_avg_percent])
-          kdata_dim_table[lv1_ckp_key]["items"][lv2_ckp_key]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
-
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["label"] = lv2_ckp_key
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_lv2_avg_percent])
+          kdata_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
+        
+        else
+          kdata_dim_table[0][1]["value"]["class_median_percent"] = convert_2_full_mark(item[:value][:median_percent])
+          kdata_dim_table[0][1]["value"]["cls_med_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:gra_dim_avg_percent])
+          kdata_dim_table[0][1]["value"]["diff_degree"] = convert_2_full_mark(item[:value][:diff_degree])
         end
         kreport_h["data_table"][dimesion] = kdata_dim_table
         klass_report.report_json = kreport_h.to_json
@@ -394,6 +586,23 @@ class Mongodb::ReportGenerator
       end
     }
 
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => nil,
+      '_id.dimesion' => {'$exists' => true },
+      '_id.pup_uid' => {'$exists' => true },
+      '_id.lv1_ckp' => nil,
+      '_id.lv2_ckp' => nil,
+      '_id.order' => nil
+    }
+    Mongodb::ReportFourSectionPupilNumberResult.where(filter).each{|item|
+      pupil_report, pupil_report_h = get_pupil_report_hash item
+      dimesion = item[:_id][:dimesion]
+      pupil_report_h["percentile"][dimesion] = format_float(item[:value][:percentile])
+      pupil_report.report_json = pupil_report_h.to_json
+      pupil_report.save
+    }
   end
 
   def construct_gra_cls_each_qizpoint_average_percent
@@ -461,11 +670,23 @@ class Mongodb::ReportGenerator
       pupil_report, report_h = get_pupil_report_hash item
       if item[:id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
-        report_h["charts"]["#{item[:id][:dimesion]}_radar"]["grade_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
-        report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+        lv1_ckp_order = item[:_id][:lv1_order]
+        # report_h["charts"]["#{item[:id][:dimesion]}_radar"]["grade_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
+        temp_arr = report_h["charts"]["#{item[:id][:dimesion]}_radar"]["grade_average"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])}]
+        report_h["charts"]["#{item[:id][:dimesion]}_radar"]["grade_average"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+        #report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"][lv1_ckp_key] = convert_2_full_mark(item[:value][:average_percent])
+        temp_arr = report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"] || []
+        target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value][:average_percent])}]
+        report_h["charts"]["#{item[:id][:dimesion]}_radar"]["pupil_average"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
       elsif item[:id].keys.include?("lv2_ckp")
         lv2_ckp_key = item[:_id][:lv2_ckp]
-        report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"][lv2_ckp_key] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
+        lv2_ckp_order = item[:_id][:lv2_order]
+        #report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"][lv2_ckp_key] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
+        temp_arr = report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"] || []
+        target_pair = [lv2_ckp_order, {lv2_ckp_key => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])}]
+        report_h["charts"]["#{item[:id][:dimesion]}_pup_gra_avg_diff_line"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
       end
       pupil_report.report_json = report_h.to_json
       pupil_report.save
@@ -501,14 +722,14 @@ class Mongodb::ReportGenerator
       }
 
       lv2_dimesion_key_h ={
-        "knowledge" => report_h["data_table"]["knowledge"].values.map{|a| a['items'].keys[0]},
-        "skill" => report_h["data_table"]["skill"].values.map{|a| a['items'].keys[0]},
-        "ability" => report_h["data_table"]["ability"].values.map{|a| a['items'].keys[0]}
+        "knowledge" => report_h["data_table"]["knowledge"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten,
+        "skill" => report_h["data_table"]["skill"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten,
+        "ability" => report_h["data_table"]["ability"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten
       }
       lv2_dimesion_value_h = {
-        "knowledge" => report_h["data_table"]["knowledge"].values.map{|a| a['items'].values[0]["value"]},
-        "skill" => report_h["data_table"]["skill"].values.map{|a| a['items'].values[0]["value"]},
-        "ability" => report_h["data_table"]["ability"].values.map{|a| a['items'].values[0]["value"]}
+        "knowledge" => report_h["data_table"]["knowledge"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["value"]}}.flatten,
+        "skill" => report_h["data_table"]["skill"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["value"]}}.flatten,
+        "ability" => report_h["data_table"]["ability"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["value"]}}.flatten
       }
 
       self_best = {
@@ -564,6 +785,7 @@ class Mongodb::ReportGenerator
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.classroom' => nil,
+      '_id.pup_uid' => nil,
       '_id.dimesion' => {'$exists' => true },
       '_id.lv1_ckp' => {'$exists' => true },
       '_id.lv2_ckp' => nil
@@ -574,11 +796,27 @@ class Mongodb::ReportGenerator
       grade_report, report_h = get_grade_report_hash item
       dimesion = item[:_id][:dimesion]
       lv1_ckp_key = item[:_id][:lv1_ckp]
+      lv1_ckp_order = item[:_id][:lv1_order]
 
-      report_h["four_sections"]["level0"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level0_percent])
-      report_h["four_sections"]["level25"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level25_percent])
-      report_h["four_sections"]["level50"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level50_percent])
-      report_h["four_sections"]["level75"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level75_percent])
+      #report_h["four_sections"]["level0"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level0_percent])
+      temp_arr = report_h["four_sections"]["level0"][dimesion] || []
+      target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_hundred(item[:value][:level0_average_percent])}]
+      report_h["four_sections"]["level0"][dimesion] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+      #report_h["four_sections"]["level25"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level25_percent])
+      temp_arr = report_h["four_sections"]["level25"][dimesion] || []
+      target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_hundred(item[:value][:level25_average_percent])}]
+      report_h["four_sections"]["level25"][dimesion] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+      #report_h["four_sections"]["level50"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level50_percent])
+      temp_arr = report_h["four_sections"]["level50"][dimesion] || []
+      target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_hundred(item[:value][:level50_average_percent])}]
+      report_h["four_sections"]["level50"][dimesion] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
+      #report_h["four_sections"]["level75"][dimesion][lv1_ckp_key] =  convert_2_hundred(item[:value][:level75_percent])
+      temp_arr = report_h["four_sections"]["level75"][dimesion] || []
+      target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_hundred(item[:value][:level75_average_percent])}]
+      report_h["four_sections"]["level75"][dimesion] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
 
       grade_report.report_json = report_h.to_json
       grade_report.save
@@ -605,6 +843,7 @@ class Mongodb::ReportGenerator
       klass = I18n.t("dict.#{item[:_id][:classroom]}")
       if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
+        lv1_ckp_order = item[:_id][:lv1_order]
         # temp_h = report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] || {}
         # temp_h[lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
         # report_h["each_checkpoint_horizon"][dimesion]["average_percent"][klass] = temp_h
@@ -613,9 +852,14 @@ class Mongodb::ReportGenerator
         target_klass = temp_arr.assoc(klass)
         if klass && target_klass
           pos = temp_arr.index(target_klass) || temp_arr.size
-          report_h["each_checkpoint_horizon"][dimesion]["average_percent"][pos][1][lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+          #report_h["each_checkpoint_horizon"][dimesion]["average_percent"][pos][1][lv1_ckp_key] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+
+          temp_arr = report_h["each_checkpoint_horizon"][dimesion]["average_percent"][pos][1] || []
+          target_pair = [lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value]["average_percent".to_sym])}]
+          report_h["each_checkpoint_horizon"][dimesion]["average_percent"][pos][1] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
         elsif klass
-          target_pair = [klass, {lv1_ckp_key => convert_2_full_mark(item[:value]["average_percent".to_sym])}]
+          target_pair = [klass, [[lv1_ckp_order, {lv1_ckp_key => convert_2_full_mark(item[:value]["average_percent".to_sym])}]]]
           report_h["each_checkpoint_horizon"][dimesion]["average_percent"] = insert_item_to_a_with_order "klass", temp_arr, target_pair
         else 
           next
@@ -624,14 +868,19 @@ class Mongodb::ReportGenerator
         # temp_h = report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] || {}
         # temp_h[dimesion] = convert_2_full_mark(item[:value]["average_percent".to_sym])
         # report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] = temp_h
+        dimesion_order = Common::Locale::DimesionOrder[dimesion]
         dimesion_label = I18n.t("dict.#{dimesion}")
         temp_arr = report_h["each_checkpoint_horizon"]["total"]["average_percent"] || []
         target_klass = temp_arr.assoc(klass)
         if klass && target_klass
           pos = temp_arr.index(target_klass) || temp_arr.size
-          report_h["each_checkpoint_horizon"]["total"]["average_percent"][pos][1][dimesion_label] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+          # report_h["each_checkpoint_horizon"]["total"]["average_percent"][pos][1][dimesion_label] = convert_2_full_mark(item[:value]["average_percent".to_sym])
+
+          temp_arr = report_h["each_checkpoint_horizon"]["total"]["average_percent"][pos][1] || []
+          target_pair = [dimesion_order, {dimesion_label => convert_2_full_mark(item[:value]["average_percent".to_sym])}]
+          report_h["each_checkpoint_horizon"]["total"]["average_percent"][pos][1] = insert_item_to_a_with_order "dimesion", temp_arr, target_pair
         elsif klass
-          target_pair = [klass, {dimesion_label => convert_2_full_mark(item[:value]["average_percent".to_sym])}]
+          target_pair = [klass, [[dimesion_order, {dimesion_label => convert_2_full_mark(item[:value]["average_percent".to_sym])}]]]
           report_h["each_checkpoint_horizon"]["total"]["average_percent"] = insert_item_to_a_with_order "klass", temp_arr, target_pair
         else 
           next
@@ -647,6 +896,7 @@ class Mongodb::ReportGenerator
       klass = I18n.t("dict.#{item[:_id][:classroom]}")
       if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
+        lv1_ckp_order = item[:_id][:lv1_order]
         ["median_percent", "med_avg_diff", "diff_degree"].each{|member|
           # temp_h = report_h["each_checkpoint_horizon"][dimesion][member][klass] || {}
           # if member == "med_avg_diff"
@@ -665,9 +915,14 @@ class Mongodb::ReportGenerator
           target_klass = temp_arr.assoc(klass)
           if klass && target_klass
             pos = temp_arr.index(target_klass) || temp_arr.size
-            report_h["each_checkpoint_horizon"][dimesion][member][pos][1][lv1_ckp_key] = target_value
+            #report_h["each_checkpoint_horizon"][dimesion][member][pos][1][lv1_ckp_key] = target_value
+          
+            temp_arr = report_h["each_checkpoint_horizon"][dimesion][member][pos][1] || []
+            target_pair = [lv1_ckp_order, {lv1_ckp_key => target_value}]
+            report_h["each_checkpoint_horizon"][dimesion][member][pos][1] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair
+
           elsif klass
-            target_pair = [klass, {lv1_ckp_key => target_value}]
+            target_pair = [klass, [[lv1_ckp_order, {lv1_ckp_key => target_value}]]]
             report_h["each_checkpoint_horizon"][dimesion][member] = insert_item_to_a_with_order "klass", temp_arr, target_pair
           else 
             next
@@ -683,6 +938,9 @@ class Mongodb::ReportGenerator
           # end
           # report_h["each_checkpoint_horizon"]["total"][member][klass] = temp_h
 
+          dimesion_order = Common::Locale::DimesionOrder[dimesion]
+          dimesion_label = I18n.t("dict.#{dimesion}")
+
           temp_arr = report_h["each_checkpoint_horizon"]["total"][member] || []
           if member == "med_avg_diff"
             target_value = convert_diff_2_full_mark(item[:value][:median_percent],item[:value][:average_percent])
@@ -692,9 +950,13 @@ class Mongodb::ReportGenerator
           target_klass = temp_arr.assoc(klass)
           if klass && target_klass
             pos = temp_arr.index(target_klass) || temp_arr.size
-            report_h["each_checkpoint_horizon"]["total"][member][pos][1][dimesion] = target_value
+            #report_h["each_checkpoint_horizon"]["total"][member][pos][1][dimesion] = target_value
+
+            temp_arr = report_h["each_checkpoint_horizon"]["total"][member][pos][1] || []
+            target_pair = [dimesion_order, {dimesion_label => target_value}]
+            report_h["each_checkpoint_horizon"]["total"][member][pos][1] = insert_item_to_a_with_order "dimesion", temp_arr, target_pair
           elsif klass
-            target_pair = [klass, {dimesion => target_value}]
+            target_pair = [klass, [[dimesion_order, {dimesion_label => target_value}]]]
             report_h["each_checkpoint_horizon"]["total"][member] = insert_item_to_a_with_order "klass", temp_arr, target_pair
           else 
             next
@@ -765,15 +1027,16 @@ class Mongodb::ReportGenerator
       total_lower_than_grade_dimesion = []
 
       #使用2级指标做判断
+      #1级的时候要考虑，总分项
       lv2_dimesion_key_h ={
-        "knowledge" => report_h["data_table"]["knowledge"].values.map{|a| a['items'].keys[0]},
-        "skill" => report_h["data_table"]["skill"].values.map{|a| a['items'].keys[0]},
-        "ability" => report_h["data_table"]["ability"].values.map{|a| a['items'].keys[0]}
+        "knowledge" => report_h["data_table"]["knowledge"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten,
+        "skill" => report_h["data_table"]["skill"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten,
+        "ability" => report_h["data_table"]["ability"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten
       }
       lv2_dimesion_value_h = {
-        "knowledge" => report_h["data_table"]["knowledge"].values.map{|a| a['items'].values[0]["value"]},
-        "skill" => report_h["data_table"]["skill"].values.map{|a| a['items'].values[0]["value"]},
-        "ability" => report_h["data_table"]["ability"].values.map{|a| a['items'].values[0]["value"]}
+        "knowledge" => report_h["data_table"]["knowledge"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["value"]}}.flatten,
+        "skill" => report_h["data_table"]["skill"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["value"]}}.flatten,
+        "ability" => report_h["data_table"]["ability"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["value"]}}.flatten
       }
 
       klass_best = {
@@ -794,34 +1057,33 @@ class Mongodb::ReportGenerator
           ###########学生最佳表现
           cond = (member["cls_average_percent"] == klass_best[dimesion])
           if cond
-            comment_h[dimesion.to_sym][:pupil_highest_items] += lv2_dimesion_key_h[dimesion][index] + " "
+            comment_h[dimesion.to_sym][:pupil_highest_items] += lv2_dimesion_key_h[dimesion][index] + ","
           end
           ###########学生最差表现
           cond = (member["cls_average_percent"] == klass_worst[dimesion])
           if cond
-            comment_h[dimesion.to_sym][:pupil_lowest_items] += lv2_dimesion_key_h[dimesion][index] + " "
+            comment_h[dimesion.to_sym][:pupil_lowest_items] += lv2_dimesion_key_h[dimesion][index] + ","
           end
 
           ###########高于年级平均水平
           cond= (member["cls_gra_avg_percent_diff"] > 0)
           if cond
-            comment_h[dimesion.to_sym][:higher_than_grade_items] += lv2_dimesion_key_h[dimesion][index] + " "
-            total_higher_than_grade_dimesion << dimesion unless total_higher_than_grade_dimesion.include?(dimesion)
+            comment_h[dimesion.to_sym][:higher_than_grade_items] += lv2_dimesion_key_h[dimesion][index] + ","
+            #total_higher_than_grade_dimesion << I18n.t("dict.#{dimesion}") unless total_higher_than_grade_dimesion.include?(dimesion)
           end
           ###########低于年级平均水平
           cond= (member["cls_gra_avg_percent_diff"] < 0)
           if cond
-            comment_h[dimesion.to_sym][:lower_than_grade_items] += lv2_dimesion_key_h[dimesion][index] + " "
-            total_lower_than_grade_dimesion << dimesion unless total_lower_than_grade_dimesion.include?(dimesion)
+            comment_h[dimesion.to_sym][:lower_than_grade_items] += lv2_dimesion_key_h[dimesion][index] + ","
+            #total_lower_than_grade_dimesion << I18n.t("dict.#{dimesion}") unless total_lower_than_grade_dimesion.include?(dimesion)
           end 
         }
         ###########平均值
         #达到何水平判断
         comment_h[dimesion.to_sym][:klass_average_percent] = convert_2_full_mark(report_h["dimesion_values"][dimesion]["average_percent"])
-        comment_h[dimesion.to_sym][:level] = judge_score_level(comment_h[dimesion.to_sym][:klass_average_percent])
+        comment_h[dimesion.to_sym][:level] = judge_score_level(report_h["dimesion_values"][dimesion]["average_percent"])
         #与年级相比
-        cls_gra_diff = report_h["dimesion_values"][dimesion]["average_percent"] - report_h["dimesion_values"][dimesion]["gra_average_percent"]
-        comment_h[dimesion.to_sym][:than_grade] = judge_score_level(cls_gra_diff)
+        comment_h[dimesion.to_sym][:than_grade] = get_compare_value_label(report_h["dimesion_values"][dimesion]["average_percent"],report_h["dimesion_values"][dimesion]["gra_average_percent"])
         ###########各比例学生百分比
         class_percent = report_h["each_level_number"]["class_grade_#{dimesion}"]["class_#{dimesion}"]
         grade_percent = report_h["each_level_number"]["class_grade_#{dimesion}"]["grade_#{dimesion}"]
@@ -831,9 +1093,9 @@ class Mongodb::ReportGenerator
 
         comment_h[dimesion.to_sym][:excellent_level_percent] = class_percent["excellent_pupil_percent"]
         comment_h[dimesion.to_sym][:excellent_level_percent_than_grade] = excellent_level_percent_than_grade
-        comment_h[dimesion.to_sym][:good_pupil_percent] = class_percent["good_pupil_percent"]
+        comment_h[dimesion.to_sym][:good_level_percent] = class_percent["good_pupil_percent"]
         comment_h[dimesion.to_sym][:good_level_percent_than_grade] = good_level_percent_than_grade
-        comment_h[dimesion.to_sym][:failed_pupil_percent] = class_percent["failed_pupil_percent"]
+        comment_h[dimesion.to_sym][:failed_level_percent] = class_percent["failed_pupil_percent"]
         comment_h[dimesion.to_sym][:failed_level_percent_than_grade] = failed_level_percent_than_grade        
         report_h["quiz_comment"][dimesion] %= comment_h[dimesion.to_sym]
       }
@@ -853,10 +1115,19 @@ class Mongodb::ReportGenerator
       }
       total_h[:pupil_lowest_dimesions] = I18n.t("dict.#{worst_dimesion}")
 
-      total_h[:higher_than_grade_dimesions] = total_higher_than_grade_dimesion.join(" ")
-      total_h[:lower_than_grade_dimesions] = total_lower_than_grade_dimesion.join(" ")
-      total_h[:klass_average_percent] = format_float(comment_h.values.map{|item| item[:klass_average_percent]}.sum/3)
-      total_h[:level] = judge_score_level total_h[:klass_average_percent]
+      ["knowledge", "skill", "ability"].each{|dim|
+        if report_h["data_table"][dim][0][1]["value"]["cls_gra_avg_percent_diff"] > 0
+          total_higher_than_grade_dimesion << I18n.t("dict.#{dim}")
+        else
+          total_lower_than_grade_dimesion << I18n.t("dict.#{dim}")
+        end
+      }
+
+      total_h[:higher_than_grade_dimesions] = total_higher_than_grade_dimesion.join(",")
+      total_h[:lower_than_grade_dimesions] = total_lower_than_grade_dimesion.join(",")
+      klass_avg_percent = comment_h.values.map{|item| item[:klass_average_percent]}.sum/3
+      total_h[:klass_average_percent] = format_float(klass_avg_percent)
+      total_h[:level] = judge_score_level klass_avg_percent
       total_grade_average_percent = format_float(report_h["dimesion_values"].values.map{|item| item["gra_average_percent"]}.sum/3)
       total_h[:than_grade] = get_compare_value_label(total_h[:klass_average_percent],total_grade_average_percent)
 
@@ -867,9 +1138,9 @@ class Mongodb::ReportGenerator
       total_failed_than_grade = get_compare_value_label(total_class_percent["failed_pupil_percent"],total_grade_percent["failed_pupil_percent"])
       total_h[:excellent_level_percent] = total_class_percent["excellent_pupil_percent"]
       total_h[:excellent_level_percent_than_grade] = total_excellent_than_grade
-      total_h[:good_pupil_percent] = total_class_percent["good_pupil_percent"]
+      total_h[:good_level_percent] = total_class_percent["good_pupil_percent"]
       total_h[:good_level_percent_than_grade] = total_good_than_grade
-      total_h[:failed_pupil_percent] = total_class_percent["failed_pupil_percent"]
+      total_h[:failed_level_percent] = total_class_percent["failed_pupil_percent"]
       total_h[:failed_level_percent_than_grade] = total_failed_than_grade
       report_h["quiz_comment"]["total"] %= total_h 
     
@@ -924,10 +1195,10 @@ class Mongodb::ReportGenerator
           {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion}, 
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order}, 
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order}, 
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion}, 
@@ -939,19 +1210,19 @@ class Mongodb::ReportGenerator
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, order: this.order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order},
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order},
           value_obj);
       }
     }
@@ -1099,12 +1370,7 @@ class Mongodb::ReportGenerator
     map = %Q{
       function(){
         if(!this._id.lv1_ckp && !this._id.lv2_ckp){
-          emit(
-            { pap_uid: this._id.pap_uid,
-              grade: this._id.grade, 
-              classroom: this._id.classroom, 
-              dimesion: this._id.dimesion},
-            {
+          var value_obj = {
               reduced: 0,
               deltas:[this.value.average - this.value.cls_dim_avg],
               diff2_sum: 0,
@@ -1124,6 +1390,25 @@ class Mongodb::ReportGenerator
               gra_dim_avg: this.value.gra_dim_avg,
               gra_dim_avg_percent: this.value.gra_dim_avg_percent
             }
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              dimesion: this._id.dimesion},
+            value_obj
+          );
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              classroom: this._id.classroom, 
+              dimesion: this._id.dimesion},
+            value_obj
+          );
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade, 
+              pup_uid: this._id.pup_uid,
+              dimesion: this._id.dimesion},
+            value_obj
           );
         }
         if(this._id.lv1_ckp){
@@ -1131,7 +1416,8 @@ class Mongodb::ReportGenerator
             { pap_uid: this._id.pap_uid,
               grade: this._id.grade, 
               dimesion: this._id.dimesion, 
-              lv1_ckp: this._id.lv1_ckp},
+              lv1_ckp: this._id.lv1_ckp,
+              lv1_order: this._id.lv1_order},
             {
               reduced: 0,
               deltas:[this.value.average - this.value.gra_dim_lv1_avg],
@@ -1157,7 +1443,8 @@ class Mongodb::ReportGenerator
               grade: this._id.grade,
               pup_uid: this._id.pup_uid,
               dimesion: this._id.dimesion, 
-              lv1_ckp: this._id.lv1_ckp},
+              lv1_ckp: this._id.lv1_ckp,
+              lv1_order: this._id.lv1_order},
             {
               reduced: 0,
               deltas:[this.value.average - this.value.gra_dim_lv1_avg],
@@ -1183,7 +1470,8 @@ class Mongodb::ReportGenerator
               grade: this._id.grade, 
               classroom: this._id.classroom, 
               dimesion: this._id.dimesion, 
-              lv1_ckp: this._id.lv1_ckp},
+              lv1_ckp: this._id.lv1_ckp,
+              lv1_order: this._id.lv1_order},
             {
               reduced: 0,
               deltas:[this.value.average - this.value.cls_dim_lv1_avg],
@@ -1211,7 +1499,8 @@ class Mongodb::ReportGenerator
             { pap_uid: this._id.pap_uid,
               grade: this._id.grade, 
               dimesion: this._id.dimesion, 
-              lv2_ckp: this._id.lv2_ckp},
+              lv2_ckp: this._id.lv2_ckp,
+              lv2_order: this._id.lv2_order},
             {
               reduced: 0,
               deltas:[this.value.average - this.value.gra_dim_lv2_avg],
@@ -1237,7 +1526,8 @@ class Mongodb::ReportGenerator
               grade: this._id.grade, 
               classroom: this._id.classroom, 
               dimesion: this._id.dimesion, 
-              lv2_ckp: this._id.lv2_ckp},
+              lv2_ckp: this._id.lv2_ckp,
+              lv2_order: this._id.lv2_order},
             {
               reduced: 0,
               deltas:[this.value.average - this.value.cls_dim_lv2_avg],
@@ -1425,12 +1715,26 @@ class Mongodb::ReportGenerator
       '_id.classroom' => nil,
       '_id.pup_uid' => nil,
       '_id.dimesion' => {'$exists' => true },
-      '_id.lv1_ckp' => {'$exists' => true },
+      #'_id.lv1_ckp' => {'$exists' => true },
       '_id.lv2_ckp' => nil
     }
     arr = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout # need add filter here, user_id or somethind
 
     add_materials2_core 1, arr
+=begin
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => nil,
+      '_id.pup_uid' => nil,
+      '_id.dimesion' => {'$exists' => true },
+      '_id.lv1_ckp' => nil,
+      '_id.lv2_ckp' => nil
+    }
+    arr = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout # need add filter here, user_id or somethind
+
+    add_materials2_core 1, arr, "dimesion"
+=end
   end
 
   def add_materials2_core th_index, arr
@@ -1443,9 +1747,12 @@ class Mongodb::ReportGenerator
       #'_id.classroom' => nil,
       '_id.pup_uid' => {'$exists' => true },
       '_id.dimesion' => item[:_id][:dimesion],
-      '_id.lv1_ckp' => item[:_id][:lv1_ckp],
+      '_id.lv1_ckp' => item[:_id].keys.include?("lv1_ckp")? item[:_id][:lv1_ckp] : nil,
       '_id.lv2_ckp' => nil
       }
+
+      p ">>>>>>>>>>>"
+      p pupil_filter
 
       average_arr = item[:value][:average_stack].blank?? [] : item[:value][:average_stack].sort.reverse
 
@@ -1456,7 +1763,7 @@ class Mongodb::ReportGenerator
 
       results = Mongodb::ReportStandDevDiffResult.where(pupil_filter).no_timeout
       results.each{|result|
-        values_h['value.grade_rank'] = average_arr.index(result[:value][:average_percent]) || 0
+        values_h['value.grade_rank'] = (average_arr.index(result[:value][:average_percent]) +1 )|| 0
         result.update_attributes(values_h)
       }
     }  
@@ -1529,7 +1836,8 @@ class Mongodb::ReportGenerator
               { pap_uid: this._id.pap_uid,
                 grade: this._id.grade, 
                 dimesion: this._id.dimesion,
-                lv1_ckp: this._id.lv1_ckp
+                lv1_ckp: this._id.lv1_ckp,
+                lv1_order: this._id.lv1_order
               }, 
               value_obj
           );
@@ -1538,7 +1846,8 @@ class Mongodb::ReportGenerator
                 grade: this._id.grade,
                 classroom: this._id.classroom,
                 dimesion: this._id.dimesion,
-                lv1_ckp: this._id.lv1_ckp
+                lv1_ckp: this._id.lv1_ckp,
+                lv1_order: this._id.lv1_order
               }, 
               value_obj 
           );
@@ -1548,7 +1857,8 @@ class Mongodb::ReportGenerator
               { pap_uid: this._id.pap_uid,
                 grade: this._id.grade, 
                 dimesion: this._id.dimesion,
-                lv2_ckp: this._id.lv2_ckp
+                lv2_ckp: this._id.lv2_ckp,
+                lv2_order: this._id.lv2_order
               }, 
               value_obj
           );
@@ -1557,7 +1867,8 @@ class Mongodb::ReportGenerator
                 grade: this._id.grade,
                 classroom: this._id.classroom,
                 dimesion: this._id.dimesion,
-                lv2_ckp: this._id.lv2_ckp
+                lv2_ckp: this._id.lv2_ckp,
+                lv2_order: this._id.lv2_order
               }, 
               value_obj 
           );
@@ -1603,10 +1914,11 @@ class Mongodb::ReportGenerator
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
-      #'_id.classroom' => nil,
+      '_id.classroom' => nil,
       '_id.pup_uid' => {'$exists' => true },
       '_id.dimesion' => {'$exists' => true },
-      '_id.lv1_ckp' => {'$exists' => true },
+      '_id.order' => nil,
+#      '_id.lv1_ckp' => {'$exists' => true },
       '_id.lv2_ckp' => nil
     }
 
@@ -1615,15 +1927,20 @@ class Mongodb::ReportGenerator
 
         var value_obj = {
           reduced: 0,
+          percentile: 0,
           total_number: 1,
           level0_number: 0,
           level25_number: 0,
           level50_number: 0,
           level75_number: 0,
-          level0_percent: 0,
-          level25_percent: 0,
-          level50_percent: 0,
-          level75_percent: 0
+          level0_average_percent: 0,
+          level25_average_percent: 0,
+          level50_average_percent: 0,
+          level75_average_percent: 0,
+          level0_average_percent_total: 0,
+          level25_average_percent_total: 0,
+          level50_average_percent_total: 0,
+          level75_average_percent_total: 0
         };
 
         if(this.value.grade_rank && this.value.grade_pupil_number && this.value.grade_rank != 0 && this.value.grade_pupil_number!=0){
@@ -1632,14 +1949,20 @@ class Mongodb::ReportGenerator
           percentile = 0;
         }
 
+        value_obj.percentile = percentile;
+
         if( 0.0 <= percentile && percentile <= #{Common::Report::FourSection::Level25} ){
           value_obj.level0_number = 1;
+          value_obj.level0_average_percent_total = this.value.average_percent;
         } else if (#{Common::Report::FourSection::Level25} < percentile && percentile <= #{Common::Report::FourSection::Level50}){
           value_obj.level25_number = 1;
+          value_obj.level25_average_percent_total = this.value.average_percent;
         } else if (#{Common::Report::FourSection::Level50} < percentile && percentile <= #{Common::Report::FourSection::Level75}){
           value_obj.level50_number = 1;
+          value_obj.level50_average_percent_total = this.value.average_percent;
         } else if (#{Common::Report::FourSection::Level75} < percentile && percentile <= 100){
           value_obj.level75_number = 1;
+          value_obj.level75_average_percent_total = this.value.average_percent;
         }
 
         if(this._id.lv1_ckp){
@@ -1647,7 +1970,17 @@ class Mongodb::ReportGenerator
               { pap_uid: this._id.pap_uid,
                 grade: this._id.grade, 
                 dimesion: this._id.dimesion,
-                lv1_ckp: this._id.lv1_ckp
+                lv1_ckp: this._id.lv1_ckp,
+                lv1_order: this._id.lv1_order
+              }, 
+              value_obj
+          );
+        } else {
+          emit(
+              { pap_uid: this._id.pap_uid,
+                grade: this._id.grade,
+                dimesion: this._id.dimesion,
+                pup_uid: this._id.pup_uid
               }, 
               value_obj
           );
@@ -1659,15 +1992,20 @@ class Mongodb::ReportGenerator
       function(key,values){
         var result = {
           reduced: 1,
+          percentile: values[0].percentile,
           total_number: 0,
           level0_number: 0,
           level25_number: 0,
           level50_number: 0,
           level75_number: 0,
-          level0_percent: 0,
-          level25_percent: 0,
-          level50_percent: 0,
-          level75_percent: 0
+          level0_average_percent: 0,
+          level25_average_percent: 0,
+          level50_average_percent: 0,
+          level75_average_percent: 0,
+          level0_average_percent_total: 0,
+          level25_average_percent_total: 0,
+          level50_average_percent_total: 0,
+          level75_average_percent_total: 0
         }
 
         values.forEach(function(value){
@@ -1676,12 +2014,16 @@ class Mongodb::ReportGenerator
           result.level25_number += value.level25_number;
           result.level50_number += value.level50_number;
           result.level75_number += value.level75_number;
+          result.level0_average_percent_total += value.level0_average_percent_total;
+          result.level25_average_percent_total += value.level25_average_percent_total;
+          result.level50_average_percent_total += value.level50_average_percent_total;
+          result.level75_average_percent_total += value.level75_average_percent_total;
         });
 
-        result.level0_percent = result.level0_number/result.total_number;
-        result.level25_percent = result.level25_number/result.total_number;
-        result.level50_percent = result.level50_number/result.total_number;
-        result.level75_percent = result.level75_number/result.total_number;
+        result.level0_average_percent = result.level0_average_percent_total/result.total_number;
+        result.level25_average_percent = result.level25_average_percent_total/result.total_number;
+        result.level50_average_percent = result.level50_average_percent_total/result.total_number;
+        result.level75_average_percent = result.level75_average_percent_total/result.total_number;
         return result;
       }
     }
@@ -1690,7 +2032,7 @@ class Mongodb::ReportGenerator
   end
 
 
-  private
+  #private
   #
   # 
   #
@@ -1829,7 +2171,7 @@ class Mongodb::ReportGenerator
       :district => @district,
       :school => @school,
       :grade => item[:_id][:grade],
-      :classroom => item[:_id][:classroom],
+      #:classroom => item[:_id][:classroom],
       :pap_uid => @pap_uid,
       :pup_uid => item[:_id][:pup_uid]
     }
@@ -1862,9 +2204,9 @@ class Mongodb::ReportGenerator
 
   def get_ckp_table
     result = {
-      "knowledge" => {},
-      "skill" => {},
-      "ability" => {}
+      "knowledge" => [],
+      "skill" => [],
+      "ability" => []
     }
 
     ckp_lv2_to_lv1 ={
@@ -1876,17 +2218,38 @@ class Mongodb::ReportGenerator
     qzpoints = @paper.bank_quiz_qizs.map{|item| item.bank_qizpoint_qzps}.flatten
     ckps = qzpoints.map{|item| item.bank_checkpoint_ckps}.flatten.uniq
     ckps.each{|ckp|
-      next unless ckp
+      next unless 
       # search current level checkpoint
+      dimesion = ckp.dimesion
       lv1_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+      lv1_ckp_label = lv1_ckp.checkpoint
+      lv1_ckp_order = lv1_ckp.nil?? "":lv1_ckp.sort
       lv2_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
+      lv2_ckp_label = lv2_ckp.checkpoint
+      lv2_ckp_order = lv2_ckp.nil?? "":lv2_ckp.sort
 
-      lv1_temph = result[ckp.dimesion][lv1_ckp.checkpoint] || {"value"=> {}, "items"=> {}}
-      result[ckp.dimesion][lv1_ckp.checkpoint] = lv1_temph
-      result[ckp.dimesion][lv1_ckp.checkpoint]["items"][lv2_ckp.checkpoint] = {"value"=> {}, "items"=> {}}
+      target_lv1_ckp = result[dimesion].assoc(lv1_ckp_order)
+      unless target_lv1_ckp
+        target_pair = [lv1_ckp_order, {"label" => lv1_ckp_label, "value" => {}, "items" => []}]
+        result[dimesion] = insert_item_to_a_with_order "checkpoint", result[dimesion], target_pair
+      end
 
-      ckp_lv2_to_lv1[lv2_ckp.dimesion][lv2_ckp.checkpoint] = lv1_ckp.checkpoint
+      target_lv1_ckp = result[dimesion].assoc(lv1_ckp_order)
+      pos = result[dimesion].index(target_lv1_ckp)
+      lv2_temp_arr = result[dimesion][pos][1]["items"]
+      target_lv2_ckp = lv2_temp_arr.assoc(lv2_ckp_order)
+      unless target_lv2_ckp
+        target_pair = [lv2_ckp_order, {"label" => lv2_ckp_label, "value" => {}, "items" => []}]
+        lv2_temp_arr = insert_item_to_a_with_order "checkpoint", lv2_temp_arr, target_pair
+        result[dimesion][pos][1]["items"] = lv2_temp_arr
+      end
+      ckp_lv2_to_lv1[dimesion][lv2_ckp_order] = {"lv1_ckp" => lv1_ckp_label, "lv1_order" => lv1_ckp_order}
     }
+    # add total row
+    ["knowledge", "skill", "ability"].each{|dimesion|
+      
+    }
+
     return result,ckp_lv2_to_lv1
   end
 
@@ -1957,8 +2320,17 @@ class Mongodb::ReportGenerator
           last_key = key
           break
         end
+      when "checkpoint"
+        if Common::CheckpointCkp::compare_rid(arr[0], key) < 0
+          last_key = key
+          break
+        end
+      when "dimesion"
+        if Common::Locale.mysort(arr[0],key) < 0
+          last_key = key
+          break
+        end
       end
-
     }
     target_arr.insert_before(last_key, arr)
     return target_arr

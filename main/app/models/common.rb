@@ -69,6 +69,18 @@ module Common
     module_function
     TYPE = %w{knowledge skill ability}
 
+    ReservedCkpRid = {
+      :knowledge => {
+          :total => { :label => I18n.t("checkpoints.label.knowledge.total"), :rid => "-1"}
+      },
+      :skill => {
+          :total => { :label => I18n.t("checkpoints.label.skill.total"), :rid => "-2"}
+      },
+      :ability => {
+          :total => { :label => I18n.t("checkpoints.label.ability.total"), :rid => "-3"}
+      }
+    }
+
     DifficultyModifier = {
       :default =>1,
       :knowledge => {
@@ -115,21 +127,27 @@ module Common
           if x[i] =~ /[0-9a-z]/
             if y[i] =~ /[0-9a-z]/
               result = x[i] <=> y[i]
+              break
             else
               result = 1
+              break
             end
           elsif y[i] =~ /[0-9a-z]/
             result = -1
+            break
           else
             result = x[i] <=> y[i]
+            break
           end
         end
       end
 
-      if x.length == y.length
-        return result
-      else
+#      if x.length == y.length
+#        return result
+      if result == 0
         return (x.length > y.length)? 1:-1
+      else
+        return result
       end
     end
   end
@@ -248,6 +266,7 @@ module Common
 
     module Format
       #班级报告解读文字
+=begin
       KlassExplanation = {
           "three_dimesions"=>"
 <div class='wrapper-md'>
@@ -730,6 +749,310 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 </div>
 </div>
           ",
+=end
+
+      KlassExplanation = {
+          "three_dimesions"=>"
+<div class='wrapper-md'>
+<h1 class='font-thin h3'>报告解读</h1></div>
+<div class='hbox hbox-auto-xs hbox-auto-sm'>
+<div class='col'>
+<div class='clearfix padder-lg'>
+<h3>三维指标含义解释</h3>
+<dl>
+<dt>技能指标</dt>
+<dd>
+<ol>
+
+<li>1. 听
+<ol>
+
+<li>1.1 记忆（听）：通过听的方式，从长期记忆取回有关知识的思维过程；
+<ol>
+<li>
+1.1.1再认（听）：通过听的方式，对再次出现的信息能够识别的思维过程；
+</li>
+<li>
+1.1.2再现（听）：通过听的方式，从记忆中提取所需信息的思维过程；
+</li>
+</ol>
+</li>
+
+<li>
+1.2 理解（听）：从听的方式中建构意义的思维过程；
+<ol>
+
+<li>
+1.2.1 意义建构（听）：将听到的内容转化成有意义的信息并产生相应的反应的思维过程；
+</li>
+
+<li>
+1.2.2 匹配（听）：找出所听到信息与所看到的信息的一致性，并将两者搭配起来的思维过程；
+</li>
+
+<li>
+1.2.3 信息提取（听）：从长篇对话或听力材料中获取信息的思维过程
+<ol>
+<li>
+1.2.3.1 直接提取（听）：从长篇对话或者听力材料中直接获取所需信息的思维过程；
+</li>
+<li>
+1.2.3.2间接提取（听）：从长篇对话或听力材料中，经过语义转换获取所需信息的思维过程；
+</li>
+</ol>
+
+<li>
+1.2.4 综合概括（听）：对长篇对话或听力材料的主要内容、主旨进行归纳概括的思维过程；
+</li>
+
+<li>
+1.2.5 推理（听）：根据长篇对话或听力材料中的信息，做出超越文本的推测的思维过程；
+</li>
+
+</ol>
+</li>
+
+<li>
+1.3 分析（听）：将长篇对话或听力材料分解成各个部分，并确定各部分彼此和与整体结构或目的关系；
+<ol>
+<li>
+1.3.1 区分（听）：对听力材料中高度相似的信息加以分辨，找出符合条件的信息的思维过程；
+</li>
+<li>
+1.3.2 归因（听）：确定听力材料隐含的观点、偏见、价值观或意图的思维过程；
+</li>
+
+</ol>
+</li>
+
+</ol>
+</li>
+
+
+<li>2. 读
+<ol>
+
+<li>
+2.1记忆（读）：通过读的方式，从长期记忆取回有关知识的思维过程；
+<ol>
+<li>
+2.1.1再认（读）：通过读的方式，对再次出现的信息能够识别的思维过程；
+</li>
+<li>
+2.1.2再现（读）：通过读的方式，从记忆中提取所需信息的思维过程；
+</li>
+</ol>
+</li>
+
+<li>
+2.2 理解（读）：从读的方式中建构意义的思维过程
+<ol>
+<li>
+2.2.1 意义建构（读）：将读到的内容转化成有意义的信息并产生相应的反应的思维过程；
+</li>
+<li>
+2.2.2 匹配（读）：将信息一致或近似的单词、句子搭配起来的思维过程；
+</li>
+<li>
+2.2.3 信息提取（读）：从长篇对话或阅读材料中获取信息的思维过程
+<ol>
+<li>
+2.2.3.1 直接提取（读）：从长篇对话或者阅读材料中直接获取所需信息的思维过程；
+</li>
+<li>
+2.2.3.2间接提取（读）：从长篇对话或阅读材料中，经过语义转换获取所需信息的思维过程；
+</li>
+</ol>
+</li>
+<li>
+2.2.4 综合概括（读）：对长篇对话或阅读材料的主要内容、主旨进行归纳概括的思维过程；
+</li>
+<li>
+2.2.5 推理（读）：根据长篇对话或阅读材料中的信息，做出超越文本的推测的思维过程；
+</li>
+</ol>
+</li>
+
+<li>
+2.3 分析（读）：将长篇对话或阅读材料分解成各个部分，并确定各部分彼此和与整体结构或目的关系；
+<ol>
+<li>
+2.3.1 区分（读）：对高度相似的信息加以分辨，找出符合条件的信息的思维过程；
+</li>
+<li>
+2.3.2 归因（读）：确定阅读材料隐含的观点、偏见、价值观或意图的思维过程；
+</li>
+<li>
+2.3.3 结构剖析（读）：确定词序、句子的成分、文章的结构、写作手法或风格的恰当性等的思维过程；
+</li>
+</ol>
+</li>
+
+</ol>
+</li>
+
+
+<li>3. 写
+<ol>
+
+<li>
+3.1 记忆（写）
+<ol>
+<li>
+3.1.1 抄写：按照给出的原文写下来。
+</li>
+<li>
+3.1.2 默写：从长时记忆中提取信息并写下来的过程。
+</li>
+</ol>
+</li>
+
+<li>
+3.2 应用
+<ol>
+<li>
+3.2.1 模仿：在相似度较高的情境下将学习过的知识，通过书写的方式呈现出来的过程。
+</li>
+<li>
+3.2.2 迁移：将学习过的知识在新的情景中以恰当的形式重组，并通过书写的方式呈现出来的过程。
+</li>
+</ol>
+</li>
+
+<li>
+3.3 表达
+<ol>
+<li>
+3.3.1 记叙性表达：以记人、叙事、写景、状物为主，对社会生活中的人、串、景、物的情态变化和发展进行叙述和描写的表达。
+</li>
+<li>
+3.3.2 说明性表达：对事物的形状、性质、特征、成因、关系、功用等进行解说的表达。
+</li>
+<li>
+3.3.3 议论性表达：对事件发表意见、主张和看法的表达。
+</li>
+<li>
+3.3.4 应用性表达：为处理生活、学习、工作中的实际事物而进行的表达。
+</li>
+</ol>
+</li>
+
+</ol>
+</li>
+
+
+</ol>
+</dd>
+
+
+<dt>能力指标</dt>
+<dd>
+<ol>
+
+<li>
+1. 语言-言语：有效地运用口头语言及文字的能力;
+<ol>
+
+<li>
+1.1 词汇辨析：对词音、词型、词义、词法进行区分，找出最符合条件的能力。
+<ol>
+<li>
+1.1.1 词音辨析：对单词的发音进行区分，找出最符合条件的能力。
+</li>
+<li>
+1.1.2 词型辨析：对单词的拼写形式进行区分，找出最符合条件的能力。
+</li>
+<li>
+1.1.3 词义辨析：对单词或短语的意义进行区分，找出最符合条件的能力。
+</li>
+<li>
+1.1.4 词法辨析：对单词或短语的用法进行区分，找出最符合条件的能力。
+</li>
+</ol>
+</li>
+<li>
+
+<li>
+1.2 语言理解：通过口头语言或文字建构意义，表达思想，实现交流与沟通目的的能力。
+<ol>
+<li>
+1.2.1 建构性理解：将口头语言、文字、图形、符号转化成有意义的信息，并做出相应反应的能力。
+</li>
+<li>
+1.2.2 匹配性理解：将具有一致性或相关联系的两个事物、观点或其他类似物匹配起来的能力。
+</li>
+<li>
+1.2.3 概括性理解：综合各种信息，得出概括性结论的能力。
+</li>
+<li>
+1.2.4 推理性理解：综合各种信息，得出符合逻辑的推论的能力。
+</li>
+</ol>
+</li>
+
+</li>
+</ol>
+</li>
+
+<li>
+2 数理-逻辑：有效运用数字和推理的能力
+<ol>
+<li>
+2.1 逻辑分析：发现句子、文章内在逻辑结构或逻辑关系或以有逻辑的结构或关系表述事物的能力。
+<ol>
+<li>
+2.1.1 关系分析：发现句子、文章内在逻辑关系或以符合逻辑的关系表述事物的能力。
+</li>
+<li>
+2.1.2 结构分析：发现句子、文章逻辑结构或以恰当的结构表述事物的能力。
+</li>
+</ol>
+</li>
+</ol>
+</li>
+
+<li>
+3 交流-交际：领会和体验他人的情绪、情感、意图、目的能力
+<ol>
+<li>
+3.1 人际理解：通过文本领会和体验他人的情绪、情感、意图、目的的能力。
+<ol>
+<li>
+3.1.1 作者理解：领会和体验作者透过文本表达的情绪、情感、意图、目的等的能力。
+</li>
+<li>
+3.1.2 作品理解：领会和体验文本中人物情绪、情感、意图、目的等的能力。
+</li>
+</ol>
+</li>
+</ol>
+</li>
+
+<li>
+4 自知-自省：自我反思、自我省察、自我表达的能力。
+<ol>
+<li>
+4.1 自我情感认识：对自己情绪反思、觉察及表达的能力。
+</li>
+<li>
+4.2 自我态度认识：对自己对事物的态度的反思、觉察及表达的能力。
+</li>
+<li>
+4.3 自我价值观认识：对自己的价值观的反思、觉察及表达的能力。
+</li>
+</ol>
+</li>
+
+</ol>
+</dd>
+
+
+
+</dl>
+</div>
+</div>
+</div>",
+
           "statistics"=> "
 <div class='wrapper-md'>
 <h1 class='font-thin h3'>报告解读</h1>
@@ -782,7 +1105,7 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 从而使平均得分率不能很好的代表班级的总体水平。技能中位数得分率低于平均得分率，需要结合基础技能和高级思维技能在本次考试中所占比重的情况综合考虑。
 如果基础技能所占比重较大，且班级学生技能低分又较多，则表明多数学生需掌握的基础技能并没有掌握好，可能与训练较少有关；如果高级技能所占比重较大，
 则表明试题难度与多数学生的水平不相匹配，任课教师需要在高级思维技能方面给学生以更多的引导和关注</li>
-<li>分化程度表明分化程度越小，表明任课老师在全体学生共同进步方面所投入的精力越大。分化程度越大，表明班级学生的分化现象越严重，
+<li>分化程度越小，表明任课老师在全体学生共同进步方面所投入的精力越大。分化程度越大，表明班级学生的分化现象越严重，
 需要教师针对不同群体的学生采取不同的训练策略，以防止分化进一步加剧。正常的情况应该是学生在基础技能项上的分化程度要小，在高级技能项上的分化程度要大。</li>
 <li>任课教师可选取分化程度最大的技能点作为调整教学策略的最初切入点。</li>
 </ul>
@@ -1003,23 +1326,23 @@ How many kinds of animals are talked about in the poster(海报)?<br>
         #诊断图
         "charts" => {
           "knowledge_3lines" => {
-            "grade_median_percent" => {},
-            "grade_average_percent" => {},
-            "grade_diff_degree" => {}
+            "grade_median_percent" => [],
+            "grade_average_percent" => [],
+            "grade_diff_degree" => []
           },
-          "knowledge_med_avg_diff" => {},
+          "knowledge_med_avg_diff" => [],
           "skill_3lines" => {
-            "grade_median_percent" => {},
-            "grade_average_percent" => {},
-            "grade_diff_degree" => {}
+            "grade_median_percent" => [],
+            "grade_average_percent" => [],
+            "grade_diff_degree" => []
           },
-          "skill_med_avg_diff" => {},
+          "skill_med_avg_diff" => [],
           "ability_3lines" => {
-            "grade_median_percent" => {},
-            "grade_average_percent" => {},
-            "grade_diff_degree" => {}
+            "grade_median_percent" => [],
+            "grade_average_percent" => [],
+            "grade_diff_degree" => []
           },
-          "ability_med_avg_diff" => {},
+          "ability_med_avg_diff" => [],
           "dimesion_disperse" => {
             "knowledge" => {},
             "skill" => {},
@@ -1038,24 +1361,24 @@ How many kinds of animals are talked about in the poster(海报)?<br>
         #四分位区间表现情况
         "four_sections" => {
           "level75"=> {
-            "knowledge" => {},
-            "skill" => {},
-            "ability" => {}
+            "knowledge" => [],
+            "skill" => [],
+            "ability" => []
           },
           "level50"=> {
-            "knowledge" => {},
-            "skill" => {},
-            "ability" => {}
+            "knowledge" => [],
+            "skill" => [],
+            "ability" => []
           },
           "level25"=> {
-            "knowledge" => {},
-            "skill" => {},
-            "ability" => {}
+            "knowledge" => [],
+            "skill" => [],
+            "ability" => []
           },
           "level0"=> {
-            "knowledge" => {},
-            "skill" => {},
-            "ability" => {}
+            "knowledge" => [],
+            "skill" => [],
+            "ability" => []
           }
         },
         #各指标水平图
@@ -1169,29 +1492,29 @@ How many kinds of animals are talked about in the poster(海报)?<br>
         #诊断图
         "charts" => {
           "knowledge_all_lines" => {
-            "grade_average_percent" => {},
-            "class_average_percent" => {},
-            "class_median_percent" => {},
-            "diff_degree" => {}
+            "grade_average_percent" => [],
+            "class_average_percent" => [],
+            "class_median_percent" => [],
+            "diff_degree" => []
           },
-          "knowledge_gra_cls_avg_diff_line" =>{},
-          "knowledge_cls_mid_gra_avg_diff_line" => {},
+          "knowledge_gra_cls_avg_diff_line" =>[],
+          "knowledge_cls_mid_gra_avg_diff_line" => [],
           "skill_all_lines" => {
-            "grade_average_percent" => {},
-            "class_average_percent" => {},
-            "class_median_percent" => {},
-            "diff_degree" => {}
+            "grade_average_percent" => [],
+            "class_average_percent" => [],
+            "class_median_percent" => [],
+            "diff_degree" => []
           },
-          "skill_gra_cls_avg_diff_line" =>{},
-          "skill_cls_mid_gra_avg_diff_line" => {},
+          "skill_gra_cls_avg_diff_line" =>[],
+          "skill_cls_mid_gra_avg_diff_line" => [],
           "ability_all_lines" => {
-            "grade_average_percent" => {},
-            "class_average_percent" => {},
-            "class_median_percent" => {},
-            "diff_degree" => {}
+            "grade_average_percent" => [],
+            "class_average_percent" => [],
+            "class_median_percent" => [],
+            "diff_degree" => []
           },
-          "ability_gra_cls_avg_diff_line" =>{},
-          "ability_cls_mid_gra_avg_diff_line" => {}
+          "ability_gra_cls_avg_diff_line" =>[],
+          "ability_cls_mid_gra_avg_diff_line" => []
         },
         #各分数段人数比例
         "each_level_number" => {
@@ -1219,9 +1542,9 @@ How many kinds of animals are talked about in the poster(海报)?<br>
         },
         #数据表
         "data_table" => {
-          "knowledge"=>{},
-          "skill"=>{},
-          "ability"=>{}
+          "knowledge"=>[],
+          "skill"=>[],
+          "ability"=>[]
         },
         #各题答对率
         "average_percent" => {
@@ -1270,31 +1593,33 @@ How many kinds of animals are talked about in the poster(海报)?<br>
         #诊断图
         "charts" => {
           "knowledge_radar" => {
-            "pupil_average" => {},
-            "grade_average" => {}
+            "pupil_average" => [],
+            "grade_average" => []
           },
-          "knowledge_pup_gra_avg_diff_line" =>{
-          },
+          "knowledge_pup_gra_avg_diff_line" => [],
           "skill_radar" => {
-            "pupil_average" => {},
-            "grade_average" => {}
+            "pupil_average" => [],
+            "grade_average" => []
           },
-          "skill_pup_gra_avg_diff_line" =>{
-          },
+          "skill_pup_gra_avg_diff_line" => [],
           "ability_radar" => {
-            "pupil_average" => {},
-            "grade_average" => {}
+            "pupil_average" => [],
+            "grade_average" => []
           },
-          "ability_pup_gra_avg_diff_line" =>{
-          }
+          "ability_pup_gra_avg_diff_line" => []
         },
         #诊断及改进建议
         "quiz_comment" => Common::Report::Format::PupilQuizComment,
         #数据表
         "data_table" => {
-          "knowledge"=>{},
-          "skill"=>{},
-          "ability"=>{}
+          "knowledge"=>[],
+          "skill"=>[],
+          "ability"=>[]
+        },
+        "percentile" =>{
+          "knowledge"=> 0,
+          "skill"=> 0,
+          "ability"=>0
         }
       }
 
@@ -1318,12 +1643,9 @@ How many kinds of animals are talked about in the poster(海报)?<br>
           "total_testers" => 0
         },
         "charts" => {
-          "knowledge" => {
-          },
-          "skill" => {
-          },
-          "ability" => {
-          }
+          "knowledge" => {},
+          "skill" => {},
+          "ability" => {}
         },
         "weak_fields" => {
           "knowledge" => {
@@ -1509,6 +1831,12 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 
   module Locale
     module_function
+
+    DimesionOrder = {
+      "knowledge" => "1",
+      "skill" => "2",
+      "ability" => "3",
+    }
 
     KlassMapping ={
       "yi_ban" => "1",
