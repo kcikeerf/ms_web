@@ -7,9 +7,9 @@ var reportPage = {
 	PupilData : null,
 	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
+
 	init: function(){
 		//给左上角导航添加事件
-		reportPage.bindEvent();
 		$('#report_menus .report_click_menu').on('click', function() {
 			var dataType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
@@ -36,6 +36,8 @@ var reportPage = {
 		});
 		/*默认显示*/
 		$('#report_menus .report_click_menu:first').trigger('click');
+
+		reportPage.bindEvent();
 	},
 	bindEvent: function(){
 		/*顶部导航*/
@@ -59,7 +61,6 @@ var reportPage = {
 		});
 		/*
 		$(document).on('click','#tab-menu li[data-id]',function(event){
-
 			$select = $(this).attr('data-id');
 			$('#myTabContent div.tab-pane').hide();
 			$('#'+$select+'').fadeIn();
@@ -191,51 +192,15 @@ var reportPage = {
 					name: '(得分率 ≥ 85)',
 					value: obj[i].excellent_pupil_percent,
 					yAxisIndex: i,
-					itemStyle: {
-						normal: {
-							barBorderRadius: [20, 0, 0, 20],
-							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-								offset: 0,
-								color: '#086a8e'
-							}, {
-								offset: 1,
-								color: '#65026b'
-							}])
-						}
-					},
 				});
 				goodArr.push({
 					name: '( 60 ≤ 得分率 < 85)',
 					value: obj[i].good_pupil_percent,
 					yAxisIndex: i,
-					itemStyle: {
-						normal: {
-							barBorderRadius: 0,
-							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-								offset: 0,
-								color: '#71ecd0'
-							}, {
-								offset: 1,
-								color: '#13ab9b'
-							}])
-						}
-					},
 				});
 				faildArr.push({
 					name: '(得分率 < 60)',
 					value: obj[i].failed_pupil_percent,
-					itemStyle: {
-						normal: {
-							barBorderRadius: [0, 20, 20, 0],
-							color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-								offset: 0,
-								color: '#fa8471'
-							}, {
-								offset: 1,
-								color: '#f6f1c5'
-							}])
-						}
-					},
 				});
 			}
 			return obj = {
@@ -506,12 +471,14 @@ var reportPage = {
 
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
+
 				$('#myTabContent div.tab-pane').hide();
 				$('#'+$dataId+'').fadeIn();
 				$('#tab-menu li[data-id]').each(function(){
 					$(this).removeClass('active');
 				})
 				$(this).addClass('active');
+
 
 				if($dataId == 'grade-NumScale'){
 					//创建人数比例图
@@ -844,51 +811,15 @@ var reportPage = {
 		            name:'(得分率 ≥ 85)',
 		            value:obj[i].excellent_pupil_percent,
 		            yAxisIndex:i,
-		            itemStyle: {
-		              	normal: {
-			                barBorderRadius:[20, 0, 0, 20],
-			                color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-			                  offset: 0,
-			                  color: '#086a8e'
-			                }, {
-			                  offset: 1,
-			                  color: '#65026b'
-			                }])
-			            }
-		            },
 		        });
 				goodArr.push({
 		            name:'( 60 ≤ 得分率 < 85)',
 		            value:obj[i].good_pupil_percent,
 		            yAxisIndex:i,
-		            itemStyle: {
-		                normal: {
-		                    barBorderRadius:0,
-		                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-		                      offset: 0,
-		                      color: '#71ecd0'
-		                    }, {
-		                      offset: 1,
-		                      color: '#13ab9b'
-		                    }])
-		                }
-		            },
 		        });
 				faildArr.push({
                     name:'(得分率 < 60)',
                     value:obj[i].failed_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-                        	barBorderRadius: [0, 20, 20, 0],
-                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#fa8471'
-	                        }, {
-	                          offset: 1,
-	                          color: '#f6f1c5'
-	                        }])
-	                    }
-                    },
                 });
 			}
 			return obj  = {
@@ -1037,12 +968,14 @@ var reportPage = {
 			};
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
+
 				$('#myTabContent div.tab-pane').hide();
 				$('#'+$dataId+'').fadeIn();
 				$('#tab-menu li[data-id]').each(function(){
 					$(this).removeClass('active');
 				})
 				$(this).addClass('active');
+
 				if($dataId == 'class-NumScale'){
 					var classScaleObj = reportPage.Class.getClassScaleNumData(data.data.each_level_number);
 					var objArr = [classScaleObj.dimesions,classScaleObj.class_knowledge,classScaleObj.class_skill,classScaleObj.class_ability];
@@ -1239,12 +1172,14 @@ var reportPage = {
 			}
 			$('#tab-menu li[data-id]').on('click', function (e) {
 				var $dataId = $(e.target).attr('data-id');
+
 				$('#myTabContent div.tab-pane').hide();
 				$('#'+$dataId+'').fadeIn();
 				$('#tab-menu li[data-id]').each(function(){
 					$(this).removeClass('active');
 				})
 				$(this).addClass('active');
+
 				if($dataId == 'improve-sugg'){
 					$('#improve-sugg').html(data.data.quiz_comment);
 				}else if($dataId == 'table-data-knowledge'){

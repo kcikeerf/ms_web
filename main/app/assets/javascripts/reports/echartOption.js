@@ -511,19 +511,18 @@ var echartOption = {
 						formatter: '{a}<br>{b}: {c}%'
 					},
 					legend: {
-						top: '0',
-						right: '10',
-						width: '120',
-						orient: 'vertical',
+						top: 0,
+						right: 10,
+						//width: '120',
+						//orient: 'vertical',
 						data: ['得分率 ≥ 85', '60 ≤ 得分率 < 85', '得分率 < 60'],
 						itemWidth: 10,
 						itemHeight: 10,
 					},
 					grid: {
-						left: '10%',
-						top: '0%',
-						right: '22%',
-						bottom: '3%',
+						left: 10,
+						right: 20,
+						bottom: 10,
 						containLabel: true,
 					},
 					xAxis: {
@@ -576,6 +575,7 @@ var echartOption = {
 						type: 'bar',
 						animation: false,
 						stack: '总量',
+						barMaxWidth: 30,
 						label: {
 							normal: {
 								show: true,
@@ -586,18 +586,11 @@ var echartOption = {
 								}
 							}
 						},
-						barMaxWidth: 20,
 						data: data.data.excellent,
 						itemStyle: {
 							normal: {
 								barBorderRadius: [20, 0, 0, 20],
-								color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-									offset: 0,
-									color: '#086a8e'
-								}, {
-									offset: 1,
-									color: '#65026b'
-								}])
+								color: '#086a8e',
 							}
 						},
 					}, {
@@ -606,28 +599,22 @@ var echartOption = {
 						legendHoverLink: false,
 						animation: false,
 						stack: '总量',
+						barMaxWidth: 30,
 						label: {
 							normal: {
 								show: true,
 								position: 'inside',
 								textStyle: {
-									color: '#000',
+									color: '#fff',
 									fontSize: 14,
 								}
 							}
 						},
-						barMaxWidth: 20,
 						data: data.data.good,
 						itemStyle: {
 							normal: {
 								barBorderRadius: 0,
-								color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-									offset: 0,
-									color: '#71ecd0'
-								}, {
-									offset: 1,
-									color: '#13ab9b'
-								}])
+								color: '#13ab9b',
 							}
 						},
 					}, {
@@ -636,28 +623,22 @@ var echartOption = {
 						legendHoverLink: false,
 						animation: false,
 						stack: '总量',
+						barMaxWidth: 30,
 						label: {
 							normal: {
 								show: true,
 								position: 'inside',
 								textStyle: {
-									color: '#000',
+									color: '#fff',
 									fontSize: 14,
 								}
 							}
 						},
-						barMaxWidth: 20,
 						data: data.data.failed,
 						itemStyle: {
 							normal: {
 								barBorderRadius: [0, 20, 20, 0],
-								color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-									offset: 0,
-									color: '#fa8471'
-								}, {
-									offset: 1,
-									color: '#f6f1c5'
-								}])
+								color: '#fa8471',
 							}
 						},
 					}]
@@ -1270,21 +1251,6 @@ var echartOption = {
                     name:'班级中位数得分率与年级平均差值正值',
                     type:'bar',
                     barMaxWidth: 10,
-                    stack: '百分比',
-                    /*label: {
-						normal: {
-							show: true,
-							position: 'top',
-							textStyle: {
-								color: '#111'
-							}
-						}
-					},*/
-                    /*symbol:'circle',
-                    showSymbol:true,
-                    showAllSymbol: true,
-                    symbolSize:5,
-                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1307,20 +1273,6 @@ var echartOption = {
                     type:'bar',
                     barMaxWidth: 10,
                     stack: '百分比',
-                    /*label: {
-						normal: {
-							show: true,
-							position: 'top',
-							textStyle: {
-								color: '#111'
-							}
-						}
-					},*/
-                    /*symbol:'circle',
-                    showSymbol:true,
-                    showAllSymbol: true,
-                    symbolSize:5,
-                    lineStyle: {normal: {width:0}},*/
                     areaStyle: {
                       normal: {
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1361,10 +1313,9 @@ var echartOption = {
 					itemHeight: 10,
 				},
                   grid: {
-                    left: '6%',
-                    top: '0%',
-                    right: '20%',
-                    bottom: '3%',
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
                     containLabel: true,
                   },
                   xAxis:  {
@@ -1401,13 +1352,7 @@ var echartOption = {
                       itemStyle: {
                         normal: {
                           barBorderRadius:[20, 0, 0, 20],
-                          color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-                            offset: 0,
-                            color: '#086a8e'
-                          }, {
-                            offset: 1,
-                            color: '#65026b'
-                          }])
+                          color: '#65026b',
                         }
                       },
                     },
@@ -1429,13 +1374,7 @@ var echartOption = {
                       itemStyle: {
                         normal: {
                           barBorderRadius:0,
-                          color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-                            offset: 0,
-                            color: '#71ecd0'
-                          }, {
-                            offset: 1,
-                            color: '#13ab9b'
-                          }])
+                          color: '#71ecd0',
                         }
                       },
                     },
@@ -1600,11 +1539,11 @@ var echartOption = {
 		              //orient: 'vertical',
 		              data:[
 		                {
-		                  name:'个人与年级平均得分率差值正值',
+		                  name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
 		                  icon:'rect',
 		                },
 		                {
-		                  name:'个人与年级平均得分率差值负值',
+		                  name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
 		                  icon:'rect',
 		                }
 		              ],
@@ -1612,8 +1551,8 @@ var echartOption = {
 		              itemHeight:8,
 		            },
 		            grid: {
-		              left: 10,
-		              right: 10,
+		              left: 40,
+		              right: 100,
 		              bottom: 10,
 		            },
 		            animation:false,
@@ -1648,7 +1587,7 @@ var echartOption = {
 		            ],
 		            series : [
 		              {
-		                name:'个人与年级平均得分率差值正值',
+		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n正\n值',
 		                type:'bar',
 		                barMaxWidth: 10,
 		                stack: '百分比',
@@ -1667,7 +1606,7 @@ var echartOption = {
 		                label: {normal:{show:true,position:'top',textStyle:{color:'#333'},formatter:'{b}'}},
 		              },
 		              {
-		                name:'个人与年级平均得分率差值负值',
+		                name:'个\n人\n与\n年\n级\n平\n均\n得\n分\n率\n差\n值\n负\n值',
 		                type:'bar',
 		                barMaxWidth: 10,
 		                stack: '百分比',
