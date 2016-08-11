@@ -367,6 +367,62 @@ namespace :swtk do
     puts "done"
   end
 
+  desc "import replace china area data"
+  task :import_area,[:file_path]=> :environment do |t, args|
+    if args[:file_path].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:file_path].strip!
+
+    begin
+      xls = Roo::Excelx.new(args[:file_path])
+      sheet = xls.sheet("area") if xls
+      sheet.count.times.each{|count|
+        p "row number: #{count}"
+        row = sheet.row(count)
+        next if row.compact.blank?
+        arr = row[0].to_s.split("_")
+        row.each_with_index{|col, index|
+          next if index == 0
+          next if col.blank?
+          paramsh = {}
+          rid = ""
+          if arr.length == 1
+            rid = (index-1).to_s.rjust(3, '0')
+            type = "province"
+          elsif arr.length == 2
+            rid = arr[1].to_s.rjust(3, '0') + (index-1).to_s.rjust(3, '0')
+            type = "city"
+          elsif arr.length == 3
+            rid = arr[1].to_s.rjust(3, '0') + arr[2].to_s.rjust(3, '0') + (index-1).to_s.rjust(3, '0')
+            type = "district"
+          else
+            p arr.length
+            next
+          end
+
+          paramsh = {
+            :rid => rid,
+            :area_type => type,
+            :name => Common::Locale.hanzi2pinyin(col.strip),
+            :name_cn => col.strip,
+            :comment => ""
+          } if rid and type
+          unless paramsh.empty?
+            a = Area.new(paramsh)
+            a.save!
+          end
+        }
+      }
+    rescue Exception => ex
+      puts ex.message
+      puts ex.backtrace
+      puts "failed"
+    end
+    puts "done"
+  end
+
   def save_permission(controller, action)
     name = "#{controller}##{action}"
 
