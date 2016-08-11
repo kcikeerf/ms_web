@@ -756,12 +756,12 @@ class Mongodb::ReportGenerator
           #个人最佳表现
           cond = (member["average_percent"] == self_best[dimesion])
           if cond
-            comment_h[("self_best_"+dimesion).to_sym] += lv2_dimesion_key_h[dimesion][index]
+            comment_h[("self_best_"+dimesion).to_sym] += lv2_dimesion_key_h[dimesion][index] + ","
           end
           #与群体比最佳表现
           cond = (member["pup_cls_avg_percent_diff"] == inclass_best[dimesion] && member["pup_cls_avg_percent_diff"] > 0)
           if cond
-            comment_h[("inclass_best_"+dimesion).to_sym] += lv2_dimesion_key_h[dimesion][index]
+            comment_h[("inclass_best_"+dimesion).to_sym] += lv2_dimesion_key_h[dimesion][index] + ","
           end
           #低于年纪平均水平较多
           #对象指标：与年级差为年级平均的30%以上
