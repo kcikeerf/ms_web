@@ -13,7 +13,7 @@ Rails.application.config.assets.precompile += ['default/users.css', 'users.js']
 # # 整卷解析
 Rails.application.config.assets.precompile += ['zhengjuan.css', 'init_zhengjuan.js', 'ztree.js', 'ztree.css']
 # # 诊断报告
-Rails.application.config.assets.precompile += ['report.css', 'init_report.js', 'new_report.css', 'init_new_report.js', 'create_report.js']
+Rails.application.config.assets.precompile += ['report.css', 'init_report.js', 'new_report.css.scss', 'init_new_report.js', 'create_report.js']
 # # 百度eCharts.js
 Rails.application.config.assets.precompile += ['echarts.min.js']
 

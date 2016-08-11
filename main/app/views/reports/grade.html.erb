@@ -175,399 +175,388 @@
 	</div>
 	<!--各指标表现水平图 start-->
 	<div class="tab-pane " id="grade-checkpoint-knowledge">
-
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班知识指标表现水平图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-level">
-				<dl>
-					<dt>知识指标各班平均得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Grade_average_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>知识指标各班中位数得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Grade_median_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>知识指标各班中平差值</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Grade_med_avg_diff" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>知识指标各班分化度</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_Grade_diff_degree" class="chart"></div>
-					</dd>
-				</dl>
+		<h3 class="zy-report-title">各班知识指标表现水平图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识指标各班平均得分率</h3>
+					<div id="knowledge_Grade_average_percent" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识指标各班平均得分率</h3>
+					<div id="knowledge_Grade_median_percent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识指标各班中平差值</h3>
+					<div id="knowledge_Grade_med_avg_diff" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识指标各班分化度</h3>
+					<div id="knowledge_Grade_diff_degree" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-checkpoint-skill">
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班技能指标表现水平图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-level">
-				<dl>
-					<dt>技能指标各班平均得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Grade_average_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>技能指标各班中位数得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Grade_median_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>技能指标各班中平差值</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Grade_med_avg_diff" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>技能指标各班分化度</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_Grade_diff_degree" class="chart"></div>
-					</dd>
-				</dl>
+		<h3 class="zy-report-title">各班技能指标表现水平图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能指标各班平均得分率</h3>
+					<div id="skill_Grade_average_percent" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能指标各班平均得分率</h3>
+					<div id="skill_Grade_median_percent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能指标各班中平差值</h3>
+					<div id="skill_Grade_med_avg_diff" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能指标各班分化度</h3>
+					<div id="skill_Grade_diff_degree" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div class="tab-pane " id="grade-checkpoint-ability">
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班能力指标表现水平图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-level">
 
-				<dl>
-					<dt>能力指标各班平均得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Grade_average_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>能力指标各班中位数得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Grade_median_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>能力指标各班中平差值</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Grade_med_avg_diff" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>能力指标各班分化度</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_Grade_diff_degree" class="chart"></div>
-					</dd>
-				</dl>
+	<div class="tab-pane " id="grade-checkpoint-ability">
+		<h3 class="zy-report-title">各班能力指标表现水平图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力指标各班平均得分率</h3>
+					<div id="ability_Grade_average_percent" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力指标各班平均得分率</h3>
+					<div id="ability_Grade_median_percent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力指标各班中平差值</h3>
+					<div id="ability_Grade_med_avg_diff" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力指标各班分化度</h3>
+					<div id="ability_Grade_diff_degree" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-checkpoint-total">
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班总成绩指标表现水平图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-level">
-				<dl>
-					<dt>总成绩指标各班平均得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="total_Grade_average_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>总成绩指标各班中位数得分率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="total_Grade_median_percent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>总成绩指标各班中平差值</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="total_Grade_med_avg_diff" class="chart"></div>
-					</dd>
-				</dl>
-				<dl class="pull-right">
-					<dt>总成绩指标各班分化度</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="total_Grade_diff_degree" class="chart"></div>
-					</dd>
-				</dl>
+		<h3 class="zy-report-title">各班总成绩指标表现水平图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">总成绩指标各班平均得分率</h3>
+					<div id="total_Grade_average_percent" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">总成绩指标各班中位数得分率</h3>
+					<div id="total_Grade_median_percent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">总成绩指标各班中平差值</h3>
+					<div id="total_Grade_med_avg_diff" class="zy-chart-container"></div>
+				</div>
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">总成绩指标各班分化度</h3>
+					<div id="total_Grade_diff_degree" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
 	<!--各指标表现水平图 end-->
 	<!--各班人数比例图 start-->
 	<div class="tab-pane " id="grade-classPupilNum-knowledge">
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班知识分数段人数比例图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-percentage">
-				<dl>
-					<dt>知识各班优秀率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_excellent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>知识各班良好达标率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_good" class="chart"></div>
-					</dd>
-				</dl>
-
-				<dl>
-					<dt>知识各班不及格率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="knowledge_faild" class="chart"></div>
-					</dd>
-				</dl>
-
+		<h3 class="zy-report-title">各班知识分数段人数比例图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识各班优秀率</h3>
+					<div id="knowledge_excellent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识各班良好达标率</h3>
+					<div id="knowledge_good" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识各班不及格率</h3>
+					<div id="knowledge_faild" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-classPupilNum-skill">
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班技能分数段人数比例图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-percentage">
-				<dl>
-					<dt>技能各班优秀率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_excellent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>技能各班良好达标率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_good" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>技能各班不及格率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="skill_faild" class="chart"></div>
-					</dd>
-				</dl>
+		<h3 class="zy-report-title">各班技能分数段人数比例图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能各班优秀率</h3>
+					<div id="skill_excellent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能各班良好达标率</h3>
+					<div id="skill_good" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能各班不及格率</h3>
+					<div id="skill_faild" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-classPupilNum-ability">
-		<div class="wrapper-md">
-			<h1 class="m-n font-thin h3">各班能力分数段人数比例图</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="grade-percentage">
-				<dl>
-					<dt>能力各班优秀率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_excellent" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>能力各班良好达标率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_good" class="chart"></div>
-					</dd>
-				</dl>
-				<dl>
-					<dt>能力各班不及格率</dt>
-					<dd class="clearfix">
-						<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-						<div id="ability_faild" class="chart"></div>
-					</dd>
-				</dl>
+		<h3 class="zy-report-title">各班能力分数段人数比例图</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力各班优秀率</h3>
+					<div id="ability_excellent" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力各班良好达标率</h3>
+					<div id="ability_good" class="zy-chart-container"></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力各班不及格率</h3>
+					<div id="ability_faild" class="zy-chart-container"></div>
+				</div>
 			</div>
 		</div>
 	</div>
 	<!--各班人数比例图 end-->
 	<!--各指标表现水平数据  start-->
 	<div class="tab-pane " id="grade-checkpoint-table-knowledge">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">各班知识情况数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="datatable clearfix">
-				<h2>知识平均得分率</h2>
-				<table id="knowledge_average_percent" class="data-table grade-data-table"></table>
-				<h2>知识中位数得分率</h2>
-				<table id="knowledge_median_percent" class="data-table grade-data-table"></table>
-				<h2>知识各指标中平差值</h2>
-				<table id="knowledge_med_avg_diff" class="data-table grade-data-table"></table>
-				<h2>知识分化度</h2>
-				<table id="knowledge_diff_degree" class="data-table grade-data-table"></table>
+		<h3 class="zy-report-title">各班知识情况数据表</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识平均得分率</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_average_percent" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识中位数得分率</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_median_percent" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识各指标中平差值</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识分化度</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_diff_degree" class="data-table grade-data-table"></table>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-checkpoint-table-skill">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">班级技能数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="datatable clearfix">
-				<h2>技能平均得分率</h2>
-				<table id="skill_average_percent" class="data-table grade-data-table"></table>
-				<h2>技能中位数得分率</h2>
-				<table id="skill_median_percent" class="data-table grade-data-table"></table>
-				<h2>技能各指标中平差值</h2>
-				<table id="skill_med_avg_diff" class="data-table grade-data-table"></table>
-				<h2>技能分化度</h2>
-				<table id="skill_diff_degree" class="data-table grade-data-table"></table>
+		<h3 class="zy-report-title">班级技能数据表</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能平均得分率</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_average_percent" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能中位数得分率</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_median_percent" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能各指标中平差值</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能分化度</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_diff_degree" class="data-table grade-data-table"></table>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-checkpoint-table-ability">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">班级能力数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="datatable clearfix">
-				<h2>能力平均得分率</h2>
-				<table id="ability_average_percent" class="data-table grade-data-table"></table>
-				<h2>能力中位数得分率</h2>
-				<table id="ability_median_percent" class="data-table grade-data-table"></table>
-				<h2>能力各指标中平差值</h2>
-				<table id="ability_med_avg_diff" class="data-table grade-data-table"></table>
-				<h2>能力分化度</h2>
-				<table id="ability_diff_degree" class="data-table grade-data-table"></table>
+		<h3 class="zy-report-title">班级能力数据表</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力平均得分率</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_average_percent" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力中位数得分率</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_median_percent" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力各指标中平差值</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力分化度</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_diff_degree" class="data-table grade-data-table"></table>
+				</div>
 			</div>
 		</div>
 	</div>
 	<!--各指标表现水平数据  end-->
 	<!--各班人数比例数据  start-->
 	<div class="tab-pane " id="grade-classPupilNum-table-knowledge">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">各班知识各指标各分数段人数比例数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="datatable clearfix">
-				<h2>知识得分率≥85%（优秀率）人数比例</h2>
-				<table id="knowledge_excellent_table" class="data-table grade-data-table"></table>
-				<h2> 60≤知识得分率﹤85（良好达标率）人数比例</h2>
-				<table id="knowledge_good_table" class="data-table grade-data-table"></table>
-				<h2>知识得分率﹤60 （不及格率）人数比例</h2>
-				<table id="knowledge_failed_table" class="data-table grade-data-tables"></table>
+		<h3 class="zy-report-title">各班知识各指标各分数段人数比例数据表</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识得分率≥85%（优秀率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_excellent_table" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">60≤知识得分率﹤85（良好达标率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_good_table" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">知识得分率﹤60 （不及格率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="knowledge_failed_table" class="data-table grade-data-table"></table>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-classPupilNum-table-skill">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">各班技能各指标各分数段人数比例数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="datatable clearfix">
-				<h2>技能得分率≥85%（优秀率）人数比例</h2>
-				<table id="skill_excellent_table" class="data-table grade-data-table"></table>
-				<h2> 60≤技能得分率﹤85（良好达标率）人数比例</h2>
-				<table id="skill_good_table" class="data-table grade-data-table"></table>
-				<h2>技能得分率﹤60 （不及格率）人数比例</h2>
-				<table id="skill_failed_table" class="data-table grade-data-table"></table>
+		<h3 class="zy-report-title">各班技能各指标各分数段人数比例数据表</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能得分率≥85%（优秀率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_excellent_table" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">60≤技能得分率﹤85（良好达标率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_good_table" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">技能得分率﹤60 （不及格率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="skill_failed_table" class="data-table grade-data-table"></table>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="grade-classPupilNum-table-ability">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">各班能力各指标各分数段人数比例数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="datatable clearfix">
-				<h2>能力得分率≥85%（优秀率）人数比例</h2>
-				<table id="ability_excellent_table" class="data-table grade-data-table"></table>
-				<h2> 60≤能力得分率﹤85（良好达标率）人数比例</h2>
-				<table id="ability_good_table" class="data-table grade-data-table"></table>
-				<h2>能力得分率﹤60 （不及格率）人数比例</h2>
-				<table id="ability_failed_table" class="data-table grade-data-table"></table>
+		<h3 class="zy-report-title">各班能力各指标各分数段人数比例数据表</h3>
+		<div class="container-fluid">
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力得分率≥85%（优秀率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_excellent_table" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">60≤能力得分率﹤85（良好达标率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_good_table" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h3 class="zy-report-subtitle">能力得分率﹤60 （不及格率）人数比例</h3>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<table id="ability_failed_table" class="data-table grade-data-table"></table>
+				</div>
 			</div>
 		</div>
 	</div>
 	<!--各班人数比例数据  end-->
 	<div class="tab-pane " id="grade-answerCase">
-		<!--学生答题情况-->
-		<div class="wrapper-md">
-				<h1 class="font-thin h3">班级学生答题情况统计</h1>
-				<small class="titleexplain">说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为【0，1】，数值越大，表明答对人数越多。答对率低于0.6的题目是本班的薄弱点，需要重点关注。</small>
-		</div>
-		<div class="wrapper-md">
-				<div id="table_static" class="clearfix answerCase-table-all">
-						<section ng-controller="GridDemoCtrl1">
-								<div class="panel-heading">
-										答对率 ≥ 0.85的题目
-								</div>
-								<table class="static-table">
-									<tr>
-										<th>题号</th>
-										<th>答对率</th>
-									</tr>
-									<tbody id="excellent_answerCase_table">
-									</tbody>
-								</table>
-						</section>
-						<section class="tablecenter" ng-controller="GridDemoCtrl2">
-								<div class="panel-heading">
-										0.6 ≤ 答对率 < 0.85的题目
-								</div>
-								<table class="static-table">
-									<tr>
-										<th>题号</th>
-										<th>答对率</th>
-									</tr>
-									<tbody id="good_answerCase_table">
-
-									</tbody>
-								</table>
-						</section>
-						<section class="wraning" ng-controller="GridDemoCtrl3">
-								<div class="panel-heading">
-										答对率 < 0.6的题目
-								</div>
-								<table class="static-table">
-									<tr>
-										<th>题号</th>
-										<th>答对率</th>
-									</tr>
-									<tbody id="failed_answerCase_table">
-									</tbody>
-								</table>
-						</section>
+		<h3 class="zy-report-title">班级学生答题情况统计</h3>
+		<p>
+			说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为【0，1】，数值越大，表明答对人数越多。
+			答对率低于0.6的题目是本班的薄弱点，需要重点关注。
+		</p>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力得分率≥85%（优秀率）人数比例</h3>
+					<table class="static-table">
+						<tr>
+							<th>题号</th>
+							<th>答对率</th>
+						</tr>
+						<tbody id="excellent_answerCase_table">
+						</tbody>
+					</table>
 				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力得分率≥85%（优秀率）人数比例</h3>
+					<table class="static-table">
+						<tr>
+							<th>题号</th>
+							<th>答对率</th>
+						</tr>
+						<tbody id="good_answerCase_table">
+						</tbody>
+					</table>
+				</div>
+				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力得分率≥85%（优秀率）人数比例</h3>
+					<table class="static-table">
+						<tr>
+							<th>题号</th>
+							<th>答对率</th>
+						</tr>
+						<tbody id="failed_answerCase_table">
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 	<!--报告解读  start-->
