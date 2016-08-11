@@ -460,16 +460,24 @@ var reportPage = {
 			var objArr = [grade_charts.knowledge,grade_charts.skill,grade_charts.ability];
 			var nodeArrLeft = ['knowledge_diagnose_left','skill_diagnose_left','ability_diagnose_left'];
 			var nodeArrRight = ['knowledge_diagnose_right','skill_diagnose_right','ability_diagnose_right'];
+			var createdCharts = [];
 			for(var i = 0 ; i < objArr.length ; i++){
 				var optionLeft = echartOption.getOption.Grade.setGradeDiagnoseLeft(objArr[i]);
 				var optionRight = echartOption.getOption.Grade.setGradeDiagnoseRight(objArr[i]);
-				echartOption.createEchart(optionLeft,nodeArrLeft[i]);
-				echartOption.createEchart(optionRight,nodeArrRight[i]);
+				createdCharts.push(echartOption.createEchart(optionLeft,nodeArrLeft[i]));
+				createdCharts.push(echartOption.createEchart(optionRight,nodeArrRight[i]));
 			}
 			//创建年级分型图;
-			echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(grade_charts.disperse),'parting-chart');
+			createdCharts.push(echartOption.createEchart(echartOption.getOption.Grade.setGradePartingChartOption(grade_charts.disperse),'parting-chart'));
+
+			window.onresize = function () {
+				for(var i=0; i<createdCharts.length; i++){
+					createdCharts[i].resize();
+				}
+			};
 
 			$('#tab-menu li[data-id]').on('click', function (e) {
+				createdCharts = [];
 				var $dataId = $(e.target).attr('data-id');
 
 				$('#myTabContent div.tab-pane').hide();
@@ -487,7 +495,7 @@ var reportPage = {
 					var nodeArr = ['KnowledgeScale','SkillScale','AbilityScale'];
 					for(var i = 0 ; i < objArr.length ; i++){
 						var option = echartOption.getOption.Grade.setGradeScaleOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					}
 				}else if($dataId == 'grade-FourSections'){
 					var FourSections = reportPage.Grade.getFourSectionsData(data.data.four_sections);
@@ -495,7 +503,7 @@ var reportPage = {
 					var nodeArr = ['knowledge_Four_L75','skill_Four_L75','ability_Four_L75','knowledge_Four_L50','skill_Four_L50','ability_Four_L50','knowledge_Four_L25','skill_Four_L25','ability_Four_L25','knowledge_Four_L0','skill_Four_L0','ability_Four_L0'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setFourSectionsOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-checkpoint-knowledge'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -503,7 +511,7 @@ var reportPage = {
 					var nodeArr = ['knowledge_Grade_average_percent','knowledge_Grade_median_percent','knowledge_Grade_med_avg_diff','knowledge_Grade_diff_degree'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-checkpoint-skill'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -511,7 +519,7 @@ var reportPage = {
 					var nodeArr = ['skill_Grade_average_percent','skill_Grade_median_percent','skill_Grade_med_avg_diff','skill_Grade_diff_degree'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-checkpoint-ability'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -519,7 +527,7 @@ var reportPage = {
 					var nodeArr = ['ability_Grade_average_percent','ability_Grade_median_percent','ability_Grade_med_avg_diff','ability_Grade_diff_degree'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-checkpoint-total'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -527,7 +535,7 @@ var reportPage = {
 					var nodeArr = ['total_Grade_average_percent','total_Grade_median_percent','total_Grade_med_avg_diff','total_Grade_diff_degree'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-classPupilNum-knowledge'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
@@ -535,7 +543,7 @@ var reportPage = {
 					var nodeArr = ['knowledge_excellent','knowledge_good','knowledge_faild'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-classPupilNum-skill'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
@@ -543,7 +551,7 @@ var reportPage = {
 					var nodeArr = ['skill_excellent','skill_good','skill_faild'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-classPupilNum-ability'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
@@ -551,7 +559,7 @@ var reportPage = {
 					var nodeArr = ['ability_excellent','ability_good','ability_faild'];
 					for(var i = 0 ; i < nodeArr.length ; i++){
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'grade-checkpoint-table-knowledge'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.average_percent);
@@ -615,6 +623,12 @@ var reportPage = {
 				}else if($dataId == 'grade-readReport-data'){
 					$('#grade-readReport-data').html(data.data.report_explanation.data);
 				}
+
+				window.onresize = function () {
+					for(var i=0; i<createdCharts.length; i++){
+						createdCharts[i].resize();
+					}
+				};
 			});
 		},
 		
@@ -811,15 +825,51 @@ var reportPage = {
 		            name:'(得分率 ≥ 85)',
 		            value:obj[i].excellent_pupil_percent,
 		            yAxisIndex:i,
+		            itemStyle: {
+		              	normal: {
+			                barBorderRadius:[20, 0, 0, 20],
+			                color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+			                  offset: 0,
+			                  color: '#086a8e'
+			                }, {
+			                  offset: 1,
+			                  color: '#65026b'
+			                }])
+			            }
+		            },
 		        });
 				goodArr.push({
 		            name:'( 60 ≤ 得分率 < 85)',
 		            value:obj[i].good_pupil_percent,
 		            yAxisIndex:i,
+		            itemStyle: {
+		                normal: {
+		                    barBorderRadius:0,
+		                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+		                      offset: 0,
+		                      color: '#71ecd0'
+		                    }, {
+		                      offset: 1,
+		                      color: '#13ab9b'
+		                    }])
+		                }
+		            },
 		        });
 				faildArr.push({
                     name:'(得分率 < 60)',
                     value:obj[i].failed_pupil_percent,
+                    itemStyle: {
+                      	normal: {
+                        	barBorderRadius: [0, 20, 20, 0],
+                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
+	                          	offset: 0,
+	                          	color: '#fa8471'
+	                        }, {
+	                          offset: 1,
+	                          color: '#f6f1c5'
+	                        }])
+	                    }
+                    },
                 });
 			}
 			return obj  = {
@@ -958,15 +1008,24 @@ var reportPage = {
 			var nodeArrLeft = ['knowledge_diagnose_left','skill_diagnose_left','ability_diagnose_left'];
 			var nodeArrCenter = ['knowledge_diagnose_center','skill_diagnose_center','ability_diagnose_center'];
 			var nodeArrRight = ['knowledge_diagnose_right','skill_diagnose_right','ability_diagnose_right'];
+			var createdCharts = [];
 			for(var i = 0 ; i < objArr.length ; i++){
 				var optionLeft = echartOption.getOption.Class.setClassDiagnoseLeft(objArr[i]);
 				var optionCenter = echartOption.getOption.Class.setClassDiagnoseCenter(objArr[i]);
 				var optionRight = echartOption.getOption.Class.setClassDiagnoseRight(objArr[i]);
-				echartOption.createEchart(optionLeft,nodeArrLeft[i]);
-				echartOption.createEchart(optionCenter,nodeArrCenter[i]);
-				echartOption.createEchart(optionRight,nodeArrRight[i]);
+				createdCharts.push(echartOption.createEchart(optionLeft,nodeArrLeft[i]));
+				createdCharts.push(echartOption.createEchart(optionCenter,nodeArrCenter[i]));
+				createdCharts.push(echartOption.createEchart(optionRight,nodeArrRight[i]));
 			};
+
+			window.onresize = function () {
+				for(var i=0; i<createdCharts.length; i++){
+					createdCharts[i].resize();
+				}
+			};
+
 			$('#tab-menu li[data-id]').on('click', function (e) {
+				createdCharts = [];
 				var $dataId = $(e.target).attr('data-id');
 
 				$('#myTabContent div.tab-pane').hide();
@@ -986,7 +1045,7 @@ var reportPage = {
 							option.legend = { show: false};
 							option.grid.right = '3%';
 						}
-						echartOption.createEchart(option,nodeArr[i]);
+						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'class');
@@ -1019,6 +1078,12 @@ var reportPage = {
 				}else if($dataId == 'exam-total'){
 					$('#exam-total').html(data.data.quiz_comment.total);
 				}
+
+				window.onresize = function () {
+					for(var i=0; i<createdCharts.length; i++){
+						createdCharts[i].resize();
+					}
+				};
 			});
         },
 		getClassDiagnoseData : function(obj){
@@ -1157,20 +1222,26 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
 
 			$('#pupil-top-nav').html(pupilNavStr);
-			console.log(data.data);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
-			console.log(PupilDiagnoseObj.knowledge.diff.xaxis);
-			console.log(PupilDiagnoseObj.knowledge.diff.yaxis);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
 			var nodeArr_radar = ['pupil_knowledge_radar','pupil_skill_radar','pupil_ability_radar'];
 			var nodeArr_diff = ['pupil_knowledge_diff','pupil_skill_diff','pupil_ability_diff'];
+			var createdCharts = [];
 			for(var i = 0 ; i < objArr.length ; i++){
 				var optionRadar = echartOption.getOption.Pupil.setPupilRadarOption(objArr[i]);
 				var optionDiff = echartOption.getOption.Pupil.setPupilDiffOption(objArr[i]);
-				echartOption.createEchart(optionRadar,nodeArr_radar[i]);
-				echartOption.createEchart(optionDiff,nodeArr_diff[i]);
+				createdCharts.push(echartOption.createEchart(optionRadar,nodeArr_radar[i]));
+				createdCharts.push(echartOption.createEchart(optionDiff,nodeArr_diff[i]));
 			}
+
+			window.onresize = function () {
+				for(var i=0; i<createdCharts.length; i++){
+					createdCharts[i].resize();
+				}
+			};
+
 			$('#tab-menu li[data-id]').on('click', function (e) {
+				createdCharts = [];
 				var $dataId = $(e.target).attr('data-id');
 
 				$('#myTabContent div.tab-pane').hide();
