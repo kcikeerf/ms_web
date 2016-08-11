@@ -5,6 +5,12 @@ var echartOption = {
 		var myChart = echarts.init(document.getElementById(Node));
 		var option = optionObj;
 		myChart.setOption(option);
+		/*
+		window.onresize = function () {
+			myChart.resize();
+		};
+		*/
+		return myChart;
 	},
 	getOption: {
 		Grade: {
