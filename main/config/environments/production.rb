@@ -30,7 +30,7 @@ Rails.application.configure do
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = true
 #  config.assets.debug = true
-  config.assets.precompile += %w( new_report.css  init_new_report.js)
+  config.assets.precompile += %w( new_report.css.scss  init_new_report.js)
 
   # Generate digests for assets URLs.
   config.assets.digest = true
