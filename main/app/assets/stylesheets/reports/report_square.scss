@@ -23,13 +23,18 @@
 	display: block;
 	font-size: 20px;
 	cursor: pointer;
-}
-.classMenu span{
-	color:#fff;
-}
-.classMenu small{
-	color: #fff;
-	float: right;
+	color: $white;
+	&:focus,
+	&.focus {
+		text-decoration: none;
+		color: $white;
+	}
+	&:hover {
+		color: $white;
+	}
+	span {
+		float: right;
+	}
 }
 .dropdown_menu{
 	margin: 0;
@@ -118,7 +123,11 @@
 	padding-left: 10px;
 }
 
-
+.tab-pane {
+	.row {
+		margin-bottom: 2rem;
+	}
+}
 
 
 

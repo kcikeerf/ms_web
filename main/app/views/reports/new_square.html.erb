@@ -2,20 +2,19 @@
   <!--诊断报告头部 start-->
   <div class="zy-report-title clearfix" id="report_menus">
     <div class="dropdown_box grade-class-menu">
-      <a class="classMenu" href="#">
-          <span
-          <% if current_user.is_teacher? %>
-          class="report_menu_teacher"
-          <% else %>
-          class="report_click_menu"
-          report_id="<%= @scope_menus[:report_id] %>"
-          report_name="<%= @scope_menus[:report_name] %>"
-          data_type="<%= @scope_menus[:data_type] %>"
-          <% end %>
->
-  <%= @scope_menus[:label] %>
-          </span>
-        <small><%= @scope_menus[:pupil_number] %></small>
+      <a
+      href="#"
+      <% if current_user.is_teacher? %>
+      class="classMenu report_menu_teacher"
+      <% else %>
+      class="classMenu report_click_menu"
+      report_id="<%= @scope_menus[:report_id] %>"
+      report_name="<%= @scope_menus[:report_name] %>"
+      data_type="<%= @scope_menus[:data_type] %>"
+      <% end %>
+      >
+        <%= @scope_menus[:label] %>
+        <span><%= @scope_menus[:pupil_number] %></span>
       </a>
       <ul class="dropdown_menu">
         <% @scope_menus[:items].each do |klass| %>
