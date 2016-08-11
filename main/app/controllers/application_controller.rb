@@ -41,6 +41,18 @@ class ApplicationController < ActionController::Base
     render 'errors/403', status: 403,  layout: 'error'
   end
 
+  def after_sign_in_path_for(resource_or_scope)
+     @redirect_target = root_path
+     if current_user.role_obj.is_a? Analyzer
+       @redirect_target = my_home_analyzers_path
+     elsif current_user.role_obj.is_a? Teacher
+       @redirect_target = my_home_teachers_path
+     elsif current_user.role_obj.is_a? Pupil
+       @redirect_target = my_home_pupils_path
+     else
+     end
+  end
+
   def response_json(status=403, data={})
     {status: status}.merge(data: data).to_json
   end
