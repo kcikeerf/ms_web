@@ -302,7 +302,7 @@ var echartOption = {
 			        },
 			        grid: {
 			          left: 10,
-			          right: 10,
+			          right: 80,
 			          bottom: 10,
 			          containLabel: true
 			        },
