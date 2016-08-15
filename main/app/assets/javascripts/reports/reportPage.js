@@ -48,11 +48,13 @@ var reportPage = {
 				$(this).addClass('active').siblings('li').removeClass('active');
 				$(this).children('ul').show();
 				$(this).siblings('li').children('ul').hide();
+				/*
 				var screenHeight = Math.floor($(window).height());
 				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height() - $(document).scrollTop());
 				if (bodyHeight > screenHeight) {
 					$(this).children('ul').attr('class', 'active');
 				}
+				*/
 			});
 		}, function() {
 			$('.dropdown_menu').hide();
