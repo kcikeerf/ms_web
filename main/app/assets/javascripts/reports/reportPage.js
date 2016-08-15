@@ -267,7 +267,7 @@ var reportPage = {
 						},
 						itemStyle: {
 							normal: {
-								color: "#c90303"
+								color: "#fa9daf"
 							}
 						}
 					});
