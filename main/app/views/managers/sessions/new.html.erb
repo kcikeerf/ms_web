@@ -1,26 +1,34 @@
-<h2>Log in</h2>
+<div style="width: 100%;padding-top: 10%;padding-left: 40%;">
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
-  </div>
+    <div class="easyui-panel" 
+         title="<%= I18n.t("managers.user.login_title") %>" 
+         style="margin: 0 100 0 auto;max-width:400px;padding:30px 60px;">
+        <form id="manager_login_form" method="post" action="<%=session_path(resource_name)%>">
+            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+            <div style="margin-bottom:20px">
+                <input class="easyui-textbox" 
+                       name="manager[login]" 
+                       style="width:100%" 
+                       data-options="label:'<%=I18n.t("activerecord.attributes.user.name")%>',required:true">
+            </div>
+            <div style="margin-bottom:20px">
+                <input class="easyui-textbox" 
+                       name="manager[password]"
+                       type="password" 
+                       style="width:100%" 
+                       data-options="label:'<%=I18n.t("activerecord.attributes.user.password")%>',required:true,validType:'email'">
+            </div>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-  </div>
-
-  <% if devise_mapping.rememberable? -%>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+        </form>
+        <div style="text-align:center;padding:5px 0">
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px"><%= I18n.t("page.login") %></a>
+        </div>
     </div>
-  <% end -%>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
-
-<%= render "managers/shared/links" %>
+</div>
+<script>
+    function submitForm(){
+      $('#manager_login_form').submit();
+    }
+</script>
+<%#= render "managers/shared/links" %>

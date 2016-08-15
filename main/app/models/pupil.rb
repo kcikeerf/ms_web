@@ -12,7 +12,7 @@ class Pupil < ActiveRecord::Base
   belongs_to :location, foreign_key: "loc_uid"
 
   def papers
-    pap_uids = Mongodb::BankPupPap.where(pup_uid: sself.uid).map{|item| item.pap_uid}
+    pap_uids = Mongodb::BankPupPap.where(pup_uid: self.uid).map{|item| item.pap_uid}
     Mongodb::BankPaperPap.where(:_id.in =>pap_uids).order({dt_update: :desc})
   end
 

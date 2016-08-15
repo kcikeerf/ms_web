@@ -50,6 +50,9 @@ class Mongodb::BankPaperPap
   field :answer_html, type: String
 
   field :user_id, type: String
+  field :tenant_uid, type: String
+  field :area_uid, type: String
+
   field :paper_json, type: String
   field :ckp_type, type: String
   #field :paper_saved_json, type: String
@@ -73,36 +76,36 @@ class Mongodb::BankPaperPap
   has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
+  has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
 
   def save_pap user_id, params
-    #result = true
-    #begin
-      status = Common::Paper::Status::None
-      if params[:information][:heading] && params[:bank_quiz_qizs].blank?
-        status = Common::Paper::Status::New
-      elsif params[:information][:heading] && params[:bank_quiz_qizs] && self.bank_quiz_qizs.blank?
-        status = Common::Paper::Status::Editting    
-      else
-        # do nothing
-      end  
-      #return result if params[:infromation].blank?
-      self.update_attributes({
-        :user_id => user_id || "",
-        :heading => params[:information][:heading] || "",
-        :subheading => params[:information][:subheading] || "",
-        :orig_file_id => params[:orig_file_id] || "",
-        :paper_json => params.to_json || "",
-        :paper_html => params[:paper_html] || "",
-        :answer_html => params[:answer_html] || "",
-        :paper_status => status
-      })
-      unless self.errors.messages.empty?
-        raise SwtkErrors::SavePaperHasError.new(I18.t("papers.messages.save_paper.debug", :message => self.errors.messages)) 
-      end
-    #rescue Exception => ex
-    #  result=false
-    #end
-    #return result
+    status = Common::Paper::Status::None
+    if params[:information][:heading] && params[:bank_quiz_qizs].blank?
+      status = Common::Paper::Status::New
+    elsif params[:information][:heading] && params[:bank_quiz_qizs] && self.bank_quiz_qizs.blank?
+      status = Common::Paper::Status::Editting    
+    else
+      # do nothing
+    end
+
+    areaUid = Area.get_area_uid params[:informtion]
+    tenantUid= Tenant.get_tenant_uid params[:information]
+
+    self.update_attributes({
+      :user_id => user_id || "",
+      :area_uid => areaUid,
+      :tenant_uid => tenantUid,
+      :heading => params[:information][:heading] || "",
+      :subheading => params[:information][:subheading] || "",
+      :orig_file_id => params[:orig_file_id] || "",
+      :paper_json => params.to_json || "",
+      :paper_html => params[:paper_html] || "",
+      :answer_html => params[:answer_html] || "",
+      :paper_status => status
+    })
+    unless self.errors.messages.empty?
+      raise SwtkErrors::SavePaperHasError.new(I18.t("papers.messages.save_paper.debug", :message => self.errors.messages)) 
+    end
   end
 
   def submit_pap params
@@ -930,6 +933,21 @@ class Mongodb::BankPaperPap
       result = 1
     end
   end
+
+  #######
+  #等到bank_paper_pap_pointers弄完，移植走
+  def grade_reports
+    Mongodb::GradeReport.where(:pap_uid => _id.to_s).to_a
+  end
+
+  def class_reports
+    Mongodb::ClassReport.where(:pap_uid => _id.to_s).to_a
+  end
+
+  def pupil_reports
+    Mongodb::PupilReport.where(:pap_uid => _id.to_s).to_a
+  end
+  ########
 
   #################################Mobile#####################################
 

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Mongodb::BankTntRptTest < ActiveSupport::TestCase
+class Managers::TenantsControllerTest < ActionController::TestCase
   # test "the truth" do
   #   assert true
   # end

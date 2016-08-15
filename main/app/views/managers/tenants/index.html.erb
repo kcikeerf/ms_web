@@ -1,0 +1,50 @@
+<th data-options="field:'number',align:'center', width:'5%'">学校编号</th>
+<th data-options="field:'name',align:'center', width:'10%'">名称</th>
+<th data-options="field:'school_type',align:'center', width:'5%'">学校类型</th>
+<th data-options="field:'moto',align:'center', width:'10%'">校训</th>
+<th data-options="field:'build_at',align:'center', width:'10%'">创建于</th>
+<th data-options="field:'address',align:'center', width:'10%'">地址</th>
+<th data-options="field:'phone',align:'center', width:'10%'">电话</th>
+<th data-options="field:'email',align:'center', width:'10%'">邮箱</th>
+<th data-options="field:'web',align:'center', width:'10%'">主页</th>
+<th data-options="field:'comment',align:'center', width:'10%'">备注</th>
+<th data-options="field:'dt_update',align:'center', width:'10%'">更新时间</th>
+
+<% content_for :form do %>
+	<div class="fname">
+		<label>名称:</label>
+		<%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>学校类型:</label>
+		<%= select_tag :school_type, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>校训:</label>
+		<%= text_field_tag :moto, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>创建于:</label>
+		<%= text_field_tag :build_at, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>地址:</label>
+		<%= text_field_tag :address, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>电话:</label>
+		<%= text_field_tag :phone, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>邮箱:</label>
+		<%= text_field_tag :email, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>主页:</label>
+		<%= text_field_tag :web, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>备注:</label>
+		<%= text_field_tag :comment, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+<% end %>
