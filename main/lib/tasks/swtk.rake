@@ -387,18 +387,17 @@ namespace :swtk do
           next if index == 0
           next if col.blank?
           paramsh = {}
-          rid = ""
+          rid = Common::Area::CountryRid["zhong_guo"] #China first :)
           if arr.length == 1
-            rid = (index-1).to_s.rjust(3, '0')
+            rid += (index-1).to_s.rjust(3, '0')
             type = "province"
           elsif arr.length == 2
-            rid = arr[1].to_s.rjust(3, '0') + (index-1).to_s.rjust(3, '0')
+            rid += arr[1].to_s.rjust(3, '0') + (index-1).to_s.rjust(3, '0')
             type = "city"
           elsif arr.length == 3
-            rid = arr[1].to_s.rjust(3, '0') + arr[2].to_s.rjust(3, '0') + (index-1).to_s.rjust(3, '0')
+            rid += arr[1].to_s.rjust(3, '0') + arr[2].to_s.rjust(3, '0') + (index-1).to_s.rjust(3, '0')
             type = "district"
           else
-            p arr.length
             next
           end
 

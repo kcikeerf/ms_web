@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     resources :mains do    
       get 'navigation'
     end
+
+    resources :tenants do
+      collection do
+        delete 'destroy_all', :to => "tenants#destroy_all"
+      end
+    end
     
     resources :checkpoints, :except => [:edit, :destroy] do      
       collection do

@@ -10,9 +10,16 @@
   </head>
   <body>
     <div class="easyui-layout" data-options="fit:true">
-      <div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:20px;font-size:18px; font-weight:bold;">
-         三维题库管理后台    
-    </div>
+      <div data-options="region:'north',border:false" 
+           style="height:60px;background:#B3DFDA;padding:20px;font-size:18px; font-weight:bold;">
+         <div style="float: left;">
+           三维题库管理后台
+         </div>
+         <div style="float: right;">
+           管理员：<%= current_manager.email%>
+           <a href="/managers/logout" class="easyui-linkbutton">Logout</a>
+         </div>
+      </div>
       <%= render 'shared/manager/left' %>
       <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
         <div id="tabs" class="easyui-tabs"  fit="true" border="false" >

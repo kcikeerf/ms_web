@@ -1,5 +1,6 @@
-//= require jquery
-//= require jquery_ujs
+// require jquery
+// require jquery_ujs
+//= require jquery-min
 //= require easyui/jquery.easyui.min.js
 
 
@@ -150,6 +151,7 @@ function msgShow(title, msgString, msgType) {
 function newObj(url){
   $('#dlg').dialog('open').dialog('setTitle','创建');
   $('#fm').form('clear').attr('action', url);
+  $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
   $('#manager_method').val('post');
   var $resource_add = $("#resource_add");
   if($resource_add.length){
@@ -175,6 +177,8 @@ function editObj(url){
       $.parser.parse($("#fm"));
     }
     $('#dlg').dialog('open').dialog('setTitle','编辑');
+    $('#fm').form('clear').attr('action', url);
+    $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
     $('#fm').form('load',row).attr('action', url + (row.id == undefined ? row.uid : row.id));
     $('#manager_method').val('put');
   }
@@ -212,6 +216,7 @@ function destroy(url){
   $.each(rows, function(i, row){
     ids_arr.push(row.id == undefined ? row.uid : row.id)
   });
+  var authenticity_token = $('meta[name="csrf-token"]')[0].content;
   if (ids_arr.length > 0){
     var url = url + 'destroy_all';
     $.messager.confirm('Confirm','你确定要删除么',function(r){
@@ -219,7 +224,7 @@ function destroy(url){
         $.ajax({
           type: 'delete',
           url: url, 
-          data: {id: ids_arr},
+          data: {id: ids_arr, authenticity_token: authenticity_token},
           dataType: 'json',
           success: function(){                                
             $('#dg').datagrid('reload');    // reload the user data                             

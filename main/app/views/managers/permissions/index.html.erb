@@ -6,19 +6,19 @@
 
 <% content_for :form do %>
 	<div class="fname">
-			<label>名称:</label>
-			<%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
-		</div>
-		<div class="fsubject_class">
-			<label>controller:</label>
-			<%= text_field_tag :subject_class, '', class: 'easyui-validatebox', required: 'true' %>
-		</div>
-		<div class="faction">
-			<label>action:</label>
-			<%= text_field_tag :action, '', class: 'easyui-validatebox', required: 'true' %>
-		</div>
-		<div class="fdescription">
-			<label>描述:</label>
-			<%= text_field_tag :description, '', class: 'easyui-validatebox' %>
-		</div>
+		<label>名称:</label>
+		<%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>controller:</label>
+		<%= text_field_tag :subject_class, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="faction">
+		<label>action:</label>
+		<%= text_field_tag :action, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fdescription">
+		<label>描述:</label>
+		<%= text_field_tag :description, '', class: 'easyui-validatebox' %>
+	</div>
 <% end %>

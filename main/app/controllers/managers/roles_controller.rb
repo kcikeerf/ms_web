@@ -6,6 +6,8 @@ class Managers::RolesController < ApplicationController
 	
 
 	before_action :set_role, only: [:show, :edit, :update]
+    skip_before_action :authenticate_person!
+    before_action :authenticate_manager
 
 	def index
 		@data = {name: '角色', path: '/managers/roles'}

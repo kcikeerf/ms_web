@@ -5,8 +5,29 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   before_action :set_locale, :authorize_access, :user_init
-  before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :configure_permitted_parameters, if: :devise_controller? || :manager_controller?
 
+  devise_group :person, contains: [:user, :manager]
+  #before_action :authenticate_person!
+  before_action do |controller|
+    controller_name = controller.class.to_s
+    cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
+    cond2 = (controller_name == "WelcomesController")
+    cond3 = (controller_name == "Managers::SessionsController" && action_name == "new")
+    if cond1 || cond2 || cond3
+      next
+    end
+
+    #authenticate_person!
+    if (controller_name =~ /^Managers.*$/) == 0
+      authenticate_manager!
+      redirect_to new_manager_session_path unless current_manager
+    else
+      authenticate_user!
+      redirect_to new_user_session_path unless current_user
+    end
+  end
+ 
   ######
   # wechat use
   #
@@ -33,6 +54,7 @@ class ApplicationController < ActionController::Base
 #      redirect_to root_path
 #    end
   end
+
   def authorize_access
     # authorize!(action_name.to_sym, "#{controller_name}_controller".camelcase.constantize)
   end
@@ -40,18 +62,46 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     render 'errors/403', status: 403,  layout: 'error'
   end
-
-  def after_sign_in_path_for(resource_or_scope)
-     @redirect_target = root_path
-     if current_user.role_obj.is_a? Analyzer
-       @redirect_target = my_home_analyzers_path
-     elsif current_user.role_obj.is_a? Teacher
-       @redirect_target = my_home_teachers_path
-     elsif current_user.role_obj.is_a? Pupil
-       @redirect_target = my_home_pupils_path
+  
+  ########
+  #override devise after login path
+  def after_sign_in_path_for(resource)
+     case resource
+     when :user, User
+       @redirect_target = root_path
+       if current_user.role_obj.is_a? Analyzer
+         @redirect_target = my_home_analyzers_path
+       elsif current_user.role_obj.is_a? Teacher
+         @redirect_target = my_home_teachers_path
+       elsif current_user.role_obj.is_a? Pupil
+         @redirect_target = my_home_pupils_path
+       else
+       end
+     when :manager, Manager
+       managers_mains_path
      else
      end
   end
+
+  #override devise after logout path
+  def after_sign_out_path_for(resource)
+     case resource
+     when :user, User
+       p "users logout"
+       root_path
+     when :manager, Manager
+       new_manager_session_path
+     else
+     end
+  end
+
+  def authenticate_manager
+    authenticate_manager!
+    unless current_manager
+      redirect_to new_manager_session_path
+    end
+  end
+  #######
 
   def response_json(status=403, data={})
     {status: status}.merge(data: data).to_json
@@ -98,6 +148,7 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone, :role_name, :email, :password, :remember_me])
+    devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :password, :remember_me])
     # devise_parameter_sanitizer.for(:sign_up) do |u|
     #   u.permit(:login, :email, :phone, :password, :password_confirmation,:remember_me)      
     # end
