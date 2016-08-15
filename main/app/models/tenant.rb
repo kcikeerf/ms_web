@@ -5,25 +5,45 @@ class Tenant < ActiveRecord::Base
   include TimePatch
   include InitUid
 
-  def save_tenant
-=begin
+  belongs_to :areas, foreign_key: "area_uid"
+
+  def self.save_tenant params
+    schNumber = generate_school_number
+    areaUid = Area.get_area_uid params
   	paramh = {
-      :number =>
-      :name
-      :name_en
-      :name_cn
-      :name_abbrev
-      :moto
-      :type
-      :address
-      :email
-      :phone
-      :web
-      :build_at
-      :comment
-      :area_uid
+      :number => schNumber,
+      :name => Common::Locale.hanzi2pinyin(params[:name]),
+      :name_en => params[:name_en] || "",
+      :name_cn => params[:name_cn] || "",
+      :name_abbrev => params[:name_abbrev] || "",
+      :moto => params[:moto] || "",
+      :k12_type => params[:k12_type] || "",
+      :school_type => params[:school_type] || "",
+      :address => params[:address] || "",
+      :email =>  params[:email] || "",
+      :phone =>  params[:phone] || "",
+      :web =>  params[:web] || "",
+      :build_at =>  params[:build_at] || "",
+      :comment => params[:comment] || "",
+      :area_uid => areaUid || ""
     }
-=end
+    new_tenant = self.new(paramh)
+    new_tenant.save!
+  end
+
+  def papers
+    Mongodb::BankPaperPap.where(:tenant_uid => rid).to_a
+  end
+
+  def self.get_tenant_uid params
+    return params[:tenant_uid] if params[:tenant_uid]
+    return nil if params[:school_number].blank? && params[:school].blank?
+    paramsh = {
+      :number => params[:school_number] || "", 
+      :name => params[:school] || ""
+    }
+    targetTenant = Tenant.where(paramsh).first
+    return targetTenant.nil?? nil : targetTenant.uid
   end
 
   def self.get_school_numbers

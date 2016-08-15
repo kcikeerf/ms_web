@@ -364,8 +364,16 @@ zh:
     #性别
     nan: "男"
     nv: "女"
+    #学校类别
+    school_type: "学校类别"
+    gong_ban_xue_xiao: "公办学校"
+    min_ban_xue_xiao: "民办学校"
+    si_li_xue_xiao: "私立学校"
+    guo_ji_xue_xiao: "国际学校"
 
   managers:
+    user:
+      login_title: "欢迎登录三维题库管理Console"
     node_structure: "教材版本"
     checkpoint: "指标体系"
     root_node: "根节点"
@@ -613,6 +621,7 @@ zh:
   page:
     site_name: '三维题库系统'
     login: '登录'
+    password: '密码'
     register: '注册'
     edit: '编辑'
     del: '删除'

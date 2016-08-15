@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160811062904) do
+ActiveRecord::Schema.define(version: 20160811064136) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -32,6 +32,16 @@ ActiveRecord::Schema.define(version: 20160811062904) do
     t.string   "user_id",   limit: 255
     t.string   "name",      limit: 255
     t.string   "subject",   limit: 255
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "areas", primary_key: "uid", force: :cascade do |t|
+    t.string   "rid",       limit: 255
+    t.string   "area_type", limit: 255
+    t.string   "name",      limit: 255
+    t.string   "name_cn",   limit: 255
+    t.string   "comment",   limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
   end
@@ -353,6 +363,26 @@ ActiveRecord::Schema.define(version: 20160811062904) do
     t.string   "name",      limit: 255
     t.string   "subject",   limit: 255
     t.string   "school",    limit: 255
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
+  create_table "tenants", primary_key: "uid", force: :cascade do |t|
+    t.string   "number",      limit: 255
+    t.string   "name",        limit: 255
+    t.string   "name_en",     limit: 255
+    t.string   "name_cn",     limit: 255
+    t.string   "name_abbrev", limit: 255
+    t.string   "moto",        limit: 255
+    t.string   "k12_type",    limit: 255
+    t.string   "school_type", limit: 255
+    t.string   "address",     limit: 255
+    t.string   "email",       limit: 255
+    t.string   "phone",       limit: 255
+    t.string   "web",         limit: 255
+    t.string   "build_at",    limit: 255
+    t.string   "comment",     limit: 255
+    t.string   "area_uid",    limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
   end

@@ -2,10 +2,10 @@ class CreateTenants < ActiveRecord::Migration
   def change
     create_table :tenants,id: false do |t|
       t.column :uid, "VARCHAR(255) PRIMARY KEY"
-      t.string :number
-      t.string :name
+      t.string :number, null: false
+      t.string :name, null: false
       t.string :name_en
-      t.string :name_cn
+      t.string :name_cn, null: false
       t.string :name_abbrev
       t.string :moto
       t.string :k12_type
@@ -22,5 +22,7 @@ class CreateTenants < ActiveRecord::Migration
       t.datetime :dt_add
       t.datetime :dt_update
     end
+
+    add_index :tenants, [:number, :name]
   end
 end

@@ -9,6 +9,13 @@ module Common
     UploadPrefix = Rails.root.to_s + "/uploads/"
   end
 
+  module Area
+    CountryRids = {
+      "zhong_guo" => "001"
+      # add other country here
+    }
+  end
+
   module Page
     PerPage = 10
   end
