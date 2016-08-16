@@ -196,7 +196,7 @@ var echartOption = {
                         data: data.yaxis.med_avg_diff.up,
                         itemStyle: {
                             normal: {
-                                color: '#15a892'
+                                color: '#51b8c1'
                             }
                         },
                         LegendHoverLink: true,
@@ -1460,7 +1460,6 @@ var echartOption = {
             },
             setClassDiagnoseRight: function (data) {
                 return option = {
-                    color: ['#333'],
                     title: {},
                     tooltip: {
                         trigger: 'item'
@@ -1490,7 +1489,6 @@ var echartOption = {
                     xAxis: [
                         {
                             type: 'category',
-                            //boundaryGap:false,
                             splitLine: {lineStyle: {color: ['#ededed']}},
                             axisTick: {
                                 //show:false
@@ -1519,18 +1517,6 @@ var echartOption = {
                             name: '班级中位数得分率与年级平均差值正值',
                             type: 'bar',
                             barMaxWidth: 10,
-                            areaStyle: {
-                                normal: {
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#51b8c1'
-                                    }, {
-                                        offset: 1,
-                                        color: '#fcfcfc'
-                                    }]),
-                                    opacity: 0.8,
-                                }
-                            },
                             data: data.yaxis.diff.mid.up,
                             itemStyle: {
                                 normal: {color: '#51b8c1'}
@@ -1542,21 +1528,9 @@ var echartOption = {
                             type: 'bar',
                             barMaxWidth: 10,
                             stack: '百分比',
-                            areaStyle: {
-                                normal: {
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#fff'
-                                    }, {
-                                        offset: 1,
-                                        color: '#c90303'
-                                    }]),
-                                    opacity: 0.8,
-                                }
-                            },
                             data: data.yaxis.diff.mid.down,
                             itemStyle: {
-                                normal: {color: '#c90303'}
+                                normal: {color: '#fa9daf'}
                             },
                             LegendHoverLink: true,
                         },
