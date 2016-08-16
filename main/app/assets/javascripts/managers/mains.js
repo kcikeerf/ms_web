@@ -2,7 +2,7 @@
 // require jquery_ujs
 //= require jquery-min
 //= require easyui/jquery.easyui.min.js
-
+//= require managers/area
 
 $(function(){
   InitLeftMenu();
@@ -150,11 +150,13 @@ function msgShow(title, msgString, msgType) {
 //创建对象
 function newObj(url){
   $('#dlg').dialog('open').dialog('setTitle','创建');
-  $('#fm').form('clear').attr('action', url);
+  $('#fm')[0].reset();
+  $('#fm').attr('action', url);
   $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
+  $.parser.parse($("#fm"));
   $('#manager_method').val('post');
-  var $resource_add = $("#resource_add");
-  if($resource_add.length){
+  var $resource_add = $("#resource_add"); //没懂啥用先保留
+  if($resource_add.length){//没懂啥用先保留
     // $resource_add.show();
     // $("#resource_edit").hide();
     var $html = $resource_add.clone();
@@ -162,24 +164,49 @@ function newObj(url){
     $html.attr('id', '').show();
     $("#other").html($html);
     $.parser.parse($("#fm"));
-  }
+  }//没懂啥用先保留
 }
 
 //编辑
 function editObj(url){
   var row = $('#dg').datagrid('getSelected');
   if (row){
-    var $resource_edit = $("#resource_edit");
-    if($resource_edit.length){
+    var $resource_edit = $("#resource_edit");//没懂啥用先保留
+    if($resource_edit.length){//没懂啥用先保留
       var $html = $resource_edit.clone();
       $html.show();
       $("#other").html($html);
       $.parser.parse($("#fm"));
-    }
+    }//没懂啥用先保留
     $('#dlg').dialog('open').dialog('setTitle','编辑');
     $('#fm').form('clear').attr('action', url);
     $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
     $('#fm').form('load',row).attr('action', url + (row.id == undefined ? row.uid : row.id));
+    $('#manager_method').val('put');
+  }
+}
+
+function editTenantObj(url){
+  var row = $('#dg').datagrid('getSelected');
+  if (row){
+    $('#dlg').dialog('open').dialog('setTitle','编辑');
+    $('#fm').form('clear').attr('action', url);
+    $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
+
+    $('#fm').form('load',row).attr('action', url + (row.id == undefined ? row.uid : row.id));
+    areaObj.reset_city_list($('#province_rid'));
+    setTimeout(function(){
+      $('#fm').form('load',row);
+      setTimeout(function(){
+        areaObj.reset_district_list($('#city_rid'));
+        setTimeout(function(){
+          $('#fm').form('load',row);
+        },100);
+      }, 100);
+    }, 100);
+    
+
+    $('#fm').form('load',row);
     $('#manager_method').val('put');
   }
 }

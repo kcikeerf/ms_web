@@ -387,7 +387,7 @@ namespace :swtk do
           next if index == 0
           next if col.blank?
           paramsh = {}
-          rid = Common::Area::CountryRid["zhong_guo"] #China first :)
+          rid = Common::Area::CountryRids["zhong_guo"] #China first :)
           if arr.length == 1
             rid += (index-1).to_s.rjust(3, '0')
             type = "province"

@@ -29,11 +29,12 @@ ActiveRecord::Schema.define(version: 20160811064136) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "analyzers", primary_key: "uid", force: :cascade do |t|
-    t.string   "user_id",   limit: 255
-    t.string   "name",      limit: 255
-    t.string   "subject",   limit: 255
+    t.string   "user_id",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "subject",    limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "tenant_uid", limit: 255
   end
 
   create_table "areas", primary_key: "uid", force: :cascade do |t|
@@ -256,7 +257,7 @@ ActiveRecord::Schema.define(version: 20160811064136) do
     t.string   "classroom",     limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
-    t.string   "tenant_id",     limit: 255
+    t.string   "tenant_uid",    limit: 255
   end
 
   create_table "managers", force: :cascade do |t|
@@ -315,6 +316,7 @@ ActiveRecord::Schema.define(version: 20160811064136) do
     t.string   "school",     limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "tenant_uid", limit: 255
   end
 
   create_table "report_url_mappings", primary_key: "codes", force: :cascade do |t|
@@ -358,34 +360,40 @@ ActiveRecord::Schema.define(version: 20160811064136) do
   end
 
   create_table "teachers", primary_key: "uid", force: :cascade do |t|
-    t.string   "user_id",   limit: 255
-    t.string   "loc_uid",   limit: 255
-    t.string   "name",      limit: 255
-    t.string   "subject",   limit: 255
-    t.string   "school",    limit: 255
+    t.string   "user_id",    limit: 255
+    t.string   "loc_uid",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "subject",    limit: 255
+    t.string   "school",     limit: 255
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+    t.string   "tenant_uid", limit: 255
+  end
+
+  create_table "tenants", primary_key: "uid", force: :cascade do |t|
+    t.string   "number",         limit: 255, null: false
+    t.string   "name",           limit: 255, null: false
+    t.string   "name_en",        limit: 255
+    t.string   "name_cn",        limit: 255, null: false
+    t.string   "name_abbrev",    limit: 255
+    t.string   "watchword",      limit: 255
+    t.string   "tenant_type",    limit: 255
+    t.string   "tenant_type_cn", limit: 255
+    t.string   "k12_type",       limit: 255
+    t.string   "school_type",    limit: 255
+    t.string   "address",        limit: 255
+    t.string   "email",          limit: 255
+    t.string   "phone",          limit: 255
+    t.string   "web",            limit: 255
+    t.string   "build_at",       limit: 255
+    t.string   "comment",        limit: 255
+    t.string   "area_uid",       limit: 255
+    t.string   "area_rid",       limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
   end
 
-  create_table "tenants", primary_key: "uid", force: :cascade do |t|
-    t.string   "number",      limit: 255
-    t.string   "name",        limit: 255
-    t.string   "name_en",     limit: 255
-    t.string   "name_cn",     limit: 255
-    t.string   "name_abbrev", limit: 255
-    t.string   "moto",        limit: 255
-    t.string   "k12_type",    limit: 255
-    t.string   "school_type", limit: 255
-    t.string   "address",     limit: 255
-    t.string   "email",       limit: 255
-    t.string   "phone",       limit: 255
-    t.string   "web",         limit: 255
-    t.string   "build_at",    limit: 255
-    t.string   "comment",     limit: 255
-    t.string   "area_uid",    limit: 255
-    t.datetime "dt_add"
-    t.datetime "dt_update"
-  end
+  add_index "tenants", ["number", "name"], name: "index_tenants_on_number_and_name", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "",    null: false

@@ -7,7 +7,9 @@ class CreateTenants < ActiveRecord::Migration
       t.string :name_en
       t.string :name_cn, null: false
       t.string :name_abbrev
-      t.string :moto
+      t.string :watchword
+      t.string :tenant_type
+      t.string :tenant_type_cn
       t.string :k12_type
       t.string :school_type
       t.string :address
@@ -18,6 +20,7 @@ class CreateTenants < ActiveRecord::Migration
       t.string :comment
 
       t.string :area_uid
+      t.string :area_rid
 
       t.datetime :dt_add
       t.datetime :dt_update
