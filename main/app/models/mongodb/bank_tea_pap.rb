@@ -14,7 +14,7 @@ class Mongodb::BankTeaPap
   end
 
   def destroy_tea_pap
-    logger.info("=======Destroy Pupil And Paper Relation========")
+    logger.info("=======Destroy Teacher And Paper Relation========")
     begin
       self.destroy!
     rescue Exception=>ex

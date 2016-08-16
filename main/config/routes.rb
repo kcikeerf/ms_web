@@ -11,12 +11,6 @@ Rails.application.routes.draw do
     resources :mains do    
       get 'navigation'
     end
-
-    resources :tenants do
-      collection do
-        delete 'destroy_all', :to => "tenants#destroy_all"
-      end
-    end
     
     resources :checkpoints, :except => [:edit, :destroy] do      
       collection do
@@ -53,7 +47,23 @@ Rails.application.routes.draw do
     end
     
     resources :permissions, concerns: :destroy_all
-    
+ 
+    resources :tenants, concerns: :destroy_all do
+      collection do
+        #delete 'destroy_all', :to => "tenants#destroy_all"
+      end
+    end
+
+    resources :areas do
+      collection do
+        get 'get_province'
+        get 'get_city'
+        get 'get_district'
+      end
+    end
+
+    resources :analyzers, concerns: :destroy_all
+
   end
 
   mount RuCaptcha::Engine => "/rucaptcha"

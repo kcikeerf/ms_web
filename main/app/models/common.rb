@@ -223,6 +223,18 @@ module Common
     end
   end
 
+  module Tenant
+    TypeList = {
+      :gong_ban_xue_xiao => I18n.t("tenants.types.gong_ban_xue_xiao"),
+      :min_ban_xue_xiao => I18n.t("tenants.types.min_ban_xue_xiao"),
+      :si_li_xue_xiao => I18n.t("tenants.types.si_li_xue_xiao"),
+      :guo_ji_xue_xiao => I18n.t("tenants.types.guo_ji_xue_xiao"),
+      :xue_xiao_lian_he => I18n.t("tenants.types.xue_xiao_lian_he"),
+      :jiao_yu_ju => I18n.t("tenants.types.jiao_yu_ju"),
+      :others => I18n.t("tenants.types.others"),
+    }
+  end
+
   module Job
     module Type
       CreateReport = "create_report"
@@ -1936,6 +1948,16 @@ How many kinds of animals are talked about in the poster(海报)?<br>
       :zheng_zhi => I18n.t("dict.zheng_zhi"),
       :xin_xi_ji_shu => I18n.t("dict.xin_xi_ji_shu"),
       :ji_shu => I18n.t("dict.ji_shu")
+    }
+
+    TenantTypeOrder = {
+      :gong_ban_xue_xiao => "1",
+      :min_ban_xue_xiao => "2",
+      :si_li_xue_xiao => "3",
+      :guo_ji_xue_xiao => "4",
+      :xue_xiao_lian_he => "5",
+      :jiao_yu_ju => "6",
+      :others => "7"
     }
 
     GradeList = {
