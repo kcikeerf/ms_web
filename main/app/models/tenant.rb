@@ -92,6 +92,10 @@ class Tenant < ActiveRecord::Base
     result
   end
 
+  def self.tenant_type_list
+     Common::Tenant::TypeList.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}.sort{|a,b| Common::Locale.mysort(Common::Locale::TenantTypeOrder[a.key],Common::Locale::TenantTypeOrder[b.key]) }
+  end
+
   def self.get_list params
     result = self.page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
