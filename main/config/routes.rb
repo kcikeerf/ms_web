@@ -59,6 +59,7 @@ Rails.application.routes.draw do
         get 'get_province'
         get 'get_city'
         get 'get_district'
+        get 'get_tenants'
       end
     end
 

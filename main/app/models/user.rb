@@ -64,6 +64,10 @@ class User < ActiveRecord::Base
     model.save_info(options) if model
   end
 
+  def self.update_user(name, role_name, options)
+
+  end
+
   # 生成 是否为角色方法、角色方法
   Common::Role::NAME_ARR.each do |name|
     define_method("is_#{name}?") do 
