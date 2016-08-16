@@ -33,4 +33,12 @@ class  Managers::AreasController < ApplicationController
     end
     render :json => result.to_json
   end
+
+  def get_tenants
+    params.permit!
+
+    areas = Area.where("rid LIKE '#{params[:area_rid]}%'")
+    tenants = areas.map{|a| a.tenants}.flatten
+    render :json => tenants.to_json
+  end
 end

@@ -1,11 +1,11 @@
-<th data-options="field:'user_name',align:'center', width:'5%'">用户名</th>
+<th data-options="field:'user_name',align:'center', width:'10%'">用户名</th>
 <th data-options="field:'name',align:'center', width:'10%'">姓名</th>
 <th data-options="field:'school',align:'center', width:'10%'">学校</th>
-<th data-options="field:'subject',align:'center', width:'5%'">学科</th>
+<th data-options="field:'subject',align:'center', width:'10%'">学科</th>
 <th data-options="field:'qq',align:'center', width:'10%'">QQ</th>
 <th data-options="field:'phone',align:'center', width:'10%'">电话</th>
 <th data-options="field:'email',align:'center', width:'10%'">邮箱</th>
-<th data-options="field:'dt_update',align:'center', width:'10%'">更新时间</th>
+<th data-options="field:'dt_update',align:'center', width:'20%'">更新时间</th>
 
 <% content_for :form do %>
   <div class="fname">
@@ -14,15 +14,27 @@
   </div>
   <div class="fsubject_class">
     <label>姓名:</label>
-    <%= select_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+    <%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+  </div>
+  <div class="fsubject_class">
+    <label>省:</label>
+    <%= select_tag :province_rid, options_from_collection_for_select(@province, 'rid', 'name_cn',@province[0].rid) ,class: 'easyui-validatebox', required: 'true'%>
+  </div>
+  <div class="fsubject_class">
+    <label>市:</label>
+    <%= select_tag :city_rid, options_from_collection_for_select(@city, 'rid', 'name_cn', @city[0].rid) ,class: 'easyui-validatebox', required: 'true'%>
+  </div>
+  <div class="fsubject_class">
+    <label>区:</label>
+    <%= select_tag :district_rid, options_from_collection_for_select(@district, 'rid', 'name_cn', @district[0].rid),class: 'easyui-validatebox', required: 'true' %>  
   </div>
   <div class="fsubject_class">
     <label>学校:</label>
-    <%= text_field_tag :school, '', class: 'easyui-validatebox', required: 'true' %>
+    <%= select_tag :school, options_from_collection_for_select([], 'rid', 'name_cn' ) ,class: 'easyui-validatebox', required: 'true'%> 
   </div>
   <div class="fsubject_class">
     <label>学科:</label>
-    <%= text_field_tag :subject, '', class: 'easyui-validatebox', required: 'true' %>
+    <%= select_tag :subject, options_from_collection_for_select(@subject_list, 'key', 'value' ), class: 'easyui-validatebox', required: 'true' %>
   </div>
   <div class="fsubject_class">
     <label>QQ:</label>
@@ -35,9 +47,5 @@
   <div class="fsubject_class">
     <label>邮箱:</label>
     <%= text_field_tag :email, '', class: 'easyui-validatebox', required: 'true' %>
-  </div>
-  <div class="fsubject_class">
-    <label>更新时间:</label>
-    <%= text_field_tag :dt_update, '', class: 'easyui-validatebox', required: 'true' %>
   </div>
 <% end %>

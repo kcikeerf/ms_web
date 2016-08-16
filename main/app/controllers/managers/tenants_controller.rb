@@ -15,7 +15,7 @@ class Managers::TenantsController < ApplicationController
     @tenants = Tenant.get_list params 
 
     # tenant类型数据
-    @type_list = Common::Tenant::TypeList.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}.sort{|a,b| Common::Locale.mysort(Common::Locale::TenantTypeOrder[a],Common::Locale::TenantTypeOrder[b]) }
+    @type_list = Tenant.tenant_type_list
     
     # tenant用地区信息
     country_rid = Common::Area::CountryRids["zhong_guo"]
