@@ -21,23 +21,26 @@ var echartOption = {
                     legend: {
                         top: 0,
                         right: 10,
-                        itemWidth: 6,
-                        itemHeight: 6,
-                        data: [{
-                            name: '年级中位数得分率',
-                            icon: 'rect'
-                        }, {
-                            name: '年级平均得分率',
-                            icon: 'rect'
-                        }, {
-                            name: '年级分化度',
-                            icon: 'rect'
-                        }],
+                        data: [
+                            {
+                                name: '年级中位数得分率',
+                                icon: 'rect'
+                            },
+                            {
+                                name: '年级平均得分率',
+                                icon: 'rect'
+                            },
+                            {
+                                name: '年级分化度',
+                                icon: 'rect'
+                            }
+                        ],
                         textStyle: {
-                            fontSize: 14
+                            fontSize: 16
                         }
                     },
                     grid: {
+                        top: 100,
                         left: 10,
                         right: 10,
                         bottom: 10,
@@ -52,7 +55,7 @@ var echartOption = {
                         axisLabel: {
                             interval: 0,
                             textStyle: {
-                                fontSize: 14
+                                fontSize: 16
                             }
                         },
                     }],
@@ -135,23 +138,24 @@ var echartOption = {
                         trigger: 'item'
                     },
                     legend: {
-                        show: true,
                         top: 0,
                         right: 10,
-                        data: [{
-                            name: '中平差值正值',
-                            icon: 'circle',
-                        }, {
-                            name: '中平差值负值',
-                            icon: 'circle',
-                        },],
-                        itemWidth: 6,
-                        itemHeight: 6,
+                        data: [
+                            {
+                                name: '中平差值正值',
+                                icon: 'rect',
+                            },
+                            {
+                                name: '中平差值负值',
+                                icon: 'rect',
+                            }
+                        ],
                         textStyle: {
-                            fontSize: 14
+                            fontSize: 16
                         }
                     },
                     grid: {
+                        top: 100,
                         left: 10,
                         right: 10,
                         bottom: 10,
@@ -166,7 +170,7 @@ var echartOption = {
                         axisLabel: {
                             interval: 0,
                             textStyle: {
-                                fontSize: 14
+                                fontSize: 16
                             }
                         }
                     }],
@@ -225,7 +229,7 @@ var echartOption = {
                             name: '能力',
                             icon: 'rect'
                         }],
-                        textStyle: {fontSize: 14}
+                        textStyle: {fontSize: 16}
                     },
                     grid: {
                         left: 10,
@@ -239,7 +243,7 @@ var echartOption = {
                             type: 'value',
                             name: '分化度',
                             nameLocation: 'end',
-                            nameTextStyle: {color: '#000', fontSize: 14},
+                            nameTextStyle: {color: '#000', fontSize: 16},
                             min: 0,
                             max: 200,
                             splitNumber: 20,
@@ -247,12 +251,13 @@ var echartOption = {
                                 formatter: '{value}',
                             },
                             axisTick: {show: false},
-                            axisLine: {lineStyle: {color: '#c9c8c8', width: 4}},
                             splitLine: {
                                 lineStyle: {
                                     type: 'dashed', color: '#cdcccc',
+                                    opacity: 0.5,
                                 }
-                            }
+                            },
+                            z: 3
                         }
                     ],
                     yAxis: [
@@ -260,7 +265,7 @@ var echartOption = {
                             type: 'value',
                             name: '平均得分率',
                             nameLocation: 'end',
-                            nameTextStyle: {color: '#000', fontSize: 14},
+                            nameTextStyle: {color: '#000', fontSize: 16},
                             min: 0,
                             max: 100,
                             splitNumber: 6,
@@ -268,12 +273,13 @@ var echartOption = {
                                 formatter: '{value}',
                             },
                             axisTick: {show: false},
-                            axisLine: {lineStyle: {color: '#c9c8c8', width: 4}},
                             splitLine: {
                                 lineStyle: {
                                     type: 'dashed', color: '#cdcccc',
+                                    opacity: 0.5,
                                 }
-                            }
+                            },
+                            z: 3
                         }
                     ],
                     series: [
@@ -351,7 +357,7 @@ var echartOption = {
                                 silent: true,
                                 label: {
                                     normal: {
-                                        position: 'insideTop',
+                                        position: 'inside',
                                         textStyle: {
                                             color: '#212121',
                                             fontSize: 16,
@@ -367,7 +373,7 @@ var echartOption = {
                                             itemStyle: {
                                                 normal: {
                                                     color: '#c4f5ee',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#c4f5ee',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -381,12 +387,12 @@ var echartOption = {
                                     [
                                         {
                                             name: '高质低均衡',
-                                            xAxis: 20,
+                                            xAxis: 30,
                                             yAxis: 80,
                                             itemStyle: {
                                                 normal: {
                                                     color: '#f2f2f2',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#f2f2f2',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -405,7 +411,7 @@ var echartOption = {
                                             itemStyle: {
                                                 normal: {
                                                     color: '#f2f2f2',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#f2f2f2',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -413,18 +419,18 @@ var echartOption = {
                                         },
                                         {
                                             xAxis: 20,
-                                            yAxis: 80,
+                                            yAxis: 60,
                                         },
                                     ],
                                     [
                                         {
                                             name: '低质低均衡',
-                                            xAxis: 20,
+                                            xAxis: 30,
                                             yAxis: 0,
                                             itemStyle: {
                                                 normal: {
                                                     color: '#fce9e9',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#fce9e9',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -432,7 +438,7 @@ var echartOption = {
                                         },
                                         {
                                             xAxis: 200,
-                                            yAxis: 80,
+                                            yAxis: 60,
                                         }
                                     ],
 
@@ -535,7 +541,7 @@ var echartOption = {
                                 silent: true,
                                 label: {
                                     normal: {
-                                        position: 'insideTop',
+                                        position: 'inside',
                                         textStyle: {
                                             color: '#212121',
                                             fontSize: 16,
@@ -551,7 +557,7 @@ var echartOption = {
                                             itemStyle: {
                                                 normal: {
                                                     color: '#c4f5ee',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#c4f5ee',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -565,12 +571,12 @@ var echartOption = {
                                     [
                                         {
                                             name: '高质低均衡',
-                                            xAxis: 20,
+                                            xAxis: 30,
                                             yAxis: 80,
                                             itemStyle: {
                                                 normal: {
                                                     color: '#f2f2f2',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#f2f2f2',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -589,7 +595,7 @@ var echartOption = {
                                             itemStyle: {
                                                 normal: {
                                                     color: '#f2f2f2',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#f2f2f2',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -597,18 +603,18 @@ var echartOption = {
                                         },
                                         {
                                             xAxis: 20,
-                                            yAxis: 80,
+                                            yAxis: 60,
                                         },
                                     ],
                                     [
                                         {
                                             name: '低质低均衡',
-                                            xAxis: 20,
+                                            xAxis: 30,
                                             yAxis: 0,
                                             itemStyle: {
                                                 normal: {
                                                     color: '#fce9e9',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#fce9e9',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -616,7 +622,7 @@ var echartOption = {
                                         },
                                         {
                                             xAxis: 200,
-                                            yAxis: 80,
+                                            yAxis: 60,
                                         }
                                     ],
 
@@ -697,7 +703,7 @@ var echartOption = {
                                 silent: true,
                                 label: {
                                     normal: {
-                                        position: 'insideTop',
+                                        position: 'inside',
                                         textStyle: {
                                             color: '#212121',
                                             fontSize: 16,
@@ -713,7 +719,7 @@ var echartOption = {
                                             itemStyle: {
                                                 normal: {
                                                     color: '#c4f5ee',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#c4f5ee',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -727,12 +733,12 @@ var echartOption = {
                                     [
                                         {
                                             name: '高质低均衡',
-                                            xAxis: 20,
+                                            xAxis: 30,
                                             yAxis: 80,
                                             itemStyle: {
                                                 normal: {
                                                     color: '#f2f2f2',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#f2f2f2',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -751,7 +757,7 @@ var echartOption = {
                                             itemStyle: {
                                                 normal: {
                                                     color: '#f2f2f2',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#f2f2f2',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -759,18 +765,18 @@ var echartOption = {
                                         },
                                         {
                                             xAxis: 20,
-                                            yAxis: 80,
+                                            yAxis: 60,
                                         },
                                     ],
                                     [
                                         {
                                             name: '低质低均衡',
-                                            xAxis: 20,
+                                            xAxis: 30,
                                             yAxis: 0,
                                             itemStyle: {
                                                 normal: {
                                                     color: '#fce9e9',
-                                                    borderColor: '#fff',
+                                                    borderColor: '#fce9e9',
                                                     borderWidth: 2,
                                                     borderType: 'solid'
                                                 }
@@ -778,7 +784,7 @@ var echartOption = {
                                         },
                                         {
                                             xAxis: 200,
-                                            yAxis: 80,
+                                            yAxis: 60,
                                         }
                                     ],
 
@@ -825,7 +831,7 @@ var echartOption = {
                             formatter: '{value}%',
                             textStyle: {
                                 color: '#000',
-                                fontSize: 14,
+                                fontSize: 16,
                             }
                         },
                         axisLine: {
@@ -854,7 +860,7 @@ var echartOption = {
                         axisLabel: {
                             textStyle: {
                                 color: '#000',
-                                fontSize: 14
+                                fontSize: 16
                             }
                         },
                         inverse: true
@@ -871,7 +877,7 @@ var echartOption = {
                                 position: 'inside',
                                 textStyle: {
                                     color: '#fff',
-                                    fontSize: 14
+                                    fontSize: 16
                                 }
                             }
                         },
@@ -895,7 +901,7 @@ var echartOption = {
                                 position: 'inside',
                                 textStyle: {
                                     color: '#fff',
-                                    fontSize: 14,
+                                    fontSize: 16,
                                 }
                             }
                         },
@@ -919,7 +925,7 @@ var echartOption = {
                                 position: 'inside',
                                 textStyle: {
                                     color: '#fff',
-                                    fontSize: 14,
+                                    fontSize: 16,
                                 }
                             }
                         },
@@ -958,7 +964,7 @@ var echartOption = {
                         axisLabel: {
                             interval: 0,
                             textStyle: {
-                                fontSize: 14
+                                fontSize: 16
                             }
                         },
                     }],
@@ -1053,7 +1059,7 @@ var echartOption = {
                         itemHeight: 8,
                         data: data.normNameArr,
                         textStyle: {
-                            fontSize: 10
+                            fontSize: 16
                         }
                     },
                     grid: {
@@ -1081,7 +1087,7 @@ var echartOption = {
                         axisLabel: {
                             interval: 0,
                             textStyle: {
-                                fontSize: 11
+                                fontSize: 16
                             }
                         },
                         splitLine: {
@@ -1135,7 +1141,7 @@ var echartOption = {
                         itemHeight: 8,
                         data: data.normNameArr,
                         textStyle: {
-                            fontSize: 10
+                            fontSize: 16
                         }
                     },
                     grid: {
@@ -1163,7 +1169,7 @@ var echartOption = {
                         axisLabel: {
                             interval: 0,
                             textStyle: {
-                                fontSize: 11
+                                fontSize: 16
                             }
                         },
                         splitLine: {
@@ -1212,16 +1218,28 @@ var echartOption = {
                     legend: {
                         top: 0,
                         right: 10,
-                        width: '220',
-                        itemWidth: 6,
-                        itemHeight: 6,
-                        data: [{name: '班级平均得分率', icon: 'rect'}, {name: '年级平均得分率', icon: 'rect'}, {
-                            name: '分化度',
-                            icon: 'rect'
-                        }, {name: '班级中位数得分率', icon: 'rect'}],
-                        textStyle: {fontSize: 10},
+                        data: [
+                            {
+                                name: '班级平均得分率',
+                                icon: 'rect'
+                            },
+                            {
+                                name: '年级平均得分率',
+                                icon: 'rect'
+                            },
+                            {
+                                name: '分化度',
+                                icon: 'rect'
+                            },
+                            {
+                                name: '班级中位数得分率',
+                                icon: 'rect'
+                            }
+                        ],
+                        textStyle: {fontSize: 16},
                     },
                     grid: {
+                        top: 100,
                         left: 10,
                         right: 10,
                         bottom: 10,
@@ -1239,7 +1257,7 @@ var echartOption = {
                             data: data.xaxis,
                             axisLabel: {
                                 interval: 0,
-                                textStyle: {fontSize: 14}
+                                textStyle: {fontSize: 16}
                             },
                         }
                     ],
@@ -1353,7 +1371,7 @@ var echartOption = {
                         trigger: 'item'
                     },
                     legend: {
-                        top: 10,
+                        top: 0,
                         right: 10,
                         data: [
                             {
@@ -1365,12 +1383,10 @@ var echartOption = {
                                 icon: 'rect',
                             }
                         ],
-                        itemWidth: 6,
-                        itemHeight: 6,
-                        textStyle: {fontSize: 10},
-                        orient: 'vertical'
+                        textStyle: {fontSize: 16},
                     },
                     grid: {
+                        top: 100,
                         left: 10,
                         right: 10,
                         bottom: 10,
@@ -1389,7 +1405,7 @@ var echartOption = {
                             axisLabel: {
                                 margin: 10,
                                 interval: 0,
-                                textStyle: {fontSize: 14}
+                                textStyle: {fontSize: 16}
                             }
                         }
                     ],
@@ -1450,7 +1466,7 @@ var echartOption = {
                         trigger: 'item'
                     },
                     legend: {
-                        top: 10,
+                        top: 0,
                         right: 10,
                         data: [
                             {
@@ -1462,12 +1478,10 @@ var echartOption = {
                                 icon: 'rect',
                             }
                         ],
-                        itemWidth: 6,
-                        itemHeight: 6,
-                        textStyle: {fontSize: 10},
-                        orient: 'vertical'
+                        textStyle: {fontSize: 16},
                     },
                     grid: {
+                        top: 100,
                         left: 10,
                         right: 10,
                         bottom: 10,
@@ -1486,7 +1500,7 @@ var echartOption = {
                             axisLabel: {
                                 margin: 20,
                                 interval: 0,
-                                textStyle: {fontSize: 14}
+                                textStyle: {fontSize: 16}
                             }
                         }
                     ],
@@ -1579,7 +1593,7 @@ var echartOption = {
                         splitNumber: 5,
                         max: 100,
                         axisTick: {show: false},
-                        axisLabel: {formatter: '{value}%', textStyle: {color: '#000', fontSize: 14,}},
+                        axisLabel: {formatter: '{value}%', textStyle: {color: '#000', fontSize: 16,}},
                         axisLine: {
                             lineStyle: {
                                 color: '#cacaca',
@@ -1595,7 +1609,7 @@ var echartOption = {
                         axisLine: {show: false},
                         axisTick: {show: false},
                         splitLine: {show: false},
-                        axisLabel: {textStyle: {color: '#000', fontSize: 14,}},
+                        axisLabel: {textStyle: {color: '#000', fontSize: 16,}},
                     },
                     series: [
                         {
@@ -1607,7 +1621,7 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#fff', fontSize: 14,}
+                                    textStyle: {color: '#fff', fontSize: 16,}
                                 }
                             },
                             barMaxWidth: 30,
@@ -1629,7 +1643,7 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#000', fontSize: 14,}
+                                    textStyle: {color: '#000', fontSize: 16,}
                                 }
                             },
                             barMaxWidth: 30,
@@ -1651,7 +1665,7 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#000', fontSize: 14,}
+                                    textStyle: {color: '#000', fontSize: 16,}
                                 }
                             },
                             barMaxWidth: 30,
@@ -1678,7 +1692,7 @@ var echartOption = {
             setPupilRadarOption: function (data) {
                 return option = {
                     textStyle: {
-                        fontSize: 14
+                        fontSize: 16
                     },
                     color: ['#EB595A', '#15a892'],
                     title: {},
@@ -1786,7 +1800,7 @@ var echartOption = {
             setPupilDiffOption: function (data) {
                 return option = {
                     textStyle: {
-                        fontSize: 14
+                        fontSize: 16
                     },
                     title: {},
                     tooltip: {
@@ -1832,10 +1846,23 @@ var echartOption = {
                     yAxis: [
                         {
                             type: 'value',
-                            axisLine: {show: false},
-                            axisTick: {show: false},
-                            axisLabel: {formatter: '{value}'},
-                            splitLine: {lineStyle: {color: '#f4f4f4'}}
+                            axisLine: {
+                                show: false
+                            },
+                            axisTick: {
+                                show: false
+                            },
+                            axisLabel: {
+                                formatter: '{value}'
+                            },
+                            splitLine: {
+                                lineStyle: {
+                                    color: '#f4f4f4'
+                                }
+                            },
+                            min: -100,
+                            max: 100,
+                            splitNumber: 10,
                         }
                     ],
                     series: [
