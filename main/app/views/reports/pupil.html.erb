@@ -34,6 +34,13 @@
 					<h4>能力</h4>
 					<div id="pupil_ability_radar" class="zy-chart-container"></div>
 				</div>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div class="zy-report-footer">
+						<button type="button" class="btn btn-lg zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report">
+							解读说明
+						</button>
+					</div>
+				</div>
 			</div>
 			<div class="row">
 				<h3 class="zy-report-subtitle">二级诊断指标</h3>
@@ -134,6 +141,42 @@
 						1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
 					</dd>
 				</dl>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="zy-modal-report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">雷达图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>雷达图面积</h3>
+				<p>面积代表学科成绩的优劣。面积越大，成绩越好，面积越小，成绩越差。</p>
+
+				<h3>雷达图半径</h3>
+				<p>半径表示某个指标的评价值。最短半径表示该指标最弱；最长半径表示该指标最强。</p>
+
+				<h3>诊断指标</h3>
+				<p>各指标按顺时针方向从基础到综合依次排列。基础指标集中在右侧，综合指标集中在左侧。</p>
+
+				<h3>积极发展型</h3>
+				<p>形状饱满、均匀，重心靠近几何中心，面积大，表示学科成绩优异，各指标齐头并进，是理想的雷达图。</p>
+
+				<h3>发展失衡型</h3>
+				<p>
+					重心偏离几何中心，半径长短不一，有明显的凹凸不平，表示各指标发展水平不一，明显失衡，是有待完善的雷达图。
+					需要从优势指标中找信心，重点加强弱势指标的干预，实现各指标的均匀发展。
+				</p>
+				<h3>消极收缩型</h3>
+				<p>
+					图形收缩在几何中心附近，所有半径均偏短，面积小，表示各指标发展水平都很差，学科成绩低下，是最差的雷达图。
+					表明学生学科兴趣低，学科信心差，需要先加强非智力方面的干预，再补足学科不足。
+				</p>
 			</div>
 		</div>
 	</div>
