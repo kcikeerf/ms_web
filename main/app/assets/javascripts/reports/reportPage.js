@@ -225,11 +225,6 @@ var reportPage = {
 								position: 'top'
 							}
 						},
-						itemStyle: {
-							normal: {
-								color: reportPage.defaultColor
-							}
-						}
 					});
 					downArr.push({
 						value: 0,
@@ -238,12 +233,6 @@ var reportPage = {
 								show: false
 							}
 						},
-						itemStyle: {
-							normal: {
-								//color: "#c90303"
-								color: "#ffffff"
-							}
-						}
 					});
 				} else if (arr[i] < 0) {
 					upArr.push({
@@ -253,12 +242,6 @@ var reportPage = {
 								show: false
 							}
 						},
-						itemStyle: {
-							normal: {
-								//color: "#c90303"
-								color: "#ffffff"
-							}
-						}
 					});
 					downArr.push({
 						value: arr[i],
@@ -267,11 +250,6 @@ var reportPage = {
 								position: 'bottom'
 							}
 						},
-						itemStyle: {
-							normal: {
-								color: "#fa9daf"
-							}
-						}
 					});
 				};
 			};
