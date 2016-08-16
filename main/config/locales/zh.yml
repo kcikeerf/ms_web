@@ -1,4 +1,7 @@
 zh:
+  areas:
+    list:
+      all: "全部"
   #各功能用label
   checkpoints:
     label:
@@ -364,12 +367,18 @@ zh:
     #性别
     nan: "男"
     nv: "女"
-    #学校类别
-    school_type: "学校类别"
-    gong_ban_xue_xiao: "公办学校"
-    min_ban_xue_xiao: "民办学校"
-    si_li_xue_xiao: "私立学校"
-    guo_ji_xue_xiao: "国际学校"
+
+  tenants:
+    type: "租户类型"
+    types:
+      gong_ban_xue_xiao: "公办学校"
+      min_ban_xue_xiao: "民办学校"
+      si_li_xue_xiao: "私立学校"
+      guo_ji_xue_xiao: "国际学校"
+      xue_xiao: "学校"
+      xue_xiao_lian_he: "学校联合"
+      jiao_yu_ju: "教育局"
+      others: "其他"
 
   managers:
     user:

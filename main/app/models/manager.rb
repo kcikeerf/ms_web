@@ -21,6 +21,9 @@ class Manager < ActiveRecord::Base
           {id: 11, name: '角色管理', icon: '', url: '/managers/roles'},
           {id: 12, name: '权限管理', icon: '', url: '/managers/permissions'},
           {id: 13, name: 'Tenant管理', icon: '', url: '/managers/tenants'},
+          {id: 14, name: '分析员管理', icon: '', url: '/managers/analyzers'},
+          {id: 15, name: '教师管理', icon: '', url: '/managers/teachers'},
+          {id: 16, name: '学生管理', icon: '', url: '/managers/pupils'}
         ]
       },
       {

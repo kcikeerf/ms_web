@@ -2,14 +2,21 @@
 	<h2><%= @data[:name] %></h2>
 	<div style="margin:20px 0;"></div>
 	<div id="tb">  
-		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');">增加</a>  
-		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editObj('<%= @data[:path] %>/')">编辑</a>  
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');">增加</a> 
+		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="
+<% if controller_name =="tenants" %>
+        editTenantObj('<%= @data[:path] %>/')
+<% else %>
+		editObj('<%= @data[:path] %>/')
+<% end %>
+		">编辑</a>  
 		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroy('<%= @data[:path] %>/')">删除</a>
 	</div>  
 	<!-- singleSelect:true, 当行选择-->
 	<table id='dg' class="easyui-datagrid" title="<%= @data[:name] %>列表" style="width:98%;height:550px"
 		data-options="		
 		pagination:true,
+		nowrap: false,
 		url:'<%= @data[:path] %>.json',
 		method:'get', 
 		toolbar: '#tb'">

@@ -2020,10 +2020,10 @@ class Mongodb::ReportGenerator
           result.level75_average_percent_total += value.level75_average_percent_total;
         });
 
-        result.level0_average_percent = result.level0_average_percent_total/result.total_number;
-        result.level25_average_percent = result.level25_average_percent_total/result.total_number;
-        result.level50_average_percent = result.level50_average_percent_total/result.total_number;
-        result.level75_average_percent = result.level75_average_percent_total/result.total_number;
+        result.level0_average_percent = result.level0_average_percent_total/result.level0_number;
+        result.level25_average_percent = result.level25_average_percent_total/result.level25_number;
+        result.level50_average_percent = result.level50_average_percent_total/result.level50_number;
+        result.level75_average_percent = result.level75_average_percent_total/result.level75_number;
         return result;
       }
     }
