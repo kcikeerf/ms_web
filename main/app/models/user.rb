@@ -47,9 +47,60 @@ class User < ActiveRecord::Base
       user = new(name: name, password: password, role_name: role_name)
       return false unless user.save
 
+      #确定地区
+
       user.save_after(options.merge({user_id: user.id}))
       return [user.name, password]
     end
+  end
+
+  def save_user(role_name, params)
+    #transaction do 
+      paramsh = {
+        :name => params[:user_name], 
+        :password => params[:password], 
+        :role_name => role_name,
+        :qq => params[:qq] || "",
+        :phone => params[:phone] || "",
+        :email => params[:email] || ""
+      }
+      update_attributes(paramsh)
+      return self unless save!
+
+      save_role_obj(params.merge({user_id: self.id}))
+      return self
+    #end
+  end
+
+  def update_user(role_name, params)
+   #transaction do       
+      paramsh = {
+        :name => params[:user_name], 
+        :role_name => role_name,
+        :qq => params[:qq] || "",
+        :phone => params[:phone] || "",
+        :email => params[:email] || ""
+      }
+      paramsh[:password] = params[:password] unless params[:password].blank?
+
+      update_attributes(paramsh)
+      return self unless save!
+
+      save_role_obj(params.merge({user_id: self.id}))
+      return self
+    #end
+  end
+
+  def save_role_obj params
+    role_obj = 
+      case 
+      when is_analyzer? then (analyzer.nil?? Analyzer.new : analyzer)
+      when is_pupil? then (pupil.nil?? Pupil.new : pupil)
+      when is_teacher? then (teacher.nil?? Teacher.new : teacher)
+      else nil
+      end
+
+    role_obj.save_obj(params) if role_obj
   end
 
   def save_after(options)

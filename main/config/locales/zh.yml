@@ -1,4 +1,6 @@
 zh:
+  common:
+    none: "无"
   areas:
     list:
       all: "全部"
@@ -207,6 +209,7 @@ zh:
 
   #字典库用label
   dict:
+    none: 
     unknown: "未知"
     province: "省"
     city: "市"
@@ -379,6 +382,11 @@ zh:
       xue_xiao_lian_he: "学校联合"
       jiao_yu_ju: "教育局"
       others: "其他"
+    messages:
+      info:
+      warn:
+        no_belong: "无所属"
+      error:
 
   managers:
     user:

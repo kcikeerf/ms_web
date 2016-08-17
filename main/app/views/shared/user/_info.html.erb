@@ -14,7 +14,7 @@
 			<%= f.input :name, label: I18n.t("dict.name") %>
 			<%= f.input :subject, 
 			    label: I18n.t("dict.subject"), 
-				collection: Common::Locale::SubjectList.map {|k,v| [v,k]}, 
+				collection: Common::Subject::List.map {|k,v| [v,k]}, 
 			    selected: current_user.role_obj.subject unless current_user.is_pupil? %>
 			<%= f.input :grade, 
 			    label: I18n.t("dict.grade"),
