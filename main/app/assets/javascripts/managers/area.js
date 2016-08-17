@@ -2,16 +2,15 @@ var areaObj = {
 	province: null,
 	city: null,
 	district: null,
-	school: null,
+	tenant_uid: null,
 	
 	init: function(){
 		areaObj.province = $('#province_rid');
 		areaObj.city = $("#city_rid");
 		areaObj.district = $("#district_rid");
-		areaObj.school = $("#school");
+		areaObj.tenant_uid = $("#tenant_uid");
 
 		areaObj.province.on('change',function(){
-			console.log("change");
 	    	areaObj.reset_city_list();
 		});
 
@@ -22,9 +21,9 @@ var areaObj = {
 		areaObj.city.on('change',function(){
 			areaObj.reset_district_list(areaObj.city);
 		});
-        if(areaObj.school.length > 0){
+        if(areaObj.tenant_uid.length > 0){
 			areaObj.district.on('change',function(){
-				areaObj.reset_school_list(areaObj.city);
+				areaObj.reset_tenant_list(areaObj.city);
 			});
 		}
     },
@@ -66,11 +65,11 @@ var areaObj = {
 		}	
 	},
 
-	reset_school_list: function(){
+	reset_tenant_list: function(){
 		var current_province = areaObj.province;
 		var current_city = areaObj.city;
 		var current_district = areaObj.district;
-		var current_school = areaObj.school;
+		var current_tenant_uid = areaObj.tenant_uid;
 		var area_rid = "";
 		if(current_district.val() != ''){
           area_rid = current_district.val();
@@ -79,16 +78,16 @@ var areaObj = {
 		} else if (current_province.val() != ''){
           area_rid = current_province.val();
 		}
-		$('#fm')[0]["school"].value = "";
-		$("#school").find('option').remove();
+		$('#fm')[0]["tenant_uid"].value = "";
+		$("#tenant_uid").find('option').remove();
 		if(area_rid != ""){
 			$.get('/managers/areas/get_tenants',{area_rid: area_rid},function(data){
 				var len = data.length;
 				var str = '';
 				for(var i=0;i<len;i++){
-					str += '<option value="'+data[i].rid+'">'+data[i].name_cn+'</option>';
+					str += '<option value="'+data[i].uid+'">'+data[i].name_cn+'</option>';
 				}
-				current_school.append(str);
+				current_tenant_uid.append(str);
 			})
 		}
 	}
