@@ -48,11 +48,13 @@ var reportPage = {
 				$(this).addClass('active').siblings('li').removeClass('active');
 				$(this).children('ul').show();
 				$(this).siblings('li').children('ul').hide();
+				/*
 				var screenHeight = Math.floor($(window).height());
 				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height() - $(document).scrollTop());
 				if (bodyHeight > screenHeight) {
 					$(this).children('ul').attr('class', 'active');
 				}
+				*/
 			});
 		}, function() {
 			$('.dropdown_menu').hide();
@@ -223,11 +225,6 @@ var reportPage = {
 								position: 'top'
 							}
 						},
-						itemStyle: {
-							normal: {
-								color: reportPage.defaultColor
-							}
-						}
 					});
 					downArr.push({
 						value: 0,
@@ -236,12 +233,6 @@ var reportPage = {
 								show: false
 							}
 						},
-						itemStyle: {
-							normal: {
-								//color: "#c90303"
-								color: "#ffffff"
-							}
-						}
 					});
 				} else if (arr[i] < 0) {
 					upArr.push({
@@ -251,12 +242,6 @@ var reportPage = {
 								show: false
 							}
 						},
-						itemStyle: {
-							normal: {
-								//color: "#c90303"
-								color: "#ffffff"
-							}
-						}
 					});
 					downArr.push({
 						value: arr[i],
@@ -265,11 +250,6 @@ var reportPage = {
 								position: 'bottom'
 							}
 						},
-						itemStyle: {
-							normal: {
-								color: "#c90303"
-							}
-						}
 					});
 				};
 			};
