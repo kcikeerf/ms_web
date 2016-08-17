@@ -10,10 +10,49 @@ class Pupil < ActiveRecord::Base
   scope :by_keyword, ->(keyword) { where("name LIKE ?", "%"+keyword+"%") if keyword.present? }
 
   belongs_to :location, foreign_key: "loc_uid"
+  belongs_to :user, foreign_key: "user_id"
 
   def papers
     pap_uids = Mongodb::BankPupPap.where(pup_uid: self.uid).map{|item| item.pap_uid}
     Mongodb::BankPaperPap.where(:_id.in =>pap_uids).order({dt_update: :desc})
+  end
+
+  def self.get_list params
+    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+    result.each_with_index{|item, index|
+      area_h = {
+        :province_rid => "",
+        :city_rid => "",
+        :district_rid => ""
+      }
+      tenant = item.location.nil?? nil : item.location.tenant 
+      h = {
+        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_name => tenant.nil?? "":tenant.name_cn,
+        :user_name => item.user.nil?? "":item.user.name,
+        :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
+        :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
+        :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
+      }
+      h.merge!(area_h)
+      h.merge!(item.attributes)
+      h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
+      result[index] = h
+    }
+    return result
+  end
+
+  def save_obj params
+    paramsh = {
+      :user_id => params[:user_id],
+      :stu_number => params[:stu_number],
+      :sex => params[:sex],
+      :name => params[:name], 
+      :grade => params[:grade],
+      :classroom => params[:classroom]
+    }
+    update_attributes(paramsh)
+    save!
   end
 
   def self.save_info(options)

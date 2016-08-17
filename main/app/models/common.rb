@@ -5,6 +5,7 @@ module Common
   include SwtkConstantsModule
   include SubjectModule
   include KlassModule
+  include RoleModule
 
   module Area
     CountryRids = {
@@ -15,13 +16,6 @@ module Common
 
   module Page
     PerPage = 10
-  end
-
-  module Role
-    Pupil="pupil"
-    Teacher="teacher"
-    Analyzer="analyzer"
-    NAME_ARR = %w(pupil teacher analyzer)
   end
 
   module Paper
