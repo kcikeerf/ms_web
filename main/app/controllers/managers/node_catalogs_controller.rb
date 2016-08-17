@@ -5,8 +5,8 @@ class Managers::NodeCatalogsController < ApplicationController
 
 	before_action :set_node_structure , only: [:index, :new, :create, :destroy_all]
 	before_action :set_catalog, only: [:update, :add_ckps]
-    skip_before_action :authenticate_person!
-    before_action :authenticate_manager
+    # skip_before_action :authenticate_person!
+    # before_action :authenticate_manager
 
 	def index
 		@data = {name: '目录', path: "/managers/node_structures/#{@node_structure.id}/node_catalogs"}

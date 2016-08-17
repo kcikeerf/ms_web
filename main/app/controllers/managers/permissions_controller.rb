@@ -5,8 +5,8 @@ class Managers::PermissionsController < ApplicationController
 	layout 'manager_crud'
 
 	before_action :set_permission, only: [:edit, :update]
-    skip_before_action :authenticate_person!
-    before_action :authenticate_manager
+    # skip_before_action :authenticate_person!
+    # before_action :authenticate_manager
 
 	def index
 		@data = {name: '权限', path: '/managers/permissions'}

@@ -3,8 +3,8 @@ class Managers::CheckpointsController < ApplicationController
   layout 'manager', only: [:index]
 
   before_action :set_checkpoint, only: [:edit, :update, :destroy, :move_node]
-  skip_before_action :authenticate_person!
-  before_action :authenticate_manager
+  # skip_before_action :authenticate_person!
+  # before_action :authenticate_manager
   
   def index
     @subjects = deal_label('dict.', BankNodestructure.pluck(:subject).uniq)

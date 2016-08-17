@@ -3,8 +3,8 @@ class Managers::SubjectCheckpointsController < ApplicationController
   layout 'manager', only: [:index, :list]
 
   before_action :set_checkpoint, only: [:edit, :update, :destroy, :move_node]
-  skip_before_action :authenticate_person!
-  before_action :authenticate_manager
+  # skip_before_action :authenticate_person!
+  # before_action :authenticate_manager
 
   def index
     @subjects = BankDicQuizSubject.pluck(:desc, :subject)
