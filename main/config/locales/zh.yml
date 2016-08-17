@@ -1,6 +1,8 @@
 zh:
   common:
     none: "无"
+    shi: "是"
+    fou: "否"
   areas:
     list:
       all: "全部"
@@ -145,7 +147,10 @@ zh:
       error:
         wrong_input: "错误的输入"
         unknown: "用户未生成，发生未知错误"
-
+  teachers:
+    abbrev:
+      subject: "科"
+      head_teacher: "主"
   #微信使用labels
   wx_commons:
     messages:

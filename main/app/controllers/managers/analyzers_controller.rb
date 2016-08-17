@@ -52,7 +52,6 @@ class Managers::AnalyzersController < ApplicationController
     data = {:status => 403 }
 
     begin
-      p ">>>>#{@user}"
       @user.update_user(Common::Role::Analyzer, user_params)
 #      result_flag = new_user.id.nil?? false : (new_user.analyzer.nil?? false : true)
       status = 200

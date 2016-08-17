@@ -18,7 +18,7 @@ class Analyzer < ActiveRecord::Base
 
 
   def self.get_list params
-    result = self.page(params[:page]).per(params[:rows])
+    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       area_h = {
         :province_rid => "",
