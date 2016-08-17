@@ -5,25 +5,93 @@ class Teacher < ActiveRecord::Base
   include TimePatch
   include InitUid
 
+  belongs_to :tenant, foreign_key: "tenant_uid"
+  belongs_to :user
   has_many :class_teacher_mappings, foreign_key: "tea_uid"
 
-  has_many :classrooms, through: :class_teacher_mappings, foreign_key: 'tea_id'
+  # has_many :classrooms, foreign_key: 'tea_id'
 
   accepts_nested_attributes_for :class_teacher_mappings
 
 
+  def self.get_list params
+    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+    result.each_with_index{|item, index|
+      area_h = {
+        :province_rid => "",
+        :city_rid => "",
+        :district_rid => ""
+      }
+      tenant = nil
+      head_teacher = false
+      unless item.locations.empty?
+        tenant = item.tenant
+        area_h = tenant.area_pcd if tenant
+        item.locations.each{|loc|
+          if item.is_class_headteacher?(loc.uid)
+            head_teacher = true
+            break
+          else
+            next
+          end
+        }
+      end
+      h = {
+        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_name => tenant.nil?? "":tenant.name_cn,
+        :user_name => item.user.nil?? "":item.user.name,
+        :head_teacher => head_teacher ? I18n.t("common.shi") : I18n.t("common.fou"),
+        :subject => item.subject,
+        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :subject_classrooms => item.subjects_classrooms_mapping.map{|m| "#{m[:subject_cn]},#{m[:classroom_cn]}(#{m[:type]}) " }.join("<br>"),
+        :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
+        :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
+        :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
+      }
+      h.merge!(area_h)
+      h.merge!(item.attributes)
+      h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
+      result[index] = h
+    }
+    return result
+  end
+
   def locations
-    self.class_teacher_mappings.map{|item| Location.where(uid: item.loc_uid).first}
+    result = []
+    return result unless self.tenant
+    self.class_teacher_mappings.by_tenant(self.tenant_uid).map{|item|
+      Location.where(:uid => item.loc_uid).first
+    }
   end
 
   def subjects
-    self.class_teacher_mappings.map{|item| item.subject }
+    result = []
+    return result unless self.tenant
+    result = self.class_teacher_mappings.by_tenant(self.tenant_uid).map{|item| 
+      item.subject
+    }
   end
 
+  def subjects_classrooms_mapping
+    result = []
+    return result unless self.tenant
+    self.class_teacher_mappings.by_tenant(self.tenant_uid).map{|item|
+      loc = Location.where(:uid => item.loc_uid).first
+      {
+        :subject => item.subject,
+        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :classroom => loc.classroom,
+        :classroom_cn => I18n.t("dict.#{loc.classroom}"),
+        :type => item.head_teacher ? I18n.t("teachers.abbrev.head_teacher") : I18n.t("teachers.abbrev.subject")
+      }
+    }
+  end
 
   def is_class_headteacher?(loc_uid)
-    ctm = ClassTeacherMapping.where(loc_uid: loc_uid, tea_uid: uid).first
-    ctm.try(:head_teacher)
+    result = false
+    return result unless self.tenant
+    result = true unless self.class_teacher_mappings.by_tenant(self.tenant_uid).by_head_teacher.blank?
+    return result
   end
 
   def grade
@@ -40,6 +108,17 @@ class Teacher < ActiveRecord::Base
     Mongodb::BankPaperPap.where(:_id.in =>pap_uids).order({dt_update: :desc})
   end
 
+  def save_obj params
+    paramsh = {
+      :user_id => params[:user_id],
+      :name => params[:name], 
+      :subject => params[:subject]
+      # :tenant_uid => params[:tenant_uid]
+    }
+    update_attributes(paramsh)
+    save!
+  end
+
   def self.save_info(options)
     options = options.extract!(:user_id, :name, :loc_uid, :head_teacher, :subject)
     mapping_hash = {}
@@ -50,5 +129,10 @@ class Teacher < ActiveRecord::Base
     create(options)
   end
 
-
+  def destroy_teacher
+    transaction do
+      self.user.destroy! if self.user
+      self.destroy! if self
+    end
+  end
 end

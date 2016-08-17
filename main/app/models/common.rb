@@ -4,6 +4,7 @@
 module Common
   include SwtkConstantsModule
   include SubjectModule
+  include KlassModule
 
   module Area
     CountryRids = {

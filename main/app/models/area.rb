@@ -50,6 +50,18 @@ class Area < ActiveRecord::Base
     families.map{|f| f.tenants}.flatten
   end
 
+  def self.province rid
+    Area.where("rid = ?", rid).first
+  end
+
+  def self.city rid
+    Area.where("rid = ?", rid).first
+  end
+
+  def self.district rid
+    Area.where("rid = ?", rid).first
+  end
+
   def self.get_area_uid_rid params
     areaUid = ""
     areaRid = ""

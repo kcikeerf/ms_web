@@ -7,6 +7,8 @@ class Tenant < ActiveRecord::Base
 
   belongs_to :areas, foreign_key: "area_uid"
   has_many :analyzers, foreign_key: "tenant_uid"
+  has_many :teachers, foreign_key: "tenant_uid"
+  has_many :locations, foreign_key: "tenant_uid"
 
   def save_tenant params
     tntNumber = self.class.generate_tenant_number
@@ -98,7 +100,7 @@ class Tenant < ActiveRecord::Base
   end
 
   def self.get_list params
-    result = self.page(params[:page]).per(params[:rows])
+    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       h = item.area_pcd
       h.merge!(item.attributes)
