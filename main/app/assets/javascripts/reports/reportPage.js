@@ -361,11 +361,6 @@ var reportPage = {
 							position: 'top'
 						}
 					},
-					itemStyle: {
-						normal: {
-							color: reportPage.defaultColor
-						}
-					}
 				});
 			};
 			return result;
@@ -477,7 +472,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setGradeScaleOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					}
-				}else if($dataId == 'grade-FourSections'){
+				}
+				else if($dataId == 'grade-FourSections'){
 					var FourSections = reportPage.Grade.getFourSectionsData(data.data.four_sections);
 					var objArr = [FourSections.knowledge.le75,FourSections.skill.le75,FourSections.ability.le75,FourSections.knowledge.le50,FourSections.skill.le50,FourSections.ability.le50,FourSections.knowledge.le25,FourSections.skill.le25,FourSections.ability.le25,FourSections.knowledge.le0,FourSections.skill.le0,FourSections.ability.le0,];
 					var nodeArr = ['knowledge_Four_L75','skill_Four_L75','ability_Four_L75','knowledge_Four_L50','skill_Four_L50','ability_Four_L50','knowledge_Four_L25','skill_Four_L25','ability_Four_L25','knowledge_Four_L0','skill_Four_L0','ability_Four_L0'];
@@ -485,7 +481,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setFourSectionsOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-knowledge'){
+				}
+				else if($dataId == 'grade-checkpoint-knowledge'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.knowledge.average_percent,Checkpoints.knowledge.median_percent,Checkpoints.knowledge.med_avg_diff,Checkpoints.knowledge.diff_degree];
 					var nodeArr = ['knowledge_Grade_average_percent','knowledge_Grade_median_percent','knowledge_Grade_med_avg_diff','knowledge_Grade_diff_degree'];
@@ -493,7 +490,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-skill'){
+				}
+				else if($dataId == 'grade-checkpoint-skill'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.skill.average_percent,Checkpoints.skill.median_percent,Checkpoints.skill.med_avg_diff,Checkpoints.skill.diff_degree];
 					var nodeArr = ['skill_Grade_average_percent','skill_Grade_median_percent','skill_Grade_med_avg_diff','skill_Grade_diff_degree'];
@@ -501,7 +499,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-ability'){
+				}
+				else if($dataId == 'grade-checkpoint-ability'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.ability.average_percent,Checkpoints.ability.median_percent,Checkpoints.ability.med_avg_diff,Checkpoints.ability.diff_degree];
 					var nodeArr = ['ability_Grade_average_percent','ability_Grade_median_percent','ability_Grade_med_avg_diff','ability_Grade_diff_degree'];
@@ -509,7 +508,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-total'){
+				}
+				else if($dataId == 'grade-checkpoint-total'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.total.average_percent,Checkpoints.total.median_percent,Checkpoints.total.med_avg_diff,Checkpoints.total.diff_degree];
 					var nodeArr = ['total_Grade_average_percent','total_Grade_median_percent','total_Grade_med_avg_diff','total_Grade_diff_degree'];
@@ -517,7 +517,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-classPupilNum-knowledge'){
+				}
+				else if($dataId == 'grade-classPupilNum-knowledge'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.knowledge.excellent_pupil_percent,ClassPupilNum.knowledge.good_pupil_percent,ClassPupilNum.knowledge.failed_pupil_percent];
 					var nodeArr = ['knowledge_excellent','knowledge_good','knowledge_faild'];
@@ -525,7 +526,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-classPupilNum-skill'){
+				}
+				else if($dataId == 'grade-classPupilNum-skill'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.skill.excellent_pupil_percent,ClassPupilNum.skill.good_pupil_percent,ClassPupilNum.skill.failed_pupil_percent];
 					var nodeArr = ['skill_excellent','skill_good','skill_faild'];
@@ -533,7 +535,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-classPupilNum-ability'){
+				}
+				else if($dataId == 'grade-classPupilNum-ability'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.ability.excellent_pupil_percent,ClassPupilNum.ability.good_pupil_percent,ClassPupilNum.ability.failed_pupil_percent];
 					var nodeArr = ['ability_excellent','ability_good','ability_faild'];
@@ -541,7 +544,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-table-knowledge'){
+				}
+				else if($dataId == 'grade-checkpoint-table-knowledge'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.average_percent);
 					$('#knowledge_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.median_percent);
@@ -550,7 +554,8 @@ var reportPage = {
 					$('#knowledge_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.diff_degree);
 					$('#knowledge_diff_degree').html(diff_table);
-				}else if($dataId == 'grade-checkpoint-table-skill'){
+				}
+				else if($dataId == 'grade-checkpoint-table-skill'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.average_percent);
 					$('#skill_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.median_percent);
@@ -559,7 +564,8 @@ var reportPage = {
 					$('#skill_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.diff_degree);
 					$('#skill_diff_degree').html(diff_table);
-				}else if($dataId == 'grade-checkpoint-table-ability'){
+				}
+				else if($dataId == 'grade-checkpoint-table-ability'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.average_percent);
 					$('#ability_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.median_percent);
@@ -568,39 +574,48 @@ var reportPage = {
 					$('#ability_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.diff_degree);
 					$('#ability_diff_degree').html(diff_table);
-				}else if($dataId == 'grade-classPupilNum-table-knowledge'){
+				}
+				else if($dataId == 'grade-classPupilNum-table-knowledge'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.excellent_pupil_percent);
 					$('#knowledge_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.good_pupil_percent);
 					$('#knowledge_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.failed_pupil_percent);
 					$('#knowledge_failed_table').html(faild_table);
-				}else if($dataId == 'grade-classPupilNum-table-skill'){
+				}
+				else if($dataId == 'grade-classPupilNum-table-skill'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.excellent_pupil_percent);
 					$('#skill_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.good_pupil_percent);
 					$('#skill_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.failed_pupil_percent);
 					$('#skill_failed_table').html(faild_table);
-				}else if($dataId == 'grade-classPupilNum-table-ability'){
+				}
+				else if($dataId == 'grade-classPupilNum-table-ability'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.excellent_pupil_percent);
 					$('#ability_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.good_pupil_percent);
 					$('#ability_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.failed_pupil_percent);
 					$('#ability_failed_table').html(faild_table);
-				}else if($dataId == 'grade-answerCase'){
+				}
+				else if($dataId == 'grade-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					$('#excellent_answerCase_table').html(excellent_table);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
 					$('#good_answerCase_table').html(good_table);
 					var faild_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.failed);
 					$('#failed_answerCase_table').html(faild_table);
-				}else if($dataId == 'grade-readReport-three'){
+				}
+				/* 三维指标含义解读
+				else if($dataId == 'grade-readReport-three'){
 					$('#grade-readReport-three').html(data.data.report_explanation.three_dimesions);
-				}else if($dataId == 'grade-readReport-statistics'){
+				}
+				*/
+				else if($dataId == 'grade-readReport-statistics'){
 					$('#grade-readReport-statistics').html(data.data.report_explanation.statistics);
-				}else if($dataId == 'grade-readReport-data'){
+				}
+				else if($dataId == 'grade-readReport-data'){
 					$('#grade-readReport-data').html(data.data.report_explanation.data);
 				}
 
@@ -805,51 +820,15 @@ var reportPage = {
 		            name:'(得分率 ≥ 85)',
 		            value:obj[i].excellent_pupil_percent,
 		            yAxisIndex:i,
-		            itemStyle: {
-		              	normal: {
-			                barBorderRadius:[20, 0, 0, 20],
-			                color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-			                  offset: 0,
-			                  color: '#086a8e'
-			                }, {
-			                  offset: 1,
-			                  color: '#65026b'
-			                }])
-			            }
-		            },
 		        });
 				goodArr.push({
 		            name:'( 60 ≤ 得分率 < 85)',
 		            value:obj[i].good_pupil_percent,
 		            yAxisIndex:i,
-		            itemStyle: {
-		                normal: {
-		                    barBorderRadius:0,
-		                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-		                      offset: 0,
-		                      color: '#71ecd0'
-		                    }, {
-		                      offset: 1,
-		                      color: '#13ab9b'
-		                    }])
-		                }
-		            },
 		        });
 				faildArr.push({
                     name:'(得分率 < 60)',
                     value:obj[i].failed_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-                        	barBorderRadius: [0, 20, 20, 0],
-                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#fa8471'
-	                        }, {
-	                          offset: 1,
-	                          color: '#f6f1c5'
-	                        }])
-	                    }
-                    },
                 });
 			}
 			return obj  = {
@@ -1131,50 +1110,14 @@ var reportPage = {
 					name:''+keys[i]+'(得分率 ≥ 85)',
                     value: values[i].excellent_pupil_percent,
                     yAxisIndex:1,
-                    itemStyle: {
-                      	normal: {
-                        	barBorderRadius:[20, 0, 0, 20],
-                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                         		offset: 0,
-	                          		color: '#086a8e'
-                        		}, {
-	                          		offset: 1,
-	                          		color: '#65026b'
-                        	}])
-                      	}
-                    },
 				});
 				good.push({
                     name:''+keys[i]+'(60 ≤ 得分率 < 85)',
                     value: values[i].good_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-	                        barBorderRadius:0,
-	                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#71ecd0'
-	                        }, {
-	                          	offset: 1,
-	                          	color: '#13ab9b'
-	                        }])
-                      	}
-                    },
                 });
 				faild.push({
                     name:''+keys[i]+'(得分率 < 60)',
                     value:values[i].failed_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-	                        barBorderRadius: [0, 20, 20, 0],
-	                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#fa8471'
-	                        }, {
-	                          	offset: 1,
-	                          	color: '#f6f1c5'
-	                        }])
-                      	}
-                    },
                 });
 			};
 			return obj = {

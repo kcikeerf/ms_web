@@ -12,8 +12,8 @@ var echartOption = {
             //诊断图:
             setGradeDiagnoseLeft: function (data) {
                 return option = {
-                    title: {
-                        text: ''
+                    textStyle: {
+                        fontSize: 16
                     },
                     tooltip: {
                         trigger: 'item',
@@ -35,9 +35,6 @@ var echartOption = {
                                 icon: 'rect'
                             }
                         ],
-                        textStyle: {
-                            fontSize: 16
-                        }
                     },
                     grid: {
                         top: 100,
@@ -69,6 +66,11 @@ var echartOption = {
                         splitLine: {
                             lineStyle: {
                                 color: ['#efefef']
+                            }
+                        },
+                        axisLabel: {
+                            textStyle: {
+                                fontSize: 16
                             }
                         },
                     }],
@@ -133,7 +135,6 @@ var echartOption = {
             },
             setGradeDiagnoseRight: function (data) {
                 return option = {
-                    title: {},
                     tooltip: {
                         trigger: 'item'
                     },
@@ -180,7 +181,10 @@ var echartOption = {
                             show: false
                         },
                         axisLabel: {
-                            formatter: '{value}'
+                            formatter: '{value}',
+                            textStyle: {
+                                fontSize: 16
+                            }
                         },
                         splitLine: {
                             lineStyle: {
@@ -191,7 +195,7 @@ var echartOption = {
                     series: [{
                         name: '中平差值正值',
                         type: 'bar',
-                        barMaxWidth: 10,
+                        barMaxWidth: 15,
                         stack: '百分比',
                         data: data.yaxis.med_avg_diff.up,
                         itemStyle: {
@@ -203,7 +207,7 @@ var echartOption = {
                     }, {
                         name: '中平差值负值',
                         type: 'bar',
-                        barMaxWidth: 10,
+                        barMaxWidth: 15,
                         stack: '百分比',
                         data: data.yaxis.med_avg_diff.down,
                         itemStyle: {
@@ -249,6 +253,9 @@ var echartOption = {
                             splitNumber: 20,
                             axisLabel: {
                                 formatter: '{value}',
+                                textStyle: {
+                                    fontSize: 16
+                                }
                             },
                             axisTick: {show: false},
                             splitLine: {
@@ -798,6 +805,10 @@ var echartOption = {
             /*scale比例图*/
             setGradeScaleOption: function (data) {
                 return option = {
+                    textStyle: {
+                        fontSize: 16,
+                        color: '#212121',
+                    },
                     tooltip: {
                         trigger: 'item',
                         axisPointer: {
@@ -808,15 +819,11 @@ var echartOption = {
                     legend: {
                         top: 0,
                         right: 10,
-                        //width: '120',
-                        //orient: 'vertical',
                         data: ['得分率 ≥ 85', '60 ≤ 得分率 < 85', '得分率 < 60'],
-                        itemWidth: 10,
-                        itemHeight: 10,
                     },
                     grid: {
-                        left: 10,
-                        right: 20,
+                        left: 90,
+                        right: 90,
                         bottom: 10,
                         containLabel: true,
                     },
@@ -830,17 +837,7 @@ var echartOption = {
                         axisLabel: {
                             formatter: '{value}%',
                             textStyle: {
-                                color: '#000',
-                                fontSize: 16,
-                            }
-                        },
-                        axisLine: {
-                            lineStyle: {
-                                color: '#cacaca',
-                                width: 3,
-                                shadowColor: '#cacaca',
-                                shadowOffsetX: 0,
-                                shadowOffsetY: 2
+                                fontSize: 16
                             }
                         },
                     },
@@ -859,7 +856,6 @@ var echartOption = {
                         },
                         axisLabel: {
                             textStyle: {
-                                color: '#000',
                                 fontSize: 16
                             }
                         },
@@ -877,7 +873,6 @@ var echartOption = {
                                 position: 'inside',
                                 textStyle: {
                                     color: '#fff',
-                                    fontSize: 16
                                 }
                             }
                         },
@@ -901,7 +896,6 @@ var echartOption = {
                                 position: 'inside',
                                 textStyle: {
                                     color: '#fff',
-                                    fontSize: 16,
                                 }
                             }
                         },
@@ -925,7 +919,6 @@ var echartOption = {
                                 position: 'inside',
                                 textStyle: {
                                     color: '#fff',
-                                    fontSize: 16,
                                 }
                             }
                         },
@@ -942,6 +935,10 @@ var echartOption = {
             /*四分位图*/
             setFourSectionsOption: function (data) {
                 return option = {
+                    textStyle: {
+                        fontSize: 16,
+                        color: '#212121',
+                    },
                     title: {
                         text: ''
                     },
@@ -971,10 +968,8 @@ var echartOption = {
                     yAxis: [{
                         type: 'value',
                         axisLine: {
-                            show: false,
                         },
                         axisTick: {
-                            show: false
                         },
                         min: 0,
                         max: 100,
@@ -985,59 +980,22 @@ var echartOption = {
                             }
                         },
                         axisLabel: {
-                            show: false
+                            textStyle: {
+                                fontSize: 16
+                            }
                         },
                     }],
                     series: [{
                         //name: '技能',
                         name: '四分位',
                         type: 'bar',
-                        barMaxWidth: 10,
-                        label: {
-                            normal: {
-                                show: true,
-                                textStyle: {
-                                    color: echartOption.defaultColor
-                                }
-                            }
-                        },
+                        barMaxWidth: 15,
                         label: {
                             normal: {
                                 show: true,
                                 position: 'top',
-                                textStyle: {
-                                    color: '#111'
-                                }
                             }
                         },
-                        /*symbol: 'circle',
-                         symbolSize: 3,
-                         label: {
-                         normal: {
-                         show: true,
-                         textStyle: {
-                         color: '#111'
-                         }
-                         }
-                         },
-                         lineStyle: {
-                         normal: {
-                         width: 0
-                         }
-                         },
-                         smooth: true,
-                         areaStyle: {
-                         normal: {
-                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                         offset: 0,
-                         color: '#2ed1b9'
-                         }, {
-                         offset: 1,
-                         color: '#fff'
-                         }]),
-                         opacity: 0.8,
-                         }
-                         },*/
                         data: data.yaxis,
                     },],
                     color: [echartOption.defaultColor],
@@ -1209,6 +1167,9 @@ var echartOption = {
         Class: {
             setClassDiagnoseLeft: function (data) {
                 return option = {
+                    textStyle: {
+                        fontSize: 16
+                    },
                     title: {
                         text: ''
                     },
@@ -1236,7 +1197,6 @@ var echartOption = {
                                 icon: 'rect'
                             }
                         ],
-                        textStyle: {fontSize: 16},
                     },
                     grid: {
                         top: 100,
@@ -1248,35 +1208,49 @@ var echartOption = {
                     xAxis: [
                         {
                             type: 'category',
-                            splitLine: {lineStyle: {color: ['#efefef']}},
-                            //boundaryGap: false,
+                            splitLine: {
+                                lineStyle: {
+                                    color: ['#efefef']
+                                }
+                            },
                             axisTick: {
                                 alignWithLabel: true
-                                //show: false
                             },
                             data: data.xaxis,
                             axisLabel: {
                                 interval: 0,
-                                textStyle: {fontSize: 16}
                             },
+                            axisLabel: {
+                                interval: 0,
+                                textStyle: {
+                                    fontSize: 16
+                                }
+                            }
                         }
                     ],
                     yAxis: [
                         {
                             type: 'value',
-                            nameTextStyle: {color: '#262626'},
-                            axisLine: {lineStyle: {color: '#f0f0f0', width: 1,}},
-                            axisTick: {show: false},
+                            axisTick: {
+                                show: false
+                            },
                             mix: '0',
                             max: '100',
-                            splitLine: {lineStyle: {color: ['#efefef']}},
+                            splitLine: {
+                                lineStyle: {
+                                    color: ['#efefef']
+                                }
+                            },
+                            textStyle: {
+                                fontSize: 16
+                            },
                         }
                     ],
                     series: [
                         {
                             name: '分化度',
                             type: 'bar',
-                            barMaxWidth: 5,
+                            barMaxWidth: 15,
                             areaStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1295,10 +1269,7 @@ var echartOption = {
                         {
                             name: '班级中位数得分率',
                             type: 'bar',
-                            barMaxWidth: 5,
-                            /*                    symbol:'circle',
-                             symbolSize:5,
-                             lineStyle:{normal:{width:1}},*/
+                            barMaxWidth: 15,
                             areaStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1317,10 +1288,7 @@ var echartOption = {
                         {
                             name: '年级平均得分率',
                             type: 'bar',
-                            barMaxWidth: 5,
-                            /*                    symbol:'circle',
-                             symbolSize:5,
-                             lineStyle:{normal:{width:1}},*/
+                            barMaxWidth: 15,
                             areaStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1339,10 +1307,7 @@ var echartOption = {
                         {
                             name: '班级平均得分率',
                             type: 'bar',
-                            barMaxWidth: 5,
-                            /*                    symbol:'circle',
-                             symbolSize:5,
-                             lineStyle:{normal:{width:1}},*/
+                            barMaxWidth: 15,
                             areaStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
@@ -1365,7 +1330,9 @@ var echartOption = {
             },
             setClassDiagnoseCenter: function (data) {
                 return option = {
-                    color: ['#333'],
+                    textStyle: {
+                        fontSize: 16
+                    },
                     title: {},
                     tooltip: {
                         trigger: 'item'
@@ -1383,7 +1350,6 @@ var echartOption = {
                                 icon: 'rect',
                             }
                         ],
-                        textStyle: {fontSize: 16},
                     },
                     grid: {
                         top: 100,
@@ -1423,7 +1389,7 @@ var echartOption = {
                         {
                             name: '班级与年级平均得分率差值正值',
                             type: 'bar',
-                            barMaxWidth: 10,
+                            barMaxWidth: 15,
                             stack: '百分比',
                             areaStyle: {
                                 normal: {
@@ -1439,7 +1405,7 @@ var echartOption = {
                         {
                             name: '班级与年级平均得分率差值负值',
                             type: 'bar',
-                            barMaxWidth: 10,
+                            barMaxWidth: 15,
                             stack: '百分比',
                             areaStyle: {
                                 normal: {
@@ -1516,7 +1482,7 @@ var echartOption = {
                         {
                             name: '班级中位数得分率与年级平均差值正值',
                             type: 'bar',
-                            barMaxWidth: 10,
+                            barMaxWidth: 15,
                             data: data.yaxis.diff.mid.up,
                             itemStyle: {
                                 normal: {color: '#51b8c1'}
@@ -1526,7 +1492,7 @@ var echartOption = {
                         {
                             name: '班级中位数得分率与年级平均差值负值',
                             type: 'bar',
-                            barMaxWidth: 10,
+                            barMaxWidth: 15,
                             stack: '百分比',
                             data: data.yaxis.diff.mid.down,
                             itemStyle: {
@@ -1557,8 +1523,8 @@ var echartOption = {
                         itemHeight: 10,
                     },
                     grid: {
-                        left: 10,
-                        right: 10,
+                        left: 90,
+                        right: 90,
                         bottom: 10,
                         containLabel: true,
                     },
@@ -1567,15 +1533,7 @@ var echartOption = {
                         splitNumber: 5,
                         max: 100,
                         axisTick: {show: false},
-                        axisLabel: {formatter: '{value}%', textStyle: {color: '#000', fontSize: 16,}},
-                        axisLine: {
-                            lineStyle: {
-                                color: '#cacaca',
-                                shadowColor: '#cacaca',
-                                shadowOffsetX: 0,
-                                shadowOffsetY: 2
-                            }
-                        }
+                        axisLabel: {formatter: '{value}%', textStyle: {color: '#212121', fontSize: 16,}},
                     },
                     yAxis: {
                         type: 'category',
@@ -1583,7 +1541,7 @@ var echartOption = {
                         axisLine: {show: false},
                         axisTick: {show: false},
                         splitLine: {show: false},
-                        axisLabel: {textStyle: {color: '#000', fontSize: 16,}},
+                        axisLabel: {textStyle: {color: '#212121', fontSize: 16,}},
                     },
                     series: [
                         {
@@ -1603,7 +1561,7 @@ var echartOption = {
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: [20, 0, 0, 20],
-                                    color: '#65026b',
+                                    color: '#086a8e',
                                 }
                             },
                         },
@@ -1617,7 +1575,7 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#000', fontSize: 16,}
+                                    textStyle: {color: '#fff', fontSize: 16,}
                                 }
                             },
                             barMaxWidth: 30,
@@ -1625,7 +1583,7 @@ var echartOption = {
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: 0,
-                                    color: '#71ecd0',
+                                    color: '#13ab9b',
                                 }
                             },
                         },
@@ -1639,7 +1597,7 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#000', fontSize: 16,}
+                                    textStyle: {color: '#fff', fontSize: 16,}
                                 }
                             },
                             barMaxWidth: 30,
@@ -1647,13 +1605,7 @@ var echartOption = {
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: [0, 20, 20, 0],
-                                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-                                        offset: 0,
-                                        color: '#fa8471'
-                                    }, {
-                                        offset: 1,
-                                        color: '#f6f1c5'
-                                    }])
+                                    color: '#fa8471'
                                 }
                             },
                         }
