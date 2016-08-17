@@ -28,7 +28,7 @@ class Managers::TeachersController < ApplicationController
     respond_with({rows: @teachers, total: @teachers.total_count}) 
   end
 
-#   # 创建教师
+#   # 创建老师
 #   def create
 #     new_user = User.new
 
@@ -67,7 +67,7 @@ class Managers::TeachersController < ApplicationController
     render common_json_response(status, data)
   end
 
-  # 删除分析员
+  # 删除老师
   def destroy_all
     params.permit(:id)
 
@@ -76,7 +76,7 @@ class Managers::TeachersController < ApplicationController
 
     begin
       target_teachers = Teacher.where(:uid=> params[:id])
-      target_teachers.each{|ana| ana.destroy_teacher}
+      target_teachers.each{|tea| tea.destroy_teacher}
       status = 200
       data = {:status => "200"}
     rescue Exception => ex

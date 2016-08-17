@@ -5,8 +5,8 @@ class Managers::RolePermissionsController < ApplicationController
 	layout 'manager'
 
 	before_action :set_role , only: [:new, :create, :destroy]
-    skip_before_action :authenticate_person!
-    before_action :authenticate_manager
+    # skip_before_action :authenticate_person!
+    # before_action :authenticate_manager
     
 	def new
 		@permissions = Permission.all.to_a
