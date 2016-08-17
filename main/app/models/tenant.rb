@@ -6,6 +6,7 @@ class Tenant < ActiveRecord::Base
   include InitUid
 
   belongs_to :areas, foreign_key: "area_uid"
+  has_many :analyzers, foreign_key: "tenant_uid"
 
   def save_tenant params
     tntNumber = self.class.generate_tenant_number
@@ -101,6 +102,7 @@ class Tenant < ActiveRecord::Base
     result.each_with_index{|item, index|
       h = item.area_pcd
       h.merge!(item.attributes)
+      h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
       result[index] = h
     }
     return result
