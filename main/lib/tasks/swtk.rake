@@ -63,6 +63,25 @@ namespace :swtk do
               :role => Role.where(:name => "super_administrator")[0]}).save
   end
 
+  desc "create manager console administrator"
+  task :create_manager, [:name,:password,:email] => :environment do |t, args|
+    if args[:name].nil? ||  args[:password].nil?
+      puts "Command format not correct, Usage: #rake swtk:create_manager[:name,:password,:email]"
+      exit 
+    end
+    begin
+      m= Manager.new({
+        :name => args[:name],
+        :password => args[:password],
+        :email => args[:email]})
+      m.save!
+    rescue Exception => ex
+      p m.errors.message
+      p "---"
+      p ex.message
+    end
+  end
+
   desc "reload dictionary data"
   task reload_dictionary: :environment do
 #    def get_xml_obj(file_path)

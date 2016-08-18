@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>三维题库管理后台</title>
+    <title><%=I18n.t("managers.head")%></title>
     <%= stylesheet_link_tag 'managers/mains', media: 'all', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'managers/mains', 'data-turbolinks-track' => true %>
 
@@ -13,19 +13,19 @@
       <div data-options="region:'north',border:false" 
            style="height:60px;background:#B3DFDA;padding:20px;font-size:18px; font-weight:bold;">
          <div style="float: left;">
-           三维题库管理后台
+           <%=I18n.t("managers.head")%>
          </div>
          <div style="float: right;">
-           管理员：<%= current_manager.email%>
-           <a href="/managers/logout" class="easyui-linkbutton">Logout</a>
+           <%=I18n.t("managers.admin")%>：<%= current_manager.name%>
+           <a href="/managers/logout" class="easyui-linkbutton"><%= I18n.t("page.user_left_menu.logout")%></a>
          </div>
       </div>
       <%= render 'shared/manager/left' %>
       <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
         <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
-            <div title="欢迎使用" style="padding:20px;overflow:hidden;" id="home">
+            <div title="<%=I18n.t("managers.panel.welcome")%>" style="padding:20px;overflow:hidden;" id="home">
                 
-            <h1>Welcome to here!</h1>
+            <h1><%=I18n.t("managers.messages.welcome")%></h1>
 
             </div>
         </div>
