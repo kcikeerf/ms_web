@@ -31,7 +31,7 @@ class Mongodb::BankQuizQiz
   field :level, type: Float
   field :levelword, type: String
   field :levelorder, type: Integer
-  field :order, type: Integer
+  field :order, type: String
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
@@ -70,7 +70,7 @@ class Mongodb::BankQuizQiz
         :levelword => params["levelword"] || "",
         :levelorder => params["levelorder"] || "",
 #        :order => (params["order"].to_s || '0').ljust(Common::Paper::Constants::OrderWidth, '0')
-        :order => params["order"] || 0
+        :order => params["order"] || "0"
       })
       self.save!
 =begin

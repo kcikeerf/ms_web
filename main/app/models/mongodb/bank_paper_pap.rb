@@ -502,12 +502,18 @@ class Mongodb::BankPaperPap
       score_row_arr.push(self.score)
 
       quizs = self.bank_quiz_qizs.sort{|a,b| Common::Paper::quiz_order(a.order,b.order) }
+      qiz_order = 0
       quizs.each{|qiz|
         qzps = qiz.bank_qizpoint_qzps.sort{|a,b| Common::Paper::quiz_order(a.order,b.order) }
+        #全部从1开始升序排知识点，旧排序注释（1/2）
         qzp_count = qzps.size
-        qzps.each{|qzp|
+        qzps.each_with_index{|qzp, qzp_index|
           hidden_title_row_arr.push(qzp._id)
-          (qzp_count > 1) ? order_row_arr.push(qzp.order.sub(/0*$/, '')) : order_row_arr.push(qiz.order)
+          #全部从1开始升序排知识点，旧排序注释（2/2）
+          #(qzp_count > 1) ? order_row_arr.push(qzp.order.sub(/0*$/, '')) : order_row_arr.push(qiz.order)
+          qiz_order += 1
+          #(qzp_count > 1) ? order_row_arr.push(qzp.order.sub(/0*$/, '') + "-#{qiz_order}") : order_row_arr.push(qiz.order + "-#{qiz_order}")
+          order_row_arr.push(qiz_order)
           title_row_arr.push(qzp.score)
         }
       }
