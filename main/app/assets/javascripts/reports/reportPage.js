@@ -9,57 +9,103 @@ var reportPage = {
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 
 	init: function(){
-		//给左上角导航添加事件
-		$('#report_menus .report_click_menu').on('click', function() {
-			var dataType = $(this).attr('data_type');
+		// 导航添加事件
+		$('.zy-grade-menu > li > a').on('click', function() {
+			var reportType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
 			var reportName = $(this).attr('report_name');
-			$('#reportName').html(reportName);
-            if(!reportId){
-                return false;
-            }
-			var params = "report_id=" + reportId;
-			if(dataType == 'grade'){
+
+			var reportInfo = {
+				reportType: reportType,
+				reportName: reportName,
+				reportId: reportId,
+				upperReportIds: {}
+			}
+
+			if(!reportId){
+				return false;
+			}
+			$('.zy-report-type').html('年级报告');
+			if(reportType == 'grade'){
 				$('#reportContent').load('/reports/grade',function(){
-                    reportPage.baseFn.getReportAjax(dataType, reportPage.getGradeUrl,params);
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
 				});
-			}else if (dataType == 'klass') {
-				$('#reportContent').load('/reports/klass',function(){
-                    reportPage.baseFn.getReportAjax(dataType, reportPage.getClassUrl,params);
-				});
-				
-			}else if (dataType == 'pupil') {
-				$('#reportContent').load('/reports/pupil',function(){
-                    reportPage.baseFn.getReportAjax("pupil", reportPage.getPupilUrl,params);
-				});
-			};
+			}
 		});
 		/*默认显示*/
-		$('#report_menus .report_click_menu:first').trigger('click');
+		$('.zy-grade-menu > li > a:first').trigger('click');
 
 		reportPage.bindEvent();
 	},
 	bindEvent: function(){
 		/*顶部导航*/
-		$('.dropdown_box').hover(function() {
-			$('.dropdown_menu>li>ul').attr('class', 'submit_menu');
-			$('.dropdown_menu').show();
-			$('.dropdown_menu>li').on('mouseover', function() {
+		$('.zy-grade-menu > li').hover(function() {
+			$('.zy-class-menu').show();
+			$('.zy-class-menu > li').on('mouseover', function() {
 				$(this).addClass('active').siblings('li').removeClass('active');
 				$(this).children('ul').show();
 				$(this).siblings('li').children('ul').hide();
-				/*
-				var screenHeight = Math.floor($(window).height());
-				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height() - $(document).scrollTop());
-				if (bodyHeight > screenHeight) {
-					$(this).children('ul').attr('class', 'active');
-				}
-				*/
 			});
 		}, function() {
-			$('.dropdown_menu').hide();
-			$('.dropdown_menu>li>ul').hide();
-			$('.dropdown_menu>li').removeClass('active');
+			$('.zy-class-menu').hide();
+			$('.zy-class-menu > li > ul').hide();
+			$('.zy-class-menu > li').removeClass('active');
+		});
+
+		$('.zy-class-menu > li > a').on('click', function() {
+			var reportType = $(this).attr('data_type');
+			var reportId = $(this).attr('report_id');
+			var gradeReportId = $(this).attr('grade_report_id');
+			var reportName = $(this).attr('report_name');
+
+			var reportInfo = {
+				reportType: reportType,
+				reportName: reportName,
+				reportId: reportId,
+				upperReportIds: {
+					gradeReportId: gradeReportId,
+				}
+			}
+
+			$('.zy-report-type').html('班级报告');
+			if(!reportId){
+				return false;
+			}
+			if (reportType == 'klass') {
+				$('#reportContent').load('/reports/klass',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
+				});
+
+			}
+		});
+		$('.zy-student-menu > li > a').on('click', function() {
+			var reportType = $(this).attr('data_type');
+			var reportId = $(this).attr('report_id');
+			var classReportId = $(this).attr('class_report_id');
+			var gradeReportId = $(this).attr('grade_report_id');
+			var reportName = $(this).attr('report_name');
+
+			var reportInfo = {
+				reportType: reportType,
+				reportName: reportName,
+				reportId: reportId,
+				upperReportIds: {
+					gradeReportId: gradeReportId,
+					classReportId: classReportId,
+				}
+			}
+
+			if(!reportId){
+				return false;
+			}
+
+			$('.zy-report-type').html('学生报告');
+
+			if (reportType == 'pupil') {
+				$('#reportContent').load('/reports/pupil',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getPupilUrl);
+				});
+			};
 		});
 		/*
 		$(document).on('click','#tab-menu li[data-id]',function(event){
@@ -72,6 +118,7 @@ var reportPage = {
 			$(this).addClass('active');
 		});
 		*/
+		/*
 		$(document).on('click','#xialatab',function(event){
 			var $this = $(this).children('ul');
 			if($this.is(':hidden')){
@@ -80,6 +127,8 @@ var reportPage = {
 				$this.slideUp();
 			}
 		});
+		*/
+
 		$(document).on('show.bs.collapse','.panel-collapse',function(){
 			$(this).prev().removeClass('collapse-close');
 			$(this).prev().addClass('collapse-open');
@@ -91,7 +140,9 @@ var reportPage = {
 	},
 	/*基础方法*/
 	baseFn: {
-		getReportAjax: function(type, url, params){
+		getReportAjax: function(reportInfo, url){
+			var reportType = reportInfo.reportType;
+			var params = "report_id=" + reportInfo.reportId;
 			$.ajax({
 				url: url,
 				type: "GET",
@@ -100,12 +151,14 @@ var reportPage = {
 				success: function(data){
 					//$('#reportContent')[0].style = "position:relative;display:flex;"
 					//$('#reportContent')[0].style = "display: block;"
-					if(type=="grade"){
-						reportPage.Grade.createReport(data);
-					} else if(type=="klass"){
-						reportPage.Class.createReport(data);
-					} else if(type=="pupil"){
-						reportPage.Pupil.createReport(data);
+					if(reportType=="grade"){
+						reportPage.Grade.createReport(data, reportInfo.upperReportIds);
+					}
+					else if(reportType=="klass"){
+						reportPage.Class.createReport(data, reportInfo.upperReportIds);
+					}
+					else if(reportType=="pupil"){
+						reportPage.Pupil.createReport(data, reportInfo.upperReportIds);
 					}
 				},
 				error: function(data){
@@ -418,17 +471,42 @@ var reportPage = {
 
 	/*处理年级数据*/
 	Grade: {
-		createReport : function(data){
+		createReport : function(data, upperReportIds){
 			//设置年级表头；
 			var basicData = data.data.basic;
-			var gradeNavStr = '<b>学校</b>：<span>'+basicData.school
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
-			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>'+basicData.pupil_number
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
-			    //+'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
-			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
+			var gradeNavStr =
+				/*
+				'<b>学校</b>：<span>' +
+				basicData.school +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>' +
+				basicData.grade +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				*/
+				'<b>班级数量</b>：<span>' +
+				basicData.klass_count +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>' +
+				basicData.pupil_number +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' +
+				basicData.term +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' +
+				basicData.quiz_type +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				'<b>测试日期</b>：<span>' +
+				basicData.quiz_date +
+				'</span>';
+			var breadcrumb =
+				'<ol class="breadcrumb zy-breadcrumb">' +
+					'<li class="active">' +
+						basicData.school +
+					'</li>' +
+					'<li class="active">' +
+						basicData.grade +
+					'</li>' +
+				'</ol>';
+			$('.zy-breadcrumb-container').html(breadcrumb);
+
+
+			$('.zy-report-type').html('年级报告');
 			$('#grade-top-nav').html(gradeNavStr);
 			//创建年级的第一个诊断图;
 			var grade_charts = reportPage.Grade.getGradeDiagnoseData(data.data.charts);
@@ -950,17 +1028,54 @@ var reportPage = {
 
 	/*处理班级数据*/
 	Class: {
-		createReport : function(data){
+		createReport : function(data, upperReportIds){
 			var basicData = data.data.basic;
-			var classNavStr = '<b>学校</b>：<span>'+basicData.school
+			var classNavStr =
+				/*
+				'<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
-			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.pupil_number
+			    +'&nbsp;|</span>&nbsp;&nbsp;' +
+				 */
+				'<b>班级人数</b>：<span>'+basicData.pupil_number
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
-/*			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
-			    +'</span>&nbsp;&nbsp;<b>学科老师</b>：<span>'+basicData.subject_teacher*/
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>'+basicData.quiz_date
 			    +'</span>';
+			var gradeReportId = upperReportIds.gradeReportId; // new_square.html.erb
+			var breadcrumb =
+				'<ol class="breadcrumb zy-breadcrumb">' +
+					'<li class="active">' +
+						basicData.school +
+					'</li>' +
+					'<li class="zy-breadcrumb-grade">' +
+						'<a href="#" report_id="' +
+						gradeReportId +
+						'">' +
+							basicData.grade +
+						'</a>' +
+					'</li>' +
+					'<li class="active">' +
+						basicData.classroom +
+					'</li>' +
+				'</ol>';
+			$('.zy-breadcrumb-container').html(breadcrumb);
+			$('.zy-breadcrumb-grade > a').on('click', function() {
+				var reportType = 'grade';
+				var reportId = $(this).attr('report_id');
+				var reportInfo = {
+					reportType: reportType,
+					reportId: reportId,
+					upperReportIds: {}
+				}
+				if(!reportId){
+					return false;
+				}
+				$('.zy-report-type').html('年级报告');
+				$('#reportContent').load('/reports/grade',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
+				});
+			});
+			$('.zy-report-type').html('班级报告');
 			$('#class-top-nav').html(classNavStr);
 			var DiagnoseObj = reportPage.Class.getClassDiagnoseData(data.data.charts);
 			var objArr = [DiagnoseObj.knowledge,DiagnoseObj.skill,DiagnoseObj.ability];
@@ -1133,17 +1248,91 @@ var reportPage = {
 	},
 
 	Pupil: {
-		createReport : function(data){
+		createReport : function(data, upperReportIds){
 			var basicData = data.data.basic;
-			var pupilNavStr = '<b>学校</b>：<span>'+basicData.school
+			console.log(data);
+			var pupilNavStr =
+				/*
+				'<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>性别</b>：<span>'+basicData.sex
+			    */
+				'<b>分数</b>：<span>' +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				'<b>名次</b>：<span>' +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				'<b>性别</b>：<span>'+basicData.sex
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
+			var gradeReportId = upperReportIds.gradeReportId;
+			var classReportId = upperReportIds.classReportId;
+			var breadcrumb =
+				'<ol class="breadcrumb zy-breadcrumb">' +
+				'<li class="active">' +
+				basicData.school +
+				'</li>' +
+				'<li class="zy-breadcrumb-grade">' +
+				'<a href="#" report_id="' +
+				gradeReportId +
+				'">' +
+				basicData.grade +
+				'</a>' +
+				'</li>' +
+				'<li class="zy-breadcrumb-class">' +
+				'<a href="#" ' +
+				'report_id="' +
+				classReportId +
+				'" grade_report_id="' +
+				gradeReportId +
+				'">' +
+				basicData.classroom +
+				'</a>' +
+				'</li>' +
+				'<li class="active">' +
+				basicData.name +
+				'</li>' +
+				'</ol>';
+			$('.zy-breadcrumb-container').html(breadcrumb);
+			$('.zy-breadcrumb-grade > a').on('click', function() {
+				var reportType = 'grade';
+				var reportId = $(this).attr('report_id');
+				var reportInfo = {
+					reportType: reportType,
+					reportId: reportId,
+					upperReportIds: {}
+				}
 
+				if(!reportId){
+					return false;
+				}
+				$('.zy-report-type').html('年级报告');
+				$('#reportContent').load('/reports/grade',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
+				});
+			});
+			$('.zy-breadcrumb-class > a').on('click', function() {
+				var reportType = 'klass';
+				var reportId = $(this).attr('report_id');
+				var gradeReportId = $(this).attr('grade_report_id');
+				var reportInfo = {
+					reportType: reportType,
+					reportId: reportId,
+					upperReportIds: {
+						gradeReportId: gradeReportId,
+					}
+				}
+
+				if(!reportId){
+					return false;
+				}
+				$('.zy-report-type').html('班级报告');
+				$('#reportContent').load('/reports/klass',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
+				});
+			});
+			$('.zy-report-type').html('学生报告');
 			$('#pupil-top-nav').html(pupilNavStr);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
