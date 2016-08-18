@@ -9,57 +9,103 @@ var reportPage = {
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 
 	init: function(){
-		//给左上角导航添加事件
-		$('#report_menus .report_click_menu').on('click', function() {
-			var dataType = $(this).attr('data_type');
+		// 导航添加事件
+		$('.zy-grade-menu > li > a').on('click', function() {
+			var reportType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
 			var reportName = $(this).attr('report_name');
-			$('#reportName').html(reportName);
-            if(!reportId){
-                return false;
-            }
-			var params = "report_id=" + reportId;
-			if(dataType == 'grade'){
+
+			var reportInfo = {
+				reportType: reportType,
+				reportName: reportName,
+				reportId: reportId,
+				upperReportIds: {}
+			}
+
+			if(!reportId){
+				return false;
+			}
+			$('.zy-report-type').html('年级报告');
+			if(reportType == 'grade'){
 				$('#reportContent').load('/reports/grade',function(){
-                    reportPage.baseFn.getReportAjax(dataType, reportPage.getGradeUrl,params);
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
 				});
-			}else if (dataType == 'klass') {
-				$('#reportContent').load('/reports/klass',function(){
-                    reportPage.baseFn.getReportAjax(dataType, reportPage.getClassUrl,params);
-				});
-				
-			}else if (dataType == 'pupil') {
-				$('#reportContent').load('/reports/pupil',function(){
-                    reportPage.baseFn.getReportAjax("pupil", reportPage.getPupilUrl,params);
-				});
-			};
+			}
 		});
 		/*默认显示*/
-		$('#report_menus .report_click_menu:first').trigger('click');
+		$('.zy-grade-menu > li > a:first').trigger('click');
 
 		reportPage.bindEvent();
 	},
 	bindEvent: function(){
 		/*顶部导航*/
-		$('.dropdown_box').hover(function() {
-			$('.dropdown_menu>li>ul').attr('class', 'submit_menu');
-			$('.dropdown_menu').show();
-			$('.dropdown_menu>li').on('mouseover', function() {
+		$('.zy-grade-menu > li').hover(function() {
+			$('.zy-class-menu').show();
+			$('.zy-class-menu > li').on('mouseover', function() {
 				$(this).addClass('active').siblings('li').removeClass('active');
 				$(this).children('ul').show();
 				$(this).siblings('li').children('ul').hide();
-				/*
-				var screenHeight = Math.floor($(window).height());
-				var bodyHeight = Math.ceil($(this).children('ul').offset().top + $(this).children('ul').height() - $(document).scrollTop());
-				if (bodyHeight > screenHeight) {
-					$(this).children('ul').attr('class', 'active');
-				}
-				*/
 			});
 		}, function() {
-			$('.dropdown_menu').hide();
-			$('.dropdown_menu>li>ul').hide();
-			$('.dropdown_menu>li').removeClass('active');
+			$('.zy-class-menu').hide();
+			$('.zy-class-menu > li > ul').hide();
+			$('.zy-class-menu > li').removeClass('active');
+		});
+
+		$('.zy-class-menu > li > a').on('click', function() {
+			var reportType = $(this).attr('data_type');
+			var reportId = $(this).attr('report_id');
+			var gradeReportId = $(this).attr('grade_report_id');
+			var reportName = $(this).attr('report_name');
+
+			var reportInfo = {
+				reportType: reportType,
+				reportName: reportName,
+				reportId: reportId,
+				upperReportIds: {
+					gradeReportId: gradeReportId,
+				}
+			}
+
+			$('.zy-report-type').html('班级报告');
+			if(!reportId){
+				return false;
+			}
+			if (reportType == 'klass') {
+				$('#reportContent').load('/reports/klass',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
+				});
+
+			}
+		});
+		$('.zy-student-menu > li > a').on('click', function() {
+			var reportType = $(this).attr('data_type');
+			var reportId = $(this).attr('report_id');
+			var classReportId = $(this).attr('class_report_id');
+			var gradeReportId = $(this).attr('grade_report_id');
+			var reportName = $(this).attr('report_name');
+
+			var reportInfo = {
+				reportType: reportType,
+				reportName: reportName,
+				reportId: reportId,
+				upperReportIds: {
+					gradeReportId: gradeReportId,
+					classReportId: classReportId,
+				}
+			}
+
+			if(!reportId){
+				return false;
+			}
+
+			$('.zy-report-type').html('学生报告');
+
+			if (reportType == 'pupil') {
+				$('#reportContent').load('/reports/pupil',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getPupilUrl);
+				});
+			};
 		});
 		/*
 		$(document).on('click','#tab-menu li[data-id]',function(event){
@@ -72,6 +118,7 @@ var reportPage = {
 			$(this).addClass('active');
 		});
 		*/
+		/*
 		$(document).on('click','#xialatab',function(event){
 			var $this = $(this).children('ul');
 			if($this.is(':hidden')){
@@ -80,6 +127,8 @@ var reportPage = {
 				$this.slideUp();
 			}
 		});
+		*/
+
 		$(document).on('show.bs.collapse','.panel-collapse',function(){
 			$(this).prev().removeClass('collapse-close');
 			$(this).prev().addClass('collapse-open');
@@ -91,7 +140,9 @@ var reportPage = {
 	},
 	/*基础方法*/
 	baseFn: {
-		getReportAjax: function(type, url, params){
+		getReportAjax: function(reportInfo, url){
+			var reportType = reportInfo.reportType;
+			var params = "report_id=" + reportInfo.reportId;
 			$.ajax({
 				url: url,
 				type: "GET",
@@ -100,12 +151,14 @@ var reportPage = {
 				success: function(data){
 					//$('#reportContent')[0].style = "position:relative;display:flex;"
 					//$('#reportContent')[0].style = "display: block;"
-					if(type=="grade"){
-						reportPage.Grade.createReport(data);
-					} else if(type=="klass"){
-						reportPage.Class.createReport(data);
-					} else if(type=="pupil"){
-						reportPage.Pupil.createReport(data);
+					if(reportType=="grade"){
+						reportPage.Grade.createReport(data, reportInfo.upperReportIds);
+					}
+					else if(reportType=="klass"){
+						reportPage.Class.createReport(data, reportInfo.upperReportIds);
+					}
+					else if(reportType=="pupil"){
+						reportPage.Pupil.createReport(data, reportInfo.upperReportIds);
 					}
 				},
 				error: function(data){
@@ -361,11 +414,6 @@ var reportPage = {
 							position: 'top'
 						}
 					},
-					itemStyle: {
-						normal: {
-							color: reportPage.defaultColor
-						}
-					}
 				});
 			};
 			return result;
@@ -423,17 +471,42 @@ var reportPage = {
 
 	/*处理年级数据*/
 	Grade: {
-		createReport : function(data){
+		createReport : function(data, upperReportIds){
 			//设置年级表头；
 			var basicData = data.data.basic;
-			var gradeNavStr = '<b>学校</b>：<span>'+basicData.school
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
-			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>班级数量</b>：<span>'+basicData.klass_count
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>'+basicData.pupil_number
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
-			    //+'&nbsp;|</span>&nbsp;&nbsp;'+'<b>难度</b>：<span>'+basicData.levelword2
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
-			    +'&nbsp;|</span>&nbsp;&nbsp;'+'<b>测试日期</b>：<span>'+basicData.quiz_date+'</span>';
+			var gradeNavStr =
+				/*
+				'<b>学校</b>：<span>' +
+				basicData.school +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>' +
+				basicData.grade +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				*/
+				'<b>班级数量</b>：<span>' +
+				basicData.klass_count +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>' +
+				basicData.pupil_number +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' +
+				basicData.term +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' +
+				basicData.quiz_type +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				'<b>测试日期</b>：<span>' +
+				basicData.quiz_date +
+				'</span>';
+			var breadcrumb =
+				'<ol class="breadcrumb zy-breadcrumb">' +
+					'<li class="active">' +
+						basicData.school +
+					'</li>' +
+					'<li class="active">' +
+						basicData.grade +
+					'</li>' +
+				'</ol>';
+			$('.zy-breadcrumb-container').html(breadcrumb);
+
+
+			$('.zy-report-type').html('年级报告');
 			$('#grade-top-nav').html(gradeNavStr);
 			//创建年级的第一个诊断图;
 			var grade_charts = reportPage.Grade.getGradeDiagnoseData(data.data.charts);
@@ -477,7 +550,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setGradeScaleOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					}
-				}else if($dataId == 'grade-FourSections'){
+				}
+				else if($dataId == 'grade-FourSections'){
 					var FourSections = reportPage.Grade.getFourSectionsData(data.data.four_sections);
 					var objArr = [FourSections.knowledge.le75,FourSections.skill.le75,FourSections.ability.le75,FourSections.knowledge.le50,FourSections.skill.le50,FourSections.ability.le50,FourSections.knowledge.le25,FourSections.skill.le25,FourSections.ability.le25,FourSections.knowledge.le0,FourSections.skill.le0,FourSections.ability.le0,];
 					var nodeArr = ['knowledge_Four_L75','skill_Four_L75','ability_Four_L75','knowledge_Four_L50','skill_Four_L50','ability_Four_L50','knowledge_Four_L25','skill_Four_L25','ability_Four_L25','knowledge_Four_L0','skill_Four_L0','ability_Four_L0'];
@@ -485,7 +559,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setFourSectionsOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-knowledge'){
+				}
+				else if($dataId == 'grade-checkpoint-knowledge'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.knowledge.average_percent,Checkpoints.knowledge.median_percent,Checkpoints.knowledge.med_avg_diff,Checkpoints.knowledge.diff_degree];
 					var nodeArr = ['knowledge_Grade_average_percent','knowledge_Grade_median_percent','knowledge_Grade_med_avg_diff','knowledge_Grade_diff_degree'];
@@ -493,7 +568,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-skill'){
+				}
+				else if($dataId == 'grade-checkpoint-skill'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.skill.average_percent,Checkpoints.skill.median_percent,Checkpoints.skill.med_avg_diff,Checkpoints.skill.diff_degree];
 					var nodeArr = ['skill_Grade_average_percent','skill_Grade_median_percent','skill_Grade_med_avg_diff','skill_Grade_diff_degree'];
@@ -501,7 +577,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-ability'){
+				}
+				else if($dataId == 'grade-checkpoint-ability'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.ability.average_percent,Checkpoints.ability.median_percent,Checkpoints.ability.med_avg_diff,Checkpoints.ability.diff_degree];
 					var nodeArr = ['ability_Grade_average_percent','ability_Grade_median_percent','ability_Grade_med_avg_diff','ability_Grade_diff_degree'];
@@ -509,7 +586,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-total'){
+				}
+				else if($dataId == 'grade-checkpoint-total'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
 					var objArr = [Checkpoints.total.average_percent,Checkpoints.total.median_percent,Checkpoints.total.med_avg_diff,Checkpoints.total.diff_degree];
 					var nodeArr = ['total_Grade_average_percent','total_Grade_median_percent','total_Grade_med_avg_diff','total_Grade_diff_degree'];
@@ -517,7 +595,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-classPupilNum-knowledge'){
+				}
+				else if($dataId == 'grade-classPupilNum-knowledge'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.knowledge.excellent_pupil_percent,ClassPupilNum.knowledge.good_pupil_percent,ClassPupilNum.knowledge.failed_pupil_percent];
 					var nodeArr = ['knowledge_excellent','knowledge_good','knowledge_faild'];
@@ -525,7 +604,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-classPupilNum-skill'){
+				}
+				else if($dataId == 'grade-classPupilNum-skill'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.skill.excellent_pupil_percent,ClassPupilNum.skill.good_pupil_percent,ClassPupilNum.skill.failed_pupil_percent];
 					var nodeArr = ['skill_excellent','skill_good','skill_faild'];
@@ -533,7 +613,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-classPupilNum-ability'){
+				}
+				else if($dataId == 'grade-classPupilNum-ability'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
 					var objArr = [ClassPupilNum.ability.excellent_pupil_percent,ClassPupilNum.ability.good_pupil_percent,ClassPupilNum.ability.failed_pupil_percent];
 					var nodeArr = ['ability_excellent','ability_good','ability_faild'];
@@ -541,7 +622,8 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
-				}else if($dataId == 'grade-checkpoint-table-knowledge'){
+				}
+				else if($dataId == 'grade-checkpoint-table-knowledge'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.average_percent);
 					$('#knowledge_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.median_percent);
@@ -550,7 +632,8 @@ var reportPage = {
 					$('#knowledge_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.diff_degree);
 					$('#knowledge_diff_degree').html(diff_table);
-				}else if($dataId == 'grade-checkpoint-table-skill'){
+				}
+				else if($dataId == 'grade-checkpoint-table-skill'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.average_percent);
 					$('#skill_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.median_percent);
@@ -559,7 +642,8 @@ var reportPage = {
 					$('#skill_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.diff_degree);
 					$('#skill_diff_degree').html(diff_table);
-				}else if($dataId == 'grade-checkpoint-table-ability'){
+				}
+				else if($dataId == 'grade-checkpoint-table-ability'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.average_percent);
 					$('#ability_average_percent').html(avg_table);
 					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.median_percent);
@@ -568,39 +652,48 @@ var reportPage = {
 					$('#ability_med_avg_diff').html(med_avg_table);
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.diff_degree);
 					$('#ability_diff_degree').html(diff_table);
-				}else if($dataId == 'grade-classPupilNum-table-knowledge'){
+				}
+				else if($dataId == 'grade-classPupilNum-table-knowledge'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.excellent_pupil_percent);
 					$('#knowledge_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.good_pupil_percent);
 					$('#knowledge_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.failed_pupil_percent);
 					$('#knowledge_failed_table').html(faild_table);
-				}else if($dataId == 'grade-classPupilNum-table-skill'){
+				}
+				else if($dataId == 'grade-classPupilNum-table-skill'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.excellent_pupil_percent);
 					$('#skill_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.good_pupil_percent);
 					$('#skill_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.failed_pupil_percent);
 					$('#skill_failed_table').html(faild_table);
-				}else if($dataId == 'grade-classPupilNum-table-ability'){
+				}
+				else if($dataId == 'grade-classPupilNum-table-ability'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.excellent_pupil_percent);
 					$('#ability_excellent_table').html(excellent_table);
 					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.good_pupil_percent);
 					$('#ability_good_table').html(good_table);
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.failed_pupil_percent);
 					$('#ability_failed_table').html(faild_table);
-				}else if($dataId == 'grade-answerCase'){
+				}
+				else if($dataId == 'grade-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					$('#excellent_answerCase_table').html(excellent_table);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
 					$('#good_answerCase_table').html(good_table);
 					var faild_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.failed);
 					$('#failed_answerCase_table').html(faild_table);
-				}else if($dataId == 'grade-readReport-three'){
+				}
+				/* 三维指标含义解读
+				else if($dataId == 'grade-readReport-three'){
 					$('#grade-readReport-three').html(data.data.report_explanation.three_dimesions);
-				}else if($dataId == 'grade-readReport-statistics'){
+				}
+				*/
+				else if($dataId == 'grade-readReport-statistics'){
 					$('#grade-readReport-statistics').html(data.data.report_explanation.statistics);
-				}else if($dataId == 'grade-readReport-data'){
+				}
+				else if($dataId == 'grade-readReport-data'){
 					$('#grade-readReport-data').html(data.data.report_explanation.data);
 				}
 
@@ -805,51 +898,15 @@ var reportPage = {
 		            name:'(得分率 ≥ 85)',
 		            value:obj[i].excellent_pupil_percent,
 		            yAxisIndex:i,
-		            itemStyle: {
-		              	normal: {
-			                barBorderRadius:[20, 0, 0, 20],
-			                color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-			                  offset: 0,
-			                  color: '#086a8e'
-			                }, {
-			                  offset: 1,
-			                  color: '#65026b'
-			                }])
-			            }
-		            },
 		        });
 				goodArr.push({
 		            name:'( 60 ≤ 得分率 < 85)',
 		            value:obj[i].good_pupil_percent,
 		            yAxisIndex:i,
-		            itemStyle: {
-		                normal: {
-		                    barBorderRadius:0,
-		                    color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-		                      offset: 0,
-		                      color: '#71ecd0'
-		                    }, {
-		                      offset: 1,
-		                      color: '#13ab9b'
-		                    }])
-		                }
-		            },
 		        });
 				faildArr.push({
                     name:'(得分率 < 60)',
                     value:obj[i].failed_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-                        	barBorderRadius: [0, 20, 20, 0],
-                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#fa8471'
-	                        }, {
-	                          offset: 1,
-	                          color: '#f6f1c5'
-	                        }])
-	                    }
-                    },
                 });
 			}
 			return obj  = {
@@ -971,17 +1028,54 @@ var reportPage = {
 
 	/*处理班级数据*/
 	Class: {
-		createReport : function(data){
+		createReport : function(data, upperReportIds){
 			var basicData = data.data.basic;
-			var classNavStr = '<b>学校</b>：<span>'+basicData.school
+			var classNavStr =
+				/*
+				'<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
-			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级人数</b>：<span>'+basicData.pupil_number
+			    +'&nbsp;|</span>&nbsp;&nbsp;' +
+				 */
+				'<b>班级人数</b>：<span>'+basicData.pupil_number
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
-/*			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>班级主任</b>：<span>'+basicData.head_teacher
-			    +'</span>&nbsp;&nbsp;<b>学科老师</b>：<span>'+basicData.subject_teacher*/
 			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>'+basicData.quiz_date
 			    +'</span>';
+			var gradeReportId = upperReportIds.gradeReportId; // new_square.html.erb
+			var breadcrumb =
+				'<ol class="breadcrumb zy-breadcrumb">' +
+					'<li class="active">' +
+						basicData.school +
+					'</li>' +
+					'<li class="zy-breadcrumb-grade">' +
+						'<a href="#" report_id="' +
+						gradeReportId +
+						'">' +
+							basicData.grade +
+						'</a>' +
+					'</li>' +
+					'<li class="active">' +
+						basicData.classroom +
+					'</li>' +
+				'</ol>';
+			$('.zy-breadcrumb-container').html(breadcrumb);
+			$('.zy-breadcrumb-grade > a').on('click', function() {
+				var reportType = 'grade';
+				var reportId = $(this).attr('report_id');
+				var reportInfo = {
+					reportType: reportType,
+					reportId: reportId,
+					upperReportIds: {}
+				}
+				if(!reportId){
+					return false;
+				}
+				$('.zy-report-type').html('年级报告');
+				$('#reportContent').load('/reports/grade',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
+				});
+			});
+			$('.zy-report-type').html('班级报告');
 			$('#class-top-nav').html(classNavStr);
 			var DiagnoseObj = reportPage.Class.getClassDiagnoseData(data.data.charts);
 			var objArr = [DiagnoseObj.knowledge,DiagnoseObj.skill,DiagnoseObj.ability];
@@ -1131,50 +1225,14 @@ var reportPage = {
 					name:''+keys[i]+'(得分率 ≥ 85)',
                     value: values[i].excellent_pupil_percent,
                     yAxisIndex:1,
-                    itemStyle: {
-                      	normal: {
-                        	barBorderRadius:[20, 0, 0, 20],
-                        	color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                         		offset: 0,
-	                          		color: '#086a8e'
-                        		}, {
-	                          		offset: 1,
-	                          		color: '#65026b'
-                        	}])
-                      	}
-                    },
 				});
 				good.push({
                     name:''+keys[i]+'(60 ≤ 得分率 < 85)',
                     value: values[i].good_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-	                        barBorderRadius:0,
-	                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#71ecd0'
-	                        }, {
-	                          	offset: 1,
-	                          	color: '#13ab9b'
-	                        }])
-                      	}
-                    },
                 });
 				faild.push({
                     name:''+keys[i]+'(得分率 < 60)',
                     value:values[i].failed_pupil_percent,
-                    itemStyle: {
-                      	normal: {
-	                        barBorderRadius: [0, 20, 20, 0],
-	                        color: new echarts.graphic.LinearGradient(1, 0, 0, 0, [{
-	                          	offset: 0,
-	                          	color: '#fa8471'
-	                        }, {
-	                          	offset: 1,
-	                          	color: '#f6f1c5'
-	                        }])
-                      	}
-                    },
                 });
 			};
 			return obj = {
@@ -1190,17 +1248,91 @@ var reportPage = {
 	},
 
 	Pupil: {
-		createReport : function(data){
+		createReport : function(data, upperReportIds){
 			var basicData = data.data.basic;
-			var pupilNavStr = '<b>学校</b>：<span>'+basicData.school
+			console.log(data);
+			var pupilNavStr =
+				/*
+				'<b>学校</b>：<span>'+basicData.school
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>年级</b>：<span>'+basicData.grade
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
-			    +'&nbsp;|</span>&nbsp;&nbsp;<b>性别</b>：<span>'+basicData.sex
+			    */
+				'<b>分数</b>：<span>' +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				'<b>名次</b>：<span>' +
+				'&nbsp;|</span>&nbsp;&nbsp;' +
+				'<b>性别</b>：<span>'+basicData.sex
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
+			var gradeReportId = upperReportIds.gradeReportId;
+			var classReportId = upperReportIds.classReportId;
+			var breadcrumb =
+				'<ol class="breadcrumb zy-breadcrumb">' +
+				'<li class="active">' +
+				basicData.school +
+				'</li>' +
+				'<li class="zy-breadcrumb-grade">' +
+				'<a href="#" report_id="' +
+				gradeReportId +
+				'">' +
+				basicData.grade +
+				'</a>' +
+				'</li>' +
+				'<li class="zy-breadcrumb-class">' +
+				'<a href="#" ' +
+				'report_id="' +
+				classReportId +
+				'" grade_report_id="' +
+				gradeReportId +
+				'">' +
+				basicData.classroom +
+				'</a>' +
+				'</li>' +
+				'<li class="active">' +
+				basicData.name +
+				'</li>' +
+				'</ol>';
+			$('.zy-breadcrumb-container').html(breadcrumb);
+			$('.zy-breadcrumb-grade > a').on('click', function() {
+				var reportType = 'grade';
+				var reportId = $(this).attr('report_id');
+				var reportInfo = {
+					reportType: reportType,
+					reportId: reportId,
+					upperReportIds: {}
+				}
 
+				if(!reportId){
+					return false;
+				}
+				$('.zy-report-type').html('年级报告');
+				$('#reportContent').load('/reports/grade',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
+				});
+			});
+			$('.zy-breadcrumb-class > a').on('click', function() {
+				var reportType = 'klass';
+				var reportId = $(this).attr('report_id');
+				var gradeReportId = $(this).attr('grade_report_id');
+				var reportInfo = {
+					reportType: reportType,
+					reportId: reportId,
+					upperReportIds: {
+						gradeReportId: gradeReportId,
+					}
+				}
+
+				if(!reportId){
+					return false;
+				}
+				$('.zy-report-type').html('班级报告');
+				$('#reportContent').load('/reports/klass',function(){
+					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
+				});
+			});
+			$('.zy-report-type').html('学生报告');
 			$('#pupil-top-nav').html(pupilNavStr);
 			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
 			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
