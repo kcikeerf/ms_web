@@ -441,6 +441,37 @@ namespace :swtk do
     puts "done"
   end
 
+  desc "merge node ckp to subject ckp"
+  task :merge_ckp_node_to_subject, [:node_uid,:category] => :environment do |t, args|
+    if args[:node_uid].nil? || args[:category].nil?
+      puts "Command format not correct."
+      exit 
+    end
+    begin
+      node = BankNodestructure.find(args[:node_uid])
+      node_ckps = BankCheckpointCkp.where(:node_uid => args[:node_uid])
+      node_ckps.each{|n_ckp|
+        s_ckp = BankSubjectCheckpointCkp.new({
+          :dimesion => n_ckp.dimesion,
+          :rid => n_ckp.rid,
+          :checkpoint => n_ckp.checkpoint,
+          :subject => node.subject,
+          :is_entity => n_ckp.is_entity,
+          :category => args[:category],
+          :advice => n_ckp.advice,
+          :desc => n_ckp.desc,
+          :weights => n_ckp.weights,
+          :sort => n_ckp.sort
+        })
+        s_ckp.save!
+      }
+    rescue Exception => ex
+      p m.errors.message
+      p "---"
+      p ex.message
+    end
+  end
+
   def save_permission(controller, action)
     name = "#{controller}##{action}"
 
