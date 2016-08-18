@@ -119,18 +119,19 @@ class Teacher < ActiveRecord::Base
       :user_id => params[:user_id],
       :name => params[:name], 
       :subject => params[:subject]
-      # :tenant_uid => params[:tenant_uid]
+      # :tenant_uid => params[:tenant_uid] # to be implemented
     }
     update_attributes(paramsh)
     save!
   end
 
   def self.save_info(options)
-    options = options.extract!(:user_id, :name, :loc_uid, :head_teacher, :subject)
+    options = options.extract!(:user_id, :name, :loc_uid, :head_teacher, :subject, :tenant_uid)
     mapping_hash = {}
     mapping_hash[:loc_uid] = options[:loc_uid]
     mapping_hash[:head_teacher] = options.delete(:head_teacher)
     mapping_hash[:subject] = options[:subject]
+    mapping_hash[:tenant_uid] = options[:tenant_uid]
     options[:class_teacher_mappings_attributes] = [mapping_hash]
     create(options)
   end

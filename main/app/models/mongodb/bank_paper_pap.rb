@@ -89,13 +89,15 @@ class Mongodb::BankPaperPap
       # do nothing
     end
 
-    areaUid = Area.get_area_uid params[:informtion]
-    tenantUid= Tenant.get_tenant_uid params[:information]
-
+    #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
+    #tenant_uid= Tenant.get_tenant_uid params[:information]
+    target_area = Area.get_area params[:information]
+    target_current = Common::User.get_tenant user_id
+ 
     self.update_attributes({
       :user_id => user_id || "",
-      :area_uid => areaUid,
-      :tenant_uid => tenantUid,
+      :area_uid => target_area.nil?? "" : target_area.uid,
+      :tenant_uid => target_current.nil?? "" : target_current.uid,
       :heading => params[:information][:heading] || "",
       :subheading => params[:information][:subheading] || "",
       :orig_file_id => params[:orig_file_id] || "",
@@ -356,6 +358,11 @@ class Mongodb::BankPaperPap
     return total_score, ckp_total_score
   end
 
+  #未来要实现可属于多个tenant
+  def tenant
+    Tenant.find(self.tenant_uid)
+  end
+
   # create empty score file
   def generate_empty_score_file
     out_excel = Axlsx::Package.new
@@ -433,9 +440,10 @@ class Mongodb::BankPaperPap
       :sz => 14, 
       :alignment => { :horizontal=> :center },
       :border => Axlsx::STYLE_THIN_BORDER#{ :style => :thick, :color =>"000000", :edges => [:left, :top, :right, :bottom] }
-    info_cell = wb.styles.add_style :sz => 14, 
-      :alignment => { :horizontal=> :right }, 
-      :format_code =>"@"
+    info_cell = wb.styles.add_style :fg_color => "000000", 
+      :sz => 14, 
+      :alignment => { :horizontal=> :center },
+      :border => Axlsx::STYLE_THIN_BORDER
     data_cell = wb.styles.add_style :sz => 14, 
       :alignment => { :horizontal=> :right }, 
       :format_code =>"0.00"
@@ -447,13 +455,13 @@ class Mongodb::BankPaperPap
       # location input field
       location_row_arr = [
         I18n.t('dict.province'),
-        "",
+        tenant.area_pcd[:province_name_cn],
         I18n.t('dict.city'),
-        "",
+        tenant.area_pcd[:city_name_cn],
         I18n.t('dict.district'),
-        "",
-        I18n.t('dict.school'),
-        ""
+        tenant.area_pcd[:district_name_cn],
+        I18n.t('dict.tenant'),
+        tenant.name_cn
       ]
 
       # row 2
@@ -466,7 +474,7 @@ class Mongodb::BankPaperPap
         "name",
         "pupil_number",
         "sex",
-        "full_score"
+        tenant.uid # 隐藏tenant uid在表格中, version1.0，没什么用先埋下
       ]
 
       # row 3
@@ -518,31 +526,32 @@ class Mongodb::BankPaperPap
         }
       }
 
-      sheet.add_row location_row_arr, :style => [title_cell, unlocked, title_cell,unlocked,title_cell,unlocked,title_cell,unlocked]
-      sheet.add_data_validation("B1",{
-        :type => :list,
-        :formula1 => "areaList!A1:#{province_cell.r}",
-        :showDropDown => false,
-        :showInputMessage => true,
-        :promptTitle => I18n.t('dict.province'),
-        :prompt => ""
-      })
-      sheet.add_data_validation("D1",{
-        :type => :list,
-        :formula1 => "areaList!A2:#{city_cell.r}",
-        :showDropDown => false,
-        :showInputMessage => true,
-        :promptTitle => I18n.t('dict.city'),
-        :prompt => ""
-      })
-      sheet.add_data_validation("F1",{
-        :type => :list,
-        :formula1 => "areaList!A3:#{district_last.cells[0].r}",
-        :showDropDown => false,
-        :showInputMessage => true,
-        :promptTitle => I18n.t('dict.district'),
-        :prompt => ""
-      })
+      #sheet.add_row location_row_arr, :style => [title_cell, title_cell, title_cell,unlocked,title_cell,unlocked,title_cell,unlocked]
+      sheet.add_row location_row_arr, :style => [title_cell, info_cell, title_cell,info_cell,title_cell,info_cell,title_cell,info_cell]
+      # sheet.add_data_validation("B1",{
+      #   :type => :list,
+      #   :formula1 => "areaList!A1:#{province_cell.r}",
+      #   :showDropDown => false,
+      #   :showInputMessage => true,
+      #   :promptTitle => I18n.t('dict.province'),
+      #   :prompt => ""
+      # })
+      # sheet.add_data_validation("D1",{
+      #   :type => :list,
+      #   :formula1 => "areaList!A2:#{city_cell.r}",
+      #   :showDropDown => false,
+      #   :showInputMessage => true,
+      #   :promptTitle => I18n.t('dict.city'),
+      #   :prompt => ""
+      # })
+      # sheet.add_data_validation("F1",{
+      #   :type => :list,
+      #   :formula1 => "areaList!A3:#{district_last.cells[0].r}",
+      #   :showDropDown => false,
+      #   :showInputMessage => true,
+      #   :promptTitle => I18n.t('dict.district'),
+      #   :prompt => ""
+      # })
 
       sheet.add_row hidden_title_row_arr
       sheet.column_info.each{|col|
@@ -642,7 +651,8 @@ class Mongodb::BankPaperPap
       :province => Common::Locale.hanzi2pinyin(loc_row[1]),
       :city => Common::Locale.hanzi2pinyin(loc_row[3]),
       :district => Common::Locale.hanzi2pinyin(loc_row[5]),
-      :school => Common::Locale.hanzi2pinyin(loc_row[7])
+      :school => Common::Locale.hanzi2pinyin(loc_row[7]),
+      :tenant_uid => tenant.uid
 #      :school_number => Location.generate_school_number
     }
     subject = self.subject
@@ -699,15 +709,22 @@ class Mongodb::BankPaperPap
         ## 
         # parameters: province, city, district, school
         #
-        school_numbers = Location.get_school_numbers
-        new_school_number = Location.generate_school_number
-        count = 1
-        while school_numbers.include?(new_school_number)
-          new_school_number = Location.generate_school_number
-          break if count > 100 # avoid infinite loop
-          count+=1
-        end
-        loc_h[:school_number] = new_school_number
+
+        ###
+        # 因为tenant要预先注册，此处不需要创建学校
+        #
+        # school_numbers = Location.get_school_numbers
+        # new_school_number = Location.generate_school_number
+        # count = 1
+        # while school_numbers.include?(new_school_number)
+        #   new_school_number = Location.generate_school_number
+        #   break if count > 100 # avoid infinite loop
+        #   count+=1
+        # end
+
+        #loc_h[:school_number] = new_school_number
+        ###
+
         loc = Location.new(loc_h)
         loc.save!
       end
@@ -775,6 +792,7 @@ class Mongodb::BankPaperPap
           :pup_uid => current_pupil.nil?? "":current_pupil.uid,
           :pap_uid => self._id.to_s,
           :qzp_uid => hidden_row[qzp_index],
+          :tenant_uid => tenant.uid,
           :order => order_row[qzp_index],
           :real_score => row[qzp_index],
           :full_score => title_row[qzp_index]
@@ -830,14 +848,16 @@ class Mongodb::BankPaperPap
         :username => params_h[:user_name],
         :password => "",
         :name => params_h[:name],
-        :report_url => ""
+        :report_url => "",
+        :tenant_uid => tenant.uid
       },
       Common::Role::Pupil.to_sym => {
         :username => params_h[:user_name],
         :password => "",
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
-        :report_url => "/reports/square?username="
+        :report_url => "/reports/square?username=",
+        :tenant_uid => tenant.uid
       }
     }
 

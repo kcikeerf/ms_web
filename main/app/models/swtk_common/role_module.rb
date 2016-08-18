@@ -1,5 +1,7 @@
 module RoleModule
   module Role
+  	module_function
+  	
     Pupil="pupil"
     Teacher="teacher"
     Analyzer="analyzer"

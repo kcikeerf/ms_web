@@ -77,21 +77,30 @@ class Tenant < ActiveRecord::Base
   def area_pcd
     result = {
       :province_rid => "",
+      :province_name_cn => "",
       :city_rid => "",
-      :district_rid => ""
+      :city_name_cn => "",
+      :district_rid => "",
+      :district_name_cn => ""
     }
     case area.area_type
     when "country"
       #do nothing
     when "province"
-      result[:province_rid] = area.rid 
+      result[:province_rid] = area.rid
+      result[:province_name_cn] = area.name_cn 
     when "city"
       result[:province_rid] = area.parent.rid 
+      result[:province_name_cn] = area.parent.name_cn 
       result[:city_rid] = area.rid
+      result[:city_name_cn] = area.name_cn
     when "district"
       result[:province_rid] = area.parent.parent.rid 
+      result[:province_name_cn] = area.parent.parent.name_cn 
       result[:city_rid] = area.parent.rid
+      result[:city_name_cn] = area.parent.name_cn
       result[:district_rid] = area.rid
+      result[:district_name_cn] = area.name_cn
     end
     result
   end
@@ -113,16 +122,16 @@ class Tenant < ActiveRecord::Base
     return result
   end
 
-  def self.get_tenant_uid params
-    return params[:tenant_uid] if params[:tenant_uid]
-    return nil if params[:school_number].blank? && params[:school].blank?
-    paramsh = {
-      :number => params[:school_number] || "", 
-      :name => params[:school] || ""
-    }
-    targetTenant = Tenant.where(paramsh).first
-    return targetTenant.nil?? nil : targetTenant.uid
-  end
+  # def self.get_tenant_uid params
+  #   return params[:tenant_uid] if params[:tenant_uid]
+  #   return nil if params[:school_number].blank? && params[:school].blank?
+  #   paramsh = {
+  #     :number => params[:school_number] || "", 
+  #     :name => params[:school] || ""
+  #   }
+  #   targetTenant = Tenant.where(paramsh).first
+  #   return targetTenant.nil?? nil : targetTenant.uid
+  # end
 
   def self.get_tenant_numbers
     return Tenant.all.map{|t| t.number}.uniq.compact
