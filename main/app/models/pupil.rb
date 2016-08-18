@@ -36,6 +36,9 @@ class Pupil < ActiveRecord::Base
       }
       h.merge!(area_h)
       h.merge!(item.attributes)
+      h["sex_label"] = I18n.t("dict.#{h["sex"]}")
+      h["grade_label"] = I18n.t("dict.#{h["grade"]}")
+      h["classroom_label"] = I18n.t("dict.#{h["classroom"]}")
       h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
       result[index] = h
     }
@@ -56,7 +59,7 @@ class Pupil < ActiveRecord::Base
   end
 
   def self.save_info(options)
-    options[:sex] = Common::Locale.hanzi2pinyin(options[:sex]) if options.keys.include?("sex")
+    # options[:sex] = Common::Locale.hanzi2pinyin(options[:sex]) if options.keys.include?("sex")
   	options = options.extract!(:user_id, :name, :loc_uid, :sex, :stu_number, :grade, :classroom)
   	create(options)
   end

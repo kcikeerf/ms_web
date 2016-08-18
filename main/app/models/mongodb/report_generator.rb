@@ -2316,7 +2316,7 @@ class Mongodb::ReportGenerator
       when "klass"
         a = Common::Locale.hanzi2pinyin(arr[0])
         b = Common::Locale.hanzi2pinyin(key)
-        if Common::Locale.mysort(Common::Locale::KlassMapping[a],Common::Locale::KlassMapping[b]) < 0
+        if Common::Locale.mysort(Common::Klass::Order[a],Common::Klass::Order[b]) < 0
           last_key = key
           break
         end

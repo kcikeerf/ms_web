@@ -73,7 +73,7 @@ class Location < ActiveRecord::Base
 
     if role == Common::Role::Analyzer || Common::Role::Teacher
       klasses = Location.where(loc_h)#.order(classroom: :ASC) #asc
-      klasses = klasses.sort{|a,b| Common::Locale.mysort(Common::Locale::KlassMapping[a.classroom],Common::Locale::KlassMapping[b.classroom]) }
+      klasses = klasses.sort{|a,b| Common::Locale.mysort(Common::Klass::Order[a.classroom],Common::Klass::Order[b.classroom]) }
       klasses.each{|klass|
          param_h = loc_h.deep_dup
          param_h[:classroom] = klass.classroom

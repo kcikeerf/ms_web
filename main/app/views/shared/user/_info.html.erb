@@ -18,11 +18,11 @@
 			    selected: current_user.role_obj.subject unless current_user.is_pupil? %>
 			<%= f.input :grade, 
 			    label: I18n.t("dict.grade"),
-                collection: Common::Locale::GradeList.map {|k,v| [v,k]},
+                collection: Common::Grade::List.map {|k,v| [v,k]},
 			    selected: current_user.role_obj.grade if current_user.is_pupil? %>
 			<%= f.input :classroom, 
 			    label: I18n.t("dict.classroom"),
-                collection: Common::Locale::KlassList.map {|k,v| [v,k]},
+                collection: Common::Klass::List.map {|k,v| [v,k]},
 			    selected: current_user.role_obj.classroom if current_user.is_pupil? %>
 			<%= f.input :school, label: I18n.t("dict.school") unless current_user.is_analyzer? %>
 			<%= f.simple_fields_for :user do |u| %>
