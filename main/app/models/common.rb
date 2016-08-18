@@ -8,6 +8,7 @@ module Common
   include SwtkConstantsModule
   include RoleModule
   include SubjectModule
+  include UzerModule
 
   module Area
     CountryRids = {
