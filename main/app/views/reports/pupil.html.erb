@@ -1,27 +1,28 @@
 <aside class="zy-report-leftNav">
+	<div class="zy-report-type"></div>
 	<ul class="chart-nav box-height" id="tab-menu">
-		<li class="tab-btn active" data-id="pupil-diagnoseEchart">诊断图</li>
-		<li class="tab-btn" data-id="improve-sugg">诊断及改进建议</li>
+		<li class="tab-btn active" data-id="pupil-diagnoseEchart">三维诊断概要图</li>
 		<li class="drop-down">
-			<a class="collapse-close" data-toggle="collapse" data-target="#data_table">数据表</a>
+			<a class="collapse-close" data-toggle="collapse" data-target="#data_table">各指标表现水平数据表</a>
 			<ul id="data_table" class="panel-collapse collapse">
 				<li class="tab-btn" data-id="table-data-knowledge">知识</li>
 				<li class="tab-btn" data-id="table-data-skill">技能</li>
 				<li class="tab-btn" data-id="table-data-ability">能力</li>
 			</ul>
 		</li>
+		<li class="tab-btn" data-id="improve-sugg">诊断及改进建议</li>
 	</ul>
 </aside>
 <div id="myTabContent" class="tab-content box-height">
+	<div class="zy-breadcrumb-container"></div>
 	<div class="report-nav-wrapper">
 		<nav id='pupil-top-nav' class="reptort-top-nav"></nav>
 	</div>
 	<div class="tab-pane active" id="pupil-diagnoseEchart">
 		<!--诊断图-->
-		<h3 class="zy-report-title">学生个人知识、技能、能力情况诊断图</h3>
 		<div class="container-fluid">
 			<div class="row">
-				<h3 class="zy-report-subtitle">一级诊断指标</h3>
+				<h3 class="zy-report-subtitle">学生 - 1级诊断图</h3>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 					<h4>知识</h4>
 					<div id="pupil_knowledge_radar" class="zy-chart-container" style="border-right: 1px dashed #b6b6b6;"></div>
@@ -43,7 +44,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">二级诊断指标</h3>
+				<h3 class="zy-report-subtitle">学生 - 2级诊断图</h3>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h4>知识</h4>
 					<hr class="zy-hr-dashed" />
@@ -62,85 +63,95 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane pupil-report-data" id="improve-sugg">
 	</div>
+
 	<div class="tab-pane " id="table-data-knowledge">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">个人知识数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="studenttable">
-				<table class="data-table pupil-data-table">
-					<caption>知 识</caption>
-					<tr>
-						<th>知识百分等级<br>（<div id="pupil_knowledge_percentile" class="report_pupil_percentile"></div>）</th>
-						<th>个人得分率</th>
-						<th>年级平均水平</th>
-						<th>得分率差值</th>
-						<th>个人得分</th>
-						<th>满分</th>
-						<!--th>答对考点</th-->
-					</tr>
-					<tbody id="knowledge_data_table"></tbody>
-				</table>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识 - 学生数据表</h3>
+					<div class="studenttable">
+						<table class="data-table pupil-data-table">
+							<caption>知 识</caption>
+							<tr>
+								<th>知识百分等级<br>（<div id="pupil_knowledge_percentile" class="report_pupil_percentile"></div>）</th>
+								<th>个人得分率</th>
+								<th>年级平均水平</th>
+								<th>得分率差值</th>
+								<th>个人得分</th>
+								<th>满分</th>
+								<!--th>答对考点</th-->
+							</tr>
+							<tbody id="knowledge_data_table"></tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="table-data-skill">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">个人技能数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="studenttable">
-				<table class="data-table pupil-data-table">
-					<caption>技 能</caption>
-					<tr>
-						<th>技能百分等级<br>（<div id="pupil_skill_percentile" class="report_pupil_percentile"></div>）</th>
-						<th>个人得分率</th>
-						<th>年级平均水平</th>
-						<th>得分率差值</th>
-						<th>个人得分</th>
-						<th>满分</th>
-						<!--th>答对考点</th-->
-					</tr>
-					<tbody id="skill_data_table"></tbody>
-				</table>
-				<dl>
-					<dt>说明</dt>
-					<dd>
-						1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-					</dd>
-				</dl>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能 - 学生数据表</h3>
+					<div class="studenttable">
+						<table class="data-table pupil-data-table">
+							<caption>技 能</caption>
+							<tr>
+								<th>技能百分等级<br>（<div id="pupil_skill_percentile" class="report_pupil_percentile"></div>）</th>
+								<th>个人得分率</th>
+								<th>年级平均水平</th>
+								<th>得分率差值</th>
+								<th>个人得分</th>
+								<th>满分</th>
+								<!--th>答对考点</th-->
+							</tr>
+							<tbody id="skill_data_table"></tbody>
+						</table>
+						<dl>
+							<dt>说明</dt>
+							<dd>
+								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
+							</dd>
+						</dl>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="table-data-ability">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">个人能力数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div class="studenttable">
-				<table class="data-table pupil-data-table">
-					<caption>能 力</caption>
-					<tr>
-						<th>能力百分等级<br>（<div id="pupil_ability_percentile" class="report_pupil_percentile"></div>）</th>
-						<th>个人得分率</th>
-						<th>年级平均水平</th>
-						<th>得分率差值</th>
-						<th>个人得分</th>
-						<th>满分</th>
-						<!--th>答对考点</th-->
-					</tr>
-					<tr>
-					</tr>
-					<tbody id="ability_data_table"></tbody>
-				</table>
-				<dl>
-					<dt>说明</dt>
-					<dd>
-						1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-					</dd>
-				</dl>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力 - 学生数据表</h3>
+					<div class="studenttable">
+						<table class="data-table pupil-data-table">
+							<caption>能 力</caption>
+							<tr>
+								<th>能力百分等级<br>（<div id="pupil_ability_percentile" class="report_pupil_percentile"></div>）</th>
+								<th>个人得分率</th>
+								<th>年级平均水平</th>
+								<th>得分率差值</th>
+								<th>个人得分</th>
+								<th>满分</th>
+								<!--th>答对考点</th-->
+							</tr>
+							<tr>
+							</tr>
+							<tbody id="ability_data_table"></tbody>
+						</table>
+						<dl>
+							<dt>说明</dt>
+							<dd>
+								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
+							</dd>
+						</dl>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

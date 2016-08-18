@@ -1,16 +1,17 @@
 <aside class="zy-report-leftNav">
+	<div class="zy-report-type"></div>
 	<ul class="chart-nav" id="tab-menu">
-		<li class="tab-btn active" data-id="class-diagnoseEchart">诊断图</li>
-		<li class="tab-btn" data-id="class-NumScale">各分数段人数比例</li>
+		<li class="tab-btn active" data-id="class-diagnoseEchart">三维诊断概要图</li>
+		<li class="tab-btn" data-id="class-NumScale">各分数段人数比例图</li>
 		<li>
-			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">数据表</a>
+			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">各指标表现水平数据表</a>
 			<ul id="collapseOne" class="panel-collapse collapse">
 				<li class="tab-btn" data-id="table-data-knowledge">知识</li>
 				<li class="tab-btn" data-id="table-data-skill">技能</li>
 				<li class="tab-btn" data-id="table-data-ability">能力</li>
 			</ul>
 		</li>
-		<li class="tab-btn" data-id="class-answerCase">答题情况统计</li>
+		<li class="tab-btn" data-id="class-answerCase">题目答对率统计表</li>
 		<li>
 			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">报告解读</a>
 			<ul id="collapseTwo" class="panel-collapse collapse">
@@ -32,58 +33,64 @@
 </aside><!--班级图表左面nav导航部分-->
 
 <div id="myTabContent" class="tab-content">
+	<div class="zy-breadcrumb-container"></div>
 	<div class="report-nav-wrapper">
 		<nav id='class-top-nav' class="reptort-top-nav"></nav>
 	</div>
 	<div class="tab-pane active" id="class-diagnoseEchart">
 		<!--诊断图-->
-		<h3 class="zy-report-title">班级学生知识情况诊断图</h3>
 		<div class="container-fluid">
 			<div class="row">
-				<h3 class="zy-report-subtitle">知识</h3>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识 - 1级诊断图</h3>
 					<div id="knowledge_diagnose_left" class="zy-chart-container"></div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识 - 班级与年级平均得分率差值图</h3>
 					<div id="knowledge_diagnose_center" class="zy-chart-container"></div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识 - 班级中位数与年级平均得分率差值图</h3>
 					<div id="knowledge_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">技能</h3>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能 - 1级诊断图</h3>
 					<div id="skill_diagnose_left" class="zy-chart-container"></div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能 - 班级与年级平均得分率差值图</h3>
 					<div id="skill_diagnose_center" class="zy-chart-container"></div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能 - 班级中位数与年级平均得分率差值图</h3>
 					<div id="skill_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">能力</h3>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力 - 1级诊断图</h3>
 					<div id="ability_diagnose_left" class="zy-chart-container"></div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力 - 班级与年级平均得分率差值图</h3>
 					<div id="ability_diagnose_center" class="zy-chart-container"></div>
 				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力 - 班级中位数与年级平均得分率差值图</h3>
 					<div id="ability_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="tab-pane " id="class-NumScale">
-		<!--班级各分数段人数比例-->
-		<h3 class="zy-report-title">班级知识、技能、能力各分数段人数比例</h3>
+	<div class="tab-pane " id="class-NumScale">		<!--班级各分数段人数比例-->
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">班级知识、技能、能力各分数段人数比例</h3>
 					<div id="scale_dimesions" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -109,85 +116,88 @@
 	</div>
 
 	<div class="tab-pane " id="table-data-knowledge">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">班级知识数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div id="table_data" class="clearfix ">
-				<table class="data-table">
-					<tr>
-						<th>知识</th>
-						<th>班级平<br>均值</th>
-						<th>班级平均得<br>分率</th>
-						<th>班级中位数<br>得分率</th>
-						<th>年级平均得<br>分率</th>
-						<th>班级与年级<br>平均得分率<br>差值</th>
-						<th>班级中位数<br>得分率与年<br>级平均差值</th>
-						<th>分化程度</th>
-						<th>满分值</th>
-					</tr>
-					<tbody id="Class_knowledge_table"></tbody>
-				</table>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">知识 - 班级数据表</h3>
+					<div id="table_data" class="clearfix ">
+						<table class="data-table">
+							<tr>
+								<th>知识</th>
+								<th>班级平<br>均值</th>
+								<th>班级平均得<br>分率</th>
+								<th>班级中位数<br>得分率</th>
+								<th>年级平均得<br>分率</th>
+								<th>班级与年级<br>平均得分率<br>差值</th>
+								<th>班级中位数<br>得分率与年<br>级平均差值</th>
+								<th>分化程度</th>
+								<th>满分值</th>
+							</tr>
+							<tbody id="Class_knowledge_table"></tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
+	</div>
 
-	</div>
 	<div class="tab-pane " id="table-data-skill">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">班级技能数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div id="table_data" class="clearfix">
-				<section class="bt1">
-					<table class="data-table">
-						<tr>
-							<th class="col1 colbg">技能</th>
-							<th class="col2">班级平<br>均值</th>
-							<th class="col3">班级平均得<br/>分率</th>
-							<th class="col4">班级中位数<br>得分率</th>
-							<th class="col4">年级平均得<br>分率</th>
-							<th class="col5">班级与年级<br>平均得分率<br>差值</th>
-							<th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
-							<th class="col7">分化程度</th>
-							<th class="col8">满分值</th>
-						</tr>
-						<tbody id="Class_skill_table"></tbody>
-					</table>
-				</section>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">技能 - 班级数据表</h3>
+					<div id="table_data" class="clearfix">
+						<table class="data-table">
+							<tr>
+								<th class="col1 colbg">技能</th>
+								<th class="col2">班级平<br>均值</th>
+								<th class="col3">班级平均得<br/>分率</th>
+								<th class="col4">班级中位数<br>得分率</th>
+								<th class="col4">年级平均得<br>分率</th>
+								<th class="col5">班级与年级<br>平均得分率<br>差值</th>
+								<th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
+								<th class="col7">分化程度</th>
+								<th class="col8">满分值</th>
+							</tr>
+							<tbody id="Class_skill_table"></tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="table-data-ability">
-		<div class="wrapper-md">
-			<h1 class="font-thin h3">班级能力数据表</h1>
-		</div>
-		<div class="wrapper-md">
-			<div id="table_data" class="clearfix">
-				<section class="bt1">
-					<table class="data-table">
-						<tr>
-							<th class="col1 colbg">能力</th>
-							<th class="col2">班级平<br>均值</th>
-							<th class="col3">班级平均得<br/>分率</th>
-							<th class="col4">班级中位数<br>得分率</th>
-							<th class="col4">年级平均得<br>分率</th>
-							<th class="col5">班级与年级<br>平均得分率<br>差值</th>
-							<th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
-							<th class="col7">分化程度</th>
-							<th class="col8">满分值</th>
-						</tr>
-						<tbody id="Class_ability_table"></tbody>
-					</table>
-				</section>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<h3 class="zy-report-subtitle">能力 - 班级数据表</h3>
+					<div id="table_data" class="clearfix">
+						<table class="data-table">
+							<tr>
+								<th class="col1 colbg">能力</th>
+								<th class="col2">班级平<br>均值</th>
+								<th class="col3">班级平均得<br/>分率</th>
+								<th class="col4">班级中位数<br>得分率</th>
+								<th class="col4">年级平均得<br>分率</th>
+								<th class="col5">班级与年级<br>平均得分率<br>差值</th>
+								<th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
+								<th class="col7">分化程度</th>
+								<th class="col8">满分值</th>
+							</tr>
+							<tbody id="Class_ability_table"></tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="tab-pane " id="class-answerCase">
-		<h3 class="zy-report-title">班级学生答题情况统计</h3>
-		<p>
-			说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为【0，1】，数值越大，表明答对人数越多。
+		<h4>
+			说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为[0，1]，数值越大，表明答对人数越多。
 			答对率低于0.6的题目是本班的薄弱点，需要重点关注。
-		</p>
+		</h4>
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
