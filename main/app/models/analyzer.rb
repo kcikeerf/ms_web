@@ -16,7 +16,8 @@ class Analyzer < ActiveRecord::Base
           class_name: "TaskList", 
           foreign_key: "ana_uid"
 
-  scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) }
+  scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) if t_uid.present? }
+  scope :by_keyword, ->(keyword) { where( "name LIKE '%#{keyword}%'" ) if keyword.present? }
 
   def self.get_list params
     params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
