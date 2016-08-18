@@ -1,0 +1,25 @@
+<table id="testtable" class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th class="title">试卷名称</th>
+			<th class="status">试卷状态</th>
+			<th class="updated">变更时间</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% @papers.each do |paper| %>
+		<tr>
+			<td class="title">
+				<a href="/papers/get_paper?pap_uid=<%=paper._id%>"><%= "#{paper.heading}-#{paper.subheading}".truncate(30) %></a>
+				<%= link_to '[查看报告]', new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
+			</td>
+			<td><%= t("papers.status.#{paper.paper_status}") %></td>
+			<td class='updated'><%= paper.dt_update %></td>
+		</tr>
+		<% end unless @papers.blank?%>
+	</tbody>
+</table>
+
+<nav class="text-center">
+	<%= paginate @papers unless @papers.blank?%>
+</nav>

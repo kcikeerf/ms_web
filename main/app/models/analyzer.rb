@@ -16,8 +16,11 @@ class Analyzer < ActiveRecord::Base
           class_name: "TaskList", 
           foreign_key: "ana_uid"
 
+  scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) }
 
   def self.get_list params
+    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
     result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       area_h = {

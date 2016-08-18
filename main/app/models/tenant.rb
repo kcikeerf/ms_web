@@ -6,6 +6,7 @@ class Tenant < ActiveRecord::Base
   include InitUid
 
   belongs_to :areas, foreign_key: "area_uid"
+  has_many :tenant_administrators, foreign_key: "tenant_uid"
   has_many :analyzers, foreign_key: "tenant_uid"
   has_many :teachers, foreign_key: "tenant_uid"
   has_many :locations, foreign_key: "tenant_uid"
@@ -100,6 +101,8 @@ class Tenant < ActiveRecord::Base
   end
 
   def self.get_list params
+    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
     result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       h = item.area_pcd

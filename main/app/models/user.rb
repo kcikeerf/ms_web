@@ -97,6 +97,7 @@ class User < ActiveRecord::Base
       when is_analyzer? then (analyzer.nil?? Analyzer.new : analyzer)
       when is_pupil? then (pupil.nil?? Pupil.new : pupil)
       when is_teacher? then (teacher.nil?? Teacher.new : teacher)
+      when is_tenant_administrator? then (tenant_administrator.nil?? TenantAdministrator.new : tenant_administrator)
       else nil
       end
 
@@ -109,6 +110,7 @@ class User < ActiveRecord::Base
       when is_analyzer? then Analyzer
       when is_pupil? then Pupil
       when is_teacher? then Teacher
+      when is_tenant_administrator? then TenantAdministrator
       else nil
       end
 
@@ -158,6 +160,7 @@ class User < ActiveRecord::Base
     return analyzer if is_analyzer?
     return teacher if is_teacher?
     return pupil if is_pupil?
+    return tenant_administrator if is_tenant_administrator?
   end  
 
   def role?(r)

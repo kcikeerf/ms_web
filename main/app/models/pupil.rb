@@ -18,6 +18,8 @@ class Pupil < ActiveRecord::Base
   end
 
   def self.get_list params
+    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
     result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       area_h = {
