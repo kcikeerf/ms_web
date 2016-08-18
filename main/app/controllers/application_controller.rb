@@ -21,10 +21,10 @@ class ApplicationController < ActionController::Base
     #authenticate_person!
     if (controller_name =~ /^Managers.*$/) == 0
       authenticate_manager!
-      redirect_to new_manager_session_path unless current_manager
+      #redirect_to new_manager_session_path unless current_manager
     else
-      authenticate_user!
-      redirect_to new_user_session_path unless current_user
+      authenticate_user! unless current_manager
+      #redirect_to new_user_session_path unless current_user
     end
   end
  
@@ -47,13 +47,13 @@ class ApplicationController < ActionController::Base
   end
   #######
 
-  def authenticate_active_admin_user!
-    authenticate_user!
-#    unless current_user.role?(:admin)
-#      flash[:alert] = "You are not authorized to access this resource!"
-#      redirect_to root_path
-#    end
-  end
+#   def authenticate_active_admin_user!
+#     authenticate_user!
+# #    unless current_user.role?(:admin)
+# #      flash[:alert] = "You are not authorized to access this resource!"
+# #      redirect_to root_path
+# #    end
+#   end
 
   def authorize_access
     # authorize!(action_name.to_sym, "#{controller_name}_controller".camelcase.constantize)

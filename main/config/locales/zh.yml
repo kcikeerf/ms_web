@@ -222,6 +222,7 @@ zh:
     province: "省"
     city: "市"
     district: "区"
+    tenant: "Tenant"
     school: "学校"
     school_number: "学校编号"
     grade: "年级"
@@ -231,6 +232,7 @@ zh:
     teacher: "老师"
     analyzer: "分析员"
     pupil: "学生"
+    tenant_administrator: "Tenant管理员"
     pupil_number: "学号"
     name: "姓名"
     sex: "性别"
@@ -402,6 +404,17 @@ zh:
     node_structure: "教材版本"
     checkpoint: "指标体系"
     root_node: "根节点"
+    menus:
+      jue_se_guan_li: "角色管理"
+      quan_xian_guan_li: "权限管理"
+      tenant_guan_li: "Tenant管理"
+      tenant_yong_hu_guan_li: "Tenant管理员管理"
+      fen_xi_yuan_guan_li: "分析员管理"
+      jiao_shi_guan_li: "教师管理"
+      xue_sheng_guan_li: "学生管理"
+      jiao_cai_guan_li: "教材管理"
+      zhi_biao_ti_xi_guan_li: "指标体系管理"
+      ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
 
   #定义active record表及属性的中文标示
   activerecord:
@@ -511,6 +524,8 @@ zh:
         grade: "年级"
         classroom: "班级"
         school: "学校"
+      tenant_administrator:
+        name: "姓名"
     errors:
       messages:        
         inclusion: "不包含于列表中"
@@ -699,6 +714,8 @@ zh:
       personal_center: '个人中心'
       account_setting: '账号设置'
       my_home: '我的主页'
+      my_analyzer: "我的分析员"
+      my_teacher: "我的老师"
       my_report: "我的报告"
       my_paper: "我的试卷"
       test_report: '测试报告'
@@ -724,7 +741,8 @@ zh:
       unbinding_mobile: '解绑手机号'
       binding_email: '绑定邮箱'
       unbinding_email: '解绑邮箱'
-
+    teacher:
+      subject_classroom_mapping: "学科，班级列表"
     paper:
       add_paper: "添加试卷"
       save: "保存"

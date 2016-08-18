@@ -1,0 +1,16 @@
+<% @page_title = t('page.user_left_menu.my_home') %>
+<section>
+	<div class="container clearfix">
+		<!-- Nav tabs -->
+		<%= render 'shared/user/left_menu' %>
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div role="tabpanel" class="tab-pane active" id="home">
+				<div class="panel">
+					<!-- 基本信息 -->					
+					<%= render 'basic_info' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

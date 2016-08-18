@@ -231,11 +231,10 @@ function saveObj(){
       if (result.status == 200){
         $('#dlg').dialog('close');      // close the dialog
         $('#dg').datagrid('reload');    // reload the user data
-      } 
-      else{
+      } else{
         $.messager.alert({
           title: 'Error',
-          msg: result.data.message
+          msg: result.message
         });
       }
     }

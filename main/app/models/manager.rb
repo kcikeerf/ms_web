@@ -18,20 +18,21 @@ class Manager < ActiveRecord::Base
       {
         id: 1, icon: 'icon-sys', name: '用户管理',
         menus: [
-          {id: 11, name: '角色管理', icon: '', url: '/managers/roles'},
-          {id: 12, name: '权限管理', icon: '', url: '/managers/permissions'},
-          {id: 13, name: 'Tenant管理', icon: '', url: '/managers/tenants'},
-          {id: 14, name: '分析员管理', icon: '', url: '/managers/analyzers'},
-          {id: 15, name: '教师管理', icon: '', url: '/managers/teachers'},
-          {id: 16, name: '学生管理', icon: '', url: '/managers/pupils'}
+          {id: 11, name: I18n.t("managers.menus.jue_se_guan_li"), icon: '', url: '/managers/roles'},
+          {id: 12, name: I18n.t("managers.menus.quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
+          {id: 13, name: I18n.t("managers.menus.tenant_guan_li"), icon: '', url: '/managers/tenants'},
+          {id: 14, name: I18n.t("managers.menus.tenant_yong_hu_guan_li"), icon: '', url: '/managers/tenant_administrators'},
+          {id: 15, name: I18n.t("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},
+          {id: 16, name: I18n.t("managers.menus.jiao_shi_guan_li"), icon: '', url: '/managers/teachers'},
+          {id: 17, name: I18n.t("managers.menus.xue_sheng_guan_li"), icon: '', url: '/managers/pupils'}
         ]
       },
       {
         id: 2, icon: 'icon-sys', name: '指标体系',
         menus: [
-          {id: 21, name: '教材管理', icon: '', url: '/managers/node_structures'},
-          {id: 22, name: '指标体系管理', icon: '', url: '/managers/checkpoints'},
-          {id: 23, name: '科目指标体系管理', icon: '', url: '/managers/subject_checkpoints'}
+          {id: 21, name: I18n.t("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
+          {id: 22, name: I18n.t("managers.menus.zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/checkpoints'},
+          {id: 23, name: I18n.t("managers.menus.ke_mu_zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/subject_checkpoints'}
         ]
       }
     ]

@@ -66,7 +66,7 @@ Rails.application.routes.draw do
     resources :analyzers, concerns: :destroy_all
     resources :teachers, concerns: :destroy_all
     resources :pupils, concerns: :destroy_all
-
+    resources :tenant_administrators, concerns: :destroy_all
   end
 
   mount RuCaptcha::Engine => "/rucaptcha"
@@ -147,6 +147,15 @@ Rails.application.routes.draw do
     get 'my_paper(/:page)', action: 'my_paper', as: 'my_paper'
     get 'my_log'
     get 'region'
+  end
+
+  resource :tenant_administrators do
+    member do
+      get 'my_home'
+      get 'my_analyzer'
+      get 'my_teacher'
+      get 'my_paper'
+    end
   end
 
   resource :papers do
