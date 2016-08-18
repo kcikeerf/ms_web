@@ -3,7 +3,7 @@ module RoleModule
     Pupil="pupil"
     Teacher="teacher"
     Analyzer="analyzer"
-    TenantAdmin="tenant_administrator"
-    NAME_ARR = %w(pupil teacher analyzer)
+    TenantAdministrator="tenant_administrator"
+    NAME_ARR = %w(pupil teacher analyzer tenant_administrator)
   end
 end

@@ -6,6 +6,8 @@ module UsersHelper
       menus = {personal_center: my_home_teachers_path}
     elsif current_user.is_analyzer?
       menus = {personal_center: my_home_analyzers_path}
+    elsif current_user.is_tenant_administrator?
+      menus = {personal_center: my_home_tenant_administrators_path}
     end
 #    menus[:account_setting] = url_for(action: 'setting', controller: 'accounts')
     menus[:edit_password] = edit_user_registration_path
@@ -30,6 +32,13 @@ module UsersHelper
         my_home: my_home_analyzers_path,
         my_paper: my_paper_analyzers_path,
         my_log: my_log_analyzers_path
+      }
+    elsif current_user.is_tenant_administrator?
+      menus = {
+        my_home: my_home_tenant_administrators_path,
+        my_analyzer: my_analyzer_tenant_administrators_path, 
+        my_teacher: my_teacher_tenant_administrators_path, 
+        my_paper: my_paper_tenant_administrators_path
       }
     end
     return menus

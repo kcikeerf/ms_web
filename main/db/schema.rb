@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160811064136) do
+ActiveRecord::Schema.define(version: 20160818015018) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -217,6 +217,7 @@ ActiveRecord::Schema.define(version: 20160811064136) do
     t.boolean  "head_teacher", limit: 1,   default: false
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "tenant_uid",   limit: 255
   end
 
   create_table "file_uploads", force: :cascade do |t|
@@ -368,6 +369,15 @@ ActiveRecord::Schema.define(version: 20160811064136) do
     t.datetime "dt_add"
     t.datetime "dt_update"
     t.string   "tenant_uid", limit: 255
+  end
+
+  create_table "tenant_administrators", primary_key: "uid", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4,   null: false
+    t.string   "name",       limit: 255
+    t.string   "tenant_uid", limit: 255
+    t.string   "comment",    limit: 255
+    t.datetime "dt_add"
+    t.datetime "dt_update"
   end
 
   create_table "tenants", primary_key: "uid", force: :cascade do |t|

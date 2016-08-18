@@ -10,11 +10,14 @@ class Teacher < ActiveRecord::Base
   has_many :class_teacher_mappings, foreign_key: "tea_uid"
 
   # has_many :classrooms, foreign_key: 'tea_id'
-
+  scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) }
+  
   accepts_nested_attributes_for :class_teacher_mappings
-
+  
 
   def self.get_list params
+    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
     result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       area_h = {
@@ -43,7 +46,7 @@ class Teacher < ActiveRecord::Base
         :head_teacher => head_teacher ? I18n.t("common.shi") : I18n.t("common.fou"),
         :subject => item.subject,
         :subject_cn => I18n.t("dict.#{item.subject}"),
-        :subject_classrooms => item.subjects_classrooms_mapping.map{|m| "#{m[:subject_cn]},#{m[:classroom_cn]}(#{m[:type]}) " }.join("<br>"),
+        :subject_classrooms => item.subjects_classrooms_mapping.map{|m| "#{m[:subject_cn]},#{m[:grade_cn]}#{m[:classroom_cn]}(#{m[:type]})" }.join("<br>"),
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
         :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
         :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
@@ -80,6 +83,8 @@ class Teacher < ActiveRecord::Base
       {
         :subject => item.subject,
         :subject_cn => I18n.t("dict.#{item.subject}"),
+        :grade => loc.grade,
+        :grade_cn => I18n.t("dict.#{loc.grade}"),
         :classroom => loc.classroom,
         :classroom_cn => I18n.t("dict.#{loc.classroom}"),
         :type => item.head_teacher ? I18n.t("teachers.abbrev.head_teacher") : I18n.t("teachers.abbrev.subject")

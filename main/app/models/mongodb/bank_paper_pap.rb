@@ -15,6 +15,7 @@ class Mongodb::BankPaperPap
   scope :by_province, ->(province) { where(province: province) if province.present? }
   scope :by_city, ->(city) { where(city: city) if city.present? }
   scope :by_district, ->(district) { where(district: district) if district.present? }
+  scope :by_tenant, ->(t_uid){ where(tenant_uid: t_uid) if t_uid.present? }
 
   #validates :caption, :region, :school,:chapter,length: {maximum: 200}
   #validates :subject, :type, :version,:grade, :purpose, :levelword, length: {maximum: 50}
