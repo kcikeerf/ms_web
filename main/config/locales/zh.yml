@@ -1,3 +1,6 @@
+# -*- coding: UTF-8 -*-
+#
+
 zh:
   common:
     none: "无"
@@ -374,7 +377,7 @@ zh:
     2016_nian: "2016年"
     #性别
     nan: "男"
-    nv: "女"
+    n̈u: "女"
 
   tenants:
     type: "租户类型"
