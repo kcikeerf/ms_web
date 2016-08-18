@@ -46,7 +46,7 @@ class Mongodb::BankQizpointQzp
        self.answer = params[:answer] || ""
        self.desc = params[:desc] || ""
        self.score = params[:score] || 0.00
-       self.order = (params[:order] || '0').ljust(Common::Paper::Constants::OrderWidth, '0')
+       self.order = params[:order] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
        self.save!
      rescue Exception => ex
        return false
