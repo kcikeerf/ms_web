@@ -23,7 +23,7 @@ class AnalyzersController < ApplicationController
     subject_arr = paper_data.map(&:subject).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::SubjectOrder[a.nil?? "":a.to_sym],Common::Locale::SubjectOrder[b.nil?? "":b.to_sym]) }
     @subjects = deal_label('dict', subject_arr)
 
-    grade_arr = paper_data.map(&:grade).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::GradeOrder[a.nil?? "":a.to_sym],Common::Locale::GradeOrder[b.nil?? "":b.to_sym]) }
+    grade_arr = paper_data.map(&:grade).uniq.sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.nil?? "":a.to_sym],Common::Grade::Order[b.nil?? "":b.to_sym]) }
     @grades = deal_label('dict', grade_arr)
  
     status_arr = paper_data.map(&:paper_status).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::StatusOrder[a.nil?? "":a.to_sym],Common::Locale::StatusOrder[b.nil?? "":b.to_sym]) }

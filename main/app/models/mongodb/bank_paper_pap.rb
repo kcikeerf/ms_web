@@ -745,7 +745,7 @@ class Mongodb::BankPaperPap
         :grade => cells[:grade],
         :classroom => cells[:classroom],
         :subject => self.subject,
-        :sex => cells[:sex],
+        :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
         :user_name => format_user_name([loc.school_number,cells[:stu_number]])
       }
       user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)

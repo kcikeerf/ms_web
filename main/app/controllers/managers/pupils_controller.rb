@@ -12,8 +12,11 @@ class Managers::PupilsController < ApplicationController
     @data = {name: I18n.t("dict.pupil"), path: '/managers/pupils'}
     @pupils = Pupil.get_list params
 
-    # 学科列表
-    @subject_list = Common::Subject::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
+    # 性别列表
+    @sex_list = Common::Locale::SexList.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
+    
+    # 年级列表
+    @grade_list = Common::Grade::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
 
     # 班级列表
     @class_room_list = Common::Klass::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
