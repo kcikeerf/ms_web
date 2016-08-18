@@ -8,11 +8,15 @@ class TenantAdministratorsController < ApplicationController
   end
 
   def my_analyzer
-  	@analyzers =Analyzer.by_tenant(@tenant_uid).get_list params
+  	@analyzers =Analyzer.by_tenant(@tenant_uid)
+      .by_keyword(params[:keyword])
+      .get_list params
   end
 
   def my_teacher
-  	@teachers =Teacher.by_tenant(@tenant_uid).get_list params
+  	@teachers =Teacher.by_tenant(@tenant_uid)
+      .by_keyword(params[:keyword])
+      .get_list params
   end
 
   def my_paper

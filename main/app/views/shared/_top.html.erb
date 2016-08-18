@@ -12,6 +12,9 @@
             <img class="zy-logo" alt="知引" src="<%= image_url('logo-1.png') %>" >
           </a>
         </div>
+        <div class="zy-tenant-title-field ">
+          <%= current_tenant.nil?? "":current_tenant.name_cn%>
+        </div>
         <nav role="navigation" class="zy-navbar-nav">
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
