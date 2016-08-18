@@ -28,6 +28,7 @@ class Mongodb::BankQizpointScore
   field :pup_uid, type: String #pupil id
   field :pap_uid, type: String #paper id
   field :qzp_uid, type: String #qizpoint id
+  field :tenant_uid, type: String #tenant id
   field :order, type: String #qizpoint order
   field :real_score, type: Float #real score
   field :full_score, type: Float

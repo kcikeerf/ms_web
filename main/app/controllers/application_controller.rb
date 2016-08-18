@@ -63,6 +63,16 @@ class ApplicationController < ActionController::Base
     render 'errors/403', status: 403,  layout: 'error'
   end
   
+  def current_tenant
+    tenant = nil
+    if current_user.is_pupil?
+      tenant = current_user.role_obj.location.tenant
+    else
+      tenant = current_user.role_obj.tenant
+    end
+    tenant
+  end
+    
   ########
   #override devise after login path
   def after_sign_in_path_for(resource)

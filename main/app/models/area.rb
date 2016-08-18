@@ -62,6 +62,19 @@ class Area < ActiveRecord::Base
     Area.where("rid = ?", rid).first
   end
 
+  def self.get_area params
+    name_pinyin = "zhong_guo"
+    if params[:district]
+      name_pinyin = Common::Local::hanzi2pinyin(params[:district])
+    elsif params[:city]
+      name_pinyin = Common::Local::hanzi2pinyin(params[:city])
+    elsif params[:province_rid]
+      name_pinyin = Common::Local::hanzi2pinyin(params[:province])
+    end
+    result = Area.where(:name => name_pinyin).first
+    return result
+  end  
+
   def self.get_area_uid_rid params
     areaUid = ""
     areaRid = ""
