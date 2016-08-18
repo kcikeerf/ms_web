@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160818135020) do
+ActiveRecord::Schema.define(version: 20160818150326) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(version: 20160818135020) do
     t.datetime "dt_add"
     t.datetime "dt_update"
     t.string   "sort",       limit: 255
+    t.string   "category",   limit: 255
   end
 
   add_index "bank_subject_checkpoint_ckps", ["subject"], name: "ckp_subject", using: :btree

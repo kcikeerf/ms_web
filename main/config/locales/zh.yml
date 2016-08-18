@@ -20,6 +20,11 @@ zh:
         total: "能力总分"
     dialog:
       title: "指标体系设置"
+    subject:
+      category:
+        xiao_xue: "小学"
+        chu_zhong: "初中"
+        gao_zhong: "高中"
   images:
     errors:
       invalid_size: "图片文件大小超过300KB"
