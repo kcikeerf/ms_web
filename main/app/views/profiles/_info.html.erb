@@ -24,18 +24,18 @@
 <% end %>
 <% unless current_user.is_analyzer? %>
 	<div class="form-group">
-		<label class="control-label"><%= I18n.t("dict.school") %></label>
-		<%= current_user.role_obj.school %>
+		<label class="control-label"><%= I18n.t("dict.tenant") %></label>
+		<%= current_tenant.nil?? "": current_tenant.name_cn %>
 	</div>
 <% end %>
 
 <div class="form-group">
-	<label class="control-label"><%= I18n.t("dict.school") %></label>
+	<label class="control-label"><%= I18n.t("activerecord.attributes.user.phone") %></label>
 	<%= current_user.phone %>
 </div>
 <% if current_user.is_teacher? %>
 	<div class="form-group">
-		<label class="control-label"><%= I18n.t("activerecord.attributes.user.phone") %></label>
+		<label class="control-label"><%= I18n.t("activerecord.attributes.user.qq") %></label>
 		<%= current_user.qq %>
 	</div>
 <% end %>
