@@ -21,6 +21,7 @@
   }
   .navbar-nav {
     > li {
+      margin: 0 $padding-base;
       > a {
         padding: $padding-base $padding-lg;
         line-height: $navbar-height-base - ( 2 * $padding-base );
@@ -35,7 +36,8 @@
         }
       }
       > a.btn {
-        margin: $padding-lg 0;
+        border: none;
+        margin: $padding-lg $padding-base;
         line-height: $navbar-height-base - (2 * $padding-lg) - (2 * $btn-padding-base-vertical);
         padding: $btn-padding-base-vertical $btn-padding-base-horizontal;
       }
@@ -46,8 +48,19 @@
           display: none;
         }
       }
+      > button.zy-btn-login {
+        border: none;
+        color: #fff;
+        background-color: $color-main;
+        margin: $padding-lg 0;
+        line-height: $navbar-height-base - (2 * $padding-lg) - (2 * $btn-padding-base-vertical);
+        padding: $btn-padding-base-vertical $btn-padding-base-horizontal;
+        @media screen and (max-width: 768px) {
+          display: none;
+        }
+      }
       > button.zy-btn-user {
-        font-size: 24px;
+        font-size: 20px;
         color: #727272;
         background: none;
         background-color: transparent;
