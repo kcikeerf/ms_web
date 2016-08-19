@@ -1034,12 +1034,12 @@ var echartOption = {
                     }],
                     yAxis: [{
                         type: 'category',
-                        data: data.xaxis,
                         axisLabel: {
                             textStyle: {
                                 fontSize: 16
                             }
                         },
+                        data: data.xaxis,
                     }],
                     series: data.series,
                     color: data.colorArr,
@@ -1056,73 +1056,36 @@ var echartOption = {
                         trigger: 'item',
                     },
                     legend: {
-                        right: '0',
-                        orient: 'vertical',
-                        itemWidth: 23,
-                        itemHeight: 8,
+                        right: 10,
                         data: data.normNameArr,
                         textStyle: {
                             fontSize: 16
                         }
                     },
                     grid: {
-                        left: '0',
-                        right: '20%',
-                        top: '3%',
-                        bottom: '3%',
+                        left: 20,
+                        right: 20,
+                        bottom: 10,
                         containLabel: true,
                     },
                     xAxis: [{
-                        type: 'category',
-                        boundaryGap: false,
-                        axisTick: {
-                            show: false
-                        },
-                        data: data.xAxis,
-                        axisLine: {
-                            lineStyle: {
-                                color: '#cacaca',
-                                shadowColor: '#cacaca',
-                                shadowOffsetX: 0,
-                                shadowOffsetY: 2
-                            }
-                        },
+                        type: 'value',
                         axisLabel: {
-                            interval: 0,
                             textStyle: {
                                 fontSize: 16
                             }
                         },
-                        splitLine: {
-                            lineStyle: {
-                                color: ['#efefef']
-                            }
-                        },
                     }],
                     yAxis: [{
-                        type: 'value',
-                        axisLine: {
-                            lineStyle: {
-                                color: '#828282',
-                                width: 1,
-                            }
-                        },
-                        axisTick: {
-                            show: false
-                        },
-                        splitLine: {
-                            lineStyle: {
-                                color: ['#efefef'],
-                                type: 'dashed'
-                            }
-                        },
-                        splitNumber: 10,
+                        type: 'category',
                         axisLabel: {
-                            show: true
+                            textStyle: {
+                                fontSize: 16
+                            }
                         },
+                        data: data.xAxis,
                     }],
                     series: data.pupil_percent,
-                    color: data.colorArr,
                     animation: false,
                 };
             },
