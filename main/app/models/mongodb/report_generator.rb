@@ -2221,10 +2221,10 @@ class Mongodb::ReportGenerator
       next unless 
       # search current level checkpoint
       dimesion = ckp.dimesion
-      lv1_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+      lv1_ckp = ckp.class.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
       lv1_ckp_label = lv1_ckp.checkpoint
       lv1_ckp_order = lv1_ckp.nil?? "":lv1_ckp.sort
-      lv2_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
+      lv2_ckp = ckp.class.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
       lv2_ckp_label = lv2_ckp.checkpoint
       lv2_ckp_order = lv2_ckp.nil?? "":lv2_ckp.sort
 

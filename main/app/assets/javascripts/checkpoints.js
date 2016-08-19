@@ -32,8 +32,8 @@ $(document).on('ready page:load', function (){
 		  	if(!$("#skill_tree").children().length){
 		  		$.ajax({
 					type:"GET",
-					url:"/node_structures/get_ckp_data",
-					data:{'node_uid':$nodeUid},
+					url:"/checkpoints/get_ckp_data",
+					data:{'node_uid':$nodeUid},//咱不做更改，只是用此参数
 					async:true,
 					success:function(data){
 						uncheck(data);
@@ -164,7 +164,12 @@ $(document).on('ready page:load', function (){
 		var nodes_knowledge = treeObj_knowledge.getCheckedNodes(true);
 		var knowledge_len = nodes_knowledge.length;
 		for(var i=0;i<knowledge_len;i++){
-			var str = {"dimesion":""+nodes_knowledge[i].dimesion+"","checkpoint":""+nodes_knowledge[i].checkpoint+"","uid":""+nodes_knowledge[i].uid+""};
+			var str = {
+				"dimesion":"" + nodes_knowledge[i].dimesion + "", 
+			    "checkpoint":""+nodes_knowledge[i].checkpoint+"",
+			    "uid":""+nodes_knowledge[i].uid+"",
+			    "ckp_source": ""+nodes_knowledge[i].ckp_source+""
+			};
 			dataStr.push(str);
 		}
 		//技能
@@ -174,7 +179,12 @@ $(document).on('ready page:load', function (){
 		var nodes_skill = treeObj_skill.getCheckedNodes(true);    
 		var skill_len = nodes_skill.length;
 		for(var i = 0 ;i<skill_len;i++){
-			var str = {"dimesion":""+nodes_skill[i].dimesion+"","checkpoint":""+nodes_skill[i].checkpoint+"","uid":""+nodes_skill[i].uid+""};
+			var str = {
+				"dimesion":""+nodes_skill[i].dimesion+"",
+				"checkpoint":""+nodes_skill[i].checkpoint+"",
+				"uid":""+nodes_skill[i].uid+"",
+				"ckp_source": ""+nodes_knowledge[i].ckp_source+""
+			};
 			dataStr.push(str);
 		}
 		//能力
@@ -184,7 +194,12 @@ $(document).on('ready page:load', function (){
 		var nodes_ability = treeObj_ability.getCheckedNodes(true); 
 		var ability_len = nodes_ability.length;
 		for(var i = 0 ;i<ability_len;i++){
-			var str = {"dimesion":""+nodes_ability[i].dimesion+"","checkpoint":""+nodes_ability[i].checkpoint+"","uid":""+nodes_ability[i].uid+""};
+			var str = {
+				"dimesion":""+nodes_ability[i].dimesion+"",
+				"checkpoint":""+nodes_ability[i].checkpoint+"",
+				"uid":""+nodes_ability[i].uid+"",
+				"ckp_source": ""+nodes_knowledge[i].ckp_source+""
+			};
 			dataStr.push(str);
 		}
 		var dataStr_len = dataStr.length;

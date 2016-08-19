@@ -55,7 +55,8 @@ class Mongodb::BankPaperPap
   field :area_uid, type: String
 
   field :paper_json, type: String
-  field :ckp_type, type: String
+  #
+#  field :ckp_source_type, type: String
   #field :paper_saved_json, type: String
   #field :paper_analyzed_json, type: String
   field :analyze_json, type: String
@@ -281,7 +282,7 @@ class Mongodb::BankPaperPap
         levels = [*1..Common::Report::CheckPoints::Levels]
         levels.each{|lv|
           # search current level checkpoint
-          lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+          lv_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
 
           temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
           result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] = temp_arr
@@ -299,30 +300,30 @@ class Mongodb::BankPaperPap
   #
   # 
   #
-  def get_pap_ckp_ancestors
-    result = {
-      :knowledge => {},
-      :skill => {},
-      :ability => {}
-    }
-    qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
-    qzpoints.each{|qzp|
-      qzp.bank_checkpoint_ckps.each{|ckp|
-        next unless ckp
-        # search current level checkpoint
-        lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
-        lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
+  # def get_pap_ckp_ancestors
+  #   result = {
+  #     :knowledge => {},
+  #     :skill => {},
+  #     :ability => {}
+  #   }
+  #   qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
+  #   qzpoints.each{|qzp|
+  #     qzp.bank_checkpoint_ckps.each{|ckp|
+  #       next unless ckp
+  #       # search current level checkpoint
+  #       lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+  #       lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
 
-        result[ckp.dimesion.to_sym]
+  #       result[ckp.dimesion.to_sym]
 
-        lv1_temph = result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym] || {}
-        result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym] = lv1_temph
-        result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym][lv2_ckp.checkpoint.to_sym] = {}
+  #       lv1_temph = result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym] || {}
+  #       result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym] = lv1_temph
+  #       result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym][lv2_ckp.checkpoint.to_sym] = {}
 
-      }
-    }
-    return result
-  end
+  #     }
+  #   }
+  #   return result
+  # end
 
   #
   # used for report
@@ -804,8 +805,8 @@ class Mongodb::BankPaperPap
         ckps = qizpoint.bank_checkpoint_ckps
         ckps.each{|ckp|
           next unless ckp
-          lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-          lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          lv1_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+          lv2_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
           param_h[:dimesion] = ckp.dimesion
           param_h[:lv1_uid] = lv1_ckp.uid
           param_h[:lv1_ckp] = lv1_ckp.checkpoint

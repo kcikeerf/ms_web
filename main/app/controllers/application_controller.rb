@@ -63,6 +63,7 @@ class ApplicationController < ActionController::Base
     render 'errors/403', status: 403,  layout: 'error'
   end
   
+  #use in controller
   def current_tenant
     tenant = nil
     if current_user.is_pupil?

@@ -158,6 +158,7 @@ namespace :swtk do
 
   end
 
+  #针对默认类型指标
   desc "import checkpoints, temporary use"
   task :read_checkpoint,[:file_path,:node_uid,:dimesion]=> :environment do |t, args|
     if args[:file_path].nil? ||  args[:node_uid].nil? || args[:dimesion].nil?

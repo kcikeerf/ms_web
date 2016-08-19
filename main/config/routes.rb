@@ -116,6 +116,7 @@ Rails.application.routes.draw do
 #      post 'update_node'
 #      post 'delete_node'
       get 'dimesion_tree'
+      get 'get_ckp_data' 
     end
   end
   

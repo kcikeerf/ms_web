@@ -65,9 +65,21 @@ class BankNodestructure < ActiveRecord::Base
 
   end
 
-  # 判断指标是否使用科目指标体系
-  def judge_subject_ckp?
-    bank_nodestructure_subject_ckps.size > 0 ? true : false
+  # # 判断指标是否使用科目指标体系
+  # def judge_subject_ckp?
+  #   bank_nodestructure_subject_ckps.size > 0 ? true : false
+  # end
+
+  def self.get_subject_category target_grade
+    result = nil
+    if Common::Grade::XiaoXue.include? target_grade
+      result = Common::CheckpointCkp::SubjectCkpCategory::XiaoXue
+    elsif Common::Grade::ChuZhong.include? target_grade
+      result = Common::CheckpointCkp::SubjectCkpCategory::ChuZhong
+    elsif Common::Grade::GaoZhong.include? target_grade
+      result = Common::CheckpointCkp::SubjectCkpCategory::GaoZhong
+    end
+    return result   
   end
 
   def add_ckps(ckps)

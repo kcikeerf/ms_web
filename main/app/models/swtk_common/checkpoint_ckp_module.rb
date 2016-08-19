@@ -3,6 +3,8 @@ module CheckpointCkpModule
     module_function
     TYPE = %w{knowledge skill ability}
 
+    LevelArr = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10,100]]
+
     ReservedCkpRid = {
       :knowledge => {
           :total => { :label => I18n.t("checkpoints.label.knowledge.total"), :rid => "-1"}
@@ -40,11 +42,16 @@ module CheckpointCkpModule
       }
     }
 
-    SubjectCkpCategory = {
-      :xiao_xue => I18n.t("checkpoints.subject.category.xiao_xue"),
-      :chu_zhong => I18n.t("checkpoints.subject.category.chu_zhong"),
-      :gao_zhong => I18n.t("checkpoints.subject.category.gao_zhong")
-    }
+    module CkpSource
+      Default = "BankCheckpointCkp"
+      SubjectCkp = "BankSubjectCheckpointCkp"
+    end
+
+    module SubjectCkpCategory
+      XiaoXue = "xiao_xue"
+      ChuZhong = "chu_zhong"
+      GaoZhong = "gao_zhong"
+    end
 
     def ckp_types_loop(&block)
       nodes = {}
