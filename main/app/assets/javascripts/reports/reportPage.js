@@ -917,8 +917,8 @@ var reportPage = {
 		},
 
         handleClassPupilNum : function(obj){
-			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(reportPage.baseFn.getArrayValue(obj.good_pupil_percent)[0])));
-			var classNameArr = reportPage.baseFn.getArrayKeys(obj.good_pupil_percent);
+			var normkeyArr = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(reportPage.baseFn.getArrayValue(obj.good_pupil_percent)[0])));
+			var classNameArr = reportPage.baseFn.getArrayKeysNoModify(obj.good_pupil_percent);
 			var normNum = normkeyArr.length;
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -931,19 +931,19 @@ var reportPage = {
 					xaxis : classNameArr,
 					colorArr:colorArr,
 					normNameArr:normNameArr,
-					series : reportPage.Grade.handleNorm(obj.excellent_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
+					series : reportPage.Grade.handleCheckpointNorm(obj.excellent_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
 				},
 				good_pupil_percent : {
 					xaxis : classNameArr,
 					colorArr:colorArr,
 					normNameArr:normNameArr,
-					series : reportPage.Grade.handleNorm(obj.good_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
+					series : reportPage.Grade.handleCheckpointNorm(obj.good_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
 				},
 				failed_pupil_percent : {
 					xaxis : classNameArr,
 					colorArr:colorArr,
 					normNameArr:normNameArr,
-					series : reportPage.Grade.handleNorm(obj.failed_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
+					series : reportPage.Grade.handleCheckpointNorm(obj.failed_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
 				}
 			};
 		},
