@@ -337,8 +337,41 @@ class BankCheckpointCkp < ActiveRecord::Base
       advice: advice,
       desc: desc,
       sort: sort,
+      ckp_source: Common::CheckpointCkp::CkpSource::Default,
       nocheck: is_entity^1
     }
+  end
+
+  # 判断使用何种指标
+  def self.judge_ckp_source params
+    result = nil
+    target_subject, target_category = self.get_subject_ckp_params params
+    
+    subject_ckp = BankSubjectCheckpointCkp.where({
+        :subject => target_subject,
+        :category => target_category
+    }).first
+    return BankSubjectCheckpointCkp unless subject_ckp.blank?
+
+    node_ckp = BankCheckpointCkp.where({:node_uid => params[:node_uid]}).first
+    return BankCheckpointCkp unless node_ckp.blank?
+    return result
+  end
+
+  def self.get_subject_ckp_params params
+    target_subject = nil
+    target_category = nil
+
+    if params[:subject] && params[:grade]
+      target_subject = params[:subject]
+      target_category = params[:grade]
+    elsif params[:node_uid]
+      node = BankNodestructure.where(:uid => params[:node_uid]).first
+      target_subject = node.subject if node
+      target_category = BankNodestructure.get_subject_category(node.grade) if node
+    end
+
+    return target_subject,target_category
   end
 
   private

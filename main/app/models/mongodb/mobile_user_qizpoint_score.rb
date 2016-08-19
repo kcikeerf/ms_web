@@ -69,8 +69,8 @@ class Mongodb::MobileUserQizpointScore
       ckps = qizpoint.bank_checkpoint_ckps
       ckps.each{|ckp|
         next unless ckp
-        lv1_ckp = BankCheckpointCkp.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-        lv2_ckp = BankCheckpointCkp.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+        lv1_ckp = ckp.class.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+        lv2_ckp = ckp.class.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
         param_h[:dimesion] = ckp.dimesion
         param_h[:lv1_ckp] = lv1_ckp.checkpoint
         param_h[:lv2_ckp] = lv2_ckp.checkpoint

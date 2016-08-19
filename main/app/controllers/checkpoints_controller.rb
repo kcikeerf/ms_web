@@ -70,4 +70,11 @@ class CheckpointsController < ApplicationController
     params.permit!
     render :layout => "ztree"
   end
+
+  def get_ckp_data
+    params.permit!
+    ckp_model = BankCheckpointCkp.judge_ckp_source params
+    ckp_data = ckp_model.nil?? [] : ckp_model.get_web_ckps(params)
+    render json: ckp_data.to_json
+  end
 end

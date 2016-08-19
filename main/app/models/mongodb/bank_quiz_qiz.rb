@@ -113,7 +113,7 @@ class Mongodb::BankQuizQiz
   def save_qzp_all_ckps qiz_point, params
     params["bank_checkpoints_ckps"].each{|bcc|
       ckp = Mongodb::BankCkpQzp.new
-      ckp.save_ckp_qzp qiz_point._id.to_s, bcc["uid"]
+      ckp.save_ckp_qzp qiz_point._id.to_s, bcc["uid"], bcc["ckp_source"]
     }
   end
 
