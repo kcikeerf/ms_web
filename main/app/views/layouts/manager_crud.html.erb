@@ -2,9 +2,10 @@
 	<h2><%= @data[:name] %></h2>
 	<div style="margin:20px 0;"></div>
 	<div id="tb">
-<% unless ["teachers", "pupils"].include? controller_name %>
+<% unless ["roles","permissions","teachers", "pupils"].include? controller_name %>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');">增加</a> 
 <% end %>
+<% unless ["roles","permissions"].include? controller_name %>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="
 <% if ["tenants", "analyzers", "teachers"].include? controller_name %>
         editObjWithArea('<%= @data[:path] %>/')
@@ -13,6 +14,7 @@
 <% end %>
 		">编辑</a>  
 		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroy('<%= @data[:path] %>/')">删除</a>
+<% end %>
 	</div>  
 	<!-- singleSelect:true, 当行选择-->
 	<table id='dg' class="easyui-datagrid" title="<%= @data[:name] %>列表" style="width:98%;height:550px"

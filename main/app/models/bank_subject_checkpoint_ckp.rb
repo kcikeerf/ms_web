@@ -72,8 +72,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     end
 
     #后台指标读取
-    def get_all_ckps(subject, str_pid='')
-      Common::CheckpointCkp.ckp_types_loop {|dimesion| get_all_ckps_by_dimesion(subject, dimesion, str_pid) }
+    def get_all_ckps(subject, xue_duan, str_pid='')
+      Common::CheckpointCkp.ckp_types_loop {|dimesion| get_all_ckps_by_dimesion(subject, xue_duan, dimesion, str_pid) }
     end
 
     # get all nodes include pid
@@ -81,11 +81,11 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     # str_pid: parent rid
     # node_uid: node structure uid
     # dimesion
-    def get_all_ckps_by_dimesion(subject, dimesion, str_pid='')
+    def get_all_ckps_by_dimesion(subject, xue_duan, dimesion, str_pid='')
       result = {pid: str_pid, nodes: []}
       return result if (subject.blank? || dimesion.blank?)
       
-      ckps = where(subject: subject, dimesion: dimesion)
+      ckps = where(subject: subject,category: xue_duan, dimesion: dimesion)
       unless str_pid.blank?
 	      ckp = ckps.find_by(uid: str_pid)
 	      ckps = ckp ? ckp.children : []
@@ -102,18 +102,19 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     #
     def save_ckp params
     	subject = params[:subject]
-    	return nil if subject.blank?
+    	return nil if subject.blank? || params[:category].blank?
 
     	target_objs = where(subject: subject)
     	new_rid = BankRid.get_new_rid target_objs, params[:str_pid]
 
     	new_ckp = self.new(dimesion: params[:dimesion], 
     		rid: new_rid, 
-    		subject: subject, 
+    		subject: subject,
+        category: params[:category],
     		checkpoint: params[:checkpoint], 
     		desc: params[:desc],
         advice: params[:desc],
-        sort: params[:sort],
+        sort: new_rid,
     		is_entity: true)                 
 
     	rid_len = new_rid.size
@@ -167,7 +168,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   #
   #
   def update_ckp params
-    ckp_hash = params.extract!(:checkpoint, :desc, :advice, :sort)
+    ckp_hash = params.extract!(:checkpoint, :desc, :advice, :weights)
   	update(ckp_hash)
 
   	return organization_hash

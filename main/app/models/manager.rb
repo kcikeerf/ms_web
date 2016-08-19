@@ -34,8 +34,8 @@ class Manager < ActiveRecord::Base
       {
         id: 2, icon: 'icon-sys', name: '指标体系',
         menus: [
-          {id: 21, name: I18n.t("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
-          {id: 22, name: I18n.t("managers.menus.zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/checkpoints'},
+          # {id: 21, name: I18n.t("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
+          # {id: 22, name: I18n.t("managers.menus.zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/checkpoints'},
           {id: 23, name: I18n.t("managers.menus.ke_mu_zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/subject_checkpoints'}
         ]
       }

@@ -8,6 +8,11 @@ Rails.application.routes.draw do
   namespace :managers do
     root 'mains#index'
 
+
+    concern :destroy_all do
+      delete 'destroy_all', on: :collection
+    end  
+
     resources :mains do    
       get 'navigation'
     end
@@ -21,7 +26,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :subject_checkpoints do    
+    resources :subject_checkpoints, concerns: :destroy_all do    
       collection do   
         post '/:id/move_node', action: :move_node, as: 'move_node'
         get 'list'
@@ -30,10 +35,6 @@ Rails.application.routes.draw do
         post 'import_ckp_file'
       end
     end
-
-    concern :destroy_all do
-      delete 'destroy_all', on: :collection
-    end  
 
     resources :roles, concerns: :destroy_all do
       resources :role_permissions, concerns: :destroy_all 
@@ -84,7 +85,7 @@ Rails.application.routes.draw do
       get 'get_units'
       get 'get_catalogs_and_tree_data'
       get 'get_ckp_data' 
-      get 'get_tree_data_by_subject' 
+      # get 'get_tree_data_by_subject' 
       get 'get_ckp_data_by_volume_catalog'
    end
   end
@@ -116,7 +117,8 @@ Rails.application.routes.draw do
 #      post 'update_node'
 #      post 'delete_node'
       get 'dimesion_tree'
-      get 'get_ckp_data' 
+      get 'get_ckp_data'
+      get 'get_tree_data_by_subject'
     end
   end
   

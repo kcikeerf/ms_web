@@ -7,7 +7,10 @@ class Managers::SubjectCheckpointsController < ApplicationController
   # before_action :authenticate_manager
 
   def index
-    @subjects = BankDicQuizSubject.pluck(:desc, :subject)
+    # 学科列表
+    @subject_list = Common::Subject::List.map{|k,v| [v,k.to_s]}
+    # 学段列表
+    @xue_duan_list = Common::Grade::XueDuanList.map{|k,v| [v,k.to_s]}
   end
 
   def create
@@ -33,8 +36,28 @@ class Managers::SubjectCheckpointsController < ApplicationController
   end
 
   def destroy
+    params.permit!()
     @checkpoint.destroy if @checkpoint
     render json: response_json(200)
+  end
+
+  def destroy_all
+    params.permit(:uid, :authenticity_token)
+
+    status = 403
+    data = {:status => 403 }
+
+    begin
+      target_ckps = BankSubjectCheckpointCkp.where(:uid=> params[:uid])
+      target_ckps.destroy_all
+      status = 200
+      data = {:status => "200"}
+    rescue Exception => ex
+      status = 500
+      data = {:status => 500, :message => ex.message}
+    end
+
+    render common_json_response(status, data) 
   end
 
   def move_node
@@ -89,7 +112,19 @@ class Managers::SubjectCheckpointsController < ApplicationController
   end
 
   def checkpoint_params
-    params.permit(:id, :subject, :str_pid, :dimesion, :checkpoint, :sort, :desc, :advice, :str_uid, :is_entity)
+    params.permit(
+      :id, 
+      :subject, 
+      :str_pid, 
+      :dimesion, 
+      :checkpoint,
+      :weights,
+      :sort, 
+      :desc, 
+      :advice, 
+      :str_uid, 
+      :is_entity, 
+      :category)
   end
 
   def select_checked(ckps, uids)
