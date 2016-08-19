@@ -31,6 +31,12 @@ module GradeModule
       :gao_san_nian_ji => I18n.t("dict.gao_san_nian_ji")
     }
 
+    XueDuanList = {
+      :xiao_xue => I18n.t("checkpoints.subject.category.xiao_xue"),
+      :chu_zhong => I18n.t("checkpoints.subject.category.chu_zhong"),
+      :gao_zhong => I18n.t("checkpoints.subject.category.gao_zhong")
+    }
+
     XiaoXue = ["yi_nian_ji", "er_nian_ji", "san_nian_ji", "si_nian_ji", "wu_nian_ji", "liu_nian_ji"]
     ChuZhong = ["qi_nian_ji", "ba_nian_ji", "jiu_nian_ji"]
     GaoZhong = ["gao_yi_nian_ji", "gao_er_nian_ji", "gao_san_nian_ji"]

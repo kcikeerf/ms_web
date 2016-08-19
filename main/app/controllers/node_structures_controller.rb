@@ -29,13 +29,6 @@ class NodeStructuresController < ApplicationController
     render json: ckp_data.to_json
   end
 
-  #根据科目读取指标
-  def get_tree_data_by_subject
-    subject = params[:subject]
-    ckp_data = BankSubjectCheckpointCkp.get_all_ckps(subject)
-    render json: ckp_data.to_json
-  end
-
   #获取教材或者目录指标(type为catalog时读取单个目录指标)
   def get_ckp_data_by_volume_catalog
     is_catalog = params[:type] == 'catalog'

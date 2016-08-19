@@ -77,4 +77,12 @@ class CheckpointsController < ApplicationController
     ckp_data = ckp_model.nil?? [] : ckp_model.get_web_ckps(params)
     render json: ckp_data.to_json
   end
+
+  #根据科目读取指标
+  def get_tree_data_by_subject
+    params.permit!
+
+    ckp_data = BankSubjectCheckpointCkp.get_all_ckps(params[:subject], params[:xue_duan])
+    render json: ckp_data.to_json
+  end
 end

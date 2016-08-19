@@ -16,6 +16,7 @@
 <% end %>
 <script type="text/javascript">
 	function formatOper(val,row,index){  
-	  return '<a href="<%= @data[:path] %>/'+row["id"]+'">查看权限</a> <a href="<%= @data[:path] %>/'+row["id"]+'/role_permissions/new">添加权限</a>';  
+	  // return '<a href="<%= @data[:path] %>/'+row["id"]+'">查看权限</a> <a href="<%= @data[:path] %>/'+row["id"]+'/role_permissions/new">添加权限</a>';  
+	  return '<a href="<%= @data[:path] %>/'+row["id"]+'">查看权限</a>';  
 	} 
 </script>
