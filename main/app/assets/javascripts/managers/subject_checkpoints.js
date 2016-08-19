@@ -53,6 +53,7 @@ var setting = {
 		    $('#dlg').dialog('open');
 		    $('.dimesion').val(treeNode.dimesion);
 		    $('.str_pid').val(treeNode.rid);
+            $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
 		   	$("#save").on('click',function(){
 		   			$.post('/managers/subject_checkpoints', $("#fm").serialize(), function(data){
 			   		 	if(data.status == 200){
@@ -80,7 +81,9 @@ var setting = {
 			$.ajax({
 				async: false,
 				type:"delete",
-				url:"/managers/subject_checkpoints/"+treeNode.uid,
+				url:"/managers/subject_checkpoints/destroy_all",
+                data: {uid: treeNode.uid, authenticity_token: $('meta[name="csrf-token"]')[0].content},
+                dataType: 'json',
 				success:function(data){
 					if(data.status == 200){
 						isOk = true;
@@ -92,6 +95,7 @@ var setting = {
 					isOk = false;
 				}
 			})
+
 			return isOk;
 		}
 		return false;		
@@ -119,6 +123,7 @@ var setting = {
 		$('#save').on('click',function(){
 			var nodeName = $('.checkpoint').val();
 			var _this = $(this);
+            $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
 			$.ajax({
 				type:"put",
 				url:"/managers/subject_checkpoints/"+treeNode.uid,
@@ -169,41 +174,28 @@ var setting = {
 	}
 
 	//读取指标
-  function get_tree_data(subject){
+  function get_tree_data(subject, xue_duan){
 		if(subject == ''){
 			init_tree(null, null, null);
 			$('#file_upload').hide();
 		}else{
-			$.get('/node_structures/get_tree_data_by_subject',{subject: subject},function(data){
+			$.get('/checkpoints/get_tree_data_by_subject',{subject: subject, xue_duan: xue_duan},function(data){
 				var zNodes_knowledge = data.knowledge.nodes;
 				var zNodes_skill = data.skill.nodes;
 				var zNodes_ability = data.ability.nodes;
-				init_tree(zNodes_knowledge, zNodes_skill, zNodes_ability);
+				
 
 				$('.subject').val(subject);
-				$('#file_upload').show();
+                $('.category').val(xue_duan);
+				if(zNodes_knowledge.length <= 1){
+					init_tree(null, null, null);
+					$('#file_upload').show();
+			    } else {
+					init_tree(zNodes_knowledge, zNodes_skill, zNodes_ability);
+					$('#file_upload').hide();
+			    }
 			})
 		}
-	}
-
-	//读取科目、教材指标
-  function get_subject_volume_tree_data(subject, node_structure_uid){	
-		$.get('/managers/subject_checkpoints/get_subject_volume_ckps',{node_structure_uid: node_structure_uid, subject: subject},function(data){
-			var zNodes_knowledge = data.knowledge;
-			var zNodes_skill = data.skill;
-			var zNodes_ability = data.ability;
-			init_tree(zNodes_knowledge, zNodes_skill, zNodes_ability);
-		});
-	}
-
-	//读取教材、目录指标
-  function get_volume_catalog_tree_data(node_structure_uid, node_catalog_uid){
-		$.get('/managers/subject_checkpoints/get_volume_catalog_ckps',{node_structure_uid: node_structure_uid, node_catalog_uid: node_catalog_uid},function(data){
-			var zNodes_knowledge = data.knowledge;
-			var zNodes_skill = data.skill;
-			var zNodes_ability = data.ability;
-			init_tree(zNodes_knowledge, zNodes_skill, zNodes_ability);
-		});
 	}
 
 	function init_tree(knowledge, skill, ability){
@@ -213,17 +205,21 @@ var setting = {
 	}
 
 	$(document).ready(function(){
-		var $subject = $('#subject');		
+		var subject = $('#subject');
+		var xue_duan = $('#xue_duan');	
 		
-		$subject.on('change',function(){
-			var subject = $(this).val();
-			get_tree_data(subject);
+		subject.on('change',function(){
+			get_tree_data(subject.val(), xue_duan.val());
+		});
+
+		xue_duan.on('change',function(){
+			get_tree_data(subject.val(), xue_duan.val());
 		});
 
 		$(document).on('click.ckp', '.save_button', function(){
-			var treeObj_knowledge = $.fn.zTree.getZTreeObj("knowledge_tree");
-      var treeObj_skill = $.fn.zTree.getZTreeObj("skill_tree");
-      var treeObj_ability = $.fn.zTree.getZTreeObj("ability_tree");
+            var treeObj_knowledge = $.fn.zTree.getZTreeObj("knowledge_tree");
+            var treeObj_skill = $.fn.zTree.getZTreeObj("skill_tree");
+            var treeObj_ability = $.fn.zTree.getZTreeObj("ability_tree");
 
 			var knowledge_nodes = treeObj_knowledge.getCheckedNodes(true);
 			var skill_nodes = treeObj_skill.getCheckedNodes(true);
@@ -239,7 +235,7 @@ var setting = {
 
 			if(node_uids.length > 0){
 				$.post(window.location.pathname + '/add_ckps', 
-					{id: (catalog_uid == '' ? node_structure_uid : catalog_uid), subject_checkpoint_ckp_uids: node_uids}, 
+					{id: (catalog_uid == '' ? node_structure_uid : catalog_uid), subject_checkpoint_ckp_uids: node_uids, authenticity_token: $( 'meta[name="csrf-token"]' ).attr( 'content' )}, 
 					function(data){
 						if(data.status == 200){
 							$.messager.alert({ 
