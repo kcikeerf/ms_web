@@ -30,5 +30,9 @@ module GradeModule
       :gao_er_nian_ji => I18n.t("dict.gao_er_nian_ji"),
       :gao_san_nian_ji => I18n.t("dict.gao_san_nian_ji")
     }
+
+    XiaoXue = ["yi_nian_ji", "er_nian_ji", "san_nian_ji", "si_nian_ji", "wu_nian_ji", "liu_nian_ji"]
+    ChuZhong = ["qi_nian_ji", "ba_nian_ji", "jiu_nian_ji"]
+    GaoZhong = ["gao_yi_nian_ji", "gao_er_nian_ji", "gao_san_nian_ji"]
   end
 end

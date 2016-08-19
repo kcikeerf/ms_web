@@ -15,46 +15,45 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 	class << self
 
     #前端获取指标
-    def get_web_ckps(node_uid, level_config=[[1], [2], [3], [4], [5,100]])
-      Common::CheckpointCkp.ckp_types_loop {|dimesion| get_ckps_by_dimesion(node_uid, dimesion, level_config) }
+    def get_web_ckps(params)
+      Common::CheckpointCkp.ckp_types_loop {|dimesion| get_ckps_by_dimesion(params, dimesion) }
     end
 
-		def get_ckps_by_dimesion(node_uid, dimesion, level_config)
+		def get_ckps_by_dimesion(params, dimesion)
+      level_config = Common::CheckpointCkp::LevelArr.clone
 			nodes = root_node(dimesion)
 			nodes[:children] = []
 
-			node_structure = BankNodestructure.find(node_uid)
-			all_nodes = node_structure.bank_subject_checkpoint_ckps.where(dimesion: dimesion)
+			# node_structure = BankNodestructure.find(node_uid)
+			#all_nodes = node_structure.bank_subject_checkpoint_ckps.where(dimesion: dimesion)
+      target_subject, target_category = BankCheckpointCkp.get_subject_ckp_params params
+      dim_all_nodes = self.where(:subject => target_subject, :category => target_category, :dimesion => dimesion)
 		
 			node_level_first = level_config.first
-			first_level_nodes = get_nodes_by_rid_length(all_nodes, node_level_first)
+			first_level_nodes = get_nodes_by_rid_length(dim_all_nodes, node_level_first)
 
 			level_config.delete(node_level_first)
-			first_level_nodes.each {|node| nodes[:children] << build_nodes(all_nodes, level_config, node) }
+			first_level_nodes.each {|node| nodes[:children] << build_nodes(dim_all_nodes, node, level_config) }
 
 			[nodes]
 		end
 
-		def build_nodes(nodes, level_config, old_node)
-			level_config = level_config.clone
+		def build_nodes(nodes, old_node, level_config)
+      lv_arr = level_config.clone
 			return_node = old_node.organization_hash
 			return_node[:children] = []
-			level_config.each do |l|
-        # p l
+			lv_arr.each do |l|
         next if (l.first - 1) * Common::SwtkConstants::CkpStep > old_node.rid.size
-        # need_nodes = get_nodes_by_rid_length(nodes, l).where("left(rid, ?) = ?", old_node.rid.size, old_node.rid)
-        # need_nodes = need_nodes.is_entity if l == level_config.last
+
         need_nodes = get_nodes_by_rid_length(nodes, l).select {|n| n.rid.match(/^#{old_node.rid}/) }
-        need_nodes = need_nodes.select{|n| n.is_entity } if l == level_config.last
-        
-        return return_node if need_nodes.blank?
-        
+        entity_arr = need_nodes.select{|n| n.is_entity }
+
         need_nodes.to_a.each do |node|
-        	level_config.delete(l)
-        	node_json = build_nodes(nodes, level_config, node)
-        	return_node[:children] << node_json
+          lv_arr.delete(l)
+        	node_h = build_nodes(nodes, node, lv_arr)
+        	return_node[:children] << node_h
         end
-        
+        return return_node if entity_arr.size == need_nodes.size  #退出，全是末级节点
       end
 	    return_node
 	  end
@@ -226,7 +225,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   		advice: advice,
       desc: desc,
       sort: sort,
-  		nocheck: is_entity^1
+      ckp_source: Common::CheckpointCkp::CkpSource::SubjectCkp,
+  		nocheck: is_entity^1,
   	}
   end
 

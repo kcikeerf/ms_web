@@ -32,7 +32,9 @@ class Mongodb::BankQizpointQzp
     result_arr =[]
     ckps = Mongodb::BankCkpQzp.where(qzp_uid: self._id.to_s).to_a
     ckps.each{|ckp|
-      result_arr << BankCheckpointCkp.where(uid: ckp.ckp_uid).first
+      next if ckp.source_type.blank?
+      ckp_klass = ckp.source_type.constantize #根据指标类型取得相应指标
+      result_arr << ckp_klass.where(uid: ckp.ckp_uid).first
     }
     return result_arr
   end
