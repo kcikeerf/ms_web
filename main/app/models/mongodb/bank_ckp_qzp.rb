@@ -5,7 +5,7 @@ class Mongodb::BankCkpQzp
   field :ckp_uid, type: String
   field :qzp_uid, type: String
   #标示来源
-  filed :source_type, type: String
+  field :source_type, type: String
 #  field :weights, type: Float
 
   def save_ckp_qzp qzp_uid=nil, ckp_uid=nil, source_type=nil
