@@ -917,8 +917,8 @@ var reportPage = {
 		},
 
         handleClassPupilNum : function(obj){
-			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(reportPage.baseFn.getArrayValue(obj.good_pupil_percent)[0])));
-			var classNameArr = reportPage.baseFn.getArrayKeys(obj.good_pupil_percent);
+			var normkeyArr = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(reportPage.baseFn.getArrayValue(obj.good_pupil_percent)[0])));
+			var classNameArr = reportPage.baseFn.getArrayKeysNoModify(obj.good_pupil_percent);
 			var normNum = normkeyArr.length;
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -931,26 +931,26 @@ var reportPage = {
 					xaxis : classNameArr,
 					colorArr:colorArr,
 					normNameArr:normNameArr,
-					series : reportPage.Grade.handleNorm(obj.excellent_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
+					series : reportPage.Grade.handleCheckpointNorm(obj.excellent_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
 				},
 				good_pupil_percent : {
 					xaxis : classNameArr,
 					colorArr:colorArr,
 					normNameArr:normNameArr,
-					series : reportPage.Grade.handleNorm(obj.good_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
+					series : reportPage.Grade.handleCheckpointNorm(obj.good_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
 				},
 				failed_pupil_percent : {
 					xaxis : classNameArr,
 					colorArr:colorArr,
 					normNameArr:normNameArr,
-					series : reportPage.Grade.handleNorm(obj.failed_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
+					series : reportPage.Grade.handleCheckpointNorm(obj.failed_pupil_percent,colorArr,normkeyArr,normNum,classNameArr),
 				}
 			};
 		},
       
 		handleCheckpoint : function(obj){
-			var normkeyArr = reportPage.baseFn.getKeys(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(reportPage.baseFn.getArrayValue(obj.average_percent)[0])));
-			var classNameArr = reportPage.baseFn.getArrayKeys(obj.average_percent);
+			var normkeyArr = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(reportPage.baseFn.getArrayValue(obj.average_percent)[0])));
+			var classNameArr = reportPage.baseFn.getArrayKeysNoModify(obj.average_percent);
 			var normNum = normkeyArr.length;
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -963,27 +963,56 @@ var reportPage = {
 					xaxis : classNameArr,
 					colorArr : colorArr,
 					normNameArr : normNameArr,
-					series : reportPage.Grade.handleNorm(obj.average_percent,colorArr,normkeyArr,normNum,classNameArr)
+					series : reportPage.Grade.handleCheckpointNorm(obj.average_percent,colorArr,normkeyArr,normNum,classNameArr)
 				},
 				diff_degree : {
 					xaxis : classNameArr,
 					colorArr : colorArr,
 					normNameArr : normNameArr,
-					series : reportPage.Grade.handleNorm(obj.diff_degree,colorArr,normkeyArr,normNum,classNameArr)
+					series : reportPage.Grade.handleCheckpointNorm(obj.diff_degree,colorArr,normkeyArr,normNum,classNameArr)
 				},
 				med_avg_diff : {
 					xaxis : classNameArr,
 					colorArr : colorArr,
 					normNameArr : normNameArr,
-					series : reportPage.Grade.handleNorm(obj.med_avg_diff,colorArr,normkeyArr,normNum,classNameArr)
+					series : reportPage.Grade.handleCheckpointNorm(obj.med_avg_diff,colorArr,normkeyArr,normNum,classNameArr)
 				},
 				median_percent : {
 					xaxis : classNameArr,
 					colorArr : colorArr,
 					normNameArr : normNameArr,
-					series : reportPage.Grade.handleNorm(obj.median_percent,colorArr,normkeyArr,normNum,classNameArr)
+					series : reportPage.Grade.handleCheckpointNorm(obj.median_percent,colorArr,normkeyArr,normNum,classNameArr)
 				},
 			}
+		},
+		handleCheckpointNorm : function(obj,colorArr,normkeyArr,normNum,classNameArr){
+			var classValue = reportPage.baseFn.getArrayValue(obj);
+			var classNum = classNameArr.length;
+			var allArr = [];
+			var series = [];
+			for(var i = 0 ; i < normNum ; i++){
+				var arr = [];
+				for(var k = 0 ; k < classNum ; k++){
+					arr.push(reportPage.baseFn.getValue(classValue[k][i][1])[0]);
+				};
+				allArr.push(arr);
+			};
+			for(var j = 0 ; j < normNum ; j++){
+				series.push({
+					name:normkeyArr[j],
+					type:'bar',
+					barMaxWidth: 50,
+					stack: "总量",
+					label: {
+						normal: {
+							show: true,
+							position: 'insideLeft'
+						}
+					},
+					data:allArr[j],
+				})
+			};
+			return series;
 		},
 		handleNorm : function(obj,colorArr,normkeyArr,normNum,classNameArr){
 			var classValue = reportPage.baseFn.getArrayValue(obj);

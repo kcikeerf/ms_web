@@ -9,7 +9,7 @@ var echartOption = {
     },
     getOption: {
         Grade: {
-            //诊断图:
+            // 三维诊断概要图
             setGradeDiagnoseLeft: function (data) {
                 return option = {
                     textStyle: {
@@ -220,7 +220,7 @@ var echartOption = {
                     animation: false,
                 };
             },
-            /*分型图*/
+            // 分型图
             setGradePartingChartOption: function (data) {
                 return option = {
                     legend: {
@@ -802,7 +802,7 @@ var echartOption = {
                     color: ['#dca2ea', '#15a892', '#4a8ad3']
                 };
             },
-            /*scale比例图*/
+            // 年级分数段人数比例图
             setGradeScaleOption: function (data) {
                 return option = {
                     textStyle: {
@@ -932,7 +932,7 @@ var echartOption = {
                     }]
                 };
             },
-            /*四分位图*/
+            // 四分位区间表现情况图图
             setFourSectionsOption: function (data) {
                 return option = {
                     textStyle: {
@@ -1002,7 +1002,7 @@ var echartOption = {
                     animation: false,
                 };
             },
-            /*各指标水平表现图*/
+            // 各指标表现水平图
             setCheckpointOption: function (data) {
                 return option = {
                     title: {
@@ -1012,71 +1012,34 @@ var echartOption = {
                         trigger: 'item',
                     },
                     legend: {
-                        right: '0',
-                        itemWidth: 13,
-                        itemHeight: 8,
+                        right: 20,
                         data: data.normNameArr,
                         textStyle: {
                             fontSize: 16
                         }
                     },
                     grid: {
-                        left: '0',
-                        right: '3%',
-                        top: '30%',
-                        bottom: '3%',
+                        left: 20,
+                        right: 20,
+                        bottom: 10,
                         containLabel: true,
                     },
                     xAxis: [{
-                        type: 'category',
-                        boundaryGap: false,
-                        axisTick: {
-                            show: false
-                        },
-                        data: data.xaxis,
-                        axisLine: {
-                            lineStyle: {
-                                color: '#cacaca',
-                                shadowColor: '#cacaca',
-                                shadowOffsetX: 0,
-                                shadowOffsetY: 2
-                            }
-                        },
+                        type: 'value',
                         axisLabel: {
-                            interval: 0,
                             textStyle: {
                                 fontSize: 16
                             }
                         },
-                        splitLine: {
-                            lineStyle: {
-                                color: ['#efefef']
-                            }
-                        },
                     }],
                     yAxis: [{
-                        type: 'value',
-                        axisLine: {
-                            lineStyle: {
-                                color: '#828282',
-                                width: 1,
-                            }
-                        },
-                        axisTick: {
-                            show: false
-                        },
-                        mix: '-100',
-                        max: '100',
-                        splitLine: {
-                            lineStyle: {
-                                color: ['#efefef'],
-                                type: 'dashed'
-                            }
-                        },
-                        splitNumber: 5,
+                        type: 'category',
                         axisLabel: {
-                            show: true
+                            textStyle: {
+                                fontSize: 16
+                            }
                         },
+                        data: data.xaxis,
                     }],
                     series: data.series,
                     color: data.colorArr,
@@ -1093,73 +1056,36 @@ var echartOption = {
                         trigger: 'item',
                     },
                     legend: {
-                        right: '0',
-                        orient: 'vertical',
-                        itemWidth: 23,
-                        itemHeight: 8,
+                        right: 10,
                         data: data.normNameArr,
                         textStyle: {
                             fontSize: 16
                         }
                     },
                     grid: {
-                        left: '0',
-                        right: '20%',
-                        top: '3%',
-                        bottom: '3%',
+                        left: 20,
+                        right: 20,
+                        bottom: 10,
                         containLabel: true,
                     },
                     xAxis: [{
-                        type: 'category',
-                        boundaryGap: false,
-                        axisTick: {
-                            show: false
-                        },
-                        data: data.xAxis,
-                        axisLine: {
-                            lineStyle: {
-                                color: '#cacaca',
-                                shadowColor: '#cacaca',
-                                shadowOffsetX: 0,
-                                shadowOffsetY: 2
-                            }
-                        },
+                        type: 'value',
                         axisLabel: {
-                            interval: 0,
                             textStyle: {
                                 fontSize: 16
                             }
                         },
-                        splitLine: {
-                            lineStyle: {
-                                color: ['#efefef']
-                            }
-                        },
                     }],
                     yAxis: [{
-                        type: 'value',
-                        axisLine: {
-                            lineStyle: {
-                                color: '#828282',
-                                width: 1,
-                            }
-                        },
-                        axisTick: {
-                            show: false
-                        },
-                        splitLine: {
-                            lineStyle: {
-                                color: ['#efefef'],
-                                type: 'dashed'
-                            }
-                        },
-                        splitNumber: 10,
+                        type: 'category',
                         axisLabel: {
-                            show: true
+                            textStyle: {
+                                fontSize: 16
+                            }
                         },
+                        data: data.xAxis,
                     }],
                     series: data.pupil_percent,
-                    color: data.colorArr,
                     animation: false,
                 };
             },
