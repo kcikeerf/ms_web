@@ -183,7 +183,7 @@ var reportPage = {
 			};
 		},
 		/*处理数据表(type是班级还是个人)*/
-		getTableStr: function(obj, type) {
+		getTableStr: function(obj, type, dimesion) {
 			var tableHtmlStr = '';
 			//创建一级指标table ------ knowledge;
 			var level1Arr = reportPage.baseFn.getArrayValue(obj);
@@ -195,16 +195,16 @@ var reportPage = {
 				var level1ValueHtmlStr = '';
 				//取得一级指标的键值对value；
 				var level1Value = level1Arr[i].value;
-				var level1ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level1Value) : reportPage.Pupil.creatPuilValueArr(level1Value);
+				var level1ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level1Value, dimesion) : reportPage.Pupil.creatPuilValueArr(level1Value, dimesion);
 				//插入具体数据;
-				for (var k = 0; k < level1ValueArr.length; k++) {
-					var iNum = level1ValueArr[k];
-					if(iNum < 0 && iNum > -20){
-						level1ValueHtmlStr += '<td class="one-level-content one-level-wrong wrong">' + iNum + '</td>';
-					}else if(iNum < -20){
-						level1ValueHtmlStr += '<td class="one-level-content one-level-wrong wrong more-wrong">' + iNum + '</td>';
+				for (var k = 0; k < level1ValueArr.data.length; k++) {
+					var display_value = level1ValueArr.data[k];
+					if(level1ValueArr.diff_ratio[k] < 0 && level1ValueArr.diff_ratio[k] > -0.3){
+						level1ValueHtmlStr += '<td class="one-level-content one-level-wrong wrong">' + display_value + '</td>';
+					}else if(level1ValueArr.diff_ratio[k] < -0.3){
+						level1ValueHtmlStr += '<td class="one-level-content one-level-wrong wrong more-wrong">' + display_value + '</td>';
 					}else{
-						level1ValueHtmlStr += '<td class="one-level-content">' + iNum + '</td>';
+						level1ValueHtmlStr += '<td class="one-level-content">' + display_value + '</td>';
 					};
 				};
 				var level1HtmlStr = '<tr>' + level1NameHtmlStr + level1ValueHtmlStr + '</tr>';
@@ -217,15 +217,15 @@ var reportPage = {
 						var level2NameHtmlStr = '<td>' + level2Arr[j].label + '</td>';
 						var level2ValueHtmlStr = '';
 						var level2Value = level2Arr[j].value;
-						var level2ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level2Value) : reportPage.Pupil.creatPuilValueArr(level2Value);
-						for (var g = 0; g <level2ValueArr.length ; g++) {
-							var iNum = level2ValueArr[g];
-							if(iNum < 0 && iNum > -20){
-								level2ValueHtmlStr += '<td class="wrong">' + iNum + '</td>';
-							}else if(iNum < -20){
-								level2ValueHtmlStr += '<td class="wrong more-wrong">' + iNum + '</td>';
+						var level2ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level2Value, dimesion) : reportPage.Pupil.creatPuilValueArr(level2Value, dimesion);
+						for (var g = 0; g <level2ValueArr.data.length ; g++) {
+							var display_value = level2ValueArr.data[g];
+							if(level2ValueArr.diff_ratio[g] < 0 && level2ValueArr.diff_ratio[g] > -0.3){
+								level2ValueHtmlStr += '<td class="wrong">' + display_value + '</td>';
+							}else if(level2ValueArr.diff_ratio[g] < -0.3){
+								level2ValueHtmlStr += '<td class="wrong more-wrong">' + display_value + '</td>';
 							}else{
-								level2ValueHtmlStr += '<td>' + iNum + '</td>';
+								level2ValueHtmlStr += '<td>' + display_value + '</td>';
 							};
 						};
 						level2HtmlStr += '<tr>' + level2NameHtmlStr + level2ValueHtmlStr + '</tr>';
@@ -782,20 +782,21 @@ var reportPage = {
 			}
 		},
 		getGradeNumScaleData : function(obj){
-			return obj = {
+			var result = {
 				knowledge :{
-					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_knowledge),
-					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_knowledge))
+					yaxis : reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(obj.grade_knowledge))),
+					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(obj.grade_knowledge))))
 				},
 				skill : {
-					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_skill),
-					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_skill))
+					yaxis : reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(obj.grade_skill))),
+					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(obj.grade_skill))))
 				},
 				ability : {
-					yaxis : reportPage.baseFn.getKeysNoModify(obj.grade_ability),
-					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(obj.grade_ability))
-				},
-			}
+					yaxis : reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(obj.grade_ability))),
+					data : reportPage.Grade.creatGradeScaleArr(reportPage.baseFn.getValue(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(obj.grade_ability))))
+				}
+			};
+			return result;
 		},
 		getFourSectionsData : function(obj){
 			return arr = {
@@ -1057,8 +1058,10 @@ var reportPage = {
 
 	/*处理班级数据*/
 	Class: {
+		basicData: null,
 		createReport : function(data, upperReportIds){
-			var basicData = data.data.basic;
+			reportPage.Class.basicData = data.data.basic;
+			var basicData = reportPage.Class.basicData;
 			var classNavStr =
 				/*
 				'<b>学校</b>：<span>'+basicData.school
@@ -1151,13 +1154,13 @@ var reportPage = {
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
 				}else if($dataId == 'table-data-knowledge'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'class');
+					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'class','knowledge');
 					$('#Class_knowledge_table').html(tableStr);
 				}else if($dataId == 'table-data-skill'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'class');
+					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'class','skill');
 					$('#Class_skill_table').html(tableStr);
 				}else if($dataId == 'table-data-ability'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'class');
+					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'class','ability');
 					$('#Class_ability_table').html(tableStr);
 				}else if($dataId == 'class-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
@@ -1271,14 +1274,39 @@ var reportPage = {
 			};
 		},
 		/*针对班级的字段*/
-		creatClassValueArr: function(obj) {
-			return obj = [obj.cls_average, obj.cls_average_percent, obj.class_median_percent, obj.gra_average_percent, obj.cls_gra_avg_percent_diff, obj.cls_med_gra_avg_percent_diff, obj.diff_degree, obj.full_score]
+		creatClassValueArr: function(obj,dimesion) {
+			var result = {data: [], diff_ratio: [] }
+			avg_ratio = obj.cls_gra_avg_percent_diff/obj.gra_average_percent;
+            med_ratio = obj.cls_med_gra_avg_percent_diff/obj.gra_average_percent;
+			result.data = [
+                (obj.cls_average * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2), 
+                obj.cls_average_percent, 
+                obj.class_median_percent, 
+                obj.gra_average_percent, 
+                obj.cls_gra_avg_percent_diff, 
+                obj.cls_med_gra_avg_percent_diff, 
+                obj.diff_degree, 
+                (obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2)
+            ];
+            result.diff_ratio = [
+                0,
+                0,
+                0,
+                0,
+                avg_ratio,
+                med_ratio,
+                0,
+                0
+            ];
+            return result;
 		},
 	},
 
 	Pupil: {
+		basicData: null,
 		createReport : function(data, upperReportIds){
-			var basicData = data.data.basic;
+			reportPage.Pupil.basicData = data.data.basic; 
+			var basicData = reportPage.Pupil.basicData;
 			console.log(data);
 			var pupilNavStr =
 				/*
@@ -1287,9 +1315,9 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
 			    */
-				'<b>分数</b>：<span>' +
+				'<b>分数</b>：<span>' + (basicData.score * basicData.value_ratio["knowledge"]) +
 				'&nbsp;|</span>&nbsp;&nbsp;' +
-				'<b>名次</b>：<span>' +
+				'<b>名次</b>：<span>' + basicData.grade_rank 
 				'&nbsp;|</span>&nbsp;&nbsp;' +
 				'<b>性别</b>：<span>'+basicData.sex
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
@@ -1395,15 +1423,15 @@ var reportPage = {
 				if($dataId == 'improve-sugg'){
 					$('#improve-sugg').html(data.data.quiz_comment);
 				}else if($dataId == 'table-data-knowledge'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil');
+					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil','knowledge');
 					$('#pupil_knowledge_percentile').html(data.data.percentile.knowledge);
 					$('#knowledge_data_table').html(tableStr);
 				}else if($dataId == 'table-data-skill'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil');
+					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil','skill');
 					$('#pupil_skill_percentile').html(data.data.percentile.skill);
 					$('#skill_data_table').html(tableStr);
 				}else if($dataId == 'table-data-ability'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil');
+					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil','ability');
 					$('#pupil_ability_percentile').html(data.data.percentile.ability);
 					$('#ability_data_table').html(tableStr);
 				}
@@ -1459,9 +1487,25 @@ var reportPage = {
 			}
 		},
 		/*针对个人的字段*/
-		creatPuilValueArr: function(obj) {
+		creatPuilValueArr: function(obj,dimesion) {
+            var result = {data: [], diff_ratio: [] }
+            avg_ratio = obj.pup_gra_avg_percent_diff/obj.gra_average_percent;
+            result.data = [
+                obj.average_percent, 
+                obj.gra_average_percent, 
+                obj.pup_gra_avg_percent_diff, 
+                (obj.average * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2), 
+                (obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2)
+            ];
+            result.diff_ratio = [
+                0,
+                0,
+                avg_ratio,
+                0,
+                0
+            ];
 //			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score, obj.correct_qzp_count];
-			return obj = [obj.average_percent, obj.gra_average_percent, obj.pup_gra_avg_percent_diff, obj.average, obj.full_score];
+			return result;
 		}
 	}
 }

@@ -47,6 +47,12 @@ module CheckpointCkpModule
       SubjectCkp = "BankSubjectCheckpointCkp"
     end
 
+    module Dimesion
+      Knowledge = "knowledge"
+      Skill = "skill"
+      Ability = "ability"
+    end
+
     module SubjectCkpCategory
       XiaoXue = "xiao_xue"
       ChuZhong = "chu_zhong"

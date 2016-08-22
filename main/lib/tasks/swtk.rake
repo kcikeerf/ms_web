@@ -199,7 +199,7 @@ namespace :swtk do
 
   end
 
-  desc "deconstruct paper to a status: editting, editted, analyzed"
+  desc "deconstruct paper to a status: editting, editted, analyzing"
   task :deconstruct_paper,[:pap_uid, :back_to]=> :environment do |t, args|
     if args[:pap_uid].nil? ||  args[:back_to].nil?
       puts "Command format not correct."
