@@ -283,7 +283,7 @@ class Mongodb::ReportGenerator
   end
 
   def construct_each_level_pupil_number
-    logger.info "construct class each level number"
+    logger.info "construct each level number"
 
     grade_filter = {
       '_id.pap_uid' => @pap_uid,
@@ -335,7 +335,10 @@ class Mongodb::ReportGenerator
         }
 
         if !item[:_id].keys.include?("classroom")
-          report_h["each_level_number"]["grade_#{dimesion}"][lv1_ckp_key] = result_h
+          #report_h["each_level_number"]["grade_#{dimesion}"][lv1_ckp_key] = result_h
+          temp_arr = report_h["each_level_number"]["grade_#{dimesion}"] || []
+          target_pair = [lv1_ckp_order, {lv1_ckp_key => result_h }]
+          report_h["each_level_number"]["grade_#{dimesion}"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair          
         else
           klass = I18n.t("dict.#{item[:_id][:classroom]}")
           ["failed_pupil_percent", "good_pupil_percent", "excellent_pupil_percent"].each{|member|
@@ -461,6 +464,7 @@ class Mongodb::ReportGenerator
               "items" => []
             }
           ])
+          kreport_h["basic"]["value_ratio"][dimesion] =  (item[:value][:full_mark] != 0)? @paper.score/item[:value][:full_mark]:0
         end
         kreport_h["data_table"][dimesion] = kdata_dim_table
         klass_report.report_json = kreport_h.to_json
@@ -513,7 +517,6 @@ class Mongodb::ReportGenerator
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
         else
-=begin
           pupil_dim_table.unshift([Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
             {
               "label" => Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label],
@@ -528,8 +531,11 @@ class Mongodb::ReportGenerator
               },
               "items" => []
             }
-          ]) 
-=end
+          ])
+          if dimesion == Common::CheckpointCkp::Dimesion::Knowledge
+            pupil_report_h["basic"]["score"] = format_float(item[:value][:average]) 
+          end
+          pupil_report_h["basic"]["value_ratio"][dimesion] = (item[:value][:full_mark] != 0)? @paper.score/item[:value][:full_mark]:0
         end
         pupil_report_h["data_table"][dimesion] = pupil_dim_table
         pupil_report.report_json = pupil_report_h.to_json
@@ -584,6 +590,24 @@ class Mongodb::ReportGenerator
         klass_report.report_json = kreport_h.to_json
         klass_report.save
       end
+    }
+
+    filter = {
+      '_id.pap_uid' => @pap_uid,
+      '_id.grade' => {'$exists' => true },
+      '_id.classroom' => nil,
+      '_id.pup_uid' => {'$exists' => true },
+      '_id.dimesion' => Common::CheckpointCkp::Dimesion::Knowledge,
+      '_id.lv1_ckp' => nil,
+      '_id.lv2_ckp' => nil
+      }
+
+    Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
+      pupil_report, pupil_report_h = get_pupil_report_hash item
+      dimesion = item[:_id][:dimesion]
+      pupil_report_h["basic"]["grade_rank"] = item[:value][:grade_rank]
+      pupil_report.report_json = pupil_report_h.to_json
+      pupil_report.save
     }
 
     filter = {
@@ -1751,8 +1775,8 @@ class Mongodb::ReportGenerator
       '_id.lv2_ckp' => nil
       }
 
-      p ">>>>>>>>>>>"
-      p pupil_filter
+      # p ">>>>>>>>>>>"
+      # p pupil_filter
 
       average_arr = item[:value][:average_stack].blank?? [] : item[:value][:average_stack].sort.reverse
 
@@ -2189,12 +2213,13 @@ class Mongodb::ReportGenerator
       report_h["basic"]["classroom"] = I18n.t("dict.#{item[:_id][:classroom]}")
       report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
       report_h["basic"]["name"] = pupil.nil?? I18n.t("dict.unknown") : pupil.name
-      report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : pupil.sex
+      report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{pupil.sex}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
       report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
       report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
       report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
       report_h["basic"]["levelword2"] =  @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
+
       pupil_report.update(:report_json => report_h.to_json)
     else
       report_h = JSON.parse(pupil_report.report_json)

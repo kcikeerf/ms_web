@@ -729,7 +729,7 @@ class Mongodb::BankPaperPap
         loc = Location.new(loc_h)
         loc.save!
       end
-
+       
       user_row_arr = []
       # 
       # create teacher user 
@@ -739,7 +739,7 @@ class Mongodb::BankPaperPap
         :name => cells[:head_teacher],
         :subject => self.subject,
         :head_teacher => true,
-        :user_name => format_user_name([loc.school_number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:head_teacher])])
+        :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:head_teacher])])
       }
       user_row_arr =format_user_password_row(Common::Role::Teacher, head_tea_h)
       unless teacher_username_in_sheet.include?(user_row_arr[0])
@@ -752,7 +752,7 @@ class Mongodb::BankPaperPap
         :name => cells[:teacher],
         :subject => self.subject,
         :head_teacher => false,
-        :user_name => format_user_name([loc.school_number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:teacher])])
+        :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:teacher])])
       }
       user_row_arr = format_user_password_row(Common::Role::Teacher, tea_h)
       unless teacher_username_in_sheet.include?(user_row_arr[0])
@@ -771,7 +771,7 @@ class Mongodb::BankPaperPap
         :classroom => cells[:classroom],
         :subject => self.subject,
         :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
-        :user_name => format_user_name([loc.school_number,cells[:stu_number]])
+        :user_name => format_user_name([tenant.number,cells[:stu_number]])
       }
       user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)
       unless pupil_username_in_sheet.include?(user_row_arr[0])
