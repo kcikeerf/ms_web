@@ -1286,7 +1286,7 @@ var reportPage = {
                 obj.cls_gra_avg_percent_diff, 
                 obj.cls_med_gra_avg_percent_diff, 
                 obj.diff_degree, 
-                (obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2)
+                Math.round(obj.full_score * reportPage.Class.basicData.value_ratio[dimesion])
             ];
             result.diff_ratio = [
                 0,
@@ -1317,7 +1317,7 @@ var reportPage = {
 			    */
 				'<b>分数</b>：<span>' + (basicData.score * basicData.value_ratio["knowledge"]) +
 				'&nbsp;|</span>&nbsp;&nbsp;' +
-				'<b>名次</b>：<span>' + basicData.grade_rank 
+				'<b>名次</b>：<span>' + basicData.grade_rank + 
 				'&nbsp;|</span>&nbsp;&nbsp;' +
 				'<b>性别</b>：<span>'+basicData.sex
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
@@ -1495,7 +1495,7 @@ var reportPage = {
                 obj.gra_average_percent, 
                 obj.pup_gra_avg_percent_diff, 
                 (obj.average * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2), 
-                (obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2)
+                Math.round(obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion])
             ];
             result.diff_ratio = [
                 0,
