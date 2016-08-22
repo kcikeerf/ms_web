@@ -42,6 +42,7 @@ class Location < ActiveRecord::Base
   end
 
   def self.get_report_menus role, pap_uid, loc_h
+    p ">>>#{loc_h}"
     current_paper = Mongodb::BankPaperPap.where(_id: pap_uid).first
     report_name, grade_subject, klass_subject, pupil_subject = format_report_title current_paper.heading,current_paper.subject
     result = {}

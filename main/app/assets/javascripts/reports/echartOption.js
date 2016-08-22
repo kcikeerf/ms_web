@@ -236,7 +236,7 @@ var echartOption = {
                         textStyle: {fontSize: 16}
                     },
                     grid: {
-                        left: 10,
+                        left: 15,
                         right: 80,
                         bottom: 10,
                         containLabel: true
