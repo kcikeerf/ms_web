@@ -1,4 +1,108 @@
 @charset "utf-8";
+.zy-report-nav-container {
+	width: $sidebar-width;
+	position: relative;
+	.zy-report-navEntry {
+		display: inline-block;
+		padding: 15px 20px;
+		font-size: 24px;
+		color: #fff;
+		background: #15a892;
+		width: 100%;
+	}
+	.zy-grade-menu {
+		display: none;
+		width: 200px;
+		position: absolute;
+		top: 0;
+		left: $sidebar-width - 1;
+		background-color: #fff;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		border-radius: 3px;
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		background-clip: padding-box;
+		margin: 0;
+		padding: 0;
+		> li {
+			> a {
+				display: block;
+				padding: 15px 20px;
+				color: #212121;
+				cursor: pointer;
+				&:hover,
+				&:focus {
+					background-color: #f5f5f5;
+				}
+				span {
+				}
+			}
+		}
+	}
+	.zy-class-menu {
+		margin: 0;
+		padding: 0;
+		display:none;
+		position: absolute;
+		top: 0;
+		left: 199px;
+		margin-left: 0;
+		z-index: 100;
+		width: 200px;
+		background-color: #fff;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		border-radius: 3px;
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		background-clip: padding-box;
+		> li {
+			> a {
+				display: block;
+				padding: 15px 20px;
+				color: #212121;
+				cursor: pointer;
+				&:hover,
+				&:focus {
+					background-color: #f5f5f5;
+				}
+				span {}
+			}
+			ul.zy-student-menu {
+				-webkit-box-shadow: 3px 3px 5px #ccc;
+				-moz-box-shadow: 3px 3px 5px #ccc;
+				box-shadow: 3px 3px 5px #ccc;
+				background: #fff;
+				border-top: 1px solid #eee;
+				width: 400px;
+				display: none;
+				position: absolute;
+				left: 199px;
+				top: 0;
+				overflow: hidden;
+				padding: 12px;
+				.title {
+					font-size: 20px;
+					border-style: solid;
+					border-color: #15a892;
+					border-width: 0 0 0.5px 0;
+					text-align: center;
+				}
+				> li {
+					> a {
+						color: #212121;
+						padding: 10px 0;
+						text-align: center;
+						width: 33%;
+						float: left;
+						&:hover {
+							color: #fff;
+							background-color: $color-main;
+							cursor: pointer;
+						}
+					}
+				}
+			}
+		}
+	}
+}
 .zy-report-type {
 	width: $sidebar-width;
 	background: #15a892;
@@ -56,73 +160,6 @@
 	}
 	span {
 		float: right;
-	}
-}
-.zy-grade-menu {
-	width: 200px;
-}
-.zy-class-menu {
-	margin: 0;
-	padding: 0;
-	display:none;
-	position: absolute;
-	top: 0;
-	right: 199px;
-	margin-left: 0;
-	z-index: 100;
-	width: 200px;
-	background-color: #fff;
-	border: 1px solid rgba(0, 0, 0, 0.15);
-	border-radius: 3px;
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-	background-clip: padding-box;
-	> li {
-		> a {
-			display: block;
-			padding: 15px 20px;
-			color: #212121;
-			cursor: pointer;
-			&:hover,
-			&:focus {
-				background-color: #f5f5f5;
-			}
-			span {}
-		}
-		ul.zy-student-menu {
-			-webkit-box-shadow: 3px 3px 5px #ccc;
-			-moz-box-shadow: 3px 3px 5px #ccc;
-			box-shadow: 3px 3px 5px #ccc;
-			background: #fff;
-			border-top: 1px solid #eee;
-			width: 400px;
-			display: none;
-			position: absolute;
-			right: 199px;
-			top: 0;
-			overflow: hidden;
-			padding: 12px;
-			.title {
-				font-size: 20px;
-				border-style: solid;
-				border-color: #15a892;
-				border-width: 0 0 0.5px 0;
-				text-align: center;
-			}
-			> li {
-				> a {
-					color: #212121;
-					padding: 10px 0;
-					text-align: center;
-					width: 33%;
-					float: left;
-					&:hover {
-						color: #fff;
-						background-color: $color-main;
-						cursor: pointer;
-					}
-				}
-			}
-		}
 	}
 }
 .grade-top-list{
