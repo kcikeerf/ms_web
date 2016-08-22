@@ -39,17 +39,27 @@ var reportPage = {
 	},
 	bindEvent: function(){
 		/*顶部导航*/
-		$('.zy-grade-menu > li').hover(function() {
-			$('.zy-class-menu').show();
-			$('.zy-class-menu > li').on('mouseover', function() {
+		$('.zy-report-nav-container').hover(function() {
+			$('.zy-grade-menu').show();
+			$('.zy-grade-menu > li').hover(function() {
 				$(this).addClass('active').siblings('li').removeClass('active');
 				$(this).children('ul').show();
 				$(this).siblings('li').children('ul').hide();
+				$('.zy-class-menu').show();
+				$('.zy-class-menu > li').on('mouseover', function() {
+					$(this).addClass('active').siblings('li').removeClass('active');
+					$(this).children('ul').show();
+					$(this).siblings('li').children('ul').hide();
+				});
+			}, function() {
+				$('.zy-class-menu').hide();
+				$('.zy-class-menu > li > ul').hide();
+				$('.zy-class-menu > li').removeClass('active');
 			});
 		}, function() {
-			$('.zy-class-menu').hide();
-			$('.zy-class-menu > li > ul').hide();
-			$('.zy-class-menu > li').removeClass('active');
+			$('.zy-grade-menu').hide();
+			$('.zy-grade-menu > li > ul').hide();
+			$('.zy-grade-menu > li').removeClass('active');
 		});
 
 		$('.zy-class-menu > li > a').on('click', function() {
