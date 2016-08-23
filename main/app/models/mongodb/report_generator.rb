@@ -1733,13 +1733,25 @@ class Mongodb::ReportGenerator
   #
   #
   def add_materials2
+    # 此处为按一级指标以及无指标的排名的filter
+    # filter = {
+    #   '_id.pap_uid' => @pap_uid,
+    #   '_id.grade' => {'$exists' => true },
+    #   '_id.classroom' => nil,
+    #   '_id.pup_uid' => nil,
+    #   '_id.dimesion' => {'$exists' => true },
+    #   #'_id.lv1_ckp' => {'$exists' => true },
+    #   '_id.lv2_ckp' => nil
+    # }
+
+    #排名按维度，不按各指标
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.classroom' => nil,
       '_id.pup_uid' => nil,
       '_id.dimesion' => {'$exists' => true },
-      #'_id.lv1_ckp' => {'$exists' => true },
+      '_id.lv1_ckp' => nil,
       '_id.lv2_ckp' => nil
     }
     arr = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout # need add filter here, user_id or somethind
@@ -1765,30 +1777,43 @@ class Mongodb::ReportGenerator
     total_num =arr.size
     arr.each_with_index{|item,index|
       logger.info(">>>>>>thread #{th_index}, current status (#{index}/#{total_num})<<<<<<") if index%100 == 0
+      # pupil_filter = {
+      # '_id.pap_uid' => @pap_uid,
+      # '_id.grade' => {'$exists' => true },
+      # #'_id.classroom' => nil,
+      # '_id.pup_uid' => {'$exists' => true },
+      # '_id.dimesion' => item[:_id][:dimesion],
+      # '_id.lv1_ckp' => item[:_id].keys.include?("lv1_ckp")? item[:_id][:lv1_ckp] : nil,
+      # '_id.lv2_ckp' => nil
+      # }
+
       pupil_filter = {
-      '_id.pap_uid' => @pap_uid,
-      '_id.grade' => {'$exists' => true },
-      #'_id.classroom' => nil,
-      '_id.pup_uid' => {'$exists' => true },
-      '_id.dimesion' => item[:_id][:dimesion],
-      '_id.lv1_ckp' => item[:_id].keys.include?("lv1_ckp")? item[:_id][:lv1_ckp] : nil,
-      '_id.lv2_ckp' => nil
+        '_id.pap_uid' => @pap_uid,
+        '_id.grade' => item[:_id][:grade],
+        '_id.classroom' => nil,
+        '_id.pup_uid' => {'$exists' => true },
+        '_id.dimesion' => item[:_id][:dimesion],
+        '_id.lv1_ckp' => nil,
+        '_id.lv2_ckp' => nil
       }
 
-      # p ">>>>>>>>>>>"
-      # p pupil_filter
-
       average_arr = item[:value][:average_stack].blank?? [] : item[:value][:average_stack].sort.reverse
-
       values_h = {
         'value.grade_rank' => 0,
         'value.grade_pupil_number' => item[:value][:current_pupil_number]
       }
 
-      results = Mongodb::ReportStandDevDiffResult.where(pupil_filter).no_timeout
-      results.each{|result|
-        values_h['value.grade_rank'] = (average_arr.index(result[:value][:average_percent]) +1 )|| 0
-        result.update_attributes(values_h)
+      pupils = Mongodb::ReportStandDevDiffResult.where(pupil_filter).no_timeout
+      pupils.each{|pupil|
+        values_h['value.grade_rank'] = (average_arr.index(pupil[:value][:average_percent]) +1 )|| 0
+        filter = {
+          '_id.pap_uid' => @pap_uid,
+          '_id.grade' => pupil[:_id][:grade],
+          '_id.pup_uid' => pupil[:_id][:pup_uid],
+          '_id.dimesion' => pupil[:_id][:dimesion]
+        }
+        target_pupils = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout
+        target_pupils.update_all(values_h)
       }
     }  
   end
