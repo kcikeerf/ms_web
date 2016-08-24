@@ -12,6 +12,7 @@ var echartOption = {
             // 三维诊断概要图
             setGradeDiagnoseLeft: function (data) {
                 return option = {
+                    color: ['#9be8ee', '#8fb7e6', '#cbc5e5'],
                     textStyle: {
                         fontSize: 16
                     },
@@ -61,8 +62,10 @@ var echartOption = {
                         axisTick: {
                             show: false
                         },
+                        /*
                         mix: '0',
                         max: '100',
+                        */
                         splitLine: {
                             lineStyle: {
                                 color: ['#efefef']
@@ -78,58 +81,21 @@ var echartOption = {
                         name: '年级中位数得分率',
                         type: 'bar',
                         barMaxWidth: 10,
-                        areaStyle: {
-                            normal: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: '#3aceb8'
-                                }, {
-                                    offset: 1,
-                                    color: '#f4fcfb'
-                                }]),
-                                opacity: 0.5,
-                            }
-                        },
                         data: data.yaxis.Alllines.grade_median_percent,
                         z: 1,
                     }, {
                         name: '年级平均得分率',
                         type: 'bar',
                         barMaxWidth: 10,
-                        areaStyle: {
-                            normal: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: '#299bcb'
-                                }, {
-                                    offset: 1,
-                                    color: '#f4fcfb'
-                                }]),
-                                opacity: 0.5,
-                            }
-                        },
                         data: data.yaxis.Alllines.grade_average_percent,
                         z: 2
                     }, {
                         name: '年级分化度',
                         type: 'bar',
                         barMaxWidth: 10,
-                        areaStyle: {
-                            normal: {
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: '#d0a0da'
-                                }, {
-                                    offset: 1,
-                                    color: '#f4e8f6'
-                                }]),
-                                opacity: 0.8,
-                            }
-                        },
                         data: data.yaxis.Alllines.grade_diff_degree,
                         z: 3
                     }],
-                    color: ['#01bda1', '#057ec8', '#ac83b4'],
                     animation: false,
                 }
             },
@@ -200,7 +166,7 @@ var echartOption = {
                         data: data.yaxis.med_avg_diff.up,
                         itemStyle: {
                             normal: {
-                                color: '#51b8c1'
+                                color: '#70c8db'
                             }
                         },
                         LegendHoverLink: true,
@@ -1093,6 +1059,7 @@ var echartOption = {
         Class: {
             setClassDiagnoseLeft: function (data) {
                 return option = {
+                    color: ['#9be8ee', '#8fb7e6', '#cbc5e5', '#6e8ac9'],
                     textStyle: {
                         fontSize: 16
                     },
@@ -1250,7 +1217,6 @@ var echartOption = {
                             z: 1
                         },
                     ],
-                    color: ['#062755', '#ce15a9', '#04838f', '#25e8cf'],
                     animation: false,
                 };
             },
