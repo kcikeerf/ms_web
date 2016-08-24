@@ -72,25 +72,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h3 class="zy-report-subtitle">知识 - 学生数据表</h3>
 					<div class="studenttable">
-						<table class="data-table pupil-data-table">
-							<caption>知 识</caption>
-							<tr>
-								<th>知识百分等级<br>（<div id="pupil_knowledge_percentile" class="report_pupil_percentile"></div>）</th>
-								<th>个人得分率</th>
-								<th>年级平均得分率</th>
-								<th>得分率差值</th>
-								<th>个人得分</th>
-								<th>满分</th>
-								<!--th>答对考点</th-->
-							</tr>
-							<tbody id="knowledge_data_table"></tbody>
-						</table>
-						<dl>
-							<dt>说明</dt>
-							<dd>
-								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-							</dd>
-						</dl>
+						<%= render partial:"pupil_data_table", locals: { dimesion: "knowledge"} %>
 					</div>
 				</div>
 			</div>
@@ -103,25 +85,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h3 class="zy-report-subtitle">技能 - 学生数据表</h3>
 					<div class="studenttable">
-						<table class="data-table pupil-data-table">
-							<caption>技 能</caption>
-							<tr>
-								<th>技能百分等级<br>（<div id="pupil_skill_percentile" class="report_pupil_percentile"></div>）</th>
-								<th>个人得分率</th>
-								<th>年级平均得分率</th>
-								<th>得分率差值</th>
-								<th>个人得分</th>
-								<th>满分</th>
-								<!--th>答对考点</th-->
-							</tr>
-							<tbody id="skill_data_table"></tbody>
-						</table>
-						<dl>
-							<dt>说明</dt>
-							<dd>
-								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-							</dd>
-						</dl>
+						<%= render partial:"pupil_data_table", locals: { dimesion: "skill"} %>
 					</div>
 				</div>
 			</div>
@@ -134,27 +98,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h3 class="zy-report-subtitle">能力 - 学生数据表</h3>
 					<div class="studenttable">
-						<table class="data-table pupil-data-table">
-							<caption>能 力</caption>
-							<tr>
-								<th>能力百分等级<br>（<div id="pupil_ability_percentile" class="report_pupil_percentile"></div>）</th>
-								<th>个人得分率</th>
-								<th>年级平均得分率</th>
-								<th>得分率差值</th>
-								<th>个人得分</th>
-								<th>满分</th>
-								<!--th>答对考点</th-->
-							</tr>
-							<tr>
-							</tr>
-							<tbody id="ability_data_table"></tbody>
-						</table>
-						<dl>
-							<dt>说明</dt>
-							<dd>
-								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-							</dd>
-						</dl>
+                       <%= render partial:"pupil_data_table", locals: { dimesion: "ability"} %>
 					</div>
 				</div>
 			</div>

@@ -205,7 +205,7 @@ var reportPage = {
 				var level1ValueHtmlStr = '';
 				//取得一级指标的键值对value；
 				var level1Value = level1Arr[i].value;
-				var level1ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level1Value, dimesion) : reportPage.Pupil.creatPuilValueArr(level1Value, dimesion);
+				var level1ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level1Value, dimesion, i) : reportPage.Pupil.creatPuilValueArr(level1Value, dimesion, i);
 				//插入具体数据;
 				for (var k = 0; k < level1ValueArr.data.length; k++) {
 					var display_value = level1ValueArr.data[k];
@@ -227,7 +227,7 @@ var reportPage = {
 						var level2NameHtmlStr = '<td>' + level2Arr[j].label + '</td>';
 						var level2ValueHtmlStr = '';
 						var level2Value = level2Arr[j].value;
-						var level2ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level2Value, dimesion) : reportPage.Pupil.creatPuilValueArr(level2Value, dimesion);
+						var level2ValueArr = type == 'class' ? reportPage.Class.creatClassValueArr(level2Value, dimesion, i) : reportPage.Pupil.creatPuilValueArr(level2Value, dimesion, i);
 						for (var g = 0; g <level2ValueArr.data.length ; g++) {
 							var display_value = level2ValueArr.data[g];
 							if(level2ValueArr.diff_ratio[g] < 0 && level2ValueArr.diff_ratio[g] > -0.3){
@@ -1284,19 +1284,24 @@ var reportPage = {
 			};
 		},
 		/*针对班级的字段*/
-		creatClassValueArr: function(obj,dimesion) {
+		creatClassValueArr: function(obj,dimesion,index) {
 			var result = {data: [], diff_ratio: [] }
 			avg_ratio = obj.cls_gra_avg_percent_diff/obj.gra_average_percent;
             med_ratio = obj.cls_med_gra_avg_percent_diff/obj.gra_average_percent;
+
+            var full_score = obj.full_score;
+            if( index == 0 ){
+            	full_score = Math.round(obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]);
+            }
 			result.data = [
-                ((obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2) * obj.cls_average_percent/100).toFixed(2), 
-                obj.cls_average_percent, 
+                obj.cls_average, 
+                (obj.cls_average/full_score).toFixed(2), 
                 obj.class_median_percent, 
                 obj.gra_average_percent, 
                 obj.cls_gra_avg_percent_diff, 
                 obj.cls_med_gra_avg_percent_diff, 
                 obj.diff_degree, 
-                (obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2)//Math.round(obj.full_score * reportPage.Class.basicData.value_ratio[dimesion])
+                full_score
             ];
             result.diff_ratio = [
                 0,
@@ -1497,15 +1502,20 @@ var reportPage = {
 			}
 		},
 		/*针对个人的字段*/
-		creatPuilValueArr: function(obj,dimesion) {
+		creatPuilValueArr: function(obj,dimesion,index) {
             var result = {data: [], diff_ratio: [] }
             avg_ratio = obj.pup_gra_avg_percent_diff/obj.gra_average_percent;
+
+            var full_score = obj.full_score;
+            if( index == 0 ){
+                var full_score = Math.round(obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]);
+            }
             result.data = [
-                obj.average_percent, 
+                (obj.average/full_score).toFixed(2),
                 obj.gra_average_percent, 
                 obj.pup_gra_avg_percent_diff, 
-                ((obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion])*obj.average_percent/100).toFixed(2), 
-                (obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2)
+                obj.average, 
+                full_score
             ];
             result.diff_ratio = [
                 0,

@@ -120,26 +120,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h3 class="zy-report-subtitle">知识 - 班级数据表</h3>
 					<div id="table_data" class="clearfix ">
-						<table class="data-table">
-							<tr>
-								<th>知识</th>
-								<th>班级平<br>均值</th>
-								<th>班级平均得<br>分率</th>
-								<th>班级中位数<br>得分率</th>
-								<th>年级平均得<br>分率</th>
-								<th>班级与年级<br>平均得分率<br>差值</th>
-								<th>班级中位数<br>得分率与年<br>级平均差值</th>
-								<th>分化程度</th>
-								<th>满分值</th>
-							</tr>
-							<tbody id="Class_knowledge_table"></tbody>
-						</table>
-						<dl>
-							<dt>说明</dt>
-							<dd>
-								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-							</dd>
-						</dl>
+						<%= render partial:"klass_data_table", locals: { dimesion: "knowledge"} %>
 					</div>
 				</div>
 			</div>
@@ -152,26 +133,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h3 class="zy-report-subtitle">技能 - 班级数据表</h3>
 					<div id="table_data" class="clearfix">
-						<table class="data-table">
-							<tr>
-								<th class="col1 colbg">技能</th>
-								<th class="col2">班级平<br>均值</th>
-								<th class="col3">班级平均得<br/>分率</th>
-								<th class="col4">班级中位数<br>得分率</th>
-								<th class="col4">年级平均得<br>分率</th>
-								<th class="col5">班级与年级<br>平均得分率<br>差值</th>
-								<th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
-								<th class="col7">分化程度</th>
-								<th class="col8">满分值</th>
-							</tr>
-							<tbody id="Class_skill_table"></tbody>
-						</table>
-						<dl>
-							<dt>说明</dt>
-							<dd>
-								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-							</dd>
-						</dl>
+						<%= render partial: "klass_data_table", locals:{ dimesion: "skill"} %>
 					</div>
 				</div>
 			</div>
@@ -184,26 +146,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<h3 class="zy-report-subtitle">能力 - 班级数据表</h3>
 					<div id="table_data" class="clearfix">
-						<table class="data-table">
-							<tr>
-								<th class="col1 colbg">能力</th>
-								<th class="col2">班级平<br>均值</th>
-								<th class="col3">班级平均得<br/>分率</th>
-								<th class="col4">班级中位数<br>得分率</th>
-								<th class="col4">年级平均得<br>分率</th>
-								<th class="col5">班级与年级<br>平均得分率<br>差值</th>
-								<th class="col6">班级中位数<br>得分率与年<br>级平均差值</th>
-								<th class="col7">分化程度</th>
-								<th class="col8">满分值</th>
-							</tr>
-							<tbody id="Class_ability_table"></tbody>
-						</table>
-						<dl>
-							<dt>说明</dt>
-							<dd>
-								1. 带*的表示该指标不适用；<br> 2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。
-							</dd>
-						</dl>
+						<%= render partial: "klass_data_table", locals:{ dimesion: "ability"} %>
 					</div>
 				</div>
 			</div>
