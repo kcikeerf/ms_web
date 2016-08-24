@@ -2,8 +2,8 @@
 	<h2><%= @data[:name] %></h2>
 	<div style="margin:20px 0;"></div>
 	<div id="tb">
-<% unless ["roles","permissions","teachers", "pupils"].include? controller_name %>
-		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');">增加</a> 
+<% unless ["permissions","teachers", "pupils"].include? controller_name %>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');"><%= I18n.t("page.add")%></a> 
 <% end %>
 <% unless ["roles","permissions"].include? controller_name %>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="
@@ -12,8 +12,8 @@
 <% else %>
 		editObj('<%= @data[:path] %>/')
 <% end %>
-		">编辑</a>  
-		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroy('<%= @data[:path] %>/')">删除</a>
+		"><%= I18n.t("page.edit")%></a>  
+		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroy('<%= @data[:path] %>/')"><%= I18n.t("page.del")%></a>
 <% end %>
 	</div>  
 	<!-- singleSelect:true, 当行选择-->
@@ -43,7 +43,7 @@
 		<% end %>
 	</div>
 	<div id="dlg-buttons">
-		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveObj()">保存</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveObj()"><%= I18n.t("page.save")%></a>
 		<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 	</div>
 <% end %>
