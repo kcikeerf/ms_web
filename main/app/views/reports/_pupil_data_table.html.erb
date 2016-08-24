@@ -1,0 +1,25 @@
+<table class="data-table pupil-data-table">
+	<caption><%= I18n.t("dict.#{dimesion}")%></caption>
+	<tr>
+		<th><%= I18n.t("dict.#{dimesion}")%>百分等级<br>（<div id="pupil_<%= dimesion%>_percentile" class="report_pupil_percentile"></div>）</th>
+		<th>个人得分率</th>
+		<th>年级平均得分率</th>
+		<th>得分率差值</th>
+		<th>个人得分</th>
+		<th>满分</th>
+		<!--th>答对考点</th-->
+	</tr>
+	<tr>
+	</tr>
+	<tbody id="<%=dimesion%>_data_table"></tbody>
+</table>
+<dl>
+	<dt>说明</dt>
+	<dd>
+		1. 带*的表示该指标不适用；<br> 
+		2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。<br>
+<% if ["skill","ability"].include? dimesion %>		
+		3. 由于只保留2位有效数字，故<%= I18n.t("dict.#{dimesion}") %>总分与<%= I18n.t("dict.#{dimesion}") %>各级指标满分之和会存在微小误差。
+<% end %>	
+	</dd>
+</dl>
