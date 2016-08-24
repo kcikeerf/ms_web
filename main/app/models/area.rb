@@ -65,11 +65,11 @@ class Area < ActiveRecord::Base
   def self.get_area params
     name_pinyin = "zhong_guo"
     if params[:district]
-      name_pinyin = Common::Local::hanzi2pinyin(params[:district])
+      name_pinyin = Common::Locale::hanzi2pinyin(params[:district])
     elsif params[:city]
-      name_pinyin = Common::Local::hanzi2pinyin(params[:city])
+      name_pinyin = Common::Locale::hanzi2pinyin(params[:city])
     elsif params[:province_rid]
-      name_pinyin = Common::Local::hanzi2pinyin(params[:province])
+      name_pinyin = Common::Locale::hanzi2pinyin(params[:province])
     end
     result = Area.where(:name => name_pinyin).first
     return result

@@ -674,6 +674,7 @@ zh:
     login: '登录'
     password: '密码'
     register: '注册'
+    add: "添加"
     edit: '编辑'
     del: '删除'
     cancel: '取消'

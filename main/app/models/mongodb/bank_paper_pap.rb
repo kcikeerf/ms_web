@@ -93,7 +93,7 @@ class Mongodb::BankPaperPap
     #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
     #tenant_uid= Tenant.get_tenant_uid params[:information]
     target_area = Area.get_area params[:information]
-    target_current = Common::User.get_tenant user_id
+    target_current = Common::Uzer.get_tenant user_id
  
     self.update_attributes({
       :user_id => user_id || "",
