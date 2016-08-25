@@ -380,9 +380,9 @@ class Mongodb::BankPaperPap
     out_excel = Axlsx::Package.new
     wb = out_excel.workbook
  
-    # wb.add_worksheet name: "使用说明", state: :hidden  do |sheet|
+    wb.add_worksheet name: "使用说明", state: :hidden  do |sheet|
 
-    # end
+    end
 
     # list sheet
     grade_number = 0
