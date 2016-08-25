@@ -293,6 +293,7 @@ class PapersController < ApplicationController
 
   def set_paper
     @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+    @paper.current_user_id = current_user.id
   end
 
 end
