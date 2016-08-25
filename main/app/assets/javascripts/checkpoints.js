@@ -34,7 +34,7 @@ $(document).on('ready page:load', function (){
 		  		$.ajax({
 					type:"GET",
 					url:"/checkpoints/get_ckp_data",
-					data: {'pap_uid':pap_uid}//{'node_uid':$nodeUid},//咱不做更改，只是用此参数
+					data: {'pap_uid':pap_uid},//{'node_uid':$nodeUid},//咱不做更改，只是用此参数
 					async:true,
 					success:function(data){
 						uncheck(data);
