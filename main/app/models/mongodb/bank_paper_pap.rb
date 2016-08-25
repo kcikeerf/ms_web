@@ -293,8 +293,12 @@ class Mongodb::BankPaperPap
         levels = [*1..Common::Report::CheckPoints::Levels]
         levels.each{|lv|
           # search current level checkpoint
-          lv_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
-
+          if ckp.is_a? BankCheckpointCkp
+            lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+          elsif ckp.is_a? BankSubjectCheckpointCkp
+            xue_duan = BankNodestructure.get_subject_category(self.grade)
+            lv_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+          end
           temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
           result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] = temp_arr
           result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] << { 
