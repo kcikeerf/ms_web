@@ -695,9 +695,10 @@ class Mongodb::BankPaperPap
     #######start to analyze#######      
     (data_start_row..total_row).each{|index|
       row = sheet.row(index)
+      grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
       cells = {
-        :grade => Common::Locale.hanzi2pinyin(row[0]),
-        :xue_duan => BankNodestructure.get_subject_category(row[0]),
+        :grade => grade_pinyin,
+        :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
         :classroom => Common::Locale.hanzi2pinyin(row[1]),
         :head_teacher => row[2],
         :teacher => row[3],
