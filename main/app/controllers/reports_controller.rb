@@ -1,16 +1,18 @@
 class ReportsController < ApplicationController
   # use job queue to create every report
-  
+  before_action :set_paper, only: [:generate_all_reports]
+
   def generate_all_reports
+    logger.info("====================generate_all_reports: begin")
     params.permit!
 
     result = {:task_uid => ""}
 
     begin
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      @paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
 
       #create a task to follow all the jobs
-      task_name = format_report_task_name current_pap.heading
+      task_name = format_report_task_name @paper.heading
       new_task = TaskList.new(
         name: task_name,
         #type: Common::Task::Type::CreateReport,
@@ -24,10 +26,10 @@ class ReportsController < ApplicationController
       Thread.new do
         GenerateReportJob.perform_later({
           :task_uid => new_task.uid,
-          :province =>Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:province_name_cn]),
-          :city => Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:city_name_cn]),
-          :district => Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:district_name_cn]),
-          :school => Common::Locale.hanzi2pinyin(current_pap.tenant.name_cn),
+          :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
+          :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
+          :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
+          :school => Common::Locale.hanzi2pinyin(@paper.tenant.name_cn),
           :pap_uid => params[:pap_uid]}) 
       end
 
@@ -37,6 +39,7 @@ class ReportsController < ApplicationController
       status = 500
       result[:task_uid] = ex.message
     end
+    logger.info("====================generate_all_reports: end")
     render common_json_response(status, result)  
   end
 
@@ -224,5 +227,10 @@ class ReportsController < ApplicationController
   private
   def format_report_task_name prefix
     prefix + "_" +Common::Task::Type::CreateReport
+  end
+
+  def set_paper
+    @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+    @paper.current_user_id = current_user.id
   end
 end
