@@ -96,8 +96,8 @@ $(function(){
                     levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
                 $(".top_title").text(data.information.heading||"");
                 $(".sub_title").text(data.information.subheading||"");
-                // var city = (data.information.province||"")+" "+(data.information.city||"")+" "+(data.information.district||"");
-                // $(".info_city p").text(city);
+                var city = (data.information.province||"")+" "+(data.information.city||"")+" "+(data.information.district||"");
+                $(".info_city p").text(city);
                 $(".info_school p").text(data.information.school);
                 $(".info_type p").text(typeObj[data.information.quiz_type]);
                 $(".info_subject p").text(data.information.subject ? data.information.subject.label : "");
@@ -1267,7 +1267,7 @@ $(function(){
         if(paper.paperData.information){
             $(".paperTitle1 input").val(paper.paperData.information.heading);
             $(".paperTitle2 input").val(paper.paperData.information.subheading);
-            $(".source .school input").val(paper.paperData.information.school);
+            $(".source .school label.school_name").html(paper.paperData.information.school);
             $(".selectTestdate input").val(paper.paperData.information.quiz_date);
             var tempObj = {
                 // 'selectProvince' : paper.paperData.information.province,
