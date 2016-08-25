@@ -95,6 +95,14 @@ class Mongodb::BankPaperPap
     target_area = Area.get_area params[:information]
     target_current = Common::Uzer.get_tenant user_id
  
+    #json保存前的处理
+    params[:paper] = ""
+    params[:information][:province] = tenant.area_pcd[:province_name_cn]
+    params[:information][:city] = tenant.area_pcd[:city_name_cn]
+    params[:information][:district] = tenant.area_pcd[:district_name_cn]
+    params[:information][:school] = tenant.name_cn
+    #
+
     self.update_attributes({
       :user_id => user_id || "",
       :area_uid => target_area.nil?? "" : target_area.uid,
@@ -125,7 +133,7 @@ class Mongodb::BankPaperPap
       :province => tenant.area_pcd[:province_name_cn],#params[:information][:province] || "",
       :city => tenant.area_pcd[:city_name_cn],#params[:information][:city] || "",
       :district => tenant.area_pcd[:district_name_cn], #params[:information][:district] || "",
-      :school => params[:information][:school] || "",
+      :school => tenant.name_cn, #params[:information][:school] || "",
       :subject => params[:information][:subject].blank? ? "": params[:information][:subject][:name],
       :grade => params[:information][:grade].blank? ? "": params[:information][:grade][:name],
       :term => params[:information][:term].blank? ? "": params[:information][:term][:name],
