@@ -1289,7 +1289,7 @@ var reportPage = {
 			avg_ratio = obj.cls_gra_avg_percent_diff/obj.gra_average_percent;
             med_ratio = obj.cls_med_gra_avg_percent_diff/obj.gra_average_percent;
 
-            var full_score = obj.full_score;
+            var full_score = (obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2);
             if( index == 0 ){
             	full_score = Math.round(obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]);
             }
@@ -1506,9 +1506,9 @@ var reportPage = {
             var result = {data: [], diff_ratio: [] }
             avg_ratio = obj.pup_gra_avg_percent_diff/obj.gra_average_percent;
 
-            var full_score = obj.full_score;
+            var full_score = (obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2);
             if( index == 0 ){
-                var full_score = Math.round(obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]);
+              full_score = Math.round(obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]);
             }
             result.data = [
                 (obj.average/full_score*100).toFixed(2),
