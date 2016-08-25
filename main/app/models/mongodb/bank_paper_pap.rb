@@ -1,6 +1,9 @@
 # -*- coding: UTF-8 -*-
 
 class Mongodb::BankPaperPap
+
+  attr_accessor :current_user_id
+
   include Mongoid::Document
 
   include Mongodb::MongodbPatch
@@ -369,7 +372,7 @@ class Mongodb::BankPaperPap
 
   #未来要实现可属于多个tenant
   def tenant
-    Tenant.find(self.tenant_uid)
+    Common::Uzer.get_tenant current_user_id
   end
 
   # create empty score file

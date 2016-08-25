@@ -63,6 +63,7 @@ class PapersController < ApplicationController
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
     begin
+      current_pap.current_user_id = current_user.id
       current_pap.save_pap(current_user.id, params)
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
