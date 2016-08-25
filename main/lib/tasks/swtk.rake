@@ -366,7 +366,7 @@ namespace :swtk do
           j["bank_quiz_qizs"][qiz_index]["bank_qizpoint_qzps"][qzp_index]["bank_checkpoints_ckps"] = qzp_ckp
         }
       }
-      target_pap.update(:paper_json => j.to_json, :paper_status=> "analyzing")
+      target_pap.update(:paper_json => j.to_json, :paper_status=> "analyzed")
 =begin
       qzps = target_pap.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
       qzps.each{|qzp|
