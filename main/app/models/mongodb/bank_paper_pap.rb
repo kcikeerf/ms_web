@@ -380,41 +380,35 @@ class Mongodb::BankPaperPap
     out_excel = Axlsx::Package.new
     wb = out_excel.workbook
  
-    wb.add_worksheet name: "使用说明", state: :hidden  do |sheet|
+    # wb.add_worksheet name: "使用说明", state: :hidden  do |sheet|
 
-    end
+    # end
 
     # list sheet
     grade_number = 0
     wb.add_worksheet name: "grade_list", state: :hidden  do |sheet|
       #grade 
-      grade_dic = BankDic.where(sid: "grade").first
-      grade_dic_items = grade_dic.bank_dic_items.map{|item| I18n.t("dict.#{item.sid}") }
-      grade_dic_items.each{|item|
-        sheet.add_row [item]
+      Common::Grade::List.each{|k,v|
+        sheet.add_row [v]
       }
-      grade_number = grade_dic_items.size
+      grade_number = Common::Grade::List.size
     end
 
     # list sheet
     classroom_number = 0
     wb.add_worksheet name: "classroom_list", state: :hidden  do |sheet|
       #classroom 
-      classroom_dic = BankDic.where(sid: "classroom").first
-      classroom_dic_items = classroom_dic.bank_dic_items.map{|item| I18n.t("dict.#{item.sid}") }
-      classroom_dic_items.each{|item|
-        sheet.add_row [item]
+      Common::Klass::List.each{|k,v|
+        sheet.add_row [v]
       }
-      classroom_number = classroom_dic_items.size
+      classroom_number = Common::Klass::List.size
     end
 
     # list sheet
     wb.add_worksheet name: "sex_list", state: :hidden   do |sheet|
       #grade 
-      sex_dic = BankDic.where(sid: "sex").first
-      sex_dic_items = sex_dic.bank_dic_items.map{|item| I18n.t("dict.#{item.sid}") }
-      sex_dic_items.each{|item|
-        sheet.add_row [item]
+      Common::Locale::SexList.each{|k,v|
+        sheet.add_row [v]
       }
     end
 
