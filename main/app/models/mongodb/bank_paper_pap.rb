@@ -83,7 +83,7 @@ class Mongodb::BankPaperPap
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
 
-  def save_pap user_id, params
+  def save_pap params
     status = Common::Paper::Status::None
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
       status = Common::Paper::Status::New
@@ -96,14 +96,14 @@ class Mongodb::BankPaperPap
     #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
     #tenant_uid= Tenant.get_tenant_uid params[:information]
     target_area = Area.get_area params[:information]
-    target_current = Common::Uzer.get_tenant user_id
+    target_current = Common::Uzer.get_tenant current_user_id
  
     #json保存前的处理
     params[:paper] = ""
-    params[:information][:province] = tenant.area_pcd[:province_name_cn]
-    params[:information][:city] = tenant.area_pcd[:city_name_cn]
-    params[:information][:district] = tenant.area_pcd[:district_name_cn]
-    params[:information][:school] = tenant.name_cn
+    params[:information][:province] = target_current.area_pcd[:province_name_cn]
+    params[:information][:city] = target_current.area_pcd[:city_name_cn]
+    params[:information][:district] = target_current.area_pcd[:district_name_cn]
+    params[:information][:school] = target_current.name_cn
     #
 
     self.update_attributes({
@@ -376,7 +376,7 @@ class Mongodb::BankPaperPap
 
   #未来要实现可属于多个tenant
   def tenant
-    Common::Uzer.get_tenant current_user_id
+    Tenant.where(uid: self.tenant_uid).first
   end
 
   # create empty score file

@@ -192,7 +192,7 @@ Rails.application.routes.draw do
       get 'get_grade_report'
       get 'get_class_report'
       get 'get_pupil_report'
-      get 'square'
+      # get 'square'
       get 'check/:codes', to: "reports#first_login_check_report"
       get 'new_square'
       get 'grade'
@@ -207,44 +207,44 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :grade_reports do
-    member do
-      get 'index'
-    end
-  end
+  # resource :grade_reports do
+  #   member do
+  #     get 'index'
+  #   end
+  # end
 
-  resource :class_reports do
-    member do
-      get 'index'
-    end
-  end
+  # resource :class_reports do
+  #   member do
+  #     get 'index'
+  #   end
+  # end
 
-  resource :pupil_reports do
-    member do
-      get 'index'
-    end
-  end
+  # resource :pupil_reports do
+  #   member do
+  #     get 'index'
+  #   end
+  # end
 
-  resource :gradereport do
-    member do
-      get 'index', to: "gradereport#index"
-      get 'demo',to: "gradereport#demo"
-    end
-  end
+  # resource :gradereport do
+  #   member do
+  #     get 'index', to: "gradereport#index"
+  #     get 'demo',to: "gradereport#demo"
+  #   end
+  # end
 
-  resource :classreport do
-    member do
-      get 'index', to: "classreport#index"
-      get 'demo',to: "classreport#demo"
-    end
-  end
+  # resource :classreport do
+  #   member do
+  #     get 'index', to: "classreport#index"
+  #     get 'demo',to: "classreport#demo"
+  #   end
+  # end
 
-  resource :pupilreport do
-    member do
-      get 'index', to: "pupilreport#index"
-      get 'demo', to: "pupilreport#demo"
-    end
-  end
+  # resource :pupilreport do
+  #   member do
+  #     get 'index', to: "pupilreport#index"
+  #     get 'demo', to: "pupilreport#demo"
+  #   end
+  # end
 
   resource :profile, only: [] do 
     get 'message'
