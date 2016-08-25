@@ -19,7 +19,7 @@
 		1. 带*的表示该指标不适用；<br> 
 		2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。<br>
 <% if ["skill","ability"].include? dimesion %>		
-		3. 由于只保留2位有效数字，故<%= I18n.t("dict.#{dimesion}") %>总分与<%= I18n.t("dict.#{dimesion}") %>各级指标满分之和会存在微小误差。
+		3. 由于只保留4位有效数字，故<%= I18n.t("dict.#{dimesion}") %>总分与<%= I18n.t("dict.#{dimesion}") %>各级指标满分之和会存在微小误差。
 <% end %>	
 	</dd>
 </dl>
