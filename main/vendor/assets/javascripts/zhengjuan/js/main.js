@@ -5,11 +5,11 @@ $(function(){
         paperData : {},     //数据保存时的参数对象
         changeState : false, 
         modalLastUrl: "",
-        getSubject : "/node_structures/get_subjects",        //请求科目
-        getGrade : "/node_structures/get_grades",        //请求年级
-        getTextbook : "/node_structures/get_versions",        //请求教材
-        getTerm : "/node_structures/get_units",        //请求学期
-        getPaperUnit : "/node_structures/get_catalogs_and_tree_data",        //请求知识点范围
+        // getSubject : "/node_structures/get_subjects",        //请求科目
+        // getGrade : "/node_structures/get_grades",        //请求年级
+        // getTextbook : "/node_structures/get_versions",        //请求教材
+        // getTerm : "/node_structures/get_units",        //请求学期
+        // getPaperUnit : "/node_structures/get_catalogs_and_tree_data",        //请求知识点范围
         fileUploadSrc : "/papers/paper_answer_upload",  //试卷答案word上传接口
         getPaperInfo : "/papers/get_saved_paper",       //请求试卷信息接口
         analysisSaveUrl : "/papers/save_analyze",   //解析保存接口
@@ -96,8 +96,8 @@ $(function(){
                     levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
                 $(".top_title").text(data.information.heading||"");
                 $(".sub_title").text(data.information.subheading||"");
-                var city = (data.information.province||"")+" "+(data.information.city||"")+" "+(data.information.district||"");
-                $(".info_city p").text(city);
+                // var city = (data.information.province||"")+" "+(data.information.city||"")+" "+(data.information.district||"");
+                // $(".info_city p").text(city);
                 $(".info_school p").text(data.information.school);
                 $(".info_type p").text(typeObj[data.information.quiz_type]);
                 $(".info_subject p").text(data.information.subject ? data.information.subject.label : "");
@@ -206,9 +206,9 @@ $(function(){
                 that.removeClass("active");
                 var dataObj = {
                     pap_uid : paper.paperData.pap_uid,
-                    province : paper.paperData.information.province,
-                    city : paper.paperData.information.city,
-                    district : paper.paperData.information.district,
+                    // province : paper.paperData.information.province,
+                    // city : paper.paperData.information.city,
+                    // district : paper.paperData.information.district,
                     school : paper.paperData.information.school
                 };
                 $.ajax({
@@ -267,86 +267,86 @@ $(function(){
             //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
-            $(".selecGrade, .selectVersion, .selecTerm, .selectKnowledge").find(".optionList").html("");
-            $(".selecGrade, .selectVersion, .selecTerm, .selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
-            var dataObj = {
-                subject : $(this).attr("nameid")
-            }
-            paper.getInformation(paper.getGrade,dataObj,function(data){
-                var html = "";
-                for(var i=0; i<data.data.length; i++){
-                    html += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
-                }
-                $(".selecGrade .optionList").html(html);
-            });
+            // $(".selecGrade, .selectVersion, .selecTerm, .selectKnowledge").find(".optionList").html("");
+            // $(".selecGrade, .selectVersion, .selecTerm, .selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
+            // var dataObj = {
+            //     subject : $(this).attr("nameid")
+            // }
+            // paper.getInformation(paper.getGrade,dataObj,function(data){
+            //     var html = "";
+            //     for(var i=0; i<data.data.length; i++){
+            //         html += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
+            //     }
+            //     $(".selecGrade .optionList").html(html);
+            // });
         });
         //年级下拉选择
         doc.on("click",".selecGrade .optionList li",function(){
             //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
-            $(".selectVersion, .selecTerm, .selectKnowledge").find(".optionList").html("");
-            $(".selectVersion, .selecTerm, .selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
-            var dataObj = {
-                subject : $(".selectSubject li.active").attr("nameid"),
-                grade : $(this).attr("nameid")
-            }
-            paper.getInformation(paper.getTextbook,dataObj,function(data){
-                var html = "";
-                for(var i=0; i<data.data.length; i++){
-                    html += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
-                }
-                $(".selectVersion .optionList").html(html);
-            });
+            // $(".selectVersion, .selecTerm, .selectKnowledge").find(".optionList").html("");
+            // $(".selectVersion, .selecTerm, .selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
+            // var dataObj = {
+            //     subject : $(".selectSubject li.active").attr("nameid"),
+            //     grade : $(this).attr("nameid")
+            // }
+            // paper.getInformation(paper.getTextbook,dataObj,function(data){
+            //     var html = "";
+            //     for(var i=0; i<data.data.length; i++){
+            //         html += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
+            //     }
+            //     $(".selectVersion .optionList").html(html);
+            // });
         });
         //教材版本下拉选择
         doc.on("click",".selectVersion .optionList li",function(){
             //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
-            $(".selecTerm, .selectKnowledge").find(".optionList").html("");
-            $(".selecTerm, .selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
-            var dataObj = {
-                subject : $(".selectSubject li.active").attr("nameid"),
-                grade : $(".selecGrade li.active").attr("nameid"),
-                version : $(this).attr("nameid")
-            }
-            paper.getInformation(paper.getTerm,dataObj,function(data){
-                var html = "";
-                for(var i=0; i<data.data.length; i++){
-                    html += '<li nameid="'+data.data[i].name+'" uid="'+data.data[i].node_uid+'">'+data.data[i].label+'</li>';
-                }
-                $(".selecTerm .optionList").html(html);
-            });
+            // $(".selecTerm, .selectKnowledge").find(".optionList").html("");
+            // $(".selecTerm, .selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
+            // var dataObj = {
+            //     subject : $(".selectSubject li.active").attr("nameid"),
+            //     grade : $(".selecGrade li.active").attr("nameid"),
+            //     version : $(this).attr("nameid")
+            // }
+            // paper.getInformation(paper.getTerm,dataObj,function(data){
+            //     var html = "";
+            //     for(var i=0; i<data.data.length; i++){
+            //         html += '<li nameid="'+data.data[i].name+'" uid="'+data.data[i].node_uid+'">'+data.data[i].label+'</li>';
+            //     }
+            //     $(".selecTerm .optionList").html(html);
+            // });
         });
         //学期下拉选择
         doc.on("click",".selecTerm .optionList li",function(){
             //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
-            $(".selectKnowledge").find(".optionList").html("");
-            $(".selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
-            var dataObj = {
-                node_uid:$(".selecTerm .optionList li.active").attr("uid")
-            }
-            paper.getInformation(paper.getPaperUnit,dataObj,function(data){
-                var html = "";
-                for(var i=0; i<data.catalogs.length; i++){
-                    html += '<li nameid="'+data.catalogs[i].uid+'">'+data.catalogs[i].node+'</li>';
-                }
-                $(".selectKnowledge .optionList").html(html);
-            });
+            // $(".selectKnowledge").find(".optionList").html("");
+            // $(".selectKnowledge").find(".selectVal span").text("请选择").removeAttr("values");
+            // var dataObj = {
+            //     node_uid:$(".selecTerm .optionList li.active").attr("uid")
+            // }
+            // paper.getInformation(paper.getPaperUnit,dataObj,function(data){
+            //     var html = "";
+            //     for(var i=0; i<data.catalogs.length; i++){
+            //         html += '<li nameid="'+data.catalogs[i].uid+'">'+data.catalogs[i].node+'</li>';
+            //     }
+            //     $(".selectKnowledge .optionList").html(html);
+            // });
         });
         //知识点范围下拉选择
-        doc.on("click",".selectKnowledge .optionList li",function(){
-            var arr = [], that = $(this), text;
-            that.toggleClass("active");
-            that.parent().find("li.active").each(function(){
-                arr.push($(this).text());
-            });
-            text = arr.length ? arr.join(",") : "请选择";
-            that.parents(".optionWarp").find(".selectVal span").text(text);
-        });
+        // doc.on("click",".selectKnowledge .optionList li",function(){
+        //     var arr = [], that = $(this), text;
+        //     that.toggleClass("active");
+        //     that.parent().find("li.active").each(function(){
+        //         arr.push($(this).text());
+        //     });
+        //     text = arr.length ? arr.join(",") : "请选择";
+        //     that.parents(".optionWarp").find(".selectVal span").text(text);
+        // });
         //得分下拉选择
         doc.on("click",".selectFullscore .optionList li, .scorePart .optionList li, .selectScore .optionList li",function(){
             //if($(this).hasClass("active")) return;
@@ -404,24 +404,24 @@ $(function(){
                 paper.changeState = true;
             }
             var html = "", index = $(this).index();
-            //选择的省
-            if($(this).parents(".selectProvince").length){
-                for(var k=0; k<china_city["0_"+index].length; k++){
-                    html += '<li>' + china_city["0_"+index][k] + '</li>';
-                }
-                $(".selectCity, .selectCounty").find(".selectVal span").text("请选择").removeAttr("values");
-                $(".selectCounty .optionList").html("");
-                $(".selectCity .optionList").html(html);
-            //选择市
-            }else if($(this).parents(".selectCity").length){
-                var provinceIndex = $(".selectProvince .optionList li.active").index(),
-                    key = "0_" + provinceIndex + "_" + index;
-                for(var k=0; k<china_city[key].length; k++){
-                    html += '<li>' + china_city[key][k] + '</li>';
-                }
-                $(".selectCounty").find(".selectVal span").text("请选择").removeAttr("values");
-                $(".selectCounty .optionList").html(html);
-            }
+            // //选择的省
+            // if($(this).parents(".selectProvince").length){
+            //     for(var k=0; k<china_city["0_"+index].length; k++){
+            //         html += '<li>' + china_city["0_"+index][k] + '</li>';
+            //     }
+            //     $(".selectCity, .selectCounty").find(".selectVal span").text("请选择").removeAttr("values");
+            //     $(".selectCounty .optionList").html("");
+            //     $(".selectCity .optionList").html(html);
+            // //选择市
+            // }else if($(this).parents(".selectCity").length){
+            //     var provinceIndex = $(".selectProvince .optionList li.active").index(),
+            //         key = "0_" + provinceIndex + "_" + index;
+            //     for(var k=0; k<china_city[key].length; k++){
+            //         html += '<li>' + china_city[key][k] + '</li>';
+            //     }
+            //     $(".selectCounty").find(".selectVal span").text("请选择").removeAttr("values");
+            //     $(".selectCounty .optionList").html(html);
+            // }
         });
         //提交试卷基本信息
         doc.on("click",".infoBtn",function(){
@@ -432,9 +432,9 @@ $(function(){
                 subheading : $(".paperTitle2 input").val(), //副标题
                 school : $(".source .school input").val(),  //学校
                 quiz_date : $(".selectTestdate input").val(),   //考试时间
-                province : $(".selectProvince .selectVal span").attr("values") || "",   //省
-                city : $(".selectCity .selectVal span").attr("values") || "",   //市
-                district : $(".selectCounty .selectVal span").attr("values") || "", //县
+                // province : $(".selectProvince .selectVal span").attr("values") || "",   //省
+                // city : $(".selectCity .selectVal span").attr("values") || "",   //市
+                // district : $(".selectCounty .selectVal span").attr("values") || "", //县
                 node_uid : $(".selecTerm  li.active").attr("uid") || "",
 
                 subject : $(".selectSubject .selectVal span").attr("values") ? {
@@ -1153,100 +1153,124 @@ $(function(){
         });*/
         $(".contentBody").html($(".template_part2").html());
         $("input.date_input").date_input();
-        var html = "";
-        for(var k=0; k<china_city["0"].length;k++){
-            html += '<li>' + china_city["0"][k] + '</li>';
-        }
-        $(".selectProvince .optionList").html(html);
-        //获取科目
-        paper.getInformation(paper.getSubject,{},function(data){
-            if(data.data && data.data.length){
-                var htm = "";
-                for(var i=0; i<data.data.length; i++){
-                    htm += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
-                }
-                $(".selectSubject .optionList").html(htm);
-                //已选科目
-                if(paper.paperData.information && paper.paperData.information.subject){
-                    var subject = paper.paperData.information.subject.name,
-                    s_active = $(".selectSubject .optionList li[nameid="+subject+"]");
-                    s_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",subject).text(s_active.text());
-                    paper.getInformation(paper.getGrade,{subject:$(".selectSubject .optionList li.active").attr("nameid")},function(data){
-                        htm = "";
-                        for(var i=0; i<data.data.length; i++){
-                            htm += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
-                        }
-                        $(".selecGrade .optionList").html(htm);
-                        //已选年级
-                        if(paper.paperData.information.grade){
-                            var grade = paper.paperData.information.grade.name,
-                            g_active = $(".selecGrade .optionList li[nameid="+grade+"]");
-                            g_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",grade).text(g_active.text());
-                            paper.getInformation(paper.getTextbook,{
-                                    subject:$(".selectSubject .optionList li.active").attr("nameid"),
-                                    grade:$(".selecGrade .optionList li.active").attr("nameid")
-                                },
-                                function(data){
-                                    htm = "";
-                                    for(var i=0; i<data.data.length; i++){
-                                        htm += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
-                                    }
-                                    $(".selectVersion .optionList").html(htm);
-                                    //已选教材
-                                    if(paper.paperData.information.text_version){
-                                        var version = paper.paperData.information.text_version.name,
-                                        v_active = $(".selectVersion .optionList li[nameid="+version+"]");
-                                        v_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",version).text(v_active.text());
-                                        paper.getInformation(paper.getTerm,{
-                                                subject:$(".selectSubject .optionList li.active").attr("nameid"),
-                                                grade:$(".selecGrade .optionList li.active").attr("nameid"),
-                                                version:$(".selectVersion .optionList li.active").attr("nameid")
-                                            },
-                                            function(data){
-                                                htm = "";
-                                                for(var i=0; i<data.data.length; i++){
-                                                    htm += '<li nameid="'+data.data[i].name+'" uid="'+data.data[i].node_uid+'">'+data.data[i].label+'</li>';
-                                                }
-                                                $(".selecTerm .optionList").html(htm);
-                                                //已选学期
-                                                if(paper.paperData.information.term){
-                                                    var term = paper.paperData.information.term.name,
-                                                    t_active = $(".selecTerm .optionList li[nameid="+term+"]");
-                                                    t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",term).text(t_active.text());
-                                                    paper.getInformation(paper.getPaperUnit,{node_uid:$(".selecTerm .optionList li.active").attr("uid")}, function(data){
-                                                        htm = "";
-                                                        for(var i=0; i<data.catalogs.length; i++){
-                                                            htm += '<li nameid="'+data.catalogs[i].uid+'">'+data.catalogs[i].node+'</li>';
-                                                        }
-                                                        $(".selectKnowledge .optionList").html(htm);
-                                                        //已选单元
-                                                        if(paper.paperData.bank_node_catalogs && paper.paperData.bank_node_catalogs.length){
-                                                            var sArr = [], tempArr = paper.paperData.bank_node_catalogs;
-                                                            for(var i=0; i<tempArr.length; i++){
-                                                                $(".selectKnowledge .optionList li[nameid="+tempArr[i].name+"]").addClass("active");
-                                                                sArr.push($(".selectKnowledge .optionList li[nameid="+tempArr[i].name+"]").text());
-                                                            }
-                                                            $(".selectKnowledge .selectVal span").text(sArr.join(","));
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        );
-                                    }
-                                }
-                            );
-                        }
-                    });
-                }
+
+        if(paper.paperData.information){
+            if(paper.paperData.information.subject){
+                var subject = paper.paperData.information.subject.name,
+                s_active = $(".selectSubject .optionList li[nameid="+subject+"]");
+                s_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",subject).text(s_active.text());
             }
-        });
+            if(paper.paperData.information.grade){
+                var grade = paper.paperData.information.grade.name,
+                g_active = $(".selecGrade .optionList li[nameid="+grade+"]");
+                g_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",grade).text(g_active.text());
+            }
+            if(paper.paperData.information.text_version){
+                var version = paper.paperData.information.text_version.name,
+                v_active = $(".selectVersion .optionList li[nameid="+version+"]");
+                v_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",version).text(v_active.text());
+            }
+            if(paper.paperData.information.term){
+                var term = paper.paperData.information.term.name,
+                t_active = $(".selecTerm .optionList li[nameid="+term+"]");
+                t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",term).text(t_active.text());
+            }
+        }
+
+        // var html = "";
+        // for(var k=0; k<china_city["0"].length;k++){
+        //     html += '<li>' + china_city["0"][k] + '</li>';
+        // }
+        // $(".selectProvince .optionList").html(html);
+        //获取科目
+        // paper.getInformation(paper.getSubject,{},function(data){
+        //     if(data.data && data.data.length){
+        //         var htm = "";
+        //         for(var i=0; i<data.data.length; i++){
+        //             htm += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
+        //         }
+        //         $(".selectSubject .optionList").html(htm);
+        //         //已选科目
+        //         if(paper.paperData.information && paper.paperData.information.subject){
+        //             var subject = paper.paperData.information.subject.name,
+        //             s_active = $(".selectSubject .optionList li[nameid="+subject+"]");
+        //             s_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",subject).text(s_active.text());
+        //             paper.getInformation(paper.getGrade,{subject:$(".selectSubject .optionList li.active").attr("nameid")},function(data){
+        //                 htm = "";
+        //                 for(var i=0; i<data.data.length; i++){
+        //                     htm += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
+        //                 }
+        //                 $(".selecGrade .optionList").html(htm);
+        //                 //已选年级
+        //                 if(paper.paperData.information.grade){
+        //                     var grade = paper.paperData.information.grade.name,
+        //                     g_active = $(".selecGrade .optionList li[nameid="+grade+"]");
+        //                     g_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",grade).text(g_active.text());
+        //                     paper.getInformation(paper.getTextbook,{
+        //                             subject:$(".selectSubject .optionList li.active").attr("nameid"),
+        //                             grade:$(".selecGrade .optionList li.active").attr("nameid")
+        //                         },
+        //                         function(data){
+        //                             htm = "";
+        //                             for(var i=0; i<data.data.length; i++){
+        //                                 htm += '<li nameid="'+data.data[i].name+'">'+data.data[i].label+'</li>';
+        //                             }
+        //                             $(".selectVersion .optionList").html(htm);
+        //                             //已选教材
+        //                             if(paper.paperData.information.text_version){
+        //                                 var version = paper.paperData.information.text_version.name,
+        //                                 v_active = $(".selectVersion .optionList li[nameid="+version+"]");
+        //                                 v_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",version).text(v_active.text());
+        //                                 paper.getInformation(paper.getTerm,{
+        //                                         subject:$(".selectSubject .optionList li.active").attr("nameid"),
+        //                                         grade:$(".selecGrade .optionList li.active").attr("nameid"),
+        //                                         version:$(".selectVersion .optionList li.active").attr("nameid")
+        //                                     },
+        //                                     function(data){
+        //                                         htm = "";
+        //                                         for(var i=0; i<data.data.length; i++){
+        //                                             htm += '<li nameid="'+data.data[i].name+'" uid="'+data.data[i].node_uid+'">'+data.data[i].label+'</li>';
+        //                                         }
+        //                                         $(".selecTerm .optionList").html(htm);
+        //                                         //已选学期
+        //                                         if(paper.paperData.information.term){
+        //                                             var term = paper.paperData.information.term.name,
+        //                                             t_active = $(".selecTerm .optionList li[nameid="+term+"]");
+        //                                             t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",term).text(t_active.text());
+        //                                             paper.getInformation(paper.getPaperUnit,{node_uid:$(".selecTerm .optionList li.active").attr("uid")}, function(data){
+        //                                                 htm = "";
+        //                                                 for(var i=0; i<data.catalogs.length; i++){
+        //                                                     htm += '<li nameid="'+data.catalogs[i].uid+'">'+data.catalogs[i].node+'</li>';
+        //                                                 }
+        //                                                 $(".selectKnowledge .optionList").html(htm);
+        //                                                 //已选单元
+        //                                                 if(paper.paperData.bank_node_catalogs && paper.paperData.bank_node_catalogs.length){
+        //                                                     var sArr = [], tempArr = paper.paperData.bank_node_catalogs;
+        //                                                     for(var i=0; i<tempArr.length; i++){
+        //                                                         $(".selectKnowledge .optionList li[nameid="+tempArr[i].name+"]").addClass("active");
+        //                                                         sArr.push($(".selectKnowledge .optionList li[nameid="+tempArr[i].name+"]").text());
+        //                                                     }
+        //                                                     $(".selectKnowledge .selectVal span").text(sArr.join(","));
+        //                                                 }
+        //                                             });
+        //                                         }
+        //                                     }
+        //                                 );
+        //                             }
+        //                         }
+        //                     );
+        //                 }
+        //             });
+        //         }
+        //     }
+        // });
         if(paper.paperData.information){
             $(".paperTitle1 input").val(paper.paperData.information.heading);
             $(".paperTitle2 input").val(paper.paperData.information.subheading);
             $(".source .school input").val(paper.paperData.information.school);
             $(".selectTestdate input").val(paper.paperData.information.quiz_date);
             var tempObj = {
-                'selectProvince' : paper.paperData.information.province,
+                // 'selectProvince' : paper.paperData.information.province,
                 'selecType' : paper.paperData.information.quiz_type,
                 'selectDifficulty' : paper.paperData.information.levelword,
                 'selectTime' : paper.paperData.information.quiz_duration,
@@ -1265,39 +1289,39 @@ $(function(){
                     }
                 });
             }
-            //存在“省”
-            if(paper.paperData.information.province){
-                var html1 = "",
-                    pIndex = $(".selectProvince .optionList li.active").index(),
-                    key = "0_" + pIndex;
-                for(var k=0; k<china_city[key].length; k++){
-                    if(paper.paperData.information.city == china_city[key][k]){
-                        html1 += '<li class="active">' + china_city[key][k] + '</li>';
-                    }else{
-                        html1 += '<li>' + china_city[key][k] + '</li>';
-                    }
-                }
-                $(".selectCity .optionList").html(html1);
-                var active_city = $(".selectCity .optionList li.active");
-                active_city.length && $(".selectCity .selectVal span").attr("values",active_city.text()).text(active_city.text());
-            }
-            //存在“市”
-            if(paper.paperData.information.city){
-                var html2 = "",
-                    pIndex = $(".selectProvince .optionList li.active").index(),
-                    cIndex = $(".selectCity .optionList li.active").index();
-                    key = "0_" + pIndex + "_" + cIndex;
-                for(var k=0; k<china_city[key].length; k++){
-                    if(paper.paperData.information.district == china_city[key][k]){
-                        html2 += '<li class="active">' + china_city[key][k] + '</li>';
-                    }else{
-                        html2 += '<li>' + china_city[key][k] + '</li>';
-                    }
-                }
-                $(".selectCounty .optionList").html(html2);
-                var active_county = $(".selectCounty .optionList li.active");
-                active_county.length && $(".selectCounty .selectVal span").attr("values",active_county.text()).text(active_county.text());
-            }
+            // //存在“省”
+            // if(paper.paperData.information.province){
+            //     var html1 = "",
+            //         pIndex = $(".selectProvince .optionList li.active").index(),
+            //         key = "0_" + pIndex;
+            //     for(var k=0; k<china_city[key].length; k++){
+            //         if(paper.paperData.information.city == china_city[key][k]){
+            //             html1 += '<li class="active">' + china_city[key][k] + '</li>';
+            //         }else{
+            //             html1 += '<li>' + china_city[key][k] + '</li>';
+            //         }
+            //     }
+            //     $(".selectCity .optionList").html(html1);
+            //     var active_city = $(".selectCity .optionList li.active");
+            //     active_city.length && $(".selectCity .selectVal span").attr("values",active_city.text()).text(active_city.text());
+            // }
+            // //存在“市”
+            // if(paper.paperData.information.city){
+            //     var html2 = "",
+            //         pIndex = $(".selectProvince .optionList li.active").index(),
+            //         cIndex = $(".selectCity .optionList li.active").index();
+            //         key = "0_" + pIndex + "_" + cIndex;
+            //     for(var k=0; k<china_city[key].length; k++){
+            //         if(paper.paperData.information.district == china_city[key][k]){
+            //             html2 += '<li class="active">' + china_city[key][k] + '</li>';
+            //         }else{
+            //             html2 += '<li>' + china_city[key][k] + '</li>';
+            //         }
+            //     }
+            //     $(".selectCounty .optionList").html(html2);
+            //     var active_county = $(".selectCounty .optionList li.active");
+            //     active_county.length && $(".selectCounty .selectVal span").attr("values",active_county.text()).text(active_county.text());
+            // }
         }
     }
     //跳转到单题切分模块

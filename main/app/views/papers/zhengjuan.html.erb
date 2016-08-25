@@ -159,7 +159,7 @@
 			</div>
 			<ul class="infoList">
 				<li>
-					<div class="selectWarp selectProvince clearfix">
+					<!--div class="selectWarp selectProvince clearfix">
 						<p>省&nbsp;:</p>
 						<div class="optionWarp">
 							<div class="selectVal">
@@ -169,7 +169,7 @@
 							<ol class="optionList">
 							</ol>
 						</div>
-					</div>
+					</div-->
 					<div class="selectWarp selectSubject different clearfix">
 						<p>科目&nbsp;:</p>
 						<div class="optionWarp">
@@ -178,6 +178,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
+                                <% subject_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>
@@ -189,6 +192,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
+                                <% term_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>
@@ -212,7 +218,7 @@
 					</div>
 				</li>
 				<li>
-					<div class="selectWarp selectCity clearfix">
+					<!--div class="selectWarp selectCity clearfix">
 						<p>市&nbsp;:</p>
 						<div class="optionWarp">
 							<div class="selectVal">
@@ -222,7 +228,7 @@
 							<ol class="optionList">
 							</ol>
 						</div>
-					</div>
+					</div-->
 					<div class="selectWarp selecGrade different clearfix">
 						<p>年级&nbsp;:</p>
 						<div class="optionWarp">
@@ -231,6 +237,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
+                                <% grade_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>
@@ -275,7 +284,7 @@
 					</div>
 				</li>
 				<li>
-					<div class="selectWarp selectCounty clearfix">
+					<!--div class="selectWarp selectCounty clearfix">
 						<p>区/县&nbsp;:</p>
 						<div class="optionWarp">
 							<div class="selectVal">
@@ -285,7 +294,7 @@
 							<ol class="optionList">
 							</ol>
 						</div>
-					</div>
+					</div-->
 					<div class="selectWarp selectVersion different clearfix">
 						<p>教材版本&nbsp;:</p>
 						<div class="optionWarp">
@@ -294,6 +303,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
+                                <% node_version_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>

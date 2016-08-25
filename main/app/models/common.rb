@@ -2,14 +2,16 @@
 # 
 
 module Common
+  include CheckpointCkpModule
   include GradeModule
   include KlassModule
   include LocaleModule
-  include SwtkConstantsModule
+  include NodeVersionModule
   include RoleModule
   include SubjectModule
+  include SwtkConstantsModule
+  include TermModule
   include UzerModule
-  include CheckpointCkpModule
 
   module Area
     CountryRids = {
