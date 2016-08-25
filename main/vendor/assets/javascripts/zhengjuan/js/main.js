@@ -868,6 +868,7 @@ $(function(){
                 index = $(".score_part .score_list.open").index();
             paper.changeState = true;
             var dataArr = (obj && obj.dataArr) ? obj.dataArr : "";
+            console.log(obj);
             if(dataArr && dataArr.length){
                 paper.paperData.bank_quiz_qizs[num-1].bank_qizpoint_qzps[index].bank_checkpoints_ckps = dataArr;
                 for(var k=0; k<dataArr.length; k++){

@@ -2,7 +2,7 @@ class PapersController < ApplicationController
 
   layout "zhengjuan"
 
-  before_action :set_paper, only: [:download, :download_page, :import_filled_score]
+  before_action :set_paper, only: [:download, :download_page, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
 
   # type1 upload a quiz
   # params: file_paper:[file]
@@ -95,13 +95,13 @@ class PapersController < ApplicationController
     result = response_json
 
     if params[:pap_uid]
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
       begin
-        current_pap.current_user_id = current_user.id
-        current_pap.submit_pap params
-        current_pap.generate_empty_score_file
+        #current_pap.current_user_id = current_user.id
+        @paper.submit_pap params
+        @paper.generate_empty_score_file
 
-        result = response_json(200, {pap_uid: current_pap._id.to_s})
+        result = response_json(200, {pap_uid: @paper._id.to_s})
         #result = response_json(200, {messages: I18n.t("papers.messages.submit_paper.success", current_pap.heading)})
       rescue Exception => ex
         result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.message)})
@@ -118,11 +118,11 @@ class PapersController < ApplicationController
     result = response_json
 
     if params[:pap_uid]
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      if current_pap.save_ckp params
-        result = response_json(200, {messages: I18n.t("papers.messages.save_analyze.success", current_pap.heading)})
+      #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      if @paper.save_ckp params
+        result = response_json(200, {messages: I18n.t("papers.messages.save_analyze.success", @paper.heading)})
       else
-        result = response_json(500, {messages: I18n.t("papers.messages.save_analyze.fail", current_pap.heading)})
+        result = response_json(500, {messages: I18n.t("papers.messages.save_analyze.fail", @paper.heading)})
       end
     else
       result = response_json(500)
@@ -136,8 +136,8 @@ class PapersController < ApplicationController
     result = response_json
  
     if params[:pap_uid]
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      result = response_json(200, current_pap.analyze_json.to_json)
+      #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      result = response_json(200, @paper.analyze_json.to_json)
     else
       result = response_json(500)
     end
@@ -151,11 +151,11 @@ class PapersController < ApplicationController
     result = response_json
 
     if params[:pap_uid]
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      if current_pap.submit_ckp params
-        result = response_json(200, {messages: I18n.t("papers.messages.submit_analyze.success", current_pap.heading)})
+      #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      if @paper.submit_ckp params
+        result = response_json(200, {messages: I18n.t("papers.messages.submit_analyze.success", @paper.heading)})
       else
-        result = response_json(500, {messages: I18n.t("papers.messages.submit_analyze.fail", current_pap.heading)})
+        result = response_json(500, {messages: I18n.t("papers.messages.submit_analyze.fail", @paper.heading)})
       end
     else
       result = response_json(500)
@@ -187,8 +187,8 @@ class PapersController < ApplicationController
     params.permit!
 
     if params[:pap_uid]
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      score_file = ScoreUpload.where(id: current_pap.score_file_id).first
+      #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      score_file = ScoreUpload.where(id: @paper.score_file_id).first
       if score_file
         send_file score_file.empty_file.current_path,
           filename: score_file.empty_file.filename,
