@@ -183,7 +183,7 @@ $(document).on('ready page:load', function (){
 				"dimesion":""+nodes_skill[i].dimesion+"",
 				"checkpoint":""+nodes_skill[i].checkpoint+"",
 				"uid":""+nodes_skill[i].uid+"",
-				"ckp_source": ""+nodes_knowledge[i].ckp_source+""
+				"ckp_source": ""+nodes_skill[i].ckp_source+""
 			};
 			dataStr.push(str);
 		}
@@ -198,7 +198,7 @@ $(document).on('ready page:load', function (){
 				"dimesion":""+nodes_ability[i].dimesion+"",
 				"checkpoint":""+nodes_ability[i].checkpoint+"",
 				"uid":""+nodes_ability[i].uid+"",
-				"ckp_source": ""+nodes_knowledge[i].ckp_source+""
+				"ckp_source": ""+nodes_ability[i].ckp_source+""
 			};
 			dataStr.push(str);
 		}
