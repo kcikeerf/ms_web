@@ -11,7 +11,6 @@ class ReportsController < ApplicationController
 
       #create a task to follow all the jobs
       task_name = format_report_task_name current_pap.heading
-      p "task_name", task_name
       new_task = TaskList.new(
         name: task_name,
         #type: Common::Task::Type::CreateReport,
@@ -25,10 +24,10 @@ class ReportsController < ApplicationController
       Thread.new do
         GenerateReportJob.perform_later({
           :task_uid => new_task.uid,
-          :province =>Common::Locale.hanzi2pinyin(params[:province]),
-          :city => Common::Locale.hanzi2pinyin(params[:city]),
-          :district => Common::Locale.hanzi2pinyin(params[:district]),
-          :school => Common::Locale.hanzi2pinyin(params[:school]),
+          :province =>Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:province_name_cn]),
+          :city => Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:city_name_cn]),
+          :district => Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:district_name_cn]),
+          :school => Common::Locale.hanzi2pinyin(current_pap.tenant.name_cn),
           :pap_uid => params[:pap_uid]}) 
       end
 
