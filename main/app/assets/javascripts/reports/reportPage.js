@@ -1295,7 +1295,7 @@ var reportPage = {
             }
 			result.data = [
                 obj.cls_average, 
-                (obj.cls_average/full_score).toFixed(2), 
+                (obj.cls_average/full_score*100).toFixed(2), 
                 obj.class_median_percent, 
                 obj.gra_average_percent, 
                 obj.cls_gra_avg_percent_diff, 
@@ -1511,7 +1511,7 @@ var reportPage = {
                 var full_score = Math.round(obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]);
             }
             result.data = [
-                (obj.average/full_score).toFixed(2),
+                (obj.average/full_score*100).toFixed(2),
                 obj.gra_average_percent, 
                 obj.pup_gra_avg_percent_diff, 
                 obj.average, 
