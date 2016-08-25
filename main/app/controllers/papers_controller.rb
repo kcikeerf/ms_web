@@ -2,8 +2,10 @@ class PapersController < ApplicationController
 
   layout "zhengjuan"
 
-  before_action :set_paper, only: [:download, :download_page, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
-
+  before_action :set_paper#, only: [:download, :download_page, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
+  before_action do
+    check_resource_tenant(@paper) if @paper
+  end
   # type1 upload a quiz
   # params: file_paper:[file]
   # params: file_answer:[file]
@@ -64,7 +66,7 @@ class PapersController < ApplicationController
     end
     begin
       current_pap.current_user_id = current_user.id
-      current_pap.save_pap(current_user.id, params)
+      current_pap.save_pap(params)
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
       result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
