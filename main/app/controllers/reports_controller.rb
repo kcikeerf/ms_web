@@ -9,7 +9,7 @@ class ReportsController < ApplicationController
     result = {:task_uid => ""}
 
     begin
-      @paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
 
       #create a task to follow all the jobs
       task_name = format_report_task_name @paper.heading
