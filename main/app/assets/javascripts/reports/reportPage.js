@@ -1290,12 +1290,13 @@ var reportPage = {
             med_ratio = obj.cls_med_gra_avg_percent_diff/obj.gra_average_percent;
 
             var full_score = (obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2);
+            var cls_average = (obj.cls_average * reportPage.Class.basicData.value_ratio[dimesion]).toFixed(2);
             if( index == 0 ){
             	full_score = Math.round(obj.full_score * reportPage.Class.basicData.value_ratio[dimesion]);
             }
 			result.data = [
-                obj.cls_average, 
-                (obj.cls_average/full_score*100).toFixed(2), 
+                cls_average, 
+                (cls_average/full_score*100).toFixed(2), 
                 obj.class_median_percent, 
                 obj.gra_average_percent, 
                 obj.cls_gra_avg_percent_diff, 
@@ -1507,14 +1508,15 @@ var reportPage = {
             avg_ratio = obj.pup_gra_avg_percent_diff/obj.gra_average_percent;
 
             var full_score = (obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2);
+            var average = (obj.average * reportPage.Pupil.basicData.value_ratio[dimesion]).toFixed(2);
             if( index == 0 ){
               full_score = Math.round(obj.full_score * reportPage.Pupil.basicData.value_ratio[dimesion]);
             }
             result.data = [
-                (obj.average/full_score*100).toFixed(2),
+                (average/full_score*100).toFixed(2),
                 obj.gra_average_percent, 
                 obj.pup_gra_avg_percent_diff, 
-                obj.average, 
+                average, 
                 full_score
             ];
             result.diff_ratio = [
