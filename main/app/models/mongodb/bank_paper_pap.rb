@@ -697,6 +697,7 @@ class Mongodb::BankPaperPap
       row = sheet.row(index)
       cells = {
         :grade => Common::Locale.hanzi2pinyin(row[0]),
+        :xue_duan => BankNodestructure.get_subject_category(row[0]),
         :classroom => Common::Locale.hanzi2pinyin(row[1]),
         :head_teacher => row[2],
         :teacher => row[3],
@@ -810,8 +811,13 @@ class Mongodb::BankPaperPap
         ckps = qizpoint.bank_checkpoint_ckps
         ckps.each{|ckp|
           next unless ckp
-          lv1_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-          lv2_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          if ckp.is_a? BankCheckpointCkp
+            lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+            lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          elsif ckp.is_a? BankSubjectCheckpointCkp
+            lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,3)}'").first
+            lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          end
           param_h[:dimesion] = ckp.dimesion
           param_h[:lv1_uid] = lv1_ckp.uid
           param_h[:lv1_ckp] = lv1_ckp.checkpoint
