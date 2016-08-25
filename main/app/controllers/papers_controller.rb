@@ -97,13 +97,14 @@ class PapersController < ApplicationController
     if params[:pap_uid]
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
       begin
+        current_pap.current_user_id = current_user.id
         current_pap.submit_pap params
         current_pap.generate_empty_score_file
 
         result = response_json(200, {pap_uid: current_pap._id.to_s})
         #result = response_json(200, {messages: I18n.t("papers.messages.submit_paper.success", current_pap.heading)})
       rescue Exception => ex
-        result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.backtrace)})
+        result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.message)})
       end
     else
       result = response_json(500)
