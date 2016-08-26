@@ -1,16 +1,21 @@
 class ReportsController < ApplicationController
   # use job queue to create every report
-  
+  before_action :set_paper, only: [:generate_all_reports,:new_square]
+  before_action do
+    check_resource_tenant(@paper) if @paper
+  end
+
   def generate_all_reports
+    logger.info("====================generate_all_reports: begin")
     params.permit!
 
     result = {:task_uid => ""}
 
     begin
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+      #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
 
       #create a task to follow all the jobs
-      task_name = format_report_task_name current_pap.heading
+      task_name = format_report_task_name @paper.heading
       new_task = TaskList.new(
         name: task_name,
         #type: Common::Task::Type::CreateReport,
@@ -24,10 +29,10 @@ class ReportsController < ApplicationController
       Thread.new do
         GenerateReportJob.perform_later({
           :task_uid => new_task.uid,
-          :province =>Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:province_name_cn]),
-          :city => Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:city_name_cn]),
-          :district => Common::Locale.hanzi2pinyin(current_pap.tenant.area_pcd[:district_name_cn]),
-          :school => Common::Locale.hanzi2pinyin(current_pap.tenant.name_cn),
+          :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
+          :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
+          :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
+          :school => Common::Locale.hanzi2pinyin(@paper.tenant.name_cn),
           :pap_uid => params[:pap_uid]}) 
       end
 
@@ -37,6 +42,7 @@ class ReportsController < ApplicationController
       status = 500
       result[:task_uid] = ex.message
     end
+    logger.info("====================generate_all_reports: end")
     render common_json_response(status, result)  
   end
 
@@ -107,38 +113,38 @@ class ReportsController < ApplicationController
   end
 
   # reports index page
-  def square
-    params.permit!
+  # def square
+  #   params.permit!
 
-    current_paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+  #   current_paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
 
-    loc_h = {
-      :province => Common::Locale.hanzi2pinyin(current_paper.province),
-      :city => Common::Locale.hanzi2pinyin(current_paper.city),
-      :district => Common::Locale.hanzi2pinyin(current_paper.district),
-      :school => Common::Locale.hanzi2pinyin(current_paper.school),
-      :grade => current_paper.grade
-    }
-    grade_report = Mongodb::GradeReport.where(loc_h).first
+  #   loc_h = {
+  #     :province => Common::Locale.hanzi2pinyin(current_paper.province),
+  #     :city => Common::Locale.hanzi2pinyin(current_paper.city),
+  #     :district => Common::Locale.hanzi2pinyin(current_paper.district),
+  #     :school => Common::Locale.hanzi2pinyin(current_paper.school),
+  #     :grade => current_paper.grade
+  #   }
+  #   grade_report = Mongodb::GradeReport.where(loc_h).first
 
-    #@default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
-    #@default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    #@default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
-    if current_user.is_analyzer?
-      @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
-    elsif current_user.is_teacher?
-      klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
-      loc_h[:classroom] = klass_rooms
-      @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
-    elsif current_user.is_pupil?
-      @scope_menus = current_user.pupil.report_menu params[:pap_uid]
-    else 
-      @scope_menus = { 
-        :key => "",
-        :label => "",
-        :report_url => "",
-        :items => []}
-    end
+  #   #@default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
+  #   #@default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
+  #   #@default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
+  #   if current_user.is_analyzer?
+  #     @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
+  #   elsif current_user.is_teacher?
+  #     klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
+  #     loc_h[:classroom] = klass_rooms
+  #     @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
+  #   elsif current_user.is_pupil?
+  #     @scope_menus = current_user.pupil.report_menu params[:pap_uid]
+  #   else 
+  #     @scope_menus = { 
+  #       :key => "",
+  #       :label => "",
+  #       :report_url => "",
+  #       :items => []}
+  #   end
 
 =begin
     if current_user.is_analyzer?
@@ -149,8 +155,8 @@ class ReportsController < ApplicationController
 
     end
 =end
-    render :layout => 'report'
-  end
+  #   render :layout => 'report'
+  # end
 
   def first_login_check_report
     params.permit!
@@ -224,5 +230,10 @@ class ReportsController < ApplicationController
   private
   def format_report_task_name prefix
     prefix + "_" +Common::Task::Type::CreateReport
+  end
+
+  def set_paper
+    @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+    @paper.current_user_id = current_user.id
   end
 end

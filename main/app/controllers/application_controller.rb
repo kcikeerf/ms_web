@@ -73,6 +73,19 @@ class ApplicationController < ActionController::Base
     end
     tenant
   end
+
+  def check_resource_tenant obj
+    flag = false
+    if obj && obj.tenant && current_tenant
+      p "obj tenant uid >>>#{obj.tenant.uid}"
+      p "current_tenant.uid >>>>#{current_tenant.uid}"
+      flag = true if obj.tenant.uid == current_tenant.uid
+    end
+    p ">>>>>#{flag}"
+    unless flag
+      render 'errors/403', status: 403,  layout: 'error'
+    end
+  end
     
   ########
   #override devise after login path

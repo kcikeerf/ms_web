@@ -356,12 +356,12 @@ namespace :swtk do
         j["bank_quiz_qizs"][qiz_index]["bank_qizpoint_qzps"].each_with_index{|qzp,qzp_index|
           qzp_ckp = []
           ["knowledge", "skill", "ability"].each{|dimesion|
-            ckp = BankCheckpointCkp.where({
-              :node_uid => "728539189095694336", 
-              :dimesion => dimesion, 
-              :is_entity => true}).sample
-            Mongodb::BankCkpQzp.new({:qzp_uid=> qzp["id"], :ckp_uid=> ckp.uid.to_s}).save!
-            qzp_ckp << {"dimesion" => dimesion, "checkpoint"=>ckp.checkpoint, "uid" => ckp.uid}
+            ckp = BankSubjectCheckpointCkp.where({
+               :dimesion => dimesion, 
+               :is_entity => true}).sample
+            ckp_qzp = Mongodb::BankCkpQzp.new
+            ckp_qzp.save_ckp_qzp  qzp["id"], ckp.uid.to_s, "BankSubjectCheckpointCkp"
+            qzp_ckp << {"dimesion" => dimesion, "checkpoint"=>ckp.checkpoint, "uid" => ckp.uid, "ckp_source" => "BankSubjectCheckpointCkp"}
           }
           j["bank_quiz_qizs"][qiz_index]["bank_qizpoint_qzps"][qzp_index]["bank_checkpoints_ckps"] = qzp_ckp
         }
