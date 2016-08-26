@@ -21,22 +21,22 @@
 				<li class="tab-btn" data-id="grade-classPupilNum-ability">能力</li>
 			</ul>
 		</li>
-		<li class="drop-down">
-			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">各班各指标表现水平数据表</a>
-			<ul id="collapseThree" class="panel-collapse collapse">
-				<li class="tab-btn" data-id="grade-checkpoint-table-knowledge">知识</li>
-				<li class="tab-btn" data-id="grade-checkpoint-table-skill">技能</li>
-				<li class="tab-btn" data-id="grade-checkpoint-table-ability">能力</li>
-			</ul>
-		</li>
-		<li class="drop-down">
-			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseFore">班级分数段比例数据表</a>
-			<ul id="collapseFore" class="panel-collapse collapse">
-				<li class="tab-btn" data-id="grade-classPupilNum-table-knowledge">知识</li>
-				<li class="tab-btn" data-id="grade-classPupilNum-table-skill">技能</li>
-				<li class="tab-btn" data-id="grade-classPupilNum-table-ability">能力</li>
-			</ul>
-		</li>
+		<!--<li class="drop-down">-->
+			<!--<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">各班各指标表现水平数据表</a>-->
+			<!--<ul id="collapseThree" class="panel-collapse collapse">-->
+				<!--<li class="tab-btn" data-id="grade-checkpoint-table-knowledge">知识</li>-->
+				<!--<li class="tab-btn" data-id="grade-checkpoint-table-skill">技能</li>-->
+				<!--<li class="tab-btn" data-id="grade-checkpoint-table-ability">能力</li>-->
+			<!--</ul>-->
+		<!--</li>-->
+		<!--<li class="drop-down">-->
+			<!--<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseFore">各班分数段比例数据表</a>-->
+			<!--<ul id="collapseFore" class="panel-collapse collapse">-->
+				<!--<li class="tab-btn" data-id="grade-classPupilNum-table-knowledge">知识</li>-->
+				<!--<li class="tab-btn" data-id="grade-classPupilNum-table-skill">技能</li>-->
+				<!--<li class="tab-btn" data-id="grade-classPupilNum-table-ability">能力</li>-->
+			<!--</ul>-->
+		<!--</li>-->
 		<li class="tab-btn" data-id="grade-answerCase">题目答对率统计表</li>
 		<li class="drop-down">
 			<a class="collapse-close" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">报告解读</a>
@@ -254,43 +254,51 @@
 	<div class="tab-pane " id="grade-checkpoint-knowledge">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班平均得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
-							解读说明
-						</button>
-					</h3>
+				<h2 class="zy-report-subtitle">
+					知识 - 各班平均得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 zy-col">
 					<div id="knowledge_Grade_average_percent" class="zy-chart-container"></div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班中位数得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
-							解读说明
-						</button>
-					</h3>
-					<div id="knowledge_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="knowledge_average_percent" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班中平差值
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
-							解读说明
-						</button>
-					</h3>
-					<div id="knowledge_Grade_med_avg_diff" class="zy-chart-container"></div>
+				<h2 class="zy-report-subtitle">
+					知识 - 各班中位数得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="knowledge_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="knowledge_median_percent" class="data-table grade-data-table"></table>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班分化度
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
-							解读说明
-						</button>
-					</h3>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					知识 - 各班中平差值
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="knowledge_Grade_med_avg_diff" class="zy-chart-container"></div>
+					<table id="knowledge_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					知识 - 各班分化度
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="knowledge_Grade_diff_degree" class="zy-chart-container"></div>
+					<table id="knowledge_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
@@ -299,43 +307,51 @@
 	<div class="tab-pane " id="grade-checkpoint-skill">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班平均得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
-							解读说明
-						</button>
-					</h3>
+				<h2 class="zy-report-subtitle">
+					技能 - 各班平均得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="skill_Grade_average_percent" class="zy-chart-container"></div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班中位数得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
-							解读说明
-						</button>
-					</h3>
-					<div id="skill_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="skill_average_percent" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班中平差值
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
-							解读说明
-						</button>
-					</h3>
-					<div id="skill_Grade_med_avg_diff" class="zy-chart-container"></div>
+				<h2 class="zy-report-subtitle">
+					技能 - 各班中位数得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="skill_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="skill_median_percent" class="data-table grade-data-table"></table>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班分化度
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
-							解读说明
-						</button>
-					</h3>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					技能 - 各班中平差值
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="skill_Grade_med_avg_diff" class="zy-chart-container"></div>
+					<table id="skill_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					技能 - 各班分化度
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="skill_Grade_diff_degree" class="zy-chart-container"></div>
+					<table id="skill_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
@@ -344,43 +360,51 @@
 	<div class="tab-pane " id="grade-checkpoint-ability">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班平均得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
-							解读说明
-						</button>
-					</h3>
+				<h2 class="zy-report-subtitle">
+					能力 - 各班平均得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="ability_Grade_average_percent" class="zy-chart-container"></div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班中位数得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
-							解读说明
-						</button>
-					</h3>
-					<div id="ability_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="ability_average_percent" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班中平差值
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
-							解读说明
-						</button>
-					</h3>
-					<div id="ability_Grade_med_avg_diff" class="zy-chart-container"></div>
+				<h2 class="zy-report-subtitle">
+					能力 - 各班中位数得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="ability_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="ability_median_percent" class="data-table grade-data-table"></table>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班分化度
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
-							解读说明
-						</button>
-					</h3>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					能力 - 各班中平差值
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="ability_Grade_med_avg_diff" class="zy-chart-container"></div>
+					<table id="ability_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					能力 - 各班分化度
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="ability_Grade_diff_degree" class="zy-chart-container"></div>
+					<table id="ability_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
@@ -389,43 +413,51 @@
 	<div class="tab-pane " id="grade-checkpoint-total">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						总成绩 - 各班平均得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
-							解读说明
-						</button>
-					</h3>
+				<h2 class="zy-report-subtitle">
+					总成绩 - 各班平均得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="total_Grade_average_percent" class="zy-chart-container"></div>
-				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						总成绩 - 各班中位数得分率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
-							解读说明
-						</button>
-					</h3>
-					<div id="total_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="total_average_percent" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						总成绩 - 各班中平差值
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
-							解读说明
-						</button>
-					</h3>
-					<div id="total_Grade_med_avg_diff" class="zy-chart-container"></div>
+				<h2 class="zy-report-subtitle">
+					总成绩 - 各班中位数得分率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="total_Grade_median_percent" class="zy-chart-container"></div>
+					<table id="total_median_percent" class="data-table grade-data-table"></table>
 				</div>
-				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						总成绩 - 各班分化度
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
-							解读说明
-						</button>
-					</h3>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					总成绩 - 各班中平差值
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+					<div id="total_Grade_med_avg_diff" class="zy-chart-container"></div>
+					<table id="total_med_avg_diff" class="data-table grade-data-table"></table>
+				</div>
+			</div>
+			<div class="row">
+				<h2 class="zy-report-subtitle">
+					总成绩 - 各班分化度
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+						解读说明
+					</button>
+				</h2>
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="total_Grade_diff_degree" class="zy-chart-container"></div>
+					<table id="total_diff_degree" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
@@ -435,36 +467,39 @@
 	<div class="tab-pane " id="grade-classPupilNum-knowledge">
 		<div class="container-fluid">
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					知识 - 各班优秀率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班优秀率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="knowledge_excellent" class="zy-chart-container"></div>
+					<table id="knowledge_excellent_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					知识 - 各班良好达标率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班良好达标率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="knowledge_good" class="zy-chart-container"></div>
+					<table id="knowledge_good_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					知识 - 各班不及格率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						知识 - 各班不及格率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="knowledge_faild" class="zy-chart-container"></div>
+					<table id="knowledge_failed_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
@@ -473,36 +508,39 @@
 	<div class="tab-pane " id="grade-classPupilNum-skill">
 		<div class="container-fluid">
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					技能 - 各班优秀率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班优秀率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="skill_excellent" class="zy-chart-container"></div>
+					<table id="skill_excellent_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					技能 - 各班良好达标率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班良好达标率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="skill_good" class="zy-chart-container"></div>
+					<table id="skill_good_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					技能 - 各班不及格率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						技能 - 各班不及格率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="skill_faild" class="zy-chart-container"></div>
+					<table id="skill_failed_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
@@ -511,128 +549,131 @@
 	<div class="tab-pane " id="grade-classPupilNum-ability">
 		<div class="container-fluid">
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					能力 - 各班优秀率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班优秀率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="ability_excellent" class="zy-chart-container"></div>
+					<table id="ability_excellent_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					能力 - 各班良好达标率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班良好达标率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="ability_good" class="zy-chart-container"></div>
+					<table id="ability_good_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">
+					能力 - 各班不及格率
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">
-						能力 - 各班不及格率
-						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
-							解读说明
-						</button>
-					</h3>
 					<div id="ability_faild" class="zy-chart-container"></div>
+					<table id="ability_failed_table" class="data-table grade-data-table"></table>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!--各班人数比例图 end-->
 	<!--各指标表现水平数据  start-->
-	<div class="tab-pane " id="grade-checkpoint-table-knowledge">
-		<div class="container-fluid">
-			<div class="row">
-				<h3 class="zy-report-subtitle">知识 - 平均得分率</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="knowledge_average_percent" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">知识 - 中位数得分率</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="knowledge_median_percent" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">知识 - 各指标中平差值</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="knowledge_med_avg_diff" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">知识 - 分化度</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="knowledge_diff_degree" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!--<div class="tab-pane " id="grade-checkpoint-table-knowledge">-->
+		<!--<div class="container-fluid">-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">知识 - 平均得分率</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="knowledge_average_percent" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">知识 - 中位数得分率</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="knowledge_median_percent" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">知识 - 各指标中平差值</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="knowledge_med_avg_diff" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">知识 - 分化度</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="knowledge_diff_degree" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+	<!--</div>-->
 
-	<div class="tab-pane " id="grade-checkpoint-table-skill">
-		<div class="container-fluid">
-			<div class="row">
-				<h3 class="zy-report-subtitle">技能 - 平均得分率</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="skill_average_percent" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">技能 - 中位数得分率</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="skill_median_percent" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">技能 - 各指标中平差值</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="skill_med_avg_diff" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">技能 - 分化度</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="skill_diff_degree" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!--<div class="tab-pane " id="grade-checkpoint-table-skill">-->
+		<!--<div class="container-fluid">-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">技能 - 平均得分率</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="skill_average_percent" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">技能 - 中位数得分率</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="skill_median_percent" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">技能 - 各指标中平差值</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="skill_med_avg_diff" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">技能 - 分化度</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="skill_diff_degree" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+	<!--</div>-->
 
-	<div class="tab-pane " id="grade-checkpoint-table-ability">
-		<div class="container-fluid">
-			<div class="row">
-				<h3 class="zy-report-subtitle">能力 - 平均得分率</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="ability_average_percent" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">能力 - 中位数得分率</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="ability_median_percent" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">能力 - 各指标中平差值</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="ability_med_avg_diff" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-			<div class="row">
-				<h3 class="zy-report-subtitle">能力分化度</h3>
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<table id="ability_diff_degree" class="data-table grade-data-table"></table>
-				</div>
-			</div>
-		</div>
-	</div>
+	<!--<div class="tab-pane " id="grade-checkpoint-table-ability">-->
+		<!--<div class="container-fluid">-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">能力 - 平均得分率</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="ability_average_percent" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">能力 - 中位数得分率</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="ability_median_percent" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">能力 - 各指标中平差值</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="ability_med_avg_diff" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+			<!--<div class="row">-->
+				<!--<h3 class="zy-report-subtitle">能力分化度</h3>-->
+				<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">-->
+					<!--<table id="ability_diff_degree" class="data-table grade-data-table"></table>-->
+				<!--</div>-->
+			<!--</div>-->
+		<!--</div>-->
+	<!--</div>-->
 	<!--各指标表现水平数据  end-->
 	<!--各班人数比例数据  start-->
 	<div class="tab-pane " id="grade-classPupilNum-table-knowledge">
