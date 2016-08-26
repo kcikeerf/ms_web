@@ -59,38 +59,75 @@
 		<!--诊断图-->
 		<div class="container-fluid">
 			<div class="row">
-				<h2 class="zy-report-subtitle">知识</h2>
+				<h2 class="zy-report-subtitle">	知识</h2>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 zy-chart-wrapper-left">
-					<h3>知识 - 1级诊断图</h3>
+					<h3>
+						1级诊断图
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-1">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_diagnose_left" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 zy-chart-wrapper-right">
-					<h3>知识 - 中平差值图</h3>
+					<h3>
+						中平差值图
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-2">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">技能</h2>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 zy-chart-wrapper-left">
-					<h3 class="zy-report-subtitle">技能 - 1级诊断图</h3>
+					<h3>
+						1级诊断图
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-1">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_diagnose_left" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 zy-chart-wrapper-right">
-					<h3 class="zy-report-subtitle">技能 - 中平差值图</h3>
+					<h3>
+						中平差值图
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-2">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
+				<h2 class="zy-report-subtitle">能力</h2>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 zy-chart-wrapper-left">
-					<h3 class="zy-report-subtitle">能力 - 1级诊断图</h3>
+					<h3>
+						1级诊断图
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-1">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_diagnose_left" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 zy-chart-wrapper-right">
-					<h3 class="zy-report-subtitle">能力 - 中平差值图</h3>
+					<h3>
+						中平差值图
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-2">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_diagnose_right" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">年级知识、技能、能力分型图</h3>
+				<h2 class="zy-report-subtitle">
+					知识，技能，能力分型图
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-3">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="parting-chart" class="zy-chart-container"></div>
 				</div>
@@ -101,20 +138,26 @@
 	<div class="tab-pane" id="grade-NumScale">
 		<!--年级各分数段人数比例-->
 		<div class="container-fluid">
+			<h2 class="zy-report-subtitle">
+				各分数段人数比例
+				<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-4">
+					解读说明
+				</button>
+			</h2>
 			<div class="row">
-				<h3 class="zy-report-subtitle">知识 - 各分数段人数比例</h3>
+				<h3>知识</h3>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="KnowledgeScale" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">技能 - 各分数段人数比例</h3>
+				<h3>技能</h3>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="SkillScale" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">能力 - 各分数段人数比例</h3>
+				<h3>能力</h3>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div id="AbilityScale" class="zy-chart-container"></div>
 				</div>
@@ -126,62 +169,82 @@
 		<!--四分位区间-->
 		<div class="container-fluid">
 			<div class="row">
-				<h3 class="zy-report-subtitle">前25%（上四分位）学生的各项指标情况</h3>
+				<h2 class="zy-report-subtitle">
+					前25%（上四分位）学生的各项指标情况
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-5">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>知识</h4>
+					<h3>知识</h3>
 					<div id="knowledge_Four_L75" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>技能</h4>
+					<h3>技能</h3>
 					<div id="skill_Four_L75" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>能力</h4>
+					<h3>能力</h3>
 					<div id="ability_Four_L75" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">(50，75]区间（中上四分位）学生的各项指标情况	</h3>
+				<h2 class="zy-report-subtitle">
+					(50，75]区间（中上四分位）学生的各项指标情况
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-6">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>知识</h4>
+					<h3>知识</h3>
 					<div id="knowledge_Four_L50" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>技能</h4>
+					<h3>技能</h3>
 					<div id="skill_Four_L50" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>能力</h4>
+					<h3>能力</h3>
 					<div id="ability_Four_L50" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">(25,50]区间（中下四分位）学生的各项指标情况</h3>
+				<h2 class="zy-report-subtitle">
+					(25,50]区间（中下四分位）学生的各项指标情况
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-7">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>知识</h4>
+					<h3>知识</h3>
 					<div id="knowledge_Four_L25" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>技能</h4>
+					<h3>技能</h3>
 					<div id="skill_Four_L25" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>能力</h4>
+					<h3>能力</h3>
 					<div id="ability_Four_L25" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">后25%（下四分位）学生的各项指标情况</h3>
+				<h2 class="zy-report-subtitle">
+					后25%（下四分位）学生的各项指标情况
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-8">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>知识</h4>
+					<h3>知识</h3>
 					<div id="knowledge_Four_L0" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>技能</h4>
+					<h3>技能</h3>
 					<div id="skill_Four_L0" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>能力</h4>
+					<h3>能力</h3>
 					<div id="ability_Four_L0" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -192,21 +255,41 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班平均得分率</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班平均得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_Grade_average_percent" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班中位数得分率</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班中位数得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_Grade_median_percent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班中平差值</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班中平差值
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_Grade_med_avg_diff" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班分化度</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班分化度
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_Grade_diff_degree" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -217,21 +300,41 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班平均得分率</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班平均得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_Grade_average_percent" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班中位数得分率</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班中位数得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_Grade_median_percent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班中平差值</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班中平差值
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_Grade_med_avg_diff" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班分化度</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班分化度
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_Grade_diff_degree" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -242,21 +345,41 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班平均得分率</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班平均得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_Grade_average_percent" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班中位数得分率</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班中位数得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_Grade_median_percent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班中平差值</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班中平差值
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_Grade_med_avg_diff" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班分化度</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班分化度
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_Grade_diff_degree" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -267,21 +390,41 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">总成绩 - 各班平均得分率</h3>
+					<h3 class="zy-report-subtitle">
+						总成绩 - 各班平均得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-9">
+							解读说明
+						</button>
+					</h3>
 					<div id="total_Grade_average_percent" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">总成绩 - 各班中位数得分率</h3>
+					<h3 class="zy-report-subtitle">
+						总成绩 - 各班中位数得分率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-10">
+							解读说明
+						</button>
+					</h3>
 					<div id="total_Grade_median_percent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">总成绩 - 各班中平差值</h3>
+					<h3 class="zy-report-subtitle">
+						总成绩 - 各班中平差值
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-11">
+							解读说明
+						</button>
+					</h3>
 					<div id="total_Grade_med_avg_diff" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">总成绩 - 各班分化度</h3>
+					<h3 class="zy-report-subtitle">
+						总成绩 - 各班分化度
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-12">
+							解读说明
+						</button>
+					</h3>
 					<div id="total_Grade_diff_degree" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -293,19 +436,34 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班优秀率</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班优秀率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_excellent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班良好达标率</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班良好达标率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_good" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">知识 - 各班不及格率</h3>
+					<h3 class="zy-report-subtitle">
+						知识 - 各班不及格率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="knowledge_faild" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -316,19 +474,34 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班优秀率</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班优秀率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_excellent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班良好达标率</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班良好达标率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_good" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">技能 - 各班不及格率</h3>
+					<h3 class="zy-report-subtitle">
+						技能 - 各班不及格率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="skill_faild" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -339,19 +512,34 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班优秀率</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班优秀率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_excellent" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班良好达标率</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班良好达标率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_good" class="zy-chart-container"></div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">能力 - 各班不及格率</h3>
+					<h3 class="zy-report-subtitle">
+						能力 - 各班不及格率
+						<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-13">
+							解读说明
+						</button>
+					</h3>
 					<div id="ability_faild" class="zy-chart-container"></div>
 				</div>
 			</div>
@@ -571,4 +759,317 @@
 		<!--报告解读-数据解读-->
 	</div>
 	<!--报告解读  end-->
+</div>
+
+<!-- Modal 1 -->
+<div class="modal fade" id="zy-modal-report-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">1级诊断图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>年级中位数得分率，年级平均得分率和年级分化度。</p>
+
+				<h3>年级中位数得分率</h3>
+				<p>将全年级学生成绩从高到低排序后，处于中间位置学生的成绩情况， 公式为：（全年级学生某个指标得分的中位数/该指标的满分值）×100。</p>
+
+				<h3>年级平均得分率</h3>
+				<p>年级全体参测学生在各个指标上的整体达标情况， 公式为：（年级参测学生某个指标的平均分/该指标的满分值）×100。</p>
+
+				<h3>年级分化度</h3>
+				<p>本年级学生在某一指标上的成绩离散情况，数值越大，表明年级成绩的不均衡性越高。 公式为：（标准差/平均数）×100。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 2 -->
+<div class="modal fade" id="zy-modal-report-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">中平差值图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>年级中位数得分率与年级平均得分率的差值。</p>
+
+				<h3>差值意义</h3>
+				<p>在某个指标上差值为正值，表明本年级在该指标上至少有50%学生水平都优于年级平均水平；在某个指标上差值为负值，表明本年级在该指标上至少有50%学生水平都低于年级平均水平。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 3 -->
+<div class="modal fade" id="zy-modal-report-3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">分型图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>分化度</p>
+
+				<h3>垂直轴</h3>
+				<p>平均得分率</p>
+
+				<h3>高质高均衡区</h3>
+				<p>平均得分率大于80，分化度低于20</p>
+
+				<h3>高质低均衡区</h3>
+				<p>平均得分率大于80，分化度高于30</p>
+
+				<h3>低质高均衡区</h3>
+				<p>平均得分率小于60，分化度低于20</p>
+
+				<h3>低质低均衡区</h3>
+				<p>平均得分率小于80，分化度高于30</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 4 -->
+<div class="modal fade" id="zy-modal-report-4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">分数段人数比例图图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>年级分数段人数百分比。</p>
+
+				<h3>垂直轴</h3>
+				<p>知识、技能或能力维度一级指标。</p>
+
+				<h3>分数段</h3>
+				<p>得分率≥85的定义为优秀，85＞得分率≥60的定义为良好达标，得分率＜60的定义为不及格。</p>
+
+				<h3>数值意义</h3>
+				<p>从左到右三个数值分别代表优秀人数、良好达标人数和不及格人数占年级总数的百分比。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 5 -->
+<div class="modal fade" id="zy-modal-report-5" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">四分位图-上四分位区间解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>年级上四分位学生在知识、技能或能力维度1级指标上的平均得分率。</p>
+
+				<h3>四分位区间</h3>
+				<p>将一组数据从大到小排列，计算每个数据对应的百分等级，100%和75%之间是上四分位区间。[ ]代表该区间包含临近的数值，（ ）代表该区间不包含临近的数值。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 6 -->
+<div class="modal fade" id="zy-modal-report-6" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">四分位图-中上四分位区间解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>年级中上四分位学生在知识、技能或能力维度1级指标上的平均得分率。</p>
+
+				<h3>四分位区间</h3>
+				<p>将一组数据从大到小排列，计算每个数据对应的百分等级，75%和50%之间为中上四分位区间。[ ]代表该区间包含临近的数值，（ ）代表该区间不包含临近的数值。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 7 -->
+<div class="modal fade" id="zy-modal-report-7" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">四分位图-中下四分位区间解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>年级中下四分位学生在知识、技能或能力维度1级指标上的平均得分率。</p>
+
+				<h3>四分位区间</h3>
+				<p>将一组数据从大到小排列，计算每个数据对应的百分等级，50%和25%之间为中下四分位区间。[ ]代表该区间包含临近的数值，（ ）代表该区间不包含临近的数值。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 8 -->
+<div class="modal fade" id="zy-modal-report-8" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">四分位图-下四分位区间解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>年级下四分位学生在知识、技能或能力维度1级指标上的平均得分率。</p>
+
+				<h3>四分位区间</h3>
+				<p>将一组数据从大到小排列，计算每个数据对应的百分等级，小于25%区间为下四分位区间。[ ]代表该区间包含临近的数值，（ ）代表该区间不包含临近的数值。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 9 -->
+<div class="modal fade" id="zy-modal-report-9" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">各班平均得分率解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标上的班级平均得分率</p>
+
+				<h3>垂直轴</h3>
+				<p>各个班级</p>
+
+				<h3>数值意义</h3>
+				<p>对知识、技能或能力维度1级指标上的各班平均得分率进行对比。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 10 -->
+<div class="modal fade" id="zy-modal-report-10" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">各班中位数得分率解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标上的班级中位数得分率</p>
+
+				<h3>垂直轴</h3>
+				<p>各个班级</p>
+
+				<h3>数值意义</h3>
+				<p>对知识、技能或能力维度1级指标上的各班中位数得分率进行对比。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 11 -->
+<div class="modal fade" id="zy-modal-report-11" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">各班中平差值解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标上的班级中平差值</p>
+
+				<h3>垂直轴</h3>
+				<p>各个班级</p>
+
+				<h3>数值意义</h3>
+				<p>对知识、技能或能力维度1级指标上的各班中平差值进行对比。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 12 -->
+<div class="modal fade" id="zy-modal-report-12" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">各班分化度解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标上的班级分化度</p>
+
+				<h3>垂直轴</h3>
+				<p>各个班级</p>
+
+				<h3>数值意义</h3>
+				<p>对知识、技能或能力维度1级指标上的各班分化度进行对比。</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 13 -->
+<div class="modal fade" id="zy-modal-report-13" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">各班分数段人数比例图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能或能力维度1级指标上，班级优秀、良好达标或不及格人数比例</p>
+
+				<h3>垂直轴</h3>
+				<p>参与评测的各个班级</p>
+
+				<h3>优秀率</h3>
+				<p>得分率≥85的学生占班级总人数的百分比。</p>
+
+				<h3>良好达标率</h3>
+				<p>85＞得分率≥60的学生占班级总人数的百分比。</p>
+
+				<h3>不及格率</h3>
+				<p>得分率＜60的学生占班级总人数的百分比。</p>
+
+				<h3>数值意义</h3>
+				<p>某个1级指标上，对比不同班级的优秀率、良好达标率或不及格率，发现班级间差距。</p>
+			</div>
+		</div>
+	</div>
 </div>
