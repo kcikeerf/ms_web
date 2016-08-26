@@ -2,7 +2,7 @@ var echartOption = {
     defaultColor: "#51b8c1",
     /*创建Echart*/
     createEchart: function (optionObj, Node) {
-        var myChart = echarts.init(document.getElementById(Node));
+        var myChart = echarts.init(document.getElementById(Node), 'macarons');
         var option = optionObj;
         myChart.setOption(option);
         return myChart;
@@ -12,7 +12,7 @@ var echartOption = {
             // 三维诊断概要图
             setGradeDiagnoseLeft: function (data) {
                 return option = {
-                    color: ['#9be8ee', '#8fb7e6', '#cbc5e5'],
+                    //color: ['#9be8ee', '#8fb7e6', '#cbc5e5'],
                     textStyle: {
                         fontSize: 16
                     },
@@ -164,11 +164,13 @@ var echartOption = {
                         barMaxWidth: 15,
                         stack: '百分比',
                         data: data.yaxis.med_avg_diff.up,
+                        /*
                         itemStyle: {
                             normal: {
                                 color: '#70c8db'
                             }
                         },
+                        */
                         LegendHoverLink: true,
                     }, {
                         name: '中平差值负值',
@@ -204,7 +206,7 @@ var echartOption = {
                     grid: {
                         left: 15,
                         right: 80,
-                        bottom: 10,
+                        bottom: '15%',
                         containLabel: true
                     },
                     tooltip: {},
@@ -213,7 +215,10 @@ var echartOption = {
                             type: 'value',
                             name: '分化度',
                             nameLocation: 'end',
-                            nameTextStyle: {color: '#000', fontSize: 16},
+                            nameTextStyle: {
+                                color: '#000',
+                                fontSize: 16
+                            },
                             min: 0,
                             max: 200,
                             splitNumber: 20,
@@ -226,9 +231,12 @@ var echartOption = {
                             axisTick: {show: false},
                             splitLine: {
                                 lineStyle: {
-                                    type: 'dashed', color: '#cdcccc',
+                                    color: '#cdcccc',
                                     opacity: 0.5,
                                 }
+                            },
+                            splitArea: {
+                                show: false,
                             },
                             z: 3
                         }
@@ -238,7 +246,10 @@ var echartOption = {
                             type: 'value',
                             name: '平均得分率',
                             nameLocation: 'end',
-                            nameTextStyle: {color: '#000', fontSize: 16},
+                            nameTextStyle: {
+                                color: '#000',
+                                fontSize: 16
+                            },
                             min: 0,
                             max: 100,
                             splitNumber: 6,
@@ -248,11 +259,30 @@ var echartOption = {
                             axisTick: {show: false},
                             splitLine: {
                                 lineStyle: {
-                                    type: 'dashed', color: '#cdcccc',
+                                    color: '#cdcccc',
                                     opacity: 0.5,
                                 }
                             },
+                            splitArea: {
+                                show: false,
+                            },
                             z: 3
+                        }
+                    ],
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 80
+                        },
+                        {
+                            show: true,
+                            height: 20,
+                            type: 'slider',
+                            top: '90%',
+                            xAxisIndex: [0],
+                            start: 0,
+                            end: 80
                         }
                     ],
                     series: [
@@ -773,7 +803,6 @@ var echartOption = {
                 return option = {
                     textStyle: {
                         fontSize: 16,
-                        color: '#212121',
                     },
                     tooltip: {
                         trigger: 'item',
@@ -838,7 +867,7 @@ var echartOption = {
                                 show: true,
                                 position: 'inside',
                                 textStyle: {
-                                    color: '#fff',
+                                    //color: '#fff',
                                 }
                             }
                         },
@@ -846,7 +875,7 @@ var echartOption = {
                         itemStyle: {
                             normal: {
                                 barBorderRadius: [20, 0, 0, 20],
-                                color: '#086a8e',
+                                //color: '#086a8e',
                             }
                         },
                     }, {
@@ -861,7 +890,7 @@ var echartOption = {
                                 show: true,
                                 position: 'inside',
                                 textStyle: {
-                                    color: '#fff',
+                                    //color: '#fff',
                                 }
                             }
                         },
@@ -869,7 +898,7 @@ var echartOption = {
                         itemStyle: {
                             normal: {
                                 barBorderRadius: 0,
-                                color: '#13ab9b',
+                                //color: '#13ab9b',
                             }
                         },
                     }, {
@@ -884,7 +913,7 @@ var echartOption = {
                                 show: true,
                                 position: 'inside',
                                 textStyle: {
-                                    color: '#fff',
+                                    //color: '#fff',
                                 }
                             }
                         },
@@ -892,7 +921,7 @@ var echartOption = {
                         itemStyle: {
                             normal: {
                                 barBorderRadius: [0, 20, 20, 0],
-                                color: '#fa8471',
+                                //color: '#fa8471',
                             }
                         },
                     }]
@@ -903,7 +932,6 @@ var echartOption = {
                 return option = {
                     textStyle: {
                         fontSize: 16,
-                        color: '#212121',
                     },
                     title: {
                         text: ''
@@ -940,10 +968,12 @@ var echartOption = {
                         min: 0,
                         max: 100,
                         splitLine: {
+                            /*
                             lineStyle: {
                                 color: ['#b6b6b6'],
                                 type: 'dashed'
                             }
+                            */
                         },
                         axisLabel: {
                             textStyle: {
@@ -964,13 +994,13 @@ var echartOption = {
                         },
                         data: data.yaxis,
                     },],
-                    color: [echartOption.defaultColor],
                     animation: false,
                 };
             },
             // 各指标表现水平图
             setCheckpointOption: function (data) {
                 return option = {
+                    //color: ['#9be8ee','#70c8db','#6e8ac9','#8fb7e6', '#cbc5e5','#e6e0ef'],
                     title: {
                         text: ''
                     },
@@ -1008,7 +1038,6 @@ var echartOption = {
                         data: data.xaxis,
                     }],
                     series: data.series,
-                    color: data.colorArr,
                     animation: false,
                 };
             },
@@ -1059,7 +1088,7 @@ var echartOption = {
         Class: {
             setClassDiagnoseLeft: function (data) {
                 return option = {
-                    color: ['#9be8ee', '#8fb7e6', '#cbc5e5', '#6e8ac9'],
+                    //color: ['#9be8ee', '#8fb7e6', '#cbc5e5', '#6e8ac9'],
                     textStyle: {
                         fontSize: 16
                     },
@@ -1130,9 +1159,11 @@ var echartOption = {
                             mix: '0',
                             max: '100',
                             splitLine: {
+                                /*
                                 lineStyle: {
                                     color: ['#efefef']
                                 }
+                                */
                             },
                             textStyle: {
                                 fontSize: 16
@@ -1144,18 +1175,6 @@ var echartOption = {
                             name: '班级平均得分率',
                             type: 'bar',
                             barMaxWidth: 15,
-                            areaStyle: {
-                                normal: {
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#25e8cf'
-                                    }, {
-                                        offset: 1,
-                                        color: '#90f3e9'
-                                    }]),
-                                    opacity: 0.5,
-                                }
-                            },
                             data: data.yaxis.all_line.class_average_percent,
                             z: 1
                         },
@@ -1163,18 +1182,6 @@ var echartOption = {
                             name: '班级中位数得分率',
                             type: 'bar',
                             barMaxWidth: 15,
-                            areaStyle: {
-                                normal: {
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#ce15a9'
-                                    }, {
-                                        offset: 1,
-                                        color: '#90f3e9'
-                                    }]),
-                                    opacity: 0.5,
-                                }
-                            },
                             data: data.yaxis.all_line.class_median_percent,
                             z: 3
                         },
@@ -1182,18 +1189,6 @@ var echartOption = {
                             name: '年级平均得分率',
                             type: 'bar',
                             barMaxWidth: 15,
-                            areaStyle: {
-                                normal: {
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#1eb9c7'
-                                    }, {
-                                        offset: 1,
-                                        color: '#90f3e9'
-                                    }]),
-                                    opacity: 0.5,
-                                }
-                            },
                             data: data.yaxis.all_line.grade_average_percent,
                             z: 2
                         },
@@ -1201,18 +1196,6 @@ var echartOption = {
                             name: '分化度',
                             type: 'bar',
                             barMaxWidth: 15,
-                            areaStyle: {
-                                normal: {
-                                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                        offset: 0,
-                                        color: '#062755'
-                                    }, {
-                                        offset: 1,
-                                        color: '#90f3e9'
-                                    }]),
-                                    opacity: 0.5,
-                                }
-                            },
                             data: data.yaxis.all_line.diff_degree,
                             z: 4
                         },
@@ -1274,7 +1257,11 @@ var echartOption = {
                             axisTick: {show: false},
                             axisLabel: {formatter: '{value}'},
                             splitNumber: 5,
-                            splitLine: {lineStyle: {color: ['#efefef']}},
+                            splitLine: {
+                                // lineStyle: {
+                                //     color: ['#efefef']
+                                // }
+                            },
                         }
                     ],
                     series: [
@@ -1285,12 +1272,12 @@ var echartOption = {
                             stack: '百分比',
                             areaStyle: {
                                 normal: {
-                                    color: '#51b8c1',
+                                    //color: '#51b8c1',
                                 }
                             },
                             data: data.yaxis.diff.avg.up,
                             itemStyle: {
-                                normal: {color: '#51b8c1'}
+                                //normal: {color: '#51b8c1'}
                             },
                             LegendHoverLink: true,
                         },
@@ -1307,7 +1294,9 @@ var echartOption = {
                             },
                             data: data.yaxis.diff.avg.down,
                             itemStyle: {
-                                normal: {color: '#fa9daf'}
+                                normal: {
+                                    color: '#fa9daf'
+                                }
                             },
                             LegendHoverLink: true,
                         }
@@ -1347,7 +1336,11 @@ var echartOption = {
                     xAxis: [
                         {
                             type: 'category',
-                            splitLine: {lineStyle: {color: ['#ededed']}},
+                            splitLine: {
+                                // lineStyle: {
+                                //     color: ['#ededed']
+                                // }
+                            },
                             axisTick: {
                                 //show:false
                                 alignWithLabel: true
@@ -1367,7 +1360,11 @@ var echartOption = {
                             axisTick: {show: false},
                             axisLabel: {formatter: '{value}'},
                             splitNumber: 4,
-                            splitLine: {lineStyle: {color: ['#efefef']}},
+                            splitLine: {
+                                // lineStyle: {
+                                //     color: ['#efefef']
+                                // }
+                            },
                         }
                     ],
                     series: [
@@ -1377,7 +1374,9 @@ var echartOption = {
                             barMaxWidth: 15,
                             data: data.yaxis.diff.mid.up,
                             itemStyle: {
-                                normal: {color: '#51b8c1'}
+                                normal: {
+                                    //color: '#51b8c1'
+                                }
                             },
                             LegendHoverLink: true,
                         },
@@ -1388,7 +1387,9 @@ var echartOption = {
                             stack: '百分比',
                             data: data.yaxis.diff.mid.down,
                             itemStyle: {
-                                normal: {color: '#fa9daf'}
+                                normal: {
+                                    color: '#fa9daf'
+                                }
                             },
                             LegendHoverLink: true,
                         },
@@ -1433,7 +1434,12 @@ var echartOption = {
                         axisLine: {show: false},
                         axisTick: {show: false},
                         splitLine: {show: false},
-                        axisLabel: {textStyle: {color: '#212121', fontSize: 16,}},
+                        axisLabel: {
+                            textStyle: {
+                                //color: '#212121',
+                                fontSize: 16,
+                            }
+                        },
                     },
                     series: [
                         {
@@ -1445,7 +1451,10 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#fff', fontSize: 16,}
+                                    textStyle: {
+                                        //color: '#fff',
+                                        fontSize: 16,
+                                    }
                                 }
                             },
                             barMaxWidth: 30,
@@ -1453,7 +1462,7 @@ var echartOption = {
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: [20, 0, 0, 20],
-                                    color: '#086a8e',
+                                    //color: '#086a8e',
                                 }
                             },
                         },
@@ -1467,7 +1476,10 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#fff', fontSize: 16,}
+                                    textStyle: {
+                                        //color: '#fff',
+                                        fontSize: 16,
+                                    }
                                 }
                             },
                             barMaxWidth: 30,
@@ -1475,7 +1487,7 @@ var echartOption = {
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: 0,
-                                    color: '#13ab9b',
+                                    //color: '#13ab9b',
                                 }
                             },
                         },
@@ -1489,7 +1501,10 @@ var echartOption = {
                                 normal: {
                                     show: true,
                                     position: 'inside',
-                                    textStyle: {color: '#fff', fontSize: 16,}
+                                    textStyle: {
+                                        //color: '#fff',
+                                        fontSize: 16,
+                                    }
                                 }
                             },
                             barMaxWidth: 30,
@@ -1497,7 +1512,7 @@ var echartOption = {
                             itemStyle: {
                                 normal: {
                                     barBorderRadius: [0, 20, 20, 0],
-                                    color: '#fa8471'
+                                    //color: '#fa8471'
                                 }
                             },
                         }
