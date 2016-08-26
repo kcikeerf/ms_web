@@ -5,5 +5,6 @@ module SwtkConstantsModule
     UploadPrefix = Rails.root.to_s + "/uploads/"
     DefaultPage = 1
     DefaultRows = 10
+    DefaultSheetPassword = "forbidden_by_k12ke"
   end
 end

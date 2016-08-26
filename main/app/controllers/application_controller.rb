@@ -139,6 +139,9 @@ class ApplicationController < ActionController::Base
     {:status => status, :json => data.to_json }
   end
 
+  def format_report_task_name prefix, job_type
+    prefix + "_" + job_type
+  end
 
   private 
 
