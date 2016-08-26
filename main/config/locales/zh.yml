@@ -43,6 +43,10 @@ zh:
       inqueue: "已入队列"
       processing: "正在生成"
       completed: "报告完成"
+  locations:
+    messages:
+      error:
+        invalid_location: "无效的Location（班级对象）!"
 
   messages:
     invalid_mobile: '短信验证码不正确或已失效'
@@ -92,6 +96,9 @@ zh:
       upload_score:
         success: '上传成功'
         fail: '上传失败'
+      error:
+        no_tenant: "该试卷无所属Tenant"
+
   quizs:
     nosource: "自编"
     order: "题号"
@@ -155,6 +162,12 @@ zh:
       error:
         wrong_input: "错误的输入"
         unknown: "用户未生成，发生未知错误"
+        upload_failed: "文件上传失败！"
+        upload_exception: "文件上传中发生异常错误！"
+  tasks:
+    type:
+      create_report: "生成报告"
+      import_score: "导入成绩"
   teachers:
     abbrev:
       subject: "科"

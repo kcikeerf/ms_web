@@ -1,1 +1,8 @@
-$("#file_upload_result").text('<%= @result %>');
+var resp = <%= raw @result %>;
+if(resp.status == 500 ){
+	$("#file_upload_result").text(resp.message);
+} else {
+	$("input#task_uid").val(resp.task_uid);
+	$("#commonDialog").modal("hide");
+	location.reload();
+}
