@@ -140,7 +140,7 @@ class ApplicationController < ActionController::Base
   end
 
   def format_report_task_name prefix, job_type
-    prefix + "_" + job_type
+    prefix + "#" + job_type
   end
 
   private 
