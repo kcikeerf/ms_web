@@ -120,7 +120,7 @@ class Mongodb::BankPaperPap
     #
 
     self.update_attributes({
-      :user_id => user_id || "",
+      :user_id => current_user_id || "",
       :area_uid => target_area.nil?? "" : target_area.uid,
       :tenant_uid => target_current.nil?? "" : target_current.uid,
       :heading => params[:information][:heading] || "",

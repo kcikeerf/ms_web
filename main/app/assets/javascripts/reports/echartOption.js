@@ -1078,6 +1078,10 @@ var echartOption = {
                                 icon: 'rect'
                             },
                             {
+                                name: '班级中位数得分率',
+                                icon: 'rect'
+                            },
+                            {
                                 name: '年级平均得分率',
                                 icon: 'rect'
                             },
@@ -1085,10 +1089,6 @@ var echartOption = {
                                 name: '分化度',
                                 icon: 'rect'
                             },
-                            {
-                                name: '班级中位数得分率',
-                                icon: 'rect'
-                            }
                         ],
                     },
                     grid: {
@@ -1141,14 +1141,14 @@ var echartOption = {
                     ],
                     series: [
                         {
-                            name: '分化度',
+                            name: '班级平均得分率',
                             type: 'bar',
                             barMaxWidth: 15,
                             areaStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                         offset: 0,
-                                        color: '#062755'
+                                        color: '#25e8cf'
                                     }, {
                                         offset: 1,
                                         color: '#90f3e9'
@@ -1156,8 +1156,8 @@ var echartOption = {
                                     opacity: 0.5,
                                 }
                             },
-                            data: data.yaxis.all_line.diff_degree,
-                            z: 4
+                            data: data.yaxis.all_line.class_average_percent,
+                            z: 1
                         },
                         {
                             name: '班级中位数得分率',
@@ -1198,14 +1198,14 @@ var echartOption = {
                             z: 2
                         },
                         {
-                            name: '班级平均得分率',
+                            name: '分化度',
                             type: 'bar',
                             barMaxWidth: 15,
                             areaStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                                         offset: 0,
-                                        color: '#25e8cf'
+                                        color: '#062755'
                                     }, {
                                         offset: 1,
                                         color: '#90f3e9'
@@ -1213,8 +1213,8 @@ var echartOption = {
                                     opacity: 0.5,
                                 }
                             },
-                            data: data.yaxis.all_line.class_average_percent,
-                            z: 1
+                            data: data.yaxis.all_line.diff_degree,
+                            z: 4
                         },
                     ],
                     animation: false,
@@ -1505,7 +1505,6 @@ var echartOption = {
                 };
             }
         },
-
         Pupil: {
             setPupilRadarOption: function (data) {
                 return option = {
@@ -1515,7 +1514,7 @@ var echartOption = {
                     color: ['#EB595A', '#15a892'],
                     title: {},
                     tooltip: {
-                        trigger: 'item',
+                        //formatter: '{b}: {c}'
                     },
                     legend: {
                         right: 20,
@@ -1524,6 +1523,7 @@ var echartOption = {
                     },
                     grid: {},
                     radar: [
+                        /*
                         {
                             z: 4,
                             indicator: data.radar.grade.xaxis.nullAxis,
@@ -1547,13 +1547,16 @@ var echartOption = {
                             },
                             startAngle: 90,
                         },
+                        */
                         {
                             z: 1,
                             indicator: data.radar.grade.xaxis.xAxis,
                             center: ['50%', '55%'],
                             radius: '60%',
                             splitNumber: 2,
-                            splitLine: {show: false},
+                            splitLine: {
+                                show: true
+                            },
                             splitArea: {
                                 areaStyle: {
                                     color: ['#fff']
@@ -1564,7 +1567,9 @@ var echartOption = {
                                     color: '#212121'
                                 }
                             },
-                            axisLine: {show: false},
+                            axisLine: {
+                                show: true
+                            },
                             startAngle: 90
                         }
                     ],
