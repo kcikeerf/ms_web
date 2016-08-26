@@ -133,10 +133,12 @@ $(function(){
                     $(".paper_about").show().find(".load_list").hide();
                     $(".link_paper").css("display","block");
                     break;
-                case "analyzed":
-                case "score_importing":
+                //case "analyzed":
+                    //break;
+                case "analyzed" || "score_importing":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide(); 
-                    $(".link_paper").css("display","block");    
+                    $(".link_paper").css("display","block");
+                    paper.setInterVal();
                     break;
                 case "score_imported":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
@@ -890,12 +892,18 @@ $(function(){
             $(".score_part .score_list.open").removeClass("open");
             $('#commonDialog').modal('hide');
         });
+        $("#commonDialog").on("hidden.bs.modal",function(e){
+            var task_uid = $("input#task_uid").val();
+            if(task_uid){
+                paper.paperData.task_uid = task_uid;
+            }
+        })
     }
     //生成loading
     paper.createLoading = function(){
         var loading = $('<div class="loadingWarp"><img src="/images/zhengjuan/loading.gif" alt=""></div>');
         $("body").append(loading);
-    };
+    }
     //校验格式
     paper.fileVerify = function(elem){
         var bool = false,

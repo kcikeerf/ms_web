@@ -12,7 +12,7 @@ class Analyzer < ActiveRecord::Base
           class_name: "TaskList", 
           foreign_key: "ana_uid"
           
-  has_one :active_upload_score_task, ->{ where(type: Task::Type::UploadScore , status: Task::Status::Active)},
+  has_one :active_upload_score_task, ->{ where(type: Task::Type::ImportScore , status: Task::Status::Active)},
           class_name: "TaskList", 
           foreign_key: "ana_uid"
 

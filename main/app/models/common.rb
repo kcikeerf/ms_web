@@ -183,7 +183,7 @@ module Common
     module_function :create_usr_pwd
 
     def upload_filled_score params
-      fs = ScoreUpload.where(id: params[:score_file_id]).first     
+      fs = ScoreUpload.where(id: params[:score_file_id]).first
       fs.filled_file = params[:filled_file]
       fs.save!
       return fs
@@ -196,7 +196,7 @@ module Common
   module Task
     module Type
       CreateReport = "create_report"
-      UploadScore = "upload_score"
+      ImportScore = "import_score"
     end
 
     module Status
