@@ -2,8 +2,10 @@ class PapersController < ApplicationController
 
   layout "zhengjuan"
 
-  before_action :set_paper, only: [:download, :download_page, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
-
+  before_action :set_paper, only: [:download, :download_page, :get_saved_paper, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
+  before_action do
+    check_resource_tenant(@paper) if @paper
+  end
   # type1 upload a quiz
   # params: file_paper:[file]
   # params: file_answer:[file]
@@ -64,7 +66,7 @@ class PapersController < ApplicationController
     end
     begin
       current_pap.current_user_id = current_user.id
-      current_pap.save_pap(current_user.id, params)
+      current_pap.save_pap(params)
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
       result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
@@ -270,13 +272,14 @@ class PapersController < ApplicationController
   end
 
   def import_filled_score
+    logger.info("======================import score: begin")
     @result = I18n.t('papers.messages.upload_score.fail')
     if request.post?# && remotipart_submitted? 
       score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
       if score_file
         begin
           # analyze filled score file
-          str = @paper.analyze_filled_score_file score_file rescue nil  
+          str = @paper.analyze_filled_score_file score_file# rescue nil  
           @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
           @paper.update(paper_status: Common::Paper::Status::ScoreImported)
         rescue Exception => ex
@@ -286,6 +289,7 @@ class PapersController < ApplicationController
         end
       end
     end
+    logger.info("======================import score: end")
    render layout: false
   end
 

@@ -83,7 +83,7 @@ class Mongodb::BankPaperPap
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
 
-  def save_pap user_id, params
+  def save_pap params
     status = Common::Paper::Status::None
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
       status = Common::Paper::Status::New
@@ -96,18 +96,18 @@ class Mongodb::BankPaperPap
     #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
     #tenant_uid= Tenant.get_tenant_uid params[:information]
     target_area = Area.get_area params[:information]
-    target_current = Common::Uzer.get_tenant user_id
+    target_current = Common::Uzer.get_tenant current_user_id
  
     #json保存前的处理
     params[:paper] = ""
-    params[:information][:province] = tenant.area_pcd[:province_name_cn]
-    params[:information][:city] = tenant.area_pcd[:city_name_cn]
-    params[:information][:district] = tenant.area_pcd[:district_name_cn]
-    params[:information][:school] = tenant.name_cn
+    params[:information][:province] = target_current.area_pcd[:province_name_cn]
+    params[:information][:city] = target_current.area_pcd[:city_name_cn]
+    params[:information][:district] = target_current.area_pcd[:district_name_cn]
+    params[:information][:school] = target_current.name_cn
     #
 
     self.update_attributes({
-      :user_id => user_id || "",
+      :user_id => current_user_id || "",
       :area_uid => target_area.nil?? "" : target_area.uid,
       :tenant_uid => target_current.nil?? "" : target_current.uid,
       :heading => params[:information][:heading] || "",
@@ -293,8 +293,12 @@ class Mongodb::BankPaperPap
         levels = [*1..Common::Report::CheckPoints::Levels]
         levels.each{|lv|
           # search current level checkpoint
-          lv_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
-
+          if ckp.is_a? BankCheckpointCkp
+            lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+          elsif ckp.is_a? BankSubjectCheckpointCkp
+            xue_duan = BankNodestructure.get_subject_category(self.grade)
+            lv_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+          end
           temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
           result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] = temp_arr
           result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] << { 
@@ -372,7 +376,7 @@ class Mongodb::BankPaperPap
 
   #未来要实现可属于多个tenant
   def tenant
-    Common::Uzer.get_tenant current_user_id
+    Tenant.where(uid: self.tenant_uid).first
   end
 
   # create empty score file
@@ -695,8 +699,10 @@ class Mongodb::BankPaperPap
     #######start to analyze#######      
     (data_start_row..total_row).each{|index|
       row = sheet.row(index)
+      grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
       cells = {
-        :grade => Common::Locale.hanzi2pinyin(row[0]),
+        :grade => grade_pinyin,
+        :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
         :classroom => Common::Locale.hanzi2pinyin(row[1]),
         :head_teacher => row[2],
         :teacher => row[3],
@@ -810,8 +816,13 @@ class Mongodb::BankPaperPap
         ckps = qizpoint.bank_checkpoint_ckps
         ckps.each{|ckp|
           next unless ckp
-          lv1_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-          lv2_ckp = ckp.class.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          if ckp.is_a? BankCheckpointCkp
+            lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+            lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          elsif ckp.is_a? BankSubjectCheckpointCkp
+            lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,3)}'").first
+            lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          end
           param_h[:dimesion] = ckp.dimesion
           param_h[:lv1_uid] = lv1_ckp.uid
           param_h[:lv1_ckp] = lv1_ckp.checkpoint

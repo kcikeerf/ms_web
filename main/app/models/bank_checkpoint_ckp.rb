@@ -364,7 +364,11 @@ class BankCheckpointCkp < ActiveRecord::Base
 
     if params[:subject] && params[:grade]
       target_subject = params[:subject]
-      target_category = params[:grade]
+      target_category =  BankNodestructure.get_subject_category(params[:grade])
+    elsif params[:pap_uid]
+      target_pap = Mongodb::BankPaperPap.find(params[:pap_uid])
+      target_subject = target_pap.subject
+      target_category =  BankNodestructure.get_subject_category(target_pap.grade)
     elsif params[:node_uid]
       node = BankNodestructure.where(:uid => params[:node_uid]).first
       target_subject = node.subject if node
