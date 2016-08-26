@@ -15,7 +15,7 @@ Rails.application.config.assets.precompile += ['zhengjuan.css', 'init_zhengjuan.
 # # 诊断报告
 Rails.application.config.assets.precompile += ['report.css', 'init_report.js', 'new_report.css.scss', 'init_new_report.js', 'create_report.js']
 # # 百度eCharts.js
-Rails.application.config.assets.precompile += ['echarts.min.js']
+Rails.application.config.assets.precompile += ['echarts.min.js', 'echarts_themes/macarons.js', 'echarts_themes/vintage.js']
 
 Rails.application.config.assets.precompile += ['managers/mains.css', 'managers/mains.js']
 

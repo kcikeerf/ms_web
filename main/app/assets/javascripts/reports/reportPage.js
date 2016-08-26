@@ -578,6 +578,14 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
+					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.average_percent);
+					$('#knowledge_average_percent').html(avg_table);
+					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.median_percent);
+					$('#knowledge_median_percent').html(med_table);
+					var med_avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.med_avg_diff);
+					$('#knowledge_med_avg_diff').html(med_avg_table);
+					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.diff_degree);
+					$('#knowledge_diff_degree').html(diff_table);
 				}
 				else if($dataId == 'grade-checkpoint-skill'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -587,6 +595,14 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
+					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.average_percent);
+					$('#skill_average_percent').html(avg_table);
+					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.median_percent);
+					$('#skill_median_percent').html(med_table);
+					var med_avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.med_avg_diff);
+					$('#skill_med_avg_diff').html(med_avg_table);
+					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.diff_degree);
+					$('#skill_diff_degree').html(diff_table);
 				}
 				else if($dataId == 'grade-checkpoint-ability'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -596,6 +612,14 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
+					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.average_percent);
+					$('#ability_average_percent').html(avg_table);
+					var med_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.median_percent);
+					$('#ability_median_percent').html(med_table);
+					var med_avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.med_avg_diff);
+					$('#ability_med_avg_diff').html(med_avg_table);
+					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.diff_degree);
+					$('#ability_diff_degree').html(diff_table);
 				}
 				else if($dataId == 'grade-checkpoint-total'){
 					var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
@@ -614,6 +638,12 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
+					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.excellent_pupil_percent);
+					$('#knowledge_excellent_table').html(excellent_table);
+					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.good_pupil_percent);
+					$('#knowledge_good_table').html(good_table);
+					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.failed_pupil_percent);
+					$('#knowledge_failed_table').html(faild_table);
 				}
 				else if($dataId == 'grade-classPupilNum-skill'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
@@ -623,6 +653,12 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
+					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.excellent_pupil_percent);
+					$('#skill_excellent_table').html(excellent_table);
+					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.good_pupil_percent);
+					$('#skill_good_table').html(good_table);
+					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.skill.failed_pupil_percent);
+					$('#skill_failed_table').html(faild_table);
 				}
 				else if($dataId == 'grade-classPupilNum-ability'){
 					var ClassPupilNum = reportPage.Grade.getClassPupilNumData(data.data.each_class_pupil_number_chart);
@@ -632,7 +668,14 @@ var reportPage = {
 						var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
 						createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
 					};
+					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.excellent_pupil_percent);
+					$('#ability_excellent_table').html(excellent_table);
+					var good_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.good_pupil_percent);
+					$('#ability_good_table').html(good_table);
+					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.failed_pupil_percent);
+					$('#ability_failed_table').html(faild_table);
 				}
+					/*
 				else if($dataId == 'grade-checkpoint-table-knowledge'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.average_percent);
 					$('#knowledge_average_percent').html(avg_table);
@@ -643,6 +686,8 @@ var reportPage = {
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.knowledge.diff_degree);
 					$('#knowledge_diff_degree').html(diff_table);
 				}
+				*/
+					/*
 				else if($dataId == 'grade-checkpoint-table-skill'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.average_percent);
 					$('#skill_average_percent').html(avg_table);
@@ -653,6 +698,8 @@ var reportPage = {
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.skill.diff_degree);
 					$('#skill_diff_degree').html(diff_table);
 				}
+				*/
+					/*
 				else if($dataId == 'grade-checkpoint-table-ability'){
 					var avg_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.average_percent);
 					$('#ability_average_percent').html(avg_table);
@@ -663,6 +710,8 @@ var reportPage = {
 					var diff_table = reportPage.Grade.handleNormTable(data.data.each_checkpoint_horizon.ability.diff_degree);
 					$('#ability_diff_degree').html(diff_table);
 				}
+				*/
+					/*
 				else if($dataId == 'grade-classPupilNum-table-knowledge'){
 					var excellent_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.knowledge.excellent_pupil_percent);
 					$('#knowledge_excellent_table').html(excellent_table);
@@ -687,6 +736,7 @@ var reportPage = {
 					var faild_table = reportPage.Grade.handleNormTable(data.data.each_class_pupil_number_chart.ability.failed_pupil_percent);
 					$('#ability_failed_table').html(faild_table);
 				}
+				*/
 				else if($dataId == 'grade-answerCase'){
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					$('#excellent_answerCase_table').html(excellent_table);
@@ -1012,12 +1062,16 @@ var reportPage = {
 				series.push({
 					name:normkeyArr[j],
 					type:'bar',
-					barMaxWidth: 50,
+					barMaxWidth: 40,
 					stack: "总量",
 					label: {
 						normal: {
 							show: true,
-							position: 'insideLeft'
+							position: ['10%' ,'100%'],
+							textStyle: {
+								fontSize: 16,
+								color: '#212121'
+							}
 						}
 					},
 					data:allArr[j],
