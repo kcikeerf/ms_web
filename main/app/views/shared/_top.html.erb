@@ -8,12 +8,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/" title="知引">
+          <a class="navbar-brand zy-navbar-brand" href="/" title="知引">
             <img class="zy-logo" alt="知引" src="<%= image_url('logo-1.png') %>">
           </a>
         </div>
-        <div class="zy-tenant-title-field ">
-          <%= current_tenant.nil?? "":current_tenant.name_cn%>
+        <div class="zy-tenant-container">
+          <a href="#" class="zy-tenant-title"><%= current_tenant.nil?? "":current_tenant.name_cn%></a>
         </div>
         <nav role="navigation" class="zy-navbar-nav">
           <div class="navbar-collapse collapse">

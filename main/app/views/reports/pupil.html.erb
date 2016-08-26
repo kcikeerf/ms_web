@@ -21,41 +21,48 @@
 		<!--诊断图-->
 		<div class="container-fluid">
 			<div class="row">
-				<h3 class="zy-report-subtitle">学生 - 1级诊断图</h3>
+				<h2 class="zy-report-subtitle">
+					1级诊断图
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-1">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>知识</h4>
+					<h3>知识</h3>
 					<div id="pupil_knowledge_radar" class="zy-chart-container" style="border-right: 1px dashed #b6b6b6;"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>技能</h4>
+					<h3>技能</h3>
 					<div id="pupil_skill_radar" class="zy-chart-container" style="border-right: 1px dashed #b6b6b6;"></div>
 				</div>
 				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h4>能力</h4>
+					<h3>能力</h3>
 					<div id="pupil_ability_radar" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 					<div class="zy-report-footer">
-						<button type="button" class="btn btn-lg zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report">
-							解读说明
-						</button>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<h3 class="zy-report-subtitle">学生 - 2级诊断图</h3>
+				<h2 class="zy-report-subtitle">
+					2级诊断图
+					<button type="button" class="btn btn-md zy-btn-modal" data-toggle="modal" data-target="#zy-modal-report-2">
+						解读说明
+					</button>
+				</h2>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h4>知识</h4>
+					<h3>知识</h3>
 					<hr class="zy-hr-dashed" />
 					<div id="pupil_knowledge_diff" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h4>技能</h4>
+					<h3>技能</h3>
 					<hr class="zy-hr-dashed" />
 					<div id="pupil_skill_diff" class="zy-chart-container"></div>
 				</div>
 				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<h4>能力</h4>
+					<h3>能力</h3>
 					<hr class="zy-hr-dashed" />
 					<div id="pupil_ability_diff" class="zy-chart-container"></div>
 				</div>
@@ -106,13 +113,13 @@
 	</div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="zy-modal-report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- Modal 1 -->
+<div class="modal fade" id="zy-modal-report-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title" id="myModalLabel">雷达图解读说明</h4>
+				<h4 class="modal-title" id="myModalLabel">1级诊断图解读说明</h4>
 			</div>
 			<div class="modal-body">
 				<h3>雷达图面积</h3>
@@ -137,6 +144,28 @@
 					图形收缩在几何中心附近，所有半径均偏短，面积小，表示各指标发展水平都很差，学科成绩低下，是最差的雷达图。
 					表明学生学科兴趣低，学科信心差，需要先加强非智力方面的干预，再补足学科不足。
 				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal 2 -->
+<div class="modal fade" id="zy-modal-report-2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">2级诊断图解读说明</h4>
+			</div>
+			<div class="modal-body">
+				<h3>水平轴</h3>
+				<p>知识、技能和能力维度的2级指标。</p>
+
+				<h3>垂直轴</h3>
+				<p>个人得分率与年级平均得分率的差值，个人得分率大于年级平均水平时，则为正值；个人得分率小于年级平均水时，则为负值。</p>
+
+				<h3>柱状图</h3>
+				<p>柱状图越高，且在水平轴上方，该指标表现越好；柱状图越高，且在水平轴下方，该指标表现越差。</p>
 			</div>
 		</div>
 	</div>
