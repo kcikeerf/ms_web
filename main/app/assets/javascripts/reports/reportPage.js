@@ -1488,18 +1488,35 @@ var reportPage = {
 			};
 		},
 		handlePupilRadarData : function (data){
-			var arr1 = reportPage.baseFn.getKeys(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(data)));
+			var arr1 = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(data)));
 			var dataArr1 = [];
-			var dataArr2 = [];
+			//var dataArr2 = [];
 			var len = arr1.length;
 			for(var i=0 ; i<len ; i++){
-				dataArr1.push({name : arr1[i],max : 100});
-				dataArr2.push({name : '' , max : 100});
+				dataArr1.push(
+					{
+						text: arr1[i],
+						max: 100
+					}
+				);
+				/*
+				dataArr2.push(
+					{
+						text: '' ,
+						max: 100
+					}
+				);
+				*/
 			}
 			var arr2 = reportPage.baseFn.getValue(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(data)));
 			return obj = {
-				xaxis : { nullAxis : dataArr2.reverse() , xAxis : dataArr1.reverse()},
-				yaxis : { yAxis : arr2.reverse()}
+				xaxis : {
+					//nullAxis : dataArr2.reverse() ,
+					xAxis : dataArr1.reverse()
+				},
+				yaxis : {
+					yAxis : arr2.reverse()
+				}
 			}
 		},
 		/*针对个人的字段*/
