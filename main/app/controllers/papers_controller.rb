@@ -271,33 +271,33 @@ class PapersController < ApplicationController
     render layout: false
   end
 
-  def import_filled_score
-    logger.info("======================import score: begin")
-    @result = I18n.t('papers.messages.upload_score.fail')
-    if request.post?# && remotipart_submitted? 
-      score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
-      if score_file
-        begin 
-          # analyze filled score file
-          str = @paper.analyze_filled_score_file score_file# rescue nil  
-          @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
-          @paper.update(paper_status: Common::Paper::Status::ScoreImported)
-        rescue Exception => ex
-          logger.debug(">>>>>>>>>>>>>>>>>>Exception When Import Filled Score!")
-          logger.debug(ex.message)
-          logger.debug(ex.backtrace)
-        end
-      end
-    end
-    logger.info("======================import score: end")
-   render layout: false
-  end
+  # def import_filled_score
+  #   logger.info("======================import score: begin")
+  #   @result = I18n.t('papers.messages.upload_score.fail')
+  #   if request.post?# && remotipart_submitted? 
+  #     score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+  #     if score_file
+  #       begin 
+  #         # analyze filled score file
+  #         str = @paper.analyze_filled_score_file score_file# rescue nil  
+  #         @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
+  #         @paper.update(paper_status: Common::Paper::Status::ScoreImported)
+  #       rescue Exception => ex
+  #         logger.debug(">>>>>>>>>>>>>>>>>>Exception When Import Filled Score!")
+  #         logger.debug(ex.message)
+  #         logger.debug(ex.backtrace)
+  #       end
+  #     end
+  #   end
+  #   logger.info("======================import score: end")
+  #  render layout: false
+  # end
 
-  def import_score
+  def import_filled_score
     logger.info("====================import score: begin")
     params.permit!
 
-    result = {:task_uid => ""}
+    result = {:status => 403, :task_uid => ""}
 
     begin
       # this part will delete after merge with master
@@ -306,7 +306,7 @@ class PapersController < ApplicationController
 
       score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
       if score_file
-        task_name = format_report_task_name @paper.heading
+        task_name = format_report_task_name @paper.heading, Common::Task::Type::ImportScore
         new_task = TaskList.new(
           name: task_name,
           pap_uid: @paper._id.to_s)
@@ -315,22 +315,35 @@ class PapersController < ApplicationController
         Thread.new do
           ImportScoreJob.perform_later({
             :task_uid => new_task.uid,
-            :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
-            :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
-            :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
-            :school => Common::Locale.hanzi2pinyin(@paper.tenant.name_cn),
-            :pap_uid => params[:pap_uid]}) 
+            :pap_uid => params[:pap_uid]
+          }) 
         end
-
-        status = 500
+        status = 200
+        result[:status] = status
+        result[:task_uid] = new_task.uid
       else
-
+        status = 500
+        result[:status] = status
+        result[:message] = I18n.t("scores.messages.error.upload_failed")
       end
     rescue Exception => ex
       status = 500
+      result[:status] = status
+      result[:message] = I18n.t("scores.messages.error.upload_exception")
+      @result = result.to_json
+      logger.debug ">>>ex.message<<<"
+      logger.debug ex.message
+      logger.debug ">>>ex.backtrace<<<"
+      logger.debug ex.backtrace
     end
+    @result = result.to_json
     logger.info("====================import score: end")
-    render common_json_response(status, result)  
+    render layout: false
+    # respond_to do |format|
+    #   format.js {
+    #    render :json => common_json_response(status, result)#, :file => "import_filled_score" 
+    #   }
+    # end
   end
 
   private
