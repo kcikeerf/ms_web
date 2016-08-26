@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
     if (controller_name =~ /^Managers.*$/) == 0
       authenticate_manager!
       #redirect_to new_manager_session_path unless current_manager
-    else
+    elsif (controller_name =~ /^Wx.*$/) != 0
       authenticate_user! unless current_manager
       #redirect_to new_user_session_path unless current_user
     end
