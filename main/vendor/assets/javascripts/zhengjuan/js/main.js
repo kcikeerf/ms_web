@@ -134,9 +134,14 @@ $(function(){
                     $(".link_paper").css("display","block");
                     break;
                 case "analyzed":
+                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
+                    $(".link_paper").css("display","block");
+                    break;
                 case "score_importing":
-                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide(); 
-                    $(".link_paper").css("display","block");    
+                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
+                    $(".link_paper").css("display","block");
+                    $(".paperDetails .progress").show();
+                    paper.setInterVal();
                     break;
                 case "score_imported":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
@@ -144,7 +149,8 @@ $(function(){
                     break
                 case "report_generating":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
-                    $(".lookPaperInfo, .createReport").show().find(".progress").show();
+                    $(".lookPaperInfo, .createReport").show();
+                    $(".paperDetails .progress").show();
                     $(".createReport a").removeClass("active");
                     paper.setInterVal();
                     break;
@@ -890,12 +896,18 @@ $(function(){
             $(".score_part .score_list.open").removeClass("open");
             $('#commonDialog').modal('hide');
         });
+        $("#commonDialog").on("hidden.bs.modal",function(e){
+            var task_uid = $("input#task_uid").val();
+            if(task_uid){
+                paper.paperData.task_uid = task_uid;
+            }
+        })
     }
     //生成loading
     paper.createLoading = function(){
         var loading = $('<div class="loadingWarp"><img src="/images/zhengjuan/loading.gif" alt=""></div>');
         $("body").append(loading);
-    };
+    }
     //校验格式
     paper.fileVerify = function(elem){
         var bool = false,
@@ -1101,6 +1113,8 @@ $(function(){
                 if(data){
                     if(data.status == "success"){
                         var percent = data.process*100+"%";
+                        var display_label = data.name + "(" +(data.process * 100).toFixed(2) + "%" +")";
+                        $(".progress_label").html(display_label);
                         $(".progress .finish").css("width",percent);
                         if(data.process == 1){
                             location.reload();

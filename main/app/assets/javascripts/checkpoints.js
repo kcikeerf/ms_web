@@ -72,7 +72,6 @@ $(document).on('ready page:load', function (){
 	    }
 	}
 	function update_data(arr){
-		console.log(arr);
 		var tabIndex = arr.tabIndex;
 		$('#myTab li:eq('+tabIndex+') a').tab('show');
 		var dataArr = arr.dataArr;
