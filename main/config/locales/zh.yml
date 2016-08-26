@@ -164,7 +164,10 @@ zh:
         unknown: "用户未生成，发生未知错误"
         upload_failed: "文件上传失败！"
         upload_exception: "文件上传中发生异常错误！"
-
+  tasks:
+    type:
+      create_report: "生成报告"
+      import_score: "导入成绩"
   teachers:
     abbrev:
       subject: "科"
