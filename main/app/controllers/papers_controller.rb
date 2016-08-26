@@ -2,7 +2,7 @@ class PapersController < ApplicationController
 
   layout "zhengjuan"
 
-  before_action :set_paper#, only: [:download, :download_page, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
+  before_action :set_paper, only: [:download, :download_page, :get_saved_paper, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
