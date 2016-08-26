@@ -277,7 +277,7 @@ class PapersController < ApplicationController
     if request.post?# && remotipart_submitted? 
       score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
       if score_file
-        begin
+        begin 
           # analyze filled score file
           str = @paper.analyze_filled_score_file score_file# rescue nil  
           @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
@@ -291,6 +291,42 @@ class PapersController < ApplicationController
     end
     logger.info("======================import score: end")
    render layout: false
+  end
+
+  def import_score
+    logger.info("====================import score: begin")
+    params.permit!
+
+    result = {:task_uid => ""}
+
+    begin
+      score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+      if score_file
+        task_name = format_report_task_name @paper.heading
+        new_task = TaskList.new(
+          name: task_name,
+          pap_uid: @paper._id.to_s)
+        new_task.save!
+        
+        Thread.new do
+          GenerateReportJob.perform_later({
+            :task_uid => new_task.uid,
+            :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
+            :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
+            :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
+            :school => Common::Locale.hanzi2pinyin(@paper.tenant.name_cn),
+            :pap_uid => params[:pap_uid]}) 
+        end
+
+        status = 200
+        result[:task_uid] = new_task.uid
+      end
+    rescue Exception => ex
+      status = 500
+      result[:task_uid] = ex.message
+    end
+    logger.info("====================import score: end")
+    render common_json_response(status, result)  
   end
 
   private
