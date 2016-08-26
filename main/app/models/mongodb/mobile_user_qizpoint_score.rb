@@ -75,8 +75,8 @@ class Mongodb::MobileUserQizpointScore
           lv1_ckp = BankCheckpointCkp.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
           lv2_ckp = BankCheckpointCkp.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
         elsif ckp.is_a? BankSubjectCheckpointCkp
-          lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,3)}'").first
-          lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,6)}'").first
+          lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0,3)}'").first
+          lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0,6)}'").first
         end
         param_h[:dimesion] = ckp.dimesion
         param_h[:lv1_ckp] = lv1_ckp.checkpoint
