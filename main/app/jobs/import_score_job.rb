@@ -8,7 +8,10 @@ class ImportScoreJob < ActiveJob::Base
       params = args[0]
       logger.info "============>>Import Score Job: Begin<<=============="
 
-
+      job_tracker = JobList.new(name: "ImportScoreJob",
+                                task_uid: params[:task_uid],
+                                status: Common::Job::Status::InQueue)
+      job_tracker.save
 
     rescue Exception => ex
       logger.info "===!Excepion!==="

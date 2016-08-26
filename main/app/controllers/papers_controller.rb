@@ -300,6 +300,10 @@ class PapersController < ApplicationController
     result = {:task_uid => ""}
 
     begin
+      # this part will delete after merge with master
+      @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+      @paper.current_user_id = current_user.id
+
       score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
       if score_file
         task_name = format_report_task_name @paper.heading
@@ -309,7 +313,7 @@ class PapersController < ApplicationController
         new_task.save!
         
         Thread.new do
-          GenerateReportJob.perform_later({
+          ImportScoreJob.perform_later({
             :task_uid => new_task.uid,
             :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
             :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
@@ -318,12 +322,12 @@ class PapersController < ApplicationController
             :pap_uid => params[:pap_uid]}) 
         end
 
-        status = 200
-        result[:task_uid] = new_task.uid
+        status = 500
+      else
+
       end
     rescue Exception => ex
       status = 500
-      result[:task_uid] = ex.message
     end
     logger.info("====================import score: end")
     render common_json_response(status, result)  
