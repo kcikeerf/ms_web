@@ -19,8 +19,13 @@ class ImportScoreJob < ActiveJob::Base
       job_tracker.update(process: 1/phase_total.to_f)
 
       target_paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-      score_file = ScoreUpload.find(params[:score_file_id])
-      target_paper.analyze_filled_score_file score_file
+      target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
+
+      paper_h = JSON.parse(target_paper.paper_json)
+      paper_h["task_uid"] = params[:task_uid]
+      target_paper.update(paper_json: paper_h.to_json)
+
+      score_file = ScoreUpload.where(id: target_paper.score_file_id).first
       target_tenant = target_paper.tenant
       raise I18n.t "scores.messages.error.no_tenant" unless target_tenant
       subject = target_paper.subject
@@ -228,7 +233,7 @@ class ImportScoreJob < ActiveJob::Base
           }
         }
 
-        process_value = 9*(index+1)/(total_row-data_start_row)
+        process_value = 5 + 9*(index+1)/(total_row-data_start_row)
         job_tracker.update(process: process_value/phase_total.to_f)
       }
 
@@ -239,6 +244,7 @@ class ImportScoreJob < ActiveJob::Base
       score_file = Common::Score.create_usr_pwd file_h
 
       job_tracker.update(process: 1.0)
+      target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
       logger.info "===!Excepion!==="
       logger.info "[message]"

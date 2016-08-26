@@ -194,10 +194,10 @@ module Common
 
 
   module Task
-    module Type
-      CreateReport = "create_report"
-      ImportScore = "import_score"
-    end
+    Type = {
+      :create_report => I18n.t("tasks.type.create_report"),
+      :import_score => I18n.t("tasks.type.import_score")
+    }
 
     module Status
       InActive = "in_active"

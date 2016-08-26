@@ -133,11 +133,14 @@ $(function(){
                     $(".paper_about").show().find(".load_list").hide();
                     $(".link_paper").css("display","block");
                     break;
-                //case "analyzed":
-                    //break;
-                case "analyzed" || "score_importing":
-                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide(); 
+                case "analyzed":
+                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
+                    break;
+                case "score_importing":
+                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
+                    $(".link_paper").css("display","block");
+                    $(".paperDetails .progress").show();
                     paper.setInterVal();
                     break;
                 case "score_imported":
@@ -146,7 +149,8 @@ $(function(){
                     break
                 case "report_generating":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
-                    $(".lookPaperInfo, .createReport").show().find(".progress").show();
+                    $(".lookPaperInfo, .createReport").show();
+                    $(".paperDetails .progress").show();
                     $(".createReport a").removeClass("active");
                     paper.setInterVal();
                     break;
@@ -1109,6 +1113,8 @@ $(function(){
                 if(data){
                     if(data.status == "success"){
                         var percent = data.process*100+"%";
+                        var display_label = data.name + "(" +(data.process * 100).toFixed(2) + "%" +")";
+                        $(".progress_label").html(display_label);
                         $(".progress .finish").css("width",percent);
                         if(data.process == 1){
                             location.reload();
