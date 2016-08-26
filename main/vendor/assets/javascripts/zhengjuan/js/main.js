@@ -1441,6 +1441,7 @@ $(function(){
         $(".contentBody").html($(".template_analysis").html());
         paper.abstract();
         $("input#node_uid").val(paper.paperData.information.node_uid || "");
+        $("input#pap_uid").val(paper.paperData.pap_uid || "");
         var menu1 = "", count = 0,
             tempObj = $("<div></div>").html(paper.paperData.paper_html);
         tempObj.find(".my-group").each(function(i){
