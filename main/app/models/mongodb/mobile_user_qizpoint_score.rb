@@ -34,6 +34,8 @@ class Mongodb::MobileUserQizpointScore
   field :full_score, type: Float
 
   def self.save_score params
+    target_pap = Mongodb::BankPaperPap.find(params[:pap_uid])
+    xue_duan = BankNodestructure.get_subject_category(target_pap.grade)
   	#qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
     qzp_arr = params[:bank_quiz_qizs].values.map{|qiz| qiz[:bank_qizpoint_qzps].values}.flatten    
     qzp_arr.each{|qzp|
@@ -69,8 +71,13 @@ class Mongodb::MobileUserQizpointScore
       ckps = qizpoint.bank_checkpoint_ckps
       ckps.each{|ckp|
         next unless ckp
-        lv1_ckp = ckp.class.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-        lv2_ckp = ckp.class.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+        if ckp.is_a? BankCheckpointCkp
+          lv1_ckp = BankCheckpointCkp.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+          lv2_ckp = BankCheckpointCkp.where("node_uid = '#{node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+        elsif ckp.is_a? BankSubjectCheckpointCkp
+          lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0,3)}'").first
+          lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0,6)}'").first
+        end
         param_h[:dimesion] = ckp.dimesion
         param_h[:lv1_ckp] = lv1_ckp.checkpoint
         param_h[:lv2_ckp] = lv2_ckp.checkpoint

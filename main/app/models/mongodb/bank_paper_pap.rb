@@ -83,6 +83,19 @@ class Mongodb::BankPaperPap
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
 
+  # class method
+  class << self
+    def ckp_weights_modification args={}
+      if !args[:dimesion].blank? && !args[:weights].blank? && !args[:difficulty].blank?
+        result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[args[:dimesion].to_sym][args[:difficulty].to_sym]
+      elsif !args[:weights]
+        result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[:default]
+      else
+        result = 1
+      end
+    end
+  end
+
   def save_pap params
     status = Common::Paper::Status::None
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
@@ -459,7 +472,7 @@ class Mongodb::BankPaperPap
       :format_code =>"0.00"
 
     wb.add_worksheet(:name => I18n.t('scores.excel.score_title')) do |sheet|
-      sheet.sheet_protection.password = 'forbidden_by_qidian'
+      sheet.sheet_protection.password = 'forbidden_by_k12ke'
 
       # row 1
       # location input field
@@ -839,7 +852,7 @@ class Mongodb::BankPaperPap
           #调整权重系数
           # 1.单题难度关联
           #
-          param_h[:weights] = ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.levelword2})
+          param_h[:weights] = self.class.ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.levelword2})
           qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
           qizpoint_score.save!
         }
@@ -966,16 +979,6 @@ class Mongodb::BankPaperPap
    
     end
     region
-  end
-
-  def ckp_weights_modification args={}
-    if !args[:dimesion].blank? && !args[:weights].blank? && !args[:difficulty].blank?
-      result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[args[:dimesion].to_sym][args[:difficulty].to_sym]
-    elsif !args[:weights]
-      result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[:default]
-    else
-      result = 1
-    end
   end
 
   #######

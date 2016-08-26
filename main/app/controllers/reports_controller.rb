@@ -15,7 +15,7 @@ class ReportsController < ApplicationController
       #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
 
       #create a task to follow all the jobs
-      task_name = format_report_task_name @paper.heading
+      task_name = format_report_task_name @paper.heading, Common::Task::Type[:create_report]
       new_task = TaskList.new(
         name: task_name,
         #type: Common::Task::Type::CreateReport,
@@ -228,9 +228,6 @@ class ReportsController < ApplicationController
   end
 
   private
-  def format_report_task_name prefix
-    prefix + "_" +Common::Task::Type::CreateReport
-  end
 
   def set_paper
     @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
