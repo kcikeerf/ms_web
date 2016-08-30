@@ -65,7 +65,8 @@ class Mongodb::ReportGenerator
       '_id.grade' => {'$exists' => true },
       '_id.dimesion' => {'$exists' => true },
       '_id.lv1_ckp' => {'$exists' => true },
-      '_id.lv2_ckp' => nil
+      '_id.lv2_ckp' => nil,
+      '_id.order' => nil
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
@@ -404,7 +405,8 @@ class Mongodb::ReportGenerator
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.classroom' => {'$exists' => true },
-      '_id.dimesion' => {'$exists' => true }
+      '_id.dimesion' => {'$exists' => true },
+      '_id.order' => nil
     }
 
     data_table, ckp_lv2_to_lv1 = get_ckp_table
@@ -636,7 +638,9 @@ class Mongodb::ReportGenerator
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
       '_id.pup_uid' => nil,
-      '_id.order' => {'$exists' => true }
+      '_id.dimesion' => Common::CheckpointCkp::Dimesion::Knowledge,
+      '_id.order' => {'$exists' => true },
+      '_id.lv2_ckp' => {'$exists' => true }
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).sort({"_id.order" =>1}).each{|item|
@@ -657,7 +661,7 @@ class Mongodb::ReportGenerator
 
       #统计各题答对率
       level_key = "others"
-      target_pair = [item[:_id][:order],format_float(item[:value][:average_percent])]
+      target_pair = [item[:_id][:order],{:correct_ratio => format_float(item[:value][:average_percent]), :checkpoint => item[:_id][:lv2_ckp]}]
       if(0 <= item[:value][:average_percent] && 
        item[:value][:average_percent] <Common::Report::ScoreLevel::Level60)
        level_key = "failed"
@@ -686,7 +690,8 @@ class Mongodb::ReportGenerator
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.pup_uid' => {'$exists' => true },
-      '_id.dimesion' => {'$exists' => true }
+      '_id.dimesion' => {'$exists' => true },
+      '_id.order' => nil
     }
 
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
@@ -857,7 +862,9 @@ class Mongodb::ReportGenerator
       '_id.classroom' => {'$exists' => true },
       '_id.pup_uid' => nil,
       '_id.dimesion' => {'$exists' => true },
-      '_id.lv2_ckp' => nil
+      '_id.lv2_ckp' => nil,
+      '_id.order' => nil
+
 
     }
 
@@ -1051,7 +1058,7 @@ class Mongodb::ReportGenerator
       total_lower_than_grade_dimesion = []
 
       #使用2级指标做判断
-      #1级的时候要考虑，总分项
+      #1级的时候要考虑,总分项
       lv2_dimesion_key_h ={
         "knowledge" => report_h["data_table"]["knowledge"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten,
         "skill" => report_h["data_table"]["skill"].map{|a| a[1]}.map{|a| a["items"].map{|a| a[1]["label"]}}.flatten,
@@ -1185,7 +1192,7 @@ class Mongodb::ReportGenerator
       :school => @school,
       :pap_uid => @pap_uid
     }
-
+    
     map = %Q{
       function(){
         var real_total = this.weights * this.real_score;
@@ -1216,6 +1223,9 @@ class Mongodb::ReportGenerator
           {pap_uid: this.pap_uid, grade: this.grade, order: this.order}, 
            value_obj);
         emit(
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion,order: this.order, lv2_ckp: this.lv2_ckp}, 
+           value_obj);
+        emit(
           {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion}, 
           value_obj);
         emit(
@@ -1232,6 +1242,9 @@ class Mongodb::ReportGenerator
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, order: this.order},
+          value_obj);
+        emit(
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp},
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
@@ -1358,6 +1371,11 @@ class Mongodb::ReportGenerator
         qzp_score_common_cond['_id.lv2_ckp']=item[:_id][:lv2_ckp]
         qzp_score_upt_h['value.cls_dim_lv2_avg'] = item[:value][:average]
         qzp_score_upt_h['value.cls_dim_lv2_avg_percent'] = item[:value][:average_percent]
+      elsif cls_common_cond && item[:_id].keys.include?('order')
+        qzp_score_common_cond['_id.classroom']=item[:_id][:classroom]
+        qzp_score_common_cond['_id.order']=item[:_id][:order]
+        qzp_score_upt_h['value.cls_dim_order_avg'] = item[:value][:average]
+        qzp_score_upt_h['value.cls_dim_order_avg_percent'] = item[:value][:average_percent]
       elsif cls_common_cond
         qzp_score_common_cond['_id.classroom']=item[:_id][:classroom]
         qzp_score_upt_h['value.cls_dim_avg'] = item[:value][:average]
@@ -1370,6 +1388,10 @@ class Mongodb::ReportGenerator
         qzp_score_common_cond['_id.lv2_ckp']=item[:_id][:lv2_ckp]
         qzp_score_upt_h['value.gra_dim_lv2_avg'] = item[:value][:average]
         qzp_score_upt_h['value.gra_dim_lv2_avg_percent'] = item[:value][:average_percent]
+      elsif gra_common_cond && item[:_id].keys.include?('order')
+        qzp_score_common_cond['_id.order']=item[:_id][:lv2_ckp]
+        qzp_score_upt_h['value.gra_dim_order_avg'] = item[:value][:average]
+        qzp_score_upt_h['value.gra_dim_order_avg_percent'] = item[:value][:average_percent]
       elsif gra_common_cond 
         #do nothing
         qzp_score_upt_h['value.gra_dim_avg'] = item[:value][:average]
@@ -1744,7 +1766,7 @@ class Mongodb::ReportGenerator
     #   '_id.lv2_ckp' => nil
     # }
 
-    #排名按维度，不按各指标
+    #排名按维度,不按各指标
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
