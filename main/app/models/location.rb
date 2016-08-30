@@ -37,7 +37,7 @@ class Location < ActiveRecord::Base
   def self.generate_school_number
     result = ""
     arr = [*'1'..'9'] + [*'A'..'Z'] + [*'a'..'z']
-    Common::School::NumberLength.times{ result << arr.sample}
+    Common::Tenant::NumberLength.times{ result << arr.sample}
     return result
   end
 

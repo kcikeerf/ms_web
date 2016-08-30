@@ -142,8 +142,8 @@ class Tenant < ActiveRecord::Base
 
     existedTntNumbers = self.get_tenant_numbers
     while existedTntNumbers.include?(result) || result.blank?
-      arr = [*'1'..'9'] + [*'A'..'Z'] + [*'a'..'z']
-      Common::School::NumberLength.times{ result << arr.sample}
+      # arr = [*'1'..'9'] + [*'A'..'Z'] + [*'a'..'z']
+      Common::Tenant::NumberLength.times{ result << Common::Tenant::NumberRandArr.sample}
     end
     return result
   end
