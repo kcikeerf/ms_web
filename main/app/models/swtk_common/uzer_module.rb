@@ -2,6 +2,9 @@ module UzerModule
   module Uzer
     module_function
 
+    PasswdRandLength = 8
+    PasswdRandArr = [*'1'..'9']
+
 	def get_tenant user_id
 		tenant = nil
 		current_user = User.find(user_id)
