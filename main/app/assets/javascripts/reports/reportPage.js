@@ -183,9 +183,10 @@ var reportPage = {
 			if(data != null){
 				var qid = reportPage.baseFn.getArrayKeysNoModify(data);
 				var correctRatio = reportPage.baseFn.getArrayValue(data);
+				console.log(correctRatio);
 				var str = '';
 				for(var i = 0; i < qid.length ; i++){
-					str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i]+'</td></tr>';
+					str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i].correct_ratio+'</td><td>'+ correctRatio[i].checkpoint +'</td></tr>';
 				};
 				return str;
 			}else{
@@ -1230,9 +1231,9 @@ var reportPage = {
 					var excellent_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.excellent);
 					var good_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.good);
 					var failed_table = reportPage.baseFn.getAnswerCaseTable(data.data.average_percent.failed);
-					$('#class_answer_excellent').html(excellent_table);
-					$('#class_answer_good').html(good_table);
-					$('#class_answer_failed').html(failed_table);
+					$('#excellent_answerCase_table').html(excellent_table);
+					$('#good_answerCase_table').html(good_table);
+					$('#failed_answerCase_table').html(failed_table);
 				}else if($dataId == 'report-read-three'){
 					$('#report-read-three').html(data.data.report_explanation.three_dimesions);
 				}else if($dataId == 'report-read-checkpoint'){
