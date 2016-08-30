@@ -217,43 +217,7 @@
 			说明：答对率指该题本班答对人数与全班参测学生的比值。数值范围为[0，1]，数值越大，表明答对人数越多。
 			答对率低于0.6的题目是本班的薄弱点，需要重点关注。
 		</h4>
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">答对率 ≥ 0.85的题目</h3>
-					<table class="static-table">
-						<tr>
-							<th>题号</th>
-							<th>答对率</th>
-						</tr>
-						<tbody id="class_answer_excellent">
-						</tbody>
-					</table>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">0.6 ≤ 答对率 < 0.85的题目</h3>
-					<table class="static-table">
-						<tr>
-							<th>题号</th>
-							<th>答对率</th>
-						</tr>
-						<tbody id="class_answer_good">
-						</tbody>
-					</table>
-				</div>
-				<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-					<h3 class="zy-report-subtitle">答对率 < 0.6的题目</h3>
-					<table class="static-table">
-						<tr>
-							<th>题号</th>
-							<th>答对率</th>
-						</tr>
-						<tbody id="class_answer_failed">
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
+		<%= render partial: "correct_ratio" %>
 	</div>
 	<div class="tab-pane report-data" id="report-read-three">
 	</div>
