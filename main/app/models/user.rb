@@ -26,31 +26,62 @@ class User < ActiveRecord::Base
     self.errors.add(:phone, '已存在') if phone.presence && self.class.where.not(id: id).find_by(phone: phone)    
   end
 
-  def self.find_for_database_authentication(warden_conditions)
-  	conditions = warden_conditions.dup
-  	login = conditions.delete(:login)
-    find_user(login, conditions)
-  	# where(conditions.to_h).where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
-  end
+  class << self
+    def generate_rand_password
+      result = "" 
+      Common::Uzer::PasswdRandLength.times{ result << Common::Uzer::PasswdRandArr.sample }
+      result
+    end
 
-  #添加用户
-  #pupil: User.add_user('xxx', 'pupil', {loc_uid: '1111111', name: 'xx', stu_number: '1234', sex: 'nan'})
-  #teacher: User.add_user('xxx', 'teacher', {loc_uid: '1111111', name: 'xx', subject: 'english', head_teacher: true})
-  def self.add_user(name, role_name, options={})
-    password = ((1..9).to_a + ('a'..'z').to_a - ['o', 'i']).sample(8).join
-    transaction do 
-      user = find_by(name: name)
-      if user
-        ClassTeacherMapping.find_or_create_info(user.teacher, options) if user.is_teacher?
-        return []
+    def find_for_database_authentication(warden_conditions)
+      conditions = warden_conditions.dup
+      login = conditions.delete(:login)
+      find_user(login, conditions)
+      # where(conditions.to_h).where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+    end
+
+    #添加用户
+    #pupil: User.add_user('xxx', 'pupil', {loc_uid: '1111111', name: 'xx', stu_number: '1234', sex: 'nan'})
+    #teacher: User.add_user('xxx', 'teacher', {loc_uid: '1111111', name: 'xx', subject: 'english', head_teacher: true})
+    def add_user(name, role_name, options={})
+      password = generate_rand_password
+      transaction do 
+        user = find_by(name: name)
+        if user
+          ClassTeacherMapping.find_or_create_info(user.teacher, options) if user.is_teacher?
+          return []
+        end
+        user = new(name: name, password: password, role_name: role_name)
+        return false unless user.save
+
+        #确定地区
+
+        user.save_after(options.merge({user_id: user.id}))
+        return [user.name, password]
       end
-      user = new(name: name, password: password, role_name: role_name)
-      return false unless user.save
+    end
 
-      #确定地区
+    def forgot_password_validate_user(login)
+      user = 
+        case judge_type(login)
+        when 'mobile'
+          where("phone = ? and phone_validate = ?", login, true).first
+        when 'email'
+          where("lower(email) = ? and email_validate = ?", login.downcase, true).first
+        end
+      unless user
+        user = new
+        user.errors.add(:login, '您输入的手机号码／邮箱不存在，请重新输入') 
+      end
+      user
+    end
 
-      user.save_after(options.merge({user_id: user.id}))
-      return [user.name, password]
+    def judge_type(user_name)
+      case user_name
+        when /\A1\d{10}\z/ then 'mobile'
+        when /\A[^@\s]+@[^@\s]+\z/ then 'email'
+        else 'name'
+      end
     end
   end
 
@@ -165,29 +196,6 @@ class User < ActiveRecord::Base
 
   def role?(r)
     role.name.include? r.to_s
-  end
-
-  def self.forgot_password_validate_user(login)
-    user = 
-      case judge_type(login)
-      when 'mobile'
-        where("phone = ? and phone_validate = ?", login, true).first
-      when 'email'
-        where("lower(email) = ? and email_validate = ?", login.downcase, true).first
-      end
-      unless user
-        user = new
-        user.errors.add(:login, '您输入的手机号码／邮箱不存在，请重新输入') 
-      end
-      user
-  end
-
-  def self.judge_type(user_name)
-    case user_name
-      when /\A1\d{10}\z/ then 'mobile'
-      when /\A[^@\s]+@[^@\s]+\z/ then 'email'
-      else 'name'
-    end
   end
 
   #生成忘记密码token

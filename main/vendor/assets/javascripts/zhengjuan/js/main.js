@@ -81,6 +81,29 @@ $(function(){
                 });
             } 
         },
+        baseFn : {
+            calQizpointFullScore: function(obj){
+                var target_obj = $(".analyze .textLabelWarp");
+                if(target_obj.length==1){
+                    var that = obj,
+                        values = that.val(),
+                        other = $(".selectFullscore, .scorePart").not(that.parents(".selectWarp"));
+                    other.find(".selectVal input").val(values);
+                    other.find(".optionList li").removeClass("active").map(function(i,item){
+                        if($(item).text()==values) $(item).addClass("active");
+                    });
+                } else if(target_obj.length > 1) {
+                    var fullscore = 0;
+                    $(".analyze .textLabelWarp").each(function(){
+                        fullscore += parseFloat($(this).find(".scorePart .selectVal input").val() || 0);
+                    });
+                    $(".selectFullscore").find(".selectVal input").val(fullscore.toFixed(2));
+                    $(".selectFullscore").find(".optionList li").removeClass("active").map(function(i,item){
+                        if(parseFloat($(item).text())==fullscore) $(item).addClass("active");
+                    });
+                }
+            }
+        },
         judge : function(data){
             $(".zhengjuang .container").hide().after($(".template_detail").html());
             var type = null, tempDom = $("<div></div>").html(data.paper_html);
@@ -378,17 +401,9 @@ $(function(){
             $(".saveWarp .saveBtn").addClass("active");
             paper.changeState = true;
         });
-        //得分点input失去焦点
-        doc.on("blur",".selectFullscore .selectVal input, .scorePart .selectVal input",function(){
-            if($(".analyze .textLabelWarp").length==1){
-                var that = $(this),
-                    values = that.val(),
-                    other = $(".selectFullscore, .scorePart").not(that.parents(".selectWarp"));
-                other.find(".selectVal input").val(values);
-                other.find(".optionList li").removeClass("active").map(function(i,item){
-                    if($(item).text()==values) $(item).addClass("active");
-                });
-            }
+        //得分点input on keyup
+        doc.on("keyup",".selectFullscore .selectVal input, .scorePart .selectVal input",function(){
+            paper.baseFn.calQizpointFullScore($(this));
         });
         //测试类型、难度、题型下拉选择
         doc.on("click",".selectCommon .optionList li",function(){

@@ -81,7 +81,7 @@ $(document).on('ready page:load', function (){
 		treeObj_knowledge.checkAllNodes(false);
 		treeObj_skill.checkAllNodes(false);
 		treeObj_ability.checkAllNodes(false);
-		var dataLen = dataArr.length;
+		var dataLen = (typeof(dataArr) == "undefined")? 0:dataArr.length;
 		for(var i=0;i<dataLen;i++){
 			if(dataArr[i].dimesion == "knowledge"){
 				var nodes = treeObj_knowledge.getNodesByParam("uid", dataArr[i].uid);
