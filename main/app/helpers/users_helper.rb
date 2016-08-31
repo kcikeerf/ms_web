@@ -68,12 +68,6 @@ module UsersHelper
   end
 
   def current_tenant
-    tenant = nil
-    if current_user.is_pupil?
-      tenant = current_user.role_obj.location.tenant
-    else
-      tenant = current_user.role_obj.tenant
-    end
-    tenant
+    current_user.tenant
   end
 end

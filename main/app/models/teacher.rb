@@ -26,11 +26,11 @@ class Teacher < ActiveRecord::Base
         :city_rid => "",
         :district_rid => ""
       }
-      tenant = nil
+      tenant = item.tenant
+      area_h = tenant.area_pcd if tenant
+
       head_teacher = false
       unless item.locations.empty?
-        tenant = item.tenant
-        area_h = tenant.area_pcd if tenant
         item.locations.each{|loc|
           if item.is_class_headteacher?(loc.uid)
             head_teacher = true
@@ -118,8 +118,8 @@ class Teacher < ActiveRecord::Base
     paramsh = {
       :user_id => params[:user_id],
       :name => params[:name], 
-      :subject => params[:subject]
-      # :tenant_uid => params[:tenant_uid] # to be implemented
+      :subject => params[:subject],
+      :tenant_uid => params[:tenant_uid]
     }
     update_attributes(paramsh)
     save!

@@ -198,12 +198,22 @@ class User < ActiveRecord::Base
   end  
 
   def role?(r)
-    role.name.include? r.to_s
+    role.name.include? r.to_s if role && role.name
   end
 
   #生成忘记密码token
   def save_token
     set_reset_password_token
+  end
+
+  def tenant
+    tenant = nil
+    if is_pupil?
+      tenant = role_obj.location.tenant if role_obj && role_obj.location
+    else
+      tenant = role_obj.tenant if role_obj
+    end
+    tenant
   end
 
   private
