@@ -187,14 +187,18 @@ zh:
   wx_users:
     messages:
       info:
+        is_binded: "您的微信账户已与三维题库账户绑定。"
         wx_binded: "您的微信账户与三维题库账户绑定成功！"
 
       warn:
+        not_binded: "您的微信账户尚未与三维题库账户绑定!"
+        invalid_binded: "您的微信账户虽已与三维题库账户绑定，但存在异常，请联系管理员。"
         not_wx_user: "非有效微信用户!"
         invalid_pupil: "请确认此学生账户是否存在"
         invalid_binding_params: "您的微信绑定参数无效！"
         invalid_wx_user: "你的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
       error:
+        login_failed: "您输入的用户名或密码有错误，未通过认证！"
         wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
 
   wx_papers:

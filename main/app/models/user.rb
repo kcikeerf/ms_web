@@ -9,6 +9,9 @@ class User < ActiveRecord::Base
   belongs_to :role
   has_one :image_upload
 
+  has_many :wx_user_mappings, foreign_key: "user_id"
+  has_many :wx_users, through: :wx_user_mappings
+
   before_create :set_role#, :check_existed?
 
   validates :role_name, presence: true, on: :create

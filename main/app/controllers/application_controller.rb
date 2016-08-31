@@ -43,7 +43,16 @@ class ApplicationController < ActionController::Base
 
   def wx_current_user
     params.permit!
-    User.where(wx_openid: params[:wx_openid]).first
+    result = nil
+
+    target_user = User.where(name: params[:user_name]).first
+    target_wx_user = WxUser.where(:wx_openid => params[:wx_openid]).first
+    if target_wx_user && target_user
+      if target_wx_user.binded_user? target_user.name
+        result = target_user
+      end
+    end
+    return result
   end
   #######
 

@@ -61,5 +61,7 @@ module Main
     config.active_job.queue_adapter = :sidekiq
     config.active_record.raise_in_transactional_callbacks = true
 
+    config.filter_parameters += [:password, :password_confirmation]
+
   end
 end
