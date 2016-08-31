@@ -8,6 +8,9 @@
 	.zy-report-nav-container {
 		width: $sidebar-width;
 		position: relative;
+		li {
+			position: relative;
+		}
 		.zy-report-navEntry {
 			display: inline-block;
 			padding: 15px 20px;
