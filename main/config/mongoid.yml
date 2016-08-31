@@ -144,10 +144,20 @@ test:
 production:
   clients:
     default:
+      # database: swtk_production
+      # hosts:
+      #   - dds-m5e1cc5185454e341.mongodb.rds.aliyuncs.com:3717
+      #   - dds-m5e1cc5185454e342.mongodb.rds.aliyuncs.com:3717
       database: main_development
       hosts:
         - localhost:27017
       options:
+        # write:
+        #   w: 2
+        # read:
+        #   mode: :secondary_preferred
+        # user: ""
+        # password: ""
         read:
           mode: :primary
         min_pool_size: 20
