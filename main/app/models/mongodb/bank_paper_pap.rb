@@ -878,20 +878,23 @@ class Mongodb::BankPaperPap
         :username => params_h[:user_name],
         :password => "",
         :name => params_h[:name],
-        :report_url => "",
-        :tenant_uid => tenant.uid
+        :report_url => ""
+        # :tenant_uid => tenant.uid
       },
       Common::Role::Pupil.to_sym => {
         :username => params_h[:user_name],
         :password => "",
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
-        :report_url => "/reports/square?username=",
-        :tenant_uid => tenant.uid
+        :report_url => "/reports/square?username="
+        # :tenant_uid => tenant.uid
       }
     }
 
-    ret = User.add_user params_h[:user_name],role,params_h
+    target_current = Common::Uzer.get_tenant current_user_id
+    params_h[:tenant_uid] = target_current.nil?? "":target_current.uid
+
+    ret = User.add_user params_h[:user_name],role, params_h
     target_username = ""
     if (ret.is_a? Array) && ret.empty?
       row_data[role.to_sym][:password] = I18n.t("scores.messages.info.old_user")

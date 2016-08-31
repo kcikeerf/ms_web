@@ -28,25 +28,24 @@ class Managers::TeachersController < ApplicationController
     respond_with({rows: @teachers, total: @teachers.total_count}) 
   end
 
-#   # 创建老师
-#   def create
-#     new_user = User.new
+  # 创建老师
+  def create
+    new_user = User.new
 
-#     status = 403
-#     data = {:status => 403 }
+    status = 403
+    data = {:status => 403 }
 
-#     begin
-#       new_user.save_user(Common::Role::Analyzer, user_params)
-# #      result_flag = new_user.id.nil?? false : (new_user.analyzer.nil?? false : true)
-#       status = 200
-#       data = {:status => 200 }
-#     rescue Exception => ex
-#       status = 500
-#       data = {:status => 500, :message => ex.message}
-#     end
+    begin
+      new_user.save_user(Common::Role::Teacher, user_params)
+      status = 200
+      data = {:status => 200 }
+    rescue Exception => ex
+      status = 500
+      data = {:status => 500, :message => ex.message}
+    end
 
-#     render common_json_response(status, data)
-#   end
+    render common_json_response(status, data)
+  end
 
   def update
   	#render json: response_json_by_obj(@user.update_user(Common::Role::Analyzer, user_params), @user)
@@ -61,7 +60,7 @@ class Managers::TeachersController < ApplicationController
       data = {:status => 200, :message => "200" }
     rescue Exception => ex
       status = 500
-      data = {:status => 500, :message => ex.backtrace}
+      data = {:status => 500, :message => ex.message}
     end
 
     render common_json_response(status, data)
@@ -101,10 +100,10 @@ class Managers::TeachersController < ApplicationController
       :user_name,
       :password,
       :name,
-      # :province_rid,
-      # :city_rid,
-      # :district_rid, 
-      # :tenant_uid, 
+      :province_rid,
+      :city_rid,
+      :district_rid, 
+      :tenant_uid, 
       :subject, 
       :qq, 
       :phone,

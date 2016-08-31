@@ -27,7 +27,8 @@ class Pupil < ActiveRecord::Base
         :city_rid => "",
         :district_rid => ""
       }
-      tenant = item.location.nil?? nil : item.location.tenant 
+      tenant = item.location.nil?? nil : item.location.tenant
+      area_h = tenant.area_pcd if tenant
       h = {
         :tenant_uid =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
@@ -54,15 +55,23 @@ class Pupil < ActiveRecord::Base
       :sex => params[:sex],
       :name => params[:name], 
       :grade => params[:grade],
-      :classroom => params[:classroom]
+      :classroom => params[:classroom],
+      :tenant_uid => params[:tenant_uid]
     }
     update_attributes(paramsh)
     save!
   end
 
+  def destroy_pupil
+    transaction do
+      self.user.destroy! if self.user
+      self.destroy! if self
+    end
+  end
+
   def self.save_info(options)
     # options[:sex] = Common::Locale.hanzi2pinyin(options[:sex]) if options.keys.include?("sex")
-  	options = options.extract!(:user_id, :name, :loc_uid, :sex, :stu_number, :grade, :classroom)
+  	options = options.extract!(:user_id, :name, :loc_uid, :sex, :stu_number, :grade, :classroom, :tenant_uid)
   	create(options)
   end
 
