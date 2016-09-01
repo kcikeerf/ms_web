@@ -647,226 +647,226 @@ class Mongodb::BankPaperPap
     File.delete(file_path)
   end
 
-  # analyze filled score file
-  def analyze_filled_score_file file
-    # score file with scores filled
-    filled_file = Roo::Excelx.new(file.filled_file.current_path)
-    #
-    # test
-    #filled_file = Roo::Excelx.new("/Users/freekick/Workspace/Qidian/swtk/main/uploads/score_upload/5/empty_score.xlsx")
+#   # analyze filled score file
+#   def analyze_filled_score_file file
+#     # score file with scores filled
+#     filled_file = Roo::Excelx.new(file.filled_file.current_path)
+#     #
+#     # test
+#     #filled_file = Roo::Excelx.new("/Users/freekick/Workspace/Qidian/swtk/main/uploads/score_upload/5/empty_score.xlsx")
      
-    # read score sheet
-    sheet = filled_file.sheet(I18n.t('scores.excel.score_title')) if filled_file
+#     # read score sheet
+#     sheet = filled_file.sheet(I18n.t('scores.excel.score_title')) if filled_file
 
-    # read title
-    loc_row = sheet.row(1)
-    hidden_row = sheet.row(2)
-    order_row = sheet.row(3)
-    title_row = sheet.row(4)
+#     # read title
+#     loc_row = sheet.row(1)
+#     hidden_row = sheet.row(2)
+#     order_row = sheet.row(3)
+#     title_row = sheet.row(4)
 
-    # initial data
-    data_start_row = 5
-    data_start_col = 8
-    total_row = sheet.count
-    total_cols = hidden_row.size
+#     # initial data
+#     data_start_row = 5
+#     data_start_col = 8
+#     total_row = sheet.count
+#     total_cols = hidden_row.size
 
-    loc_h = {
-      :province => Common::Locale.hanzi2pinyin(loc_row[1]),
-      :city => Common::Locale.hanzi2pinyin(loc_row[3]),
-      :district => Common::Locale.hanzi2pinyin(loc_row[5]),
-      :school => Common::Locale.hanzi2pinyin(loc_row[7]),
-      :tenant_uid => tenant.uid
-#      :school_number => Location.generate_school_number
-    }
-    subject = self.subject
+#     loc_h = {
+#       :province => Common::Locale.hanzi2pinyin(loc_row[1]),
+#       :city => Common::Locale.hanzi2pinyin(loc_row[3]),
+#       :district => Common::Locale.hanzi2pinyin(loc_row[5]),
+#       :school => Common::Locale.hanzi2pinyin(loc_row[7]),
+#       :tenant_uid => tenant.uid
+# #      :school_number => Location.generate_school_number
+#     }
+#     subject = self.subject
 
-    #excel for user password
-    out_excel = Axlsx::Package.new
-    wb = out_excel.workbook
-    teacher_sheet = wb.add_worksheet(:name => I18n.t('scores.excel.teacher_password_title'))
-    pupil_sheet = wb.add_worksheet(:name => I18n.t('scores.excel.pupil_password_title'))
+#     #excel for user password
+#     out_excel = Axlsx::Package.new
+#     wb = out_excel.workbook
+#     teacher_sheet = wb.add_worksheet(:name => I18n.t('scores.excel.teacher_password_title'))
+#     pupil_sheet = wb.add_worksheet(:name => I18n.t('scores.excel.pupil_password_title'))
 
-    teacher_sheet.sheet_protection.password = 'forbidden_by_qidian'
-    pupil_sheet.sheet_protection.password = 'forbidden_by_qidian'
+#     teacher_sheet.sheet_protection.password = 'forbidden_by_qidian'
+#     pupil_sheet.sheet_protection.password = 'forbidden_by_qidian'
 
-    teacher_title_row = [
-        I18n.t('activerecord.attributes.user.name'),
-        I18n.t('activerecord.attributes.user.password'),
-        I18n.t('dict.name'),
-        I18n.t('reports.generic_url')
-    ]
-    teacher_sheet.add_row teacher_title_row
+#     teacher_title_row = [
+#         I18n.t('activerecord.attributes.user.name'),
+#         I18n.t('activerecord.attributes.user.password'),
+#         I18n.t('dict.name'),
+#         I18n.t('reports.generic_url')
+#     ]
+#     teacher_sheet.add_row teacher_title_row
 
-    pupil_title_row = [
-        I18n.t('activerecord.attributes.user.name'),
-        I18n.t('activerecord.attributes.user.password'),
-        I18n.t('dict.name'),
-        I18n.t('dict.pupil_number'),
-        I18n.t('reports.generic_url')
-    ]
-    pupil_sheet.add_row pupil_title_row
+#     pupil_title_row = [
+#         I18n.t('activerecord.attributes.user.name'),
+#         I18n.t('activerecord.attributes.user.password'),
+#         I18n.t('dict.name'),
+#         I18n.t('dict.pupil_number'),
+#         I18n.t('reports.generic_url')
+#     ]
+#     pupil_sheet.add_row pupil_title_row
 
-    #
-    teacher_username_in_sheet = []
-    pupil_username_in_sheet = []
-    #######start to analyze#######      
-    (data_start_row..total_row).each{|index|
-      row = sheet.row(index)
-      grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
-      cells = {
-        :grade => grade_pinyin,
-        :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
-        :classroom => Common::Locale.hanzi2pinyin(row[1]),
-        :head_teacher => row[2],
-        :teacher => row[3],
-        :pupil_name => row[4],
-        :stu_number => row[5],
-        :sex => row[6]
-      }
+#     #
+#     teacher_username_in_sheet = []
+#     pupil_username_in_sheet = []
+#     #######start to analyze#######      
+#     (data_start_row..total_row).each{|index|
+#       row = sheet.row(index)
+#       grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
+#       cells = {
+#         :grade => grade_pinyin,
+#         :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
+#         :classroom => Common::Locale.hanzi2pinyin(row[1]),
+#         :head_teacher => row[2],
+#         :teacher => row[3],
+#         :pupil_name => row[4],
+#         :stu_number => row[5],
+#         :sex => row[6]
+#       }
 
-      #
-      # get location
-      #
-      loc_h[:grade] = cells[:grade]
-      loc_h[:classroom] = cells[:classroom]
-      loc = Location.where(loc_h).first
-      if loc.nil?
-        ## 
-        # parameters: province, city, district, school
-        #
+#       #
+#       # get location
+#       #
+#       loc_h[:grade] = cells[:grade]
+#       loc_h[:classroom] = cells[:classroom]
+#       loc = Location.where(loc_h).first
+#       if loc.nil?
+#         ## 
+#         # parameters: province, city, district, school
+#         #
 
-        ###
-        # 因为tenant要预先注册，此处不需要创建学校
-        #
-        # school_numbers = Location.get_school_numbers
-        # new_school_number = Location.generate_school_number
-        # count = 1
-        # while school_numbers.include?(new_school_number)
-        #   new_school_number = Location.generate_school_number
-        #   break if count > 100 # avoid infinite loop
-        #   count+=1
-        # end
+#         ###
+#         # 因为tenant要预先注册，此处不需要创建学校
+#         #
+#         # school_numbers = Location.get_school_numbers
+#         # new_school_number = Location.generate_school_number
+#         # count = 1
+#         # while school_numbers.include?(new_school_number)
+#         #   new_school_number = Location.generate_school_number
+#         #   break if count > 100 # avoid infinite loop
+#         #   count+=1
+#         # end
 
-        #loc_h[:school_number] = new_school_number
-        ###
+#         #loc_h[:school_number] = new_school_number
+#         ###
 
-        loc = Location.new(loc_h)
-        loc.save!
-      end
+#         loc = Location.new(loc_h)
+#         loc.save!
+#       end
        
-      user_row_arr = []
-      # 
-      # create teacher user 
-      #
-      head_tea_h = {
-        :loc_uid => loc.uid,
-        :name => cells[:head_teacher],
-        :subject => self.subject,
-        :head_teacher => true,
-        :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:head_teacher])])
-      }
-      user_row_arr =format_user_password_row(Common::Role::Teacher, head_tea_h)
-      unless teacher_username_in_sheet.include?(user_row_arr[0])
-        teacher_sheet.add_row user_row_arr
-        teacher_username_in_sheet << user_row_arr[0]
-      end
+#       user_row_arr = []
+#       # 
+#       # create teacher user 
+#       #
+#       head_tea_h = {
+#         :loc_uid => loc.uid,
+#         :name => cells[:head_teacher],
+#         :subject => self.subject,
+#         :head_teacher => true,
+#         :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:head_teacher])])
+#       }
+#       user_row_arr =format_user_password_row(Common::Role::Teacher, head_tea_h)
+#       unless teacher_username_in_sheet.include?(user_row_arr[0])
+#         teacher_sheet.add_row user_row_arr
+#         teacher_username_in_sheet << user_row_arr[0]
+#       end
       
-      tea_h = {
-        :loc_uid => loc.uid,
-        :name => cells[:teacher],
-        :subject => self.subject,
-        :head_teacher => false,
-        :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:teacher])])
-      }
-      user_row_arr = format_user_password_row(Common::Role::Teacher, tea_h)
-      unless teacher_username_in_sheet.include?(user_row_arr[0])
-        teacher_sheet.add_row user_row_arr
-        teacher_username_in_sheet << user_row_arr[0]
-      end
+#       tea_h = {
+#         :loc_uid => loc.uid,
+#         :name => cells[:teacher],
+#         :subject => self.subject,
+#         :head_teacher => false,
+#         :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:teacher])])
+#       }
+#       user_row_arr = format_user_password_row(Common::Role::Teacher, tea_h)
+#       unless teacher_username_in_sheet.include?(user_row_arr[0])
+#         teacher_sheet.add_row user_row_arr
+#         teacher_username_in_sheet << user_row_arr[0]
+#       end
 
-      #
-      # create pupil user
-      #
-      pup_h = {
-        :loc_uid => loc.uid,
-        :name => cells[:pupil_name],
-        :stu_number => cells[:stu_number],
-        :grade => cells[:grade],
-        :classroom => cells[:classroom],
-        :subject => self.subject,
-        :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
-        :user_name => format_user_name([tenant.number,cells[:stu_number],Common::Locale.hanzi2abbrev(cells[:pupil_name])])
-      }
-      user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)
-      unless pupil_username_in_sheet.include?(user_row_arr[0])
-        pupil_sheet.add_row user_row_arr
-        pupil_username_in_sheet << user_row_arr[0]
-      end
+#       #
+#       # create pupil user
+#       #
+#       pup_h = {
+#         :loc_uid => loc.uid,
+#         :name => cells[:pupil_name],
+#         :stu_number => cells[:stu_number],
+#         :grade => cells[:grade],
+#         :classroom => cells[:classroom],
+#         :subject => self.subject,
+#         :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
+#         :user_name => format_user_name([tenant.number,cells[:stu_number],Common::Locale.hanzi2abbrev(cells[:pupil_name])])
+#       }
+#       user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)
+#       unless pupil_username_in_sheet.include?(user_row_arr[0])
+#         pupil_sheet.add_row user_row_arr
+#         pupil_username_in_sheet << user_row_arr[0]
+#       end
 
-      current_user = User.where(name: pup_h[:user_name]).first
-      current_pupil = current_user.nil?? nil : current_user.pupil
+#       current_user = User.where(name: pup_h[:user_name]).first
+#       current_pupil = current_user.nil?? nil : current_user.pupil
 
-      (data_start_col..(total_cols-1)).each{|qzp_index|
-        param_h = {
-          :province => loc_h[:province],
-          :city => loc_h[:city],
-          :district => loc_h[:district],
-          :school => loc_h[:school],
-          :grade => cells[:grade],
-          :classroom => cells[:classroom],         
-          :pup_uid => current_pupil.nil?? "":current_pupil.uid,
-          :pap_uid => self._id.to_s,
-          :qzp_uid => hidden_row[qzp_index],
-          :tenant_uid => tenant.uid,
-          :order => order_row[qzp_index],
-          :real_score => row[qzp_index],
-          :full_score => title_row[qzp_index]
-        }
+#       (data_start_col..(total_cols-1)).each{|qzp_index|
+#         param_h = {
+#           :province => loc_h[:province],
+#           :city => loc_h[:city],
+#           :district => loc_h[:district],
+#           :school => loc_h[:school],
+#           :grade => cells[:grade],
+#           :classroom => cells[:classroom],         
+#           :pup_uid => current_pupil.nil?? "":current_pupil.uid,
+#           :pap_uid => self._id.to_s,
+#           :qzp_uid => hidden_row[qzp_index],
+#           :tenant_uid => tenant.uid,
+#           :order => order_row[qzp_index],
+#           :real_score => row[qzp_index],
+#           :full_score => title_row[qzp_index]
+#         }
 
-        qizpoint = Mongodb::BankQizpointQzp.where(_id: hidden_row[qzp_index]).first
-        qizpoint_qiz = qizpoint.nil?? nil : qizpoint.bank_quiz_qiz 
-        #next unless qizpoint
-        ckps = qizpoint.bank_checkpoint_ckps
-        ckps.each{|ckp|
-          next unless ckp
-          if ckp.is_a? BankCheckpointCkp
-            lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-            lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
-          elsif ckp.is_a? BankSubjectCheckpointCkp
-            lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,3)}'").first
-            lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,6)}'").first
-          end
-          param_h[:dimesion] = ckp.dimesion
-          param_h[:lv1_uid] = lv1_ckp.uid
-          param_h[:lv1_ckp] = lv1_ckp.checkpoint
-          param_h[:lv1_order] = lv1_ckp.sort
-          param_h[:lv2_uid] = lv2_ckp.uid
-          param_h[:lv2_ckp] = lv2_ckp.checkpoint
-          param_h[:lv2_order] = lv2_ckp.sort
-          param_h[:lv3_uid] = ckp.uid
-          param_h[:lv3_ckp] = ckp.checkpoint
-          param_h[:lv3_order] = ckp.sort
-          param_h[:lv_end_uid] = ckp.uid
-          param_h[:lv_end_ckp] = ckp.checkpoint
-          param_h[:lv_end_order] = ckp.sort
-          #调整权重系数
-          # 1.单题难度关联
-          #
-          param_h[:weights] = self.class.ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.levelword2})
-          qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
-          qizpoint_score.save!
-        }
-      }
-    }
+#         qizpoint = Mongodb::BankQizpointQzp.where(_id: hidden_row[qzp_index]).first
+#         qizpoint_qiz = qizpoint.nil?? nil : qizpoint.bank_quiz_qiz 
+#         #next unless qizpoint
+#         ckps = qizpoint.bank_checkpoint_ckps
+#         ckps.each{|ckp|
+#           next unless ckp
+#           if ckp.is_a? BankCheckpointCkp
+#             lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
+#             lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
+#           elsif ckp.is_a? BankSubjectCheckpointCkp
+#             lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,3)}'").first
+#             lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,6)}'").first
+#           end
+#           param_h[:dimesion] = ckp.dimesion
+#           param_h[:lv1_uid] = lv1_ckp.uid
+#           param_h[:lv1_ckp] = lv1_ckp.checkpoint
+#           param_h[:lv1_order] = lv1_ckp.sort
+#           param_h[:lv2_uid] = lv2_ckp.uid
+#           param_h[:lv2_ckp] = lv2_ckp.checkpoint
+#           param_h[:lv2_order] = lv2_ckp.sort
+#           param_h[:lv3_uid] = ckp.uid
+#           param_h[:lv3_ckp] = ckp.checkpoint
+#           param_h[:lv3_order] = ckp.sort
+#           param_h[:lv_end_uid] = ckp.uid
+#           param_h[:lv_end_ckp] = ckp.checkpoint
+#           param_h[:lv_end_order] = ckp.sort
+#           #调整权重系数
+#           # 1.单题难度关联
+#           #
+#           param_h[:weights] = self.class.ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.levelword2})
+#           qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
+#           qizpoint_score.save!
+#         }
+#       }
+#     }
 
-    # create user password file
-    file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}_password.xlsx"
-    out_excel.serialize(file_path)
-    file_h = {:score_file_id => self.score_file_id, :file_path => file_path}
-    score_file = Common::Score.create_usr_pwd file_h
-    #File.delete(file_path)
-    #######finish analyze#######  
-  end
+#     # create user password file
+#     file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}_password.xlsx"
+#     out_excel.serialize(file_path)
+#     file_h = {:score_file_id => self.score_file_id, :file_path => file_path}
+#     score_file = Common::Score.create_usr_pwd file_h
+#     #File.delete(file_path)
+#     #######finish analyze#######  
+#   end
 
   def format_user_name args=[]
     args.join("_")
