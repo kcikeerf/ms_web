@@ -341,7 +341,7 @@ class Mongodb::ReportGenerator
           target_pair = [lv1_ckp_order, {lv1_ckp_key => result_h }]
           report_h["each_level_number"]["grade_#{dimesion}"] = insert_item_to_a_with_order "checkpoint", temp_arr, target_pair          
         else
-          klass = I18n.t("dict.#{item[:_id][:classroom]}")
+          klass = klass_label(item[:_id][:classroom])
           ["failed_pupil_percent", "good_pupil_percent", "excellent_pupil_percent"].each{|member|
 
             temp_arr = report_h["each_class_pupil_number_chart"][dimesion][member] || []
@@ -871,7 +871,7 @@ class Mongodb::ReportGenerator
     Mongodb::ReportTotalAvgResult.where(filter).each{|item|
       grade_report, report_h = get_grade_report_hash item
       dimesion = item[:_id][:dimesion]
-      klass = I18n.t("dict.#{item[:_id][:classroom]}")
+      klass = klass_label(item[:_id][:classroom])
       if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
         lv1_ckp_order = item[:_id][:lv1_order]
@@ -924,7 +924,7 @@ class Mongodb::ReportGenerator
     Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
       grade_report, report_h = get_grade_report_hash item
       dimesion = item[:_id][:dimesion]
-      klass = I18n.t("dict.#{item[:_id][:classroom]}")
+      klass = klass_label(item[:_id][:classroom])
       if item[:_id].keys.include?("lv1_ckp")
         lv1_ckp_key = item[:_id][:lv1_ckp]
         lv1_ckp_order = item[:_id][:lv1_order]
@@ -2212,8 +2212,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
-      klass_label = Common::Klass::List.keys.include?(item[:_id][:classroom].to_sym) ? I18n.t("dict.#{item[:_id][:classroom]}") : item[:_id][:classroom]
-      report_h["basic"]["classroom"] = klass_label
+      report_h["basic"]["classroom"] = klass_label(item[:_id][:classroom])
       report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
       report_h["basic"]["pupil_number"] = target_klass.nil?? I18n.t("dict.unknown") : target_klass[:value][:pupil_number].to_i
       report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
@@ -2272,8 +2271,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
-      klass_label = Common::Klass::List.keys.include?(item[:_id][:classroom].to_sym) ? I18n.t("dict.#{item[:_id][:classroom]}") : item[:_id][:classroom]
-      report_h["basic"]["classroom"] = klass_label
+      report_h["basic"]["classroom"] = klass_label(item[:_id][:classroom])
       report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
       report_h["basic"]["name"] = pupil.nil?? I18n.t("dict.unknown") : pupil.name
       report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{pupil.sex}")
@@ -2449,5 +2447,9 @@ class Mongodb::ReportGenerator
       targeth.insert_before(target_key, arr)
     end
     return targeth
+  end
+
+  def klass_label klassroom
+    Common::Klass::List.keys.include?(klassroom.to_sym) ? I18n.t("dict.#{klassroom}") : klassroom
   end
 end
