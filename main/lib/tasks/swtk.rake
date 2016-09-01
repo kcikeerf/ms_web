@@ -246,8 +246,8 @@ namespace :swtk do
           Mongodb::BankCkpQzp.where(:qzp_uid => qzp._id.to_s).destroy_all
         }
         paramsh = {:paper_status => "analyzing"}
-     # when "score_imported"
-     #   #do nothing
+      when "analyzed"
+        Mongodb::BankQizpointScore.where({:pap_uid => args[:pap_uid]})
       end
       if ["editting", "editted", "analyzing", "analyzed"].include?(args[:back_to])
         target_pap.update(paramsh)
