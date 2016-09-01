@@ -2450,6 +2450,6 @@ class Mongodb::ReportGenerator
   end
 
   def klass_label klassroom
-    Common::Klass::List.keys.include?(klassroom.to_sym) ? I18n.t("dict.#{klassroom}") : klassroom
+    Common::Klass::klass_label klassroom
   end
 end

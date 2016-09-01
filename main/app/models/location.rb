@@ -41,7 +41,7 @@ class Location < ActiveRecord::Base
     return result
   end
 
-  def self.get_report_menus role, pap_uid, loc_h
+  def self.get_report_menus role, pap_uid, loc_h, options={}
     current_paper = Mongodb::BankPaperPap.where(_id: pap_uid).first
     report_name, grade_subject, klass_subject, pupil_subject = format_report_title current_paper.heading,current_paper.subject
     result = {}
@@ -68,10 +68,18 @@ class Location < ActiveRecord::Base
                 :report_id => nil,
                 :items => []}
     when Common::Role::Pupil
-
+      result ={ :key => loc_h[:grade],
+                :label => "",#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
+                :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
+                :report_subject => grade_subject,
+                :pupil_number => 0,
+                :report_url => nil,
+                :data_type=> nil,
+                :report_id => nil,
+                :items => []}
     end
 
-    if role == Common::Role::Analyzer || Common::Role::Teacher
+    if role == Common::Role::Analyzer || Common::Role::Teacher || Common::Role::Pupil 
       klasses = Location.where(loc_h)#.order(classroom: :ASC) #asc
       klasses = klasses.sort{|a,b| Common::Locale.mysort(Common::Klass::Order[a.classroom],Common::Klass::Order[b.classroom]) }
       klasses.each{|klass|
@@ -87,15 +95,22 @@ class Location < ActiveRecord::Base
             :label => klass_label + I18n.t("page.reports.report"),
             :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
             :report_subject => klass_subject,
-            :pupil_number => klass_pupil_number, 
-            :report_url => klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
-            :report_id => klass_report.nil?? "":klass_report._id,#klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id)),
-            :data_type => "klass",
+            :pupil_number => 0,
+            :report_url => nil,
+            :data_type=> nil,
+            :report_id => nil,
             :items => []
          }
+         if options.empty? || !options.keys.include?(:pup_uid)
+           klass_h[:pupil_number] = klass_pupil_number
+           klass_h[:report_url] = klass_report.nil?? "":format_class_report_url_params((klass_report.nil?? "":klass_report._id))
+           klass_h[:report_id] = klass_report.nil?? "":klass_report._id
+           klass_h[:data_type] = "klass"
+         end
          result[:pupil_number] += klass_pupil_number
          pupils = klass.pupils.sort{|a,b| Common::Locale.mysort a.stu_number,b.stu_number} #asc
          pupils.each{|pupil|
+           next if !options.empty? && options[:pup_uid] != pupil.uid
            param_h = {}
            param_h[:pup_uid] = pupil.uid
            param_h[:pap_uid] = pap_uid
