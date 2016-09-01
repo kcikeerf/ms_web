@@ -42,7 +42,6 @@ class Location < ActiveRecord::Base
   end
 
   def self.get_report_menus role, pap_uid, loc_h
-    p ">>>#{loc_h}"
     current_paper = Mongodb::BankPaperPap.where(_id: pap_uid).first
     report_name, grade_subject, klass_subject, pupil_subject = format_report_title current_paper.heading,current_paper.subject
     result = {}
@@ -108,7 +107,7 @@ class Location < ActiveRecord::Base
              :data_type => "pupil",
              :report_id => pupil_report.nil?? "":pupil_report._id,#pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
              :items => []
-           }
+           } if pupil_report #有报告的学生才会出现
          }
         result[:items] << klass_h
       }
