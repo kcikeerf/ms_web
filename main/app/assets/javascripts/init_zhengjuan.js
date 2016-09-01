@@ -1,4 +1,5 @@
 //= require application
+//= require jquery-ui.min
 //= require zhengjuan/js/jquery-form
 //= require init_ckeditor
 //= require zhengjuan/js/area
