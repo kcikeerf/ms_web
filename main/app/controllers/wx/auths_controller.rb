@@ -55,9 +55,20 @@ class Wx::AuthsController < ApplicationController
               status = 200
               data = {message: I18n.t("wx_users.messages.info.is_binded")}
             else
-              target_wx_user.users << target_user
-              status = 200
-              data = {message: I18n.t("wx_users.messages.info.wx_binded")}
+              #超过微信帐户绑定限制
+              if target_wx_user.users.count > Common::Wx::WxBindingUserLimit
+                status = 500
+                data = {message:I18n.t("wx_users.messages.warn.wx_binding_limit")}
+              #超过题库帐户绑定限制
+              elsif target_user.wx_users.count > Common::Wx::UserBindingWxLimit
+                status = 500
+                data = {message:I18n.t("wx_users.messages.warn.user_binding_limit")}
+              #正确绑定
+              else
+                target_wx_user.users << target_user
+                status = 200
+                data = {message: I18n.t("wx_users.messages.info.wx_binded")}
+              end
             end
           else
             current_wx_user = WxUser.new({

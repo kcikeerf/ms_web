@@ -196,7 +196,9 @@ zh:
         not_wx_user: "非有效微信用户!"
         invalid_pupil: "请确认此学生账户是否存在"
         invalid_binding_params: "您的微信绑定参数无效！"
-        invalid_wx_user: "你的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
+        invalid_wx_user: "您的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
+        wx_binding_limit: "您的微信帐户绑定题库帐户超过%{limit}个，若希望绑定更多的题库帐户请联系题库！"
+        user_binding_limit: "指定的题库帐户绑定微信帐户超过%{limit}个，若希望绑定更多的题库帐户请联系题库！"
       error:
         login_failed: "您输入的用户名或密码有错误，未通过认证！"
         wx_not_binded: "您的微信账户与三维题库账户绑定失败!"

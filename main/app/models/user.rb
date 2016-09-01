@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
       # where(conditions.to_h).where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     end
 
-    #添加用户
+    #上传成绩时，添加用户处理
     #pupil: User.add_user('xxx', 'pupil', {loc_uid: '1111111', name: 'xx', stu_number: '1234', sex: 'nan'})
     #teacher: User.add_user('xxx', 'teacher', {loc_uid: '1111111', name: 'xx', subject: 'english', head_teacher: true})
     def add_user(name, role_name, options={})
@@ -52,9 +52,10 @@ class User < ActiveRecord::Base
         user = find_by(name: name)
         if user
           ClassTeacherMapping.find_or_create_info(user.teacher, options) if user.is_teacher?
+          return [user.name, user.initial_password] unless user.initial_password.blank?
           return []
         end
-        user = new(name: name, password: password, role_name: role_name)
+        user = new(name: name, password: password, role_name: role_name, initial_password: password)
         return false unless user.save
 
         #确定地区
@@ -115,8 +116,10 @@ class User < ActiveRecord::Base
         :phone => params[:phone] || "",
         :email => params[:email] || ""
       }
-      paramsh[:password] = params[:password] unless params[:password].blank?
-
+      unless params[:password].blank?
+        paramsh[:password] = params[:password]
+        paramsh[:initial_password] = ""
+      end
       update_attributes(paramsh)
       return self unless save!
 

@@ -13,6 +13,7 @@ module Common
   include TenantModule
   include TermModule
   include UzerModule
+  include WxModule
 
   module Area
     CountryRids = {
