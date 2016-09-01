@@ -204,7 +204,9 @@ class ReportsController < ApplicationController
       loc_h[:classroom] = klass_rooms
       @scope_menus = Location.get_report_menus(Common::Role::Teacher,params[:pap_uid], loc_h)
     elsif current_user.is_pupil?
-      @scope_menus = current_user.pupil.report_menu params[:pap_uid]
+      loc_h[:classroom] = [current_user.pupil.location.classroom]
+      #@scope_menus = current_user.pupil.report_menu params[:pap_uid]
+      @scope_menus = Location.get_report_menus(Common::Role::Pupil,params[:pap_uid], loc_h, {:pup_uid => current_user.pupil.uid} )
     else 
       @scope_menus = { 
         :key => "",

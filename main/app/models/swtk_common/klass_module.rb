@@ -1,5 +1,6 @@
 module KlassModule
   module Klass
+    module_function
     List = {
       :yi_ban => I18n.t("dict.yi_ban"),
       :er_ban => I18n.t("dict.er_ban"),
@@ -65,5 +66,9 @@ module KlassModule
       "er_shi_jiu_ban" => "29",
       "san_shi_ban" => "30"
     }
+
+    def klass_label klassroom
+      Common::Klass::List.keys.include?(klassroom.to_sym) ? I18n.t("dict.#{klassroom}") : klassroom
+    end
   end
 end

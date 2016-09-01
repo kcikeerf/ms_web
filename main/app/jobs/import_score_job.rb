@@ -95,10 +95,12 @@ class ImportScoreJob < ActiveJob::Base
       (data_start_row..total_row).each{|index|
         row = sheet.row(index)
         grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
+        klass_pinyin = Common::Locale.hanzi2pinyin(row[1])
+        klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[1]
         cells = {
           :grade => grade_pinyin,
           :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
-          :classroom => Common::Klass::List.keys.include?(row[1].to_sym) ? Common::Locale.hanzi2pinyin(row[1]):row[1],
+          :classroom => klass_value,
           :head_teacher => row[2],
           :teacher => row[3],
           :pupil_name => row[4],
