@@ -891,8 +891,7 @@ class Mongodb::BankPaperPap
       }
     }
 
-    target_current = Common::Uzer.get_tenant current_user_id
-    params_h[:tenant_uid] = target_current.nil?? "":target_current.uid
+    params_h[:tenant_uid] = tenant.nil?? "":tenant.uid
 
     ret = User.add_user params_h[:user_name],role, params_h
     target_username = ""
