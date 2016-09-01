@@ -1,3 +1,4 @@
+//= require jquery-ui.min
 //= require bootstrapValidator.min
 //= require_directory ./cropper
 //= require jquery_lib/jquery-rebox
