@@ -2212,7 +2212,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
-      klass_label = Common::Klass::List.keys.include?(item[:_id][:classroom].to_sym) ? I18n.t("dict.#{klass.classroom}") : klass.classroom
+      klass_label = Common::Klass::List.keys.include?(item[:_id][:classroom].to_sym) ? I18n.t("dict.#{item[:_id][:classroom]}") : item[:_id][:classroom]
       report_h["basic"]["classroom"] = klass_label
       report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
       report_h["basic"]["pupil_number"] = target_klass.nil?? I18n.t("dict.unknown") : target_klass[:value][:pupil_number].to_i
@@ -2272,7 +2272,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
       report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
-      klass_label = Common::Klass::List.keys.include?(item[:_id][:classroom].to_sym) ? I18n.t("dict.#{klass.classroom}") : klass.classroom
+      klass_label = Common::Klass::List.keys.include?(item[:_id][:classroom].to_sym) ? I18n.t("dict.#{item[:_id][:classroom]}") : item[:_id][:classroom]
       report_h["basic"]["classroom"] = klass_label
       report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
       report_h["basic"]["name"] = pupil.nil?? I18n.t("dict.unknown") : pupil.name
