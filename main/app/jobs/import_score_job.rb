@@ -98,7 +98,7 @@ class ImportScoreJob < ActiveJob::Base
         cells = {
           :grade => grade_pinyin,
           :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
-          :classroom => Common::Locale.hanzi2pinyin(row[1]),
+          :classroom => Common::Klass::List.keys.include?(row[1].to_sym) ? Common::Locale.hanzi2pinyin(row[1]):row[1],
           :head_teacher => row[2],
           :teacher => row[3],
           :pupil_name => row[4],
