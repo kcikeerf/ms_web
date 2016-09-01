@@ -106,7 +106,7 @@ class Teacher < ActiveRecord::Base
 
   def pupils
     loc_uids = locations.map{|loc| loc.id}
-    Pupil.where(:loc_uid => loc_uids)
+    Pupil.where(:loc_uid => loc_uids).order("stu_number asc")
   end
 
   def papers
