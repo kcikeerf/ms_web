@@ -168,7 +168,7 @@ class ImportScoreJob < ActiveJob::Base
           :subject => target_paper.subject,
           :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
           :user_name => target_paper.format_user_name([
-            tenant.number,
+            target_tenant.number,
             cells[:stu_number],
             Common::Locale.hanzi2abbrev(cells[:pupil_name])
           ])
