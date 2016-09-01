@@ -247,7 +247,7 @@ namespace :swtk do
         }
         paramsh = {:paper_status => "analyzing"}
       when "analyzed"
-        Mongodb::BankQizpointScore.where({:pap_uid => args[:pap_uid]})
+        Mongodb::BankQizpointScore.where({:pap_uid => args[:pap_uid]}).destroy_all
         paramsh = {:paper_status => "analyzed"}
       end
       if ["editting", "editted", "analyzing", "analyzed"].include?(args[:back_to])
