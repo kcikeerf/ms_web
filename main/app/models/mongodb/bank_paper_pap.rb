@@ -795,7 +795,7 @@ class Mongodb::BankPaperPap
         :classroom => cells[:classroom],
         :subject => self.subject,
         :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
-        :user_name => format_user_name([tenant.number,cells[:stu_number]],Common::Locale.hanzi2abbrev(cells[:pupil_name])])
+        :user_name => format_user_name([tenant.number,cells[:stu_number],Common::Locale.hanzi2abbrev(cells[:pupil_name])])
       }
       user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)
       unless pupil_username_in_sheet.include?(user_row_arr[0])
