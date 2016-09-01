@@ -79,10 +79,12 @@ class Location < ActiveRecord::Base
          param_h[:classroom] = klass.classroom
          param_h[:pap_uid] = pap_uid
          klass_report = Mongodb::ClassReport.where(param_h).first
+         next unless klass_report
          klass_pupil_number =  klass.pupils.size
+         klass_label = Common::Klass::List.keys.include?(klass.classroom.to_sym) ? I18n.t("dict.#{klass.classroom}") : klass.classroom
          klass_h = {
             :key => klass.classroom,
-            :label => I18n.t("dict.#{klass.classroom}")+I18n.t("page.reports.report"),
+            :label => klass_label + I18n.t("page.reports.report"),
             :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
             :report_subject => klass_subject,
             :pupil_number => klass_pupil_number, 
@@ -98,6 +100,7 @@ class Location < ActiveRecord::Base
            param_h[:pup_uid] = pupil.uid
            param_h[:pap_uid] = pap_uid
            pupil_report = Mongodb::PupilReport.where(param_h).first
+           next unless pupil_report
            klass_h[:items] << {
              :key => pupil.stu_number,
              :label => pupil.name,
@@ -107,7 +110,7 @@ class Location < ActiveRecord::Base
              :data_type => "pupil",
              :report_id => pupil_report.nil?? "":pupil_report._id,#pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
              :items => []
-           } if pupil_report #有报告的学生才会出现
+           } #有报告的学生才会出现
          }
         result[:items] << klass_h
       }
