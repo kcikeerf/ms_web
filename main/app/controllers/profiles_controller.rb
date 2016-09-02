@@ -11,9 +11,9 @@ class ProfilesController < ApplicationController
     crop = JSON.parse(params[:avatar_data]) rescue {}
     f_upload = Common::Image.file_upload(current_user, params[:file], crop) 
     if f_upload.errors.blank?
-      render json: response_json(200, {message: 'success'})#:json => {:status=> 200, :message =>"success!"}
+      render common_json_response(200, {message: I18n.t("images.messages.info.success")})
     else
-      render json: response_json(500, {message: f_upload.errors.full_messages[0]}) #:json => {:status=> 500, :message =>f_upload.errors.full_messages[0]}
+      render common_json_response(500, {message: I18n.t("images.messages.error.failed", cause: f_upload.errors.full_messages[0])})
     end
   end
 

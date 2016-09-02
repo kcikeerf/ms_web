@@ -244,8 +244,9 @@
           _this.submitDone(data);
         },
 
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-          _this.submitFail(textStatus || errorThrown);
+        error: function (data) {
+          console.log(data);
+          _this.submitFail(data);
         },
 
         complete: function () {
@@ -275,17 +276,18 @@
             this.startCropper();
           }
           this.$avatarInput.val('');
-        } else if (data.data.message) {
+        } else if (data.message) {
           $("#crop-avatar img").attr('src', this.url);
-          this.alert(data.data.message);
+          this.alert(data.message);
         }
+
       } else {
         this.alert('Failed to response');
       }
     },
 
-    submitFail: function (msg) {
-      this.alert(msg);
+    submitFail: function (data) {
+      this.alert(data.responseJSON.message);
     },
 
     submitEnd: function () {

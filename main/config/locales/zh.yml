@@ -26,8 +26,12 @@ zh:
         chu_zhong: "初中"
         gao_zhong: "高中"
   images:
-    errors:
-      invalid_size: "图片文件大小超过300KB"
+    messages:
+      info:
+        success: "头像图片上传成功。"
+      error:
+        failed: "头像图片上传失败！原因（%{cause}）"
+        invalid_size: "图片文件大小超过300KB"
 
   views:
     pagination:
