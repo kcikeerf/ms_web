@@ -47,7 +47,8 @@ class Location < ActiveRecord::Base
     result = {}
     case role
     when Common::Role::Analyzer
-      grade_report = Mongodb::GradeReport.where(loc_h).first
+      param_h = {:pap_uid => pap_uid }
+      grade_report = Mongodb::GradeReport.where(param_h.merge(loc_h)).first
       result ={ :key => loc_h[:grade],
                 :label => I18n.t("dict.nian_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("dict.#{page.reports.report}"),
                 :report_name => format_report_name(current_paper.heading, I18n.t("dict.nian_ji_bao_gao")),
