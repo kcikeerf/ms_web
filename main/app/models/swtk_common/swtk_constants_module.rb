@@ -6,5 +6,6 @@ module SwtkConstantsModule
     DefaultPage = 1
     DefaultRows = 10
     DefaultSheetPassword = "forbidden_by_k12ke"
+    MyDomain = "www.k12ke.com"
   end
 end
