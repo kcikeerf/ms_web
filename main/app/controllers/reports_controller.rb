@@ -12,20 +12,14 @@ class ReportsController < ApplicationController
     result = {:task_uid => ""}
 
     begin
-      #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-
       #create a task to follow all the jobs
       task_name = format_report_task_name @paper.heading, Common::Task::Type[:create_report]
       new_task = TaskList.new(
         name: task_name,
-        #type: Common::Task::Type::CreateReport,
-#        ana_uid: current_user.analyzer.uid,
         pap_uid: params[:pap_uid])
       new_task.save!
 
       # create a job
-#      gcr_jpb = GenerateReportJob.new #loc_id, paper
-#      p "job=======>",gcr_jpb
       Thread.new do
         GenerateReportJob.perform_later({
           :task_uid => new_task.uid,
@@ -111,52 +105,6 @@ class ReportsController < ApplicationController
     end
     render common_json_response(status, data)
   end
-
-  # reports index page
-  # def square
-  #   params.permit!
-
-  #   current_paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-
-  #   loc_h = {
-  #     :province => Common::Locale.hanzi2pinyin(current_paper.province),
-  #     :city => Common::Locale.hanzi2pinyin(current_paper.city),
-  #     :district => Common::Locale.hanzi2pinyin(current_paper.district),
-  #     :school => Common::Locale.hanzi2pinyin(current_paper.school),
-  #     :grade => current_paper.grade
-  #   }
-  #   grade_report = Mongodb::GradeReport.where(loc_h).first
-
-  #   #@default_report = "/grade_reports/index?type=grade_report&report_id=#{grade_report._id}"
-  #   #@default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-  #   #@default_report_subject = I18n.t("dict.#{current_paper.subject}") + "&middot" + I18n.t("dict.nian_ji_bao_gao")
-  #   if current_user.is_analyzer?
-  #     @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
-  #   elsif current_user.is_teacher?
-  #     klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
-  #     loc_h[:classroom] = klass_rooms
-  #     @scope_menus = Location.get_grade_and_children(params[:pap_uid], loc_h)
-  #   elsif current_user.is_pupil?
-  #     @scope_menus = current_user.pupil.report_menu params[:pap_uid]
-  #   else 
-  #     @scope_menus = { 
-  #       :key => "",
-  #       :label => "",
-  #       :report_url => "",
-  #       :items => []}
-  #   end
-
-=begin
-    if current_user.is_analyzer?
-      
-    elsif current_user.is_teacher?
-
-    elsif current_user.is_pupil?
-
-    end
-=end
-  #   render :layout => 'report'
-  # end
 
   def first_login_check_report
     params.permit!
