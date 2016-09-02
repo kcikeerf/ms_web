@@ -41,7 +41,7 @@ class Pupil < ActiveRecord::Base
       h.merge!(item.attributes)
       h["sex_label"] = I18n.t("dict.#{h["sex"]}")
       h["grade_label"] = I18n.t("dict.#{h["grade"]}")
-      h["classroom_label"] = I18n.t("dict.#{h["classroom"]}")
+      h["classroom_label"] = Common::Klass::klass_label h["classroom"]
       h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
       result[index] = h
     }
