@@ -886,7 +886,7 @@ class Mongodb::BankPaperPap
         :password => "",
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
-        :report_url => "/reports/square?username="
+        :report_url => Common::SwtkConstants::MyDomain + "/reports/new_square?username="
         # :tenant_uid => tenant.uid
       }
     }
@@ -938,7 +938,7 @@ class Mongodb::BankPaperPap
     } 
     new_rum = ReportUrlMapping.new({:params_json => params_h.to_json })
     new_rum.save
-    result = "/reports/check/#{new_rum.nil?? "":new_rum.codes}"
+    result = Common::SwtkConstants::MyDomain + "/reports/check/#{new_rum.nil?? "":new_rum.codes}"
     return result
   end
 
