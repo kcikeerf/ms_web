@@ -15,7 +15,8 @@ class TeachersController < ApplicationController
     klass_arr = pupils.all.map(&:classroom).uniq.sort{|a,b|
       Common::Locale.mysort(Common::Klass::Order[a.nil?? "":a.to_sym],Common::Klass::Order[b.nil?? "":b.to_sym])
     }
-    @classrooms = deal_label('dict', klass_arr)
+    klass_arr.compact!
+    @classrooms = klass_arr.map{|k| [Common::Klass::klass_label(k), k]}
 
     @pupils = pupils.by_grade(params[:grade])
       .by_classroom(params[:classroom])

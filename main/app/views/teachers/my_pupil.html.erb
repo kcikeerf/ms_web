@@ -50,7 +50,7 @@
                                     	<td><%= pupil.name%></td>
                                     	<td><%= pupil.stu_number%></td>
                                     	<td><%= I18n.t("dict.#{pupil.grade}")%></td>
-                                    	<td><%= I18n.t("dict.#{pupil.classroom}")%></td>
+                                    	<td><%= Common::Klass::klass_label pupil.classroom %></td>
                                     	<td><%= current_user.qq %></td>
                                     	<td><%= current_user.phone %></td>
                                     	<!--td>个人报告</td-->
