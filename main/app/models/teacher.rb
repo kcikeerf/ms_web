@@ -128,12 +128,15 @@ class Teacher < ActiveRecord::Base
   def self.save_info(options)
     options = options.extract!(:user_id, :name, :loc_uid, :head_teacher, :subject, :tenant_uid)
 
-    # if options[:head_teacher]
-    #   ClassTeacherMapping.where({
-    #       :loc_uid => options[:loc_uid],
-    #       :
-    #   })
-    # end
+    # 将旧的班主任转为学科老师
+    #
+    if options[:loc_uid] && options[:loc_uid] && options[:head_teacher]
+      ClassTeacherMapping.where({
+          :tenant_uid => options[:tenant_uid],
+          :loc_uid => options[:loc_uid],
+          :head_teacher => true
+      }).update_all(:head_teacher => false)
+    end
 
     mapping_hash = {}
     mapping_hash[:loc_uid] = options[:loc_uid]

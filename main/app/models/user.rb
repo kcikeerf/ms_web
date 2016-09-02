@@ -51,7 +51,9 @@ class User < ActiveRecord::Base
       transaction do 
         user = find_by(name: name)
         if user
-          ClassTeacherMapping.find_or_create_info(user.teacher, options) if user.is_teacher?
+          #学生只能属于一个班级，若有更新，将更改Location
+          user.pupil.update(:loc_uid => options[:loc_uid]) if user.is_pupil? && !options[:loc_uid].blank?
+          ClassTeacherMapping.find_or_save_info(user.teacher, options) if user.is_teacher?
           return [user.name, user.initial_password] unless user.initial_password.blank?
           return []
         end
