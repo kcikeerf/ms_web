@@ -14,7 +14,8 @@ class ApplicationController < ActionController::Base
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
     cond3 = (controller_name == "Managers::SessionsController" && action_name == "new")
-    if cond1 || cond2 || cond3
+    cond4 = (controller_name == "ReportsController" && action_name == "first_login_check_report")
+    if cond1 || cond2 || cond3 || cond4
       next
     end
 
