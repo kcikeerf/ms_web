@@ -11,7 +11,7 @@ class ClassTeacherMapping < ActiveRecord::Base
   scope :by_head_teacher, ->{ where(head_teacher: true) }
   scope :by_tenant, ->(tenant_uid) { where(tenant_uid: tenant_uid) }
 
-  def self.find_or_create_info(teacher, options)
+  def self. (teacher, options)
   	options = options.extract!(:loc_uid, :subject, :head_teacher, :tenant_uid)
   	class_teach_mapping = find_by(tea_uid: teacher.id, loc_uid: options[:loc_uid], subject: options[:subject], tenant_uid: options[:tenant_uid])
   	teacher.class_teacher_mappings.build(options).save unless class_teach_mapping
