@@ -349,9 +349,10 @@ Rails.application.routes.draw do
   #######################################
   ### Wechat API
 
-  constraints(:host => 'wx.k12ke.com') do
+  #constraints(:host => 'wx.k12ke.com') do
     namespace :wx do
       resource :auths do
+        post 'unbind'
         post 'check_bind'
         post 'get_binded_users'
         # post 'bind'
@@ -375,7 +376,7 @@ Rails.application.routes.draw do
       match 'get_quizs', to: "papers#get_quizs",via: [:post, :options]
       match 'submit_quiz_score', to: "papers#submit_quiz_score",via: [:post, :options]
     end
-  end
+  #end
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all
