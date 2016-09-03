@@ -68,7 +68,7 @@ module KlassModule
     }
 
     def klass_label klassroom
-      Common::Klass::List.keys.include?(klassroom.to_sym) ? I18n.t("dict.#{klassroom}") : klassroom
+      klassroom.nil?? "":Common::Klass::List.keys.include?(klassroom.to_sym) ? I18n.t("dict.#{klassroom}") : klassroom
     end
   end
 end
