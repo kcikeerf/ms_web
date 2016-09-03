@@ -108,16 +108,19 @@ class Mongodb::BankPaperPap
 
     #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
     #tenant_uid= Tenant.get_tenant_uid params[:information]
-    target_area = Area.get_area params[:information]
+    #target_area = Area.get_area params[:information]
     target_current = Common::Uzer.get_tenant current_user_id
  
     #json保存前的处理
     params[:paper] = ""
-    params[:information][:province] = target_current.area_pcd[:province_name_cn]
-    params[:information][:city] = target_current.area_pcd[:city_name_cn]
-    params[:information][:district] = target_current.area_pcd[:district_name_cn]
-    params[:information][:school] = target_current.name_cn
+    if target_current
+      params[:information][:province] = target_current.area_pcd[:province_name_cn]
+      params[:information][:city] = target_current.area_pcd[:city_name_cn]
+      params[:information][:district] = target_current.area_pcd[:district_name_cn]
+      params[:information][:school] = target_current.name_cn
+    end
     #
+    target_area = Area.get_area params[:information]
 
     self.update_attributes({
       :user_id => current_user_id || "",
