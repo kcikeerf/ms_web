@@ -192,8 +192,9 @@ zh:
     messages:
       info:
         is_binded: "您的微信账户已与三维题库账户绑定。"
+        not_binded: "您的微信帐户未与三维题库帐户绑定."
         wx_binded: "您的微信账户与三维题库账户绑定成功！"
-
+        wx_unbinded: "您的微信帐户与三维题库帐户解绑成功！"
       warn:
         not_binded: "您的微信账户尚未与三维题库账户绑定!"
         invalid_binded: "您的微信账户虽已与三维题库账户绑定，但存在异常，请联系管理员。"
