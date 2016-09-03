@@ -613,7 +613,7 @@ class Mongodb::BankPaperPap
         })
         sheet.add_data_validation("G#{line+5}",{
           :type => :list,
-          :formula1 => "sexList!A1:A2",
+          :formula1 => "sexList!A1:A3",
           :showDropDown => false,
           :showInputMessage => true,
           :promptTitle => I18n.t('dict.sex'),
