@@ -672,6 +672,7 @@ class Mongodb::ReportGenerator
        item[:value][:average_percent] <= 1)
        level_key = "excellent"
       end
+      report_h["average_percent"][level_key] = [] unless report_h["average_percent"].keys.include?(level_key)
       report_h["average_percent"][level_key] = insert_item_to_a_with_order "quiz", report_h["average_percent"][level_key],target_pair
 
       #保存报告
