@@ -65,7 +65,7 @@ class Teacher < ActiveRecord::Base
     return result unless self.tenant
     self.class_teacher_mappings.by_tenant(self.tenant.uid).map{|item|
       Location.where(:uid => item.loc_uid).first
-    }.compact!
+    }.compact
   end
 
   def subjects
