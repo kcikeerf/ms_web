@@ -1,6 +1,7 @@
 class Wx::AuthsController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :wx_set_api_header
+  before_action :wx_authenticate!, :only => [:unbind]
 
   def check_bind
     params.permit(:wx_openid, :user_name)
@@ -87,6 +88,43 @@ class Wx::AuthsController < ApplicationController
         status = 500
         data = {message:I18n.t("wx_users.messages.error.login_failed")}
       end
+    else
+      status = 400
+      data = {message:I18n.t("wx_commons.messages.warn.invalid_params")}
+    end
+    render common_json_response(status, data)
+  end
+
+  def unbind
+    params.permit!
+
+    status = 403
+    data = {}
+
+    if !params[:user_name].blank? && !params[:wx_openid].blank?
+
+      target_user = User.where(name: params[:user_name]).first
+      target_wx_user = WxUser.where(:wx_openid => params[:wx_openid]).first
+      
+      begin
+        if target_wx_user && target_user
+          if target_wx_user.binded_user? params[:user_name]
+            WxUserMapping.where(:wx_uid =>target_wx_user.uid, :user_id=>target_user.id).destroy_all
+            status = 200
+            data = {message: I18n.t("wx_users.messages.info.wx_unbinded")}
+          else
+            status = 200
+            data = {message: I18n.t("wx_users.messages.info.not_binded")}
+          end
+        else
+          status = 500
+          data = {message:I18n.t("wx_users.messages.warn.invalid_wx_user")}
+        end
+      rescue Exception => ex
+        status = 500
+        data = {message: ex.backtrace}#I18n.t("wx_users.messages.error.wx_not_binded")}
+      end
+
     else
       status = 400
       data = {message:I18n.t("wx_commons.messages.warn.invalid_params")}
