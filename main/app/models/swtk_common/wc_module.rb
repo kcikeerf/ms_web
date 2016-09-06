@@ -14,7 +14,7 @@ module WcModule
       " /t '#{WcComponentTemplate}'" \
       " /f '%{doc_file}'" \
       " /o '%{output_path}'" \
-      " /of '%{converted_file_name}'"
+      " /of '%{converted_file_name}' &"
 
 
     PrivKey = "
