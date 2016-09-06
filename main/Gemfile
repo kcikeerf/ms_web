@@ -97,3 +97,7 @@ gem 'thin'
 gem 'unicorn'
 
 gem 'actionpack-action_caching'
+
+#remote connection scp, ssh
+gem 'net-scp', :github => "net-ssh/net-scp"
+gem 'net-ssh', :github => "net-ssh/net-ssh"
