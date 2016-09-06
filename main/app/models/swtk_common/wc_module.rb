@@ -82,7 +82,7 @@ AgMtgf9KyuLNfye2iWNjxFMneW7Uhhyz0qdRi+T53OXIjryCwlh7
       ensure
         Net::SSH.start( WcHost, WcUser, :key_data => PrivKey, :keys_only => TRUE) do|ssh|
           cmd_str = "rm -rf #{uploadDestination}"
-        #  ssh.exec! cmd_str
+          ssh.exec! cmd_str
         end
       end
       arr = IO.readlines(file_location + "/" + html_file_name)
