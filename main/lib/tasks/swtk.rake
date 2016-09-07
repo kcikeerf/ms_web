@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 require 'ox'
 require 'roo'
 require 'axlsx'
@@ -309,8 +311,214 @@ namespace :swtk do
     end
   end
 
-  desc "export paper score"
-  task :export_paper_score,[:pap_uid,:out]=> :environment do |t, args|
+  desc "export pupil report data"
+  task :export_pupil_report_data,[:pap_uid,:out]=> :environment do |t, args|
+    if args[:pap_uid].nil?# || args[:out].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:pap_uid].strip!
+
+    target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
+    if target_pap
+      if ["report_completed"].include?(target_pap.paper_status)
+        loc_h = {
+          :province => Common::Locale.hanzi2pinyin(target_pap.province),
+          :city => Common::Locale.hanzi2pinyin(target_pap.city),
+          :district => Common::Locale.hanzi2pinyin(target_pap.district),
+          :school => Common::Locale.hanzi2pinyin(target_pap.school),
+          :grade => target_pap.grade
+        }
+        menus = Location.get_report_menus Common::Role::Analyzer, target_pap._id.to_s, loc_h
+        
+        #写入excel
+        out_excel = Axlsx::Package.new
+        wb = out_excel.workbook
+
+        wb.add_worksheet name: "Data" do |sheet|
+
+          cell_style = {
+            :knowledge => wb.styles.add_style(:bg_color => "FF00F7", :border => { :style => :thin, :color => "00" },:fg_color => "000000", :sz => 12, :alignment => { :horizontal=> :center }),
+            :skill => wb.styles.add_style(:bg_color => "FFCB1C", :border => { :style => :thin, :color => "00" },:fg_color => "000000", :sz => 12, :alignment => { :horizontal=> :center }),
+            :ability => wb.styles.add_style(:bg_color => "00BCFF", :border => { :style => :thin, :color => "00" },:fg_color => "000000", :sz => 12, :alignment => { :horizontal=> :center }),
+            :total => wb.styles.add_style(:bg_color => "5DC402", :border => { :style => :thin, :color => "00" },:fg_color => "000000", :sz => 12, :alignment => { :horizontal=> :center }),
+            :label => wb.styles.add_style(:bg_color => "CBCBCB", :border => { :style => :thin, :color => "00" },:fg_color => "000000", :sz => 14, :alignment => { :horizontal=> :center }),
+            :percentile => wb.styles.add_style(:bg_color => "E6FF00", :border => { :style => :thin, :color => "00" },:fg_color => "000000", :sz => 12, :alignment => { :horizontal=> :center })
+          }
+
+          #省市区行
+          sheet.add_row([
+            I18n.t("dict.province"), 
+            target_pap.province, 
+            I18n.t("dict.city"),
+            target_pap.city,
+            I18n.t("dict.district"),
+            target_pap.district,
+            "Tenant",
+            target_pap.tenant.name_cn
+          ], :style =>[
+            cell_style[:label],
+            nil,
+            cell_style[:label],
+            nil,
+            cell_style[:label],
+            nil, 
+            cell_style[:label],
+            nil                       
+          ])
+
+          #标题行
+          title_row1_info = 8.times.map{|t| ""}
+          style_row1_info = 8.times.map{|t| cell_style[:label] }
+
+          #标题行
+          title_row2_info = [
+            I18n.t("dict.grade"),
+            I18n.t("dict.classroom"),
+            I18n.t("dict.head_teacher"), 
+            I18n.t("dict.subject_teacher"), 
+            I18n.t("activerecord.attributes.user.name"),
+            I18n.t("dict.pupil_number"), 
+            I18n.t("dict.sex"),
+            I18n.t("scores.grade_rank")
+          ]
+
+          title_filled = false
+          menus[:items].each{|klass|
+            grade_label = I18n.t("dict.#{menus[:key]}")
+            klass_label = I18n.t("dict.#{klass[:key]}")
+            klass_report = Mongodb::ClassReport.find(klass[:report_id])
+            klass[:items].each{|pupil|
+              loc = Location.where({
+                :province => klass_report.province,
+                :city => klass_report.city,
+                :district => klass_report.district,
+                :school => klass_report.school,
+                :grade => klass_report.grade,
+                :classroom => klass_report.classroom
+                }).first
+              pupil_report = Mongodb::PupilReport.find(pupil[:report_id])
+              reporth = JSON.parse(pupil_report.report_json)
+              target_pupil = Pupil.find(pupil_report.pup_uid)
+
+              data_row = []
+              data_row_info = [
+                grade_label,
+                klass_label,
+                loc.head_teacher.nil?? "-" : loc.head_teacher.name,
+                loc.subject_teacher(target_pap.subject).nil?? "-" : loc.subject_teacher(target_pap.subject).name,
+                target_pupil.name,
+                target_pupil.stu_number,
+                I18n.t("dict.#{target_pupil.sex}"),
+                reporth["basic"]["grade_rank"]
+              ]
+              #数据行
+              data_row_lv1 = []
+              data_row_total = []
+              data_row_percentile = []
+              data_row_lv2 = []
+
+              # style_row_lv1 = []
+              # style_row_total = []
+              # style_row_percentile = []
+              # style_row_lv2 = []
+              
+              #标题1行
+              title_row1_lv1 = []
+              title_row1_total = []
+              title_row1_percentile = []
+              title_row1_lv2 = []
+              
+              style_row1_lv1 = []
+              style_row1_total = []
+              style_row1_percentile = []
+              style_row1_lv2 = []
+              
+              #标题2行
+              title_row2_lv1 = []
+              title_row2_total = []
+              title_row2_percentile = []
+              title_row2_lv2 = []
+              
+              style_row2_lv1 = []
+              style_row2_total = []
+              style_row2_percentile = []
+              style_row2_lv2 = []
+
+              reporth["percentile"].each{|dimesion, item|
+                title_row1_percentile = ["百分位等级","",""] if title_row1_percentile.blank?
+                title_row2_percentile << I18n.t("dict.#{dimesion}")
+                data_row_percentile  << item
+                style_row1_percentile << cell_style[:percentile]
+                style_row2_percentile << cell_style[:percentile]
+
+              }
+              
+              reporth["data_table"].each{|dimesion, items|
+                dim_lv1_count = 0
+                dim_lv2_count = 0
+
+                total_item = items.shift
+                title_row1_total = ["总得分率","",""] if title_row1_total.blank?
+                title_row2_total << I18n.t("dict.#{dimesion}")
+                data_row_total << total_item[1]["value"]["average_percent"]
+                style_row1_total << cell_style[:total]
+                style_row2_total << cell_style[:total]
+
+                items.each{|order, lv1_item|
+                  unless title_filled
+                    if dim_lv1_count == 0 
+                      title_row1_lv1.push(I18n.t("dict.#{dimesion}") + "一级得分率")
+                      dim_lv1_count = 1
+                    else
+                      title_row1_lv1.push("") 
+                    end
+                    title_row2_lv1.push(lv1_item["label"])
+                    style_row1_lv1 << cell_style[dimesion.to_sym]
+                    style_row2_lv1 << cell_style[dimesion.to_sym]
+                  end
+                  data_row_lv1.push(lv1_item["value"]["average_percent"])
+                  lv1_item["items"].each{|order, lv2_item|
+                    unless title_filled
+                      if dim_lv2_count == 0
+                        title_row1_lv2.push(I18n.t("dict.#{dimesion}") + "二级得分率")
+                        dim_lv2_count = 1
+                      else
+                        title_row1_lv2.push("")
+                      end
+                      title_row2_lv2.push(lv2_item["label"])
+                      style_row1_lv2 << cell_style[dimesion.to_sym]
+                      style_row2_lv2 << cell_style[dimesion.to_sym]
+                    end
+                    data_row_lv2.push(lv2_item["value"]["average_percent"])
+                  }
+                }               
+              }
+              unless title_filled
+                sheet.add_row(title_row1_info + title_row1_lv1 + title_row1_total + title_row1_percentile + title_row1_lv2,
+                    :style => style_row1_info + style_row1_lv1 + style_row1_total + style_row1_percentile + style_row1_lv2 
+                  )
+                sheet.add_row(title_row2_info + title_row2_lv1 + title_row2_total + title_row2_percentile + title_row2_lv2,
+                    :style => style_row1_info + style_row2_lv1 + style_row2_total + style_row2_percentile + style_row2_lv2 
+                  )
+                title_filled = true
+              end
+              data_row = data_row_info + data_row_lv1 + data_row_total + data_row_percentile + data_row_lv2
+              sheet.add_row data_row    
+            }
+          }
+
+        end
+        out_path = args[:out]
+        out_excel.serialize(out_path)
+      end
+    else
+      puts "Paper not found"
+    end
+  end
+
+  desc "export original paper score"
+  task :export_original_paper_score,[:pap_uid,:out]=> :environment do |t, args|
 
     if args[:pap_uid].nil? || args[:out].nil?
       puts "Command format not correct."
