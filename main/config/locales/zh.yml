@@ -157,6 +157,7 @@ zh:
           success: "成功取得个人报告。"
           failed: "未能取得有效的个人报告！"
   scores:
+    grade_rank: "年级排名"
     excel:
       score_title: "成绩录入表"
       teacher_password_title: "老师的用户名密码"

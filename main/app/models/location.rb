@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Location < ActiveRecord::Base
   self.primary_key = "uid"
 
@@ -21,13 +23,17 @@ class Location < ActiveRecord::Base
   end
 
   def head_teacher
-    tea_uid = self.class_teacher_mappings.where(head_teacher: true).first.tea_uid
-    return Teacher.where(uid: tea_uid).first
+    objs = self.class_teacher_mappings.where(head_teacher: true).to_a
+    result = get_a_teacher objs
+    return result
   end
 
   def subject_teacher subject
-    tea_uid = self.class_teacher_mappings.where(subject: subject, head_teacher: false).first.tea_uid
-    return Teacher.where(uid: tea_uid).first
+    objs = self.class_teacher_mappings.where(subject: subject, head_teacher: false).to_a
+    result = get_a_teacher objs
+    #若学科老师未找到，则班主任为学科老师 
+    result = head_teacher unless result
+    return result
   end
 
   def self.get_school_numbers
@@ -159,4 +165,17 @@ class Location < ActiveRecord::Base
   def self.format_pupil_report_url_params report_id
     "/pupil_reports/index?type=pupil_report&report_id=#{report_id}"
   end
+
+  private
+
+  def get_a_teacher objs
+    result = nil
+    objs.compact!
+    return result if objs.blank?
+    objs.each{|obj|
+      result = Teacher.where(uid: obj.tea_uid).first
+      return result if result
+    }
+    return result
+  end 
 end
