@@ -31,4 +31,12 @@ module PapersHelper
     def term_list
         Common::Term::List
     end
+
+    def quiz_type_list
+        Common::Paper::QuizType
+    end
+
+    def difficulty_list
+    	Common::Paper::Difficulty
+    end
 end

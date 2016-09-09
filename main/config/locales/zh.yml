@@ -342,7 +342,17 @@ zh:
     er_shi_ba_ban: "二十八班"
     er_shi_jiu_ban: "二十九班"
     san_shi_ban: "三十班"
-    #题型
+    #题型数学
+    dan_xiang_xuan_ze_ti: "单项选择题"
+    tian_kong_ti: "填空题"
+    pan_duan_ti: "判断题"
+    ji_suan_ti: "计算题"
+    cao_zuo_ti: "操作题"
+    ying_yong_ti: "应用题"
+    jie_da_ti: "解答题"
+    tan_suo_gui_lv_ti: "探索规律题"
+    tan_jiu_ti: "探究题"
+    #题型英语
     question_type: "题型"
     ting_li_li_jie: "听力理解"
     dan_xiang_xuan_ze: "单项选择"
