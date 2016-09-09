@@ -691,7 +691,7 @@ $(function(){
                         typeObj = quiz_type_list,//{ting_li_li_jie:"听力理解",dan_xiang_xuan_ze:"单项选择",wan_xing_tian_kong:"完形填空",yue_du_li_jie:"阅读理解",ci_yu_yun_yong:"词语运用",bu_quan_dui_hua:"补全对话",shu_mian_biao_da:"书面表达"},
                         levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
 
-                    $(".analysis_info .info_type span").text(typeObj[data.subject][data.cat] || "");
+                    $(".analysis_info .info_type span").text(typeObj[paper.paperData.information.subject.name][data.cat] || "");
                     $(".analysis_info .info_difficulty span").text(levelObj[data.levelword2] || "");
                     $(".analysis_info .info_score span").text(data.score ? data.score+"分" : "");
                     $(".analysis_q .info_right").html(data.text || "");
@@ -1481,7 +1481,6 @@ $(function(){
         $(".sideMenu .topNav > li:first-child").find("ol li:first-child").trigger("click");
 
         //update quiz type list
-        console.log(quiz_type_list[paper.paperData.information.subject.name]);
         $(".selectCategory .optionList").html("");
         var html_str = "";
         var quiz_types = quiz_type_list[paper.paperData.information.subject.name];
