@@ -209,7 +209,7 @@ namespace :swtk do
       exit 
     end
 
-    if BankSubjectCheckpointCkp.where(subject: args[:subject], category: args[:xue_duan]).count > 0
+    if BankSubjectCheckpointCkp.where(subject: args[:subject], dimesion:args[:dimesion], category: args[:xue_duan]).count > 0
       puts "#{args[:subject]}, #{args[:xue_duan]} not empty"
       exit
     end
