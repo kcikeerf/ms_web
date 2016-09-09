@@ -161,8 +161,8 @@ namespace :swtk do
   end
 
   #针对默认类型指标
-  desc "import checkpoints, temporary use"
-  task :read_checkpoint,[:file_path,:node_uid,:dimesion]=> :environment do |t, args|
+  desc "import node checkpoints, temporary use"
+  task :read_node_checkpoint,[:file_path,:node_uid,:dimesion]=> :environment do |t, args|
     if args[:file_path].nil? ||  args[:node_uid].nil? || args[:dimesion].nil?
       puts "Command format not correct."
       exit 
@@ -178,9 +178,9 @@ namespace :swtk do
         ckp = BankCheckpointCkp.new({:node_uid => args[:node_uid].strip,
           :dimesion => args[:dimesion].strip,
           :rid=>arr[0],
-          :checkpoint => arr[1..arr_len-2].join(","),
+          :checkpoint => arr[1],
           :advice => "建议",
-          :weights => arr[-1].nil?? 1:arr[-1],
+          :weights => (arr_len > 2)? arr[2] : 1,
           :sort => arr[0],
           :is_entity => false
         })
@@ -197,6 +197,52 @@ namespace :swtk do
      # else
  #       ckp.update(:is_entity => true)
       #end
+    }
+
+  end
+
+  #针对默认类型指标
+  desc "import subject checkpoints, temporary use"
+  task :read_subject_checkpoint,[:file_path,:subject,:xue_duan,:dimesion]=> :environment do |t, args|
+    if args[:file_path].nil? ||  args[:subject].nil? || args[:xue_duan].nil? || args[:dimesion].nil?
+      puts "Command format not correct."
+      exit 
+    end
+
+    if BankSubjectCheckpointCkp.where(subject: args[:subject], category: args[:xue_duan]).count > 0
+      puts "#{args[:subject]}, #{args[:xue_duan]} not empty"
+      exit
+    end
+
+    ckp_file = File.open(args[:file_path], "r")
+    ckp_file.each do |line|
+      str = line.chomp!
+      if str
+        arr =str.split(",")
+        arr_len = arr.size
+        next if arr[0].blank?
+
+        ckp = BankSubjectCheckpointCkp.new({
+          :dimesion => args[:dimesion].strip,
+          :category => args[:xue_duan],
+          :subject => args[:subject],
+          :rid=>arr[0],
+          :checkpoint => arr[1],
+          :advice => "建议",
+          :weights => (arr_len > 2)? arr[2] : 1,
+          :sort => arr[0],
+          :is_entity => false
+        })
+
+        ckp.save
+      end
+    end
+
+    ckps = BankSubjectCheckpointCkp.where(subject: args[:subject], category: args[:xue_duan])
+    ckps.each_with_index{|ckp,index|
+        next unless ckp
+        p index
+        ckp.update(:is_entity => true) if ckp.children.blank?
     }
 
   end
