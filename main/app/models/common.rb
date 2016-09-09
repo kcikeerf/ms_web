@@ -7,6 +7,7 @@ module Common
   include KlassModule
   include LocaleModule
   include NodeVersionModule
+  include PaperModule
   include RoleModule
   include SubjectModule
   include SwtkConstantsModule
@@ -27,50 +28,50 @@ module Common
     PerPage = 10
   end
 
-  module Paper
-    module_function
+  # module Paper
+  #   module_function
 
-    Subject_ckp_type = 'from_subject'
-    Node_ckp_type = 'from_node'
+  #   Subject_ckp_type = 'from_subject'
+  #   Node_ckp_type = 'from_node'
 
-    module Constants
-      OrderWidth = 5
-    end
+  #   module Constants
+  #     OrderWidth = 5
+  #   end
 
-    module Status
-      None = "none"
-      New = "new"
-      Editting = "editting"
-      Editted = "editted"
-      Analyzing = "analyzing" 
-      Analyzed = "analyzed"
-      ScoreImporting = "score_importing"
-      ScoreImported = "score_imported"
-      ReportGenerating = "report_generating"
-      ReportCompleted = "report_completed"
-    end
+  #   module Status
+  #     None = "none"
+  #     New = "new"
+  #     Editting = "editting"
+  #     Editted = "editted"
+  #     Analyzing = "analyzing" 
+  #     Analyzed = "analyzed"
+  #     ScoreImporting = "score_importing"
+  #     ScoreImported = "score_imported"
+  #     ReportGenerating = "report_generating"
+  #     ReportCompleted = "report_completed"
+  #   end
 
-    def quiz_order(x,y)
-      x_arr = destruct_order x
-      y_arr = destruct_order y
+  #   def quiz_order(x,y)
+  #     x_arr = destruct_order x
+  #     y_arr = destruct_order y
 
-      if x_arr[0] != y_arr[0]
-        return x_arr[0] <=> y_arr[0]
-      else
-        return x_arr[1] <=> y_arr[1]
-      end
-    end
+  #     if x_arr[0] != y_arr[0]
+  #       return x_arr[0] <=> y_arr[0]
+  #     else
+  #       return x_arr[1] <=> y_arr[1]
+  #     end
+  #   end
 
-    def destruct_order orderStr
-      return ["",""] if orderStr.blank?
-      reg = /\(([0-9].*?)\)/
-      md = reg.match(orderStr)
-      quiz_order = orderStr.sub(/\(.*/,"")
-      quiz_order = quiz_order.blank?? 0:quiz_order.to_i
-      qizpoint_order = md.blank?? 0:md[1].to_i
-      return [quiz_order,qizpoint_order]
-    end
-  end
+  #   def destruct_order orderStr
+  #     return ["",""] if orderStr.blank?
+  #     reg = /\(([0-9].*?)\)/
+  #     md = reg.match(orderStr)
+  #     quiz_order = orderStr.sub(/\(.*/,"")
+  #     quiz_order = quiz_order.blank?? 0:quiz_order.to_i
+  #     qizpoint_order = md.blank?? 0:md[1].to_i
+  #     return [quiz_order,qizpoint_order]
+  #   end
+  # end
 
 #   module CheckpointCkp
 #     module_function

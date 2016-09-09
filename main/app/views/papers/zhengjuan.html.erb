@@ -158,7 +158,8 @@
 			</div>
 			<div class="source">
 				<div class="school">
-					<label>学校&nbsp;:</label><label class="school_name"><%= current_tenant.name_cn%></label><!--input type="text" placeholder="请输入学校名称" disabled=true-->
+					<label>学校&nbsp;:</label><label class="school_name"><%= current_tenant.name_cn%></label>
+					<input type="hidden" value="<%= current_tenant.name_cn%>" disabled=true>
 				</div>
 			</div>
 			<ul class="infoList">
@@ -340,11 +341,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
-								<li values="rong_yi"><%=I18n.t("dict.rong_yi")%></li>
-								<li values="jiao_yi"><%=I18n.t("dict.jiao_yi")%></li>
-								<li values="zhong_deng"><%=I18n.t("dict.zhong_deng")%></li>
-								<li values="jiao_nan"><%=I18n.t("dict.jiao_nan")%></li>
-								<li values="kun_nan"><%=I18n.t("dict.kun_nan")%></li>
+                                <% difficulty_list.each do |k,v|%>
+                                    <li values="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>
@@ -434,13 +433,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
-								<li values="ting_li_li_jie"><%=I18n.t("dict.ting_li_li_jie")%></li>
-								<li values="dan_xiang_xuan_ze"><%=I18n.t("dict.dan_xiang_xuan_ze")%></li>
-								<li values="wan_xing_tian_kong"><%=I18n.t("dict.wan_xing_tian_kong")%></li>
-								<li values="yue_du_li_jie"><%=I18n.t("dict.yue_du_li_jie")%></li>
-								<li values="ci_yu_yun_yong"><%=I18n.t("dict.ci_yu_yun_yong")%></li>
-								<li values="bu_quan_dui_hua"><%=I18n.t("dict.bu_quan_dui_hua")%></li>
-								<li values="shu_mian_biao_da"><%=I18n.t("dict.shu_mian_biao_da")%></li>
+                                <% quiz_type_list.each do |k,v|%>
+                                    <li values="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>
@@ -478,11 +473,9 @@
 								<i class="icon"></i>
 							</div>
 							<ol class="optionList">
-								<li values="rong_yi">容易</li>
-								<li values="jiao_yi">较易</li>
-								<li values="zhong_deng">中等</li>
-								<li values="jiao_nan">较难</li>
-								<li values="kun_nan">困难</li>
+                                <% difficulty_list.each do |k,v|%>
+                                    <li values="<%=k%>"><%=v%></li>
+                                <% end %>
 							</ol>
 						</div>
 					</div>
@@ -635,3 +628,6 @@
 <input id="node_uid" type="hidden">
 <input id="pap_uid" type="hidden">
 <input id="task_uid" type="hidden">
+<script type="text/javascript">
+  var quiz_type_list = <%= raw quiz_type_list.to_json %>;
+</script>

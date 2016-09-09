@@ -47,7 +47,7 @@ class PapersController < ApplicationController
     if params[:pap_uid].blank?
       current_pap = Mongodb::BankPaperPap.new
     else
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid])
+      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
 
     render "zhengjuan"

@@ -447,7 +447,7 @@ $(function(){
         //提交试卷基本信息
         doc.on("click",".infoBtn",function(){
             var allowSubmit = true; //允许提交
-            paper.createLoading();
+            //paper.createLoading();
             paper.paperData.information = {
                 heading : $(".paperTitle1 input").val(),    //主标题
                 subheading : $(".paperTitle2 input").val(), //副标题
@@ -492,19 +492,33 @@ $(function(){
                 };
                 paper.paperData.bank_node_catalogs.push(tempObj);
             });
-            /*
-             for(var k in paper.paperData.information){
-                if(k != "subheading"){
+            
+            for(var k in paper.paperData.information){
+                if( k == "heading" ||
+                    k == "school" ||
+                    k == "subject" || 
+                    k == "grade" ||
+                    k == "text_version" || 
+                    k == "term" ||
+                    k == "quiz_duration" ||
+                    k == "quiz_type" ||
+                    k == "quiz_date" || 
+                    k == "score" ||
+                    k == "levelword"){
                     if(!paper.paperData.information[k]){
                         allowSubmit = false;
                         break;
                     } 
                 }
             }
-            !paper.paperData.bank_node_catalogs.length && (allowSubmit = false);
-            */
-            if(allowSubmit) paper.dataSave(paper.paperSaveUrl, paper.paperData, paper.gotoPaperChange);
-            else alert("除了副标题，所有选项都必填！");
+            //!paper.paperData.bank_node_catalogs.length && (allowSubmit = false);
+
+            if(allowSubmit){
+                paper.createLoading();
+                paper.dataSave(paper.paperSaveUrl, paper.paperData, paper.gotoPaperChange);
+            } else {
+                alert("除了副标题，所有选项都必填！");
+            }
         });
         //保存试题和答案的html
         doc.on("click",".change .saveHtml",function(){
@@ -674,9 +688,10 @@ $(function(){
                 if(paper.paperData.bank_quiz_qizs && paper.paperData.bank_quiz_qizs.length && paper.paperData.bank_quiz_qizs[num-1]){
                     var html = "",
                         data = paper.paperData.bank_quiz_qizs[num-1],
-                        typeObj = {ting_li_li_jie:"听力理解",dan_xiang_xuan_ze:"单项选择",wan_xing_tian_kong:"完形填空",yue_du_li_jie:"阅读理解",ci_yu_yun_yong:"词语运用",bu_quan_dui_hua:"补全对话",shu_mian_biao_da:"书面表达"},
+                        typeObj = quiz_type_list,//{ting_li_li_jie:"听力理解",dan_xiang_xuan_ze:"单项选择",wan_xing_tian_kong:"完形填空",yue_du_li_jie:"阅读理解",ci_yu_yun_yong:"词语运用",bu_quan_dui_hua:"补全对话",shu_mian_biao_da:"书面表达"},
                         levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
-                    $(".analysis_info .info_type span").text(typeObj[data.cat] || "");
+
+                    $(".analysis_info .info_type span").text(typeObj[data.subject][data.cat] || "");
                     $(".analysis_info .info_difficulty span").text(levelObj[data.levelword2] || "");
                     $(".analysis_info .info_score span").text(data.score ? data.score+"分" : "");
                     $(".analysis_q .info_right").html(data.text || "");
@@ -1464,6 +1479,16 @@ $(function(){
             }
         }
         $(".sideMenu .topNav > li:first-child").find("ol li:first-child").trigger("click");
+
+        //update quiz type list
+        console.log(quiz_type_list[paper.paperData.information.subject.name]);
+        $(".selectCategory .optionList").html("");
+        var html_str = "";
+        var quiz_types = quiz_type_list[paper.paperData.information.subject.name];
+        for(k in quiz_types){
+           html_str += "<li values=" + k + ">" + quiz_types[k] + "</li>";
+           $(".selectCategory .optionList").html(html_str);
+        }
     }
     //跳转到解析详情模块
     paper.gotoAnalysisDetail = function(){
