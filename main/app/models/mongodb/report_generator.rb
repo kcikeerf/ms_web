@@ -2312,8 +2312,8 @@ class Mongodb::ReportGenerator
         lv2_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
       elsif ckp.is_a? BankSubjectCheckpointCkp
         xue_duan = BankNodestructure.get_subject_category(@paper.grade)
-        lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, 3)}'").first
-        lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, 6)}'").first
+        lv1_ckp = BankSubjectCheckpointCkp.where("subject = '#{@paper.subject}' and category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, 3)}'").first
+        lv2_ckp = BankSubjectCheckpointCkp.where("subject = '#{@paper.subject}' and category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, 6)}'").first
       end
       dimesion = ckp.dimesion
       # lv1_ckp = ckp.class.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
