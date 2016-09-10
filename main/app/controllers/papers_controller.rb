@@ -221,11 +221,11 @@ class PapersController < ApplicationController
       EOF
       case type
       when "revise_paper"
-        if f.revise_paper.blank? || !File.exists?(f.revise_paper.current_path)
+        if file.revise_paper.blank? || !File.exists?(file.revise_paper.current_path)
           file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", type)
         end
       when "revise_answer"
-        if f.revise_answer.blank? || !File.exists?(f.revise_answer.current_path)
+        if file.revise_answer.blank? || !File.exists?(file.revise_answer.current_path)
           file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", type)
         end
       end
