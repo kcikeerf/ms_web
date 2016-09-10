@@ -219,8 +219,12 @@ class PapersController < ApplicationController
           <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
         </p>      
       EOF
-      file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", type) if file.revise_paper.current_path.blank?
-      file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", 'revise_answer') if file.revise_answer.current_path.blank?
+      case type
+      when "revise_paper"
+        file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", type) if file.revise_paper.current_path.blank?
+      when "revise_answer"
+        file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", type) if file.revise_answer.current_path.blank?
+      end
     end
 
     file_path = file.send(type.to_sym).current_path
