@@ -102,6 +102,17 @@ $(function(){
                         if(parseFloat($(item).text())==fullscore) $(item).addClass("active");
                     });
                 }
+            },
+            update_quiz_type_list: function(){
+                //update quiz type list
+                
+                var html_str = "";
+                var quiz_types = quiz_type_list[paper.paperData.information.subject.name];
+                for(k in quiz_types){
+                   html_str += "<li values=" + k + ">" + quiz_types[k] + "</li>";
+                }
+                $(".selectCategory .optionList").html("");
+                $(".selectCategory .optionList").html(html_str);
             }
         },
         judge : function(data){
@@ -618,7 +629,9 @@ $(function(){
                     question = $(".hide_question").find("[timuindex="+num+"]").clone(false),
                     answer = $(".hide_answer").find("[timuindex="+num+"]").clone(false);
                 $(".remarks").val("");
+
                 $(".part4 .information").html(part4_html.find(".information").html());
+                paper.baseFn.update_quiz_type_list();
                 $(".part4 .analyze ").html(part4_html.find(".analyze ").html());
                 paper.min_question.setData(question.addClass("analysis").get(0).outerHTML);
                 paper.min_answer.setData(answer.addClass("analysis").get(0).outerHTML);
@@ -904,7 +917,6 @@ $(function(){
                 index = $(".score_part .score_list.open").index();
             paper.changeState = true;
             var dataArr = (obj && obj.dataArr) ? obj.dataArr : "";
-            console.log(obj);
             if(dataArr && dataArr.length){
                 paper.paperData.bank_quiz_qizs[num-1].bank_qizpoint_qzps[index].bank_checkpoints_ckps = dataArr;
                 for(var k=0; k<dataArr.length; k++){
@@ -1480,15 +1492,9 @@ $(function(){
         }
         $(".sideMenu .topNav > li:first-child").find("ol li:first-child").trigger("click");
 
-        //update quiz type list
-        $(".selectCategory .optionList").html("");
-        var html_str = "";
-        var quiz_types = quiz_type_list[paper.paperData.information.subject.name];
-        for(k in quiz_types){
-           html_str += "<li values=" + k + ">" + quiz_types[k] + "</li>";
-           $(".selectCategory .optionList").html(html_str);
-        }
+        paper.baseFn.update_quiz_type_list();
     }
+
     //跳转到解析详情模块
     paper.gotoAnalysisDetail = function(){
         $(".contentBody").html($(".template_analysis").html());
