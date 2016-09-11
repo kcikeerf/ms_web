@@ -82,7 +82,7 @@ zh:
       revise_answer: '修正答案'
       empty_file: '空成绩表'
       filled_file: '学生成绩表'
-      usr_pwd_file: '学生的用户名密码'
+      usr_pwd_file: '老师学生的用户名密码'
     messages:
       save_paper:
         success: "试卷（标题：%{heading}）保存成功!"
