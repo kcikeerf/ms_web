@@ -1133,19 +1133,19 @@ class Mongodb::ReportGenerator
       }
 
       #总体情况
-      best_dimesion = ""
+      best_dimesion = []
       best_dimesion_max = klass_best.values.max
       klass_best.each{|k,v|
-        best_dimesion = k if(v == best_dimesion_max)
+        best_dimesion << I18n.t("dict.#{k}") if(v == best_dimesion_max)
       }
-      total_h[:pupil_highest_dimesions] = I18n.t("dict.#{best_dimesion}")
+      total_h[:pupil_highest_dimesions] = best_dimesion.join(",")
 
-      worst_dimesion = ""
+      worst_dimesion = []
       worst_dimesion_min = klass_worst.values.min
       klass_worst.each{|k,v|
-        worst_dimesion = k if(v == worst_dimesion_min)
+        worst_dimesion << I18n.t("dict.#{k}") if(v == worst_dimesion_min)
       }
-      total_h[:pupil_lowest_dimesions] = I18n.t("dict.#{worst_dimesion}")
+      total_h[:pupil_lowest_dimesions] = worst_dimesion.join(",")
 
       ["knowledge", "skill", "ability"].each{|dim|
         if report_h["data_table"][dim][0][1]["value"]["cls_gra_avg_percent_diff"] > 0
