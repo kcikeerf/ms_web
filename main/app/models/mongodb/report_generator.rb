@@ -1367,11 +1367,14 @@ class Mongodb::ReportGenerator
         qzp_score_common_cond['_id.lv1_ckp']=item[:_id][:lv1_ckp]
         qzp_score_upt_h['value.cls_dim_lv1_avg'] = item[:value][:average]
         qzp_score_upt_h['value.cls_dim_lv1_avg_percent'] = item[:value][:average_percent]
-      elsif cls_common_cond && item[:_id].keys.include?('lv2_ckp')
+      elsif cls_common_cond && item[:_id].keys.include?('lv2_ckp') && !item[:_id].keys.include?('order')
         qzp_score_common_cond['_id.classroom']=item[:_id][:classroom]
         qzp_score_common_cond['_id.lv2_ckp']=item[:_id][:lv2_ckp]
         qzp_score_upt_h['value.cls_dim_lv2_avg'] = item[:value][:average]
         qzp_score_upt_h['value.cls_dim_lv2_avg_percent'] = item[:value][:average_percent]
+      elsif cls_common_cond && item[:_id].keys.include?('lv2_ckp') && item[:_id].keys.include?('order')
+        #do nothing
+        #目前此数据无使用，所以不做添加
       elsif cls_common_cond && item[:_id].keys.include?('order')
         qzp_score_common_cond['_id.classroom']=item[:_id][:classroom]
         qzp_score_common_cond['_id.order']=item[:_id][:order]
@@ -1385,10 +1388,13 @@ class Mongodb::ReportGenerator
         qzp_score_common_cond['_id.lv1_ckp']=item[:_id][:lv1_ckp]
         qzp_score_upt_h['value.gra_dim_lv1_avg'] = item[:value][:average]
         qzp_score_upt_h['value.gra_dim_lv1_avg_percent'] = item[:value][:average_percent]
-      elsif gra_common_cond && item[:_id].keys.include?('lv2_ckp')
+      elsif gra_common_cond && item[:_id].keys.include?('lv2_ckp') && !item[:_id].keys.include?('order')
         qzp_score_common_cond['_id.lv2_ckp']=item[:_id][:lv2_ckp]
         qzp_score_upt_h['value.gra_dim_lv2_avg'] = item[:value][:average]
         qzp_score_upt_h['value.gra_dim_lv2_avg_percent'] = item[:value][:average_percent]
+      elsif gra_common_cond && item[:_id].keys.include?('lv2_ckp') && item[:_id].keys.include?('order') 
+        #do nothing
+        #目前此数据无使用，所以不做添加
       elsif gra_common_cond && item[:_id].keys.include?('order')
         qzp_score_common_cond['_id.order']=item[:_id][:lv2_ckp]
         qzp_score_upt_h['value.gra_dim_order_avg'] = item[:value][:average]
