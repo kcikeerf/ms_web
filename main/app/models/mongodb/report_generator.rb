@@ -1134,17 +1134,20 @@ class Mongodb::ReportGenerator
 
       #总体情况
       best_dimesion = []
-      best_dimesion_max = klass_best.values.max
-      klass_best.each{|k,v|
-        best_dimesion << I18n.t("dict.#{k}") if(v == best_dimesion_max)
-      }
-      total_h[:pupil_highest_dimesions] = best_dimesion.join(",")
-
       worst_dimesion = []
-      worst_dimesion_min = klass_worst.values.min
-      klass_worst.each{|k,v|
-        worst_dimesion << I18n.t("dict.#{k}") if(v == worst_dimesion_min)
+
+      best_dimesion_max = comment_h.map{|k,v| v[:klass_average_percent] }.max
+      worst_dimesion_min = comment_h.map{|k,v| v[:klass_average_percent] }.min
+
+      comment_h.each{|k,v|
+        if v[:klass_average_percent] == best_dimesion_max
+          best_dimesion << I18n.t("dict.#{k}") 
+        elsif v[:klass_average_percent] == worst_dimesion_min
+          worst_dimesion << I18n.t("dict.#{k}")
+        end
       }
+
+      total_h[:pupil_highest_dimesions] = best_dimesion.join(",")
       total_h[:pupil_lowest_dimesions] = worst_dimesion.join(",")
 
       ["knowledge", "skill", "ability"].each{|dim|
@@ -1157,10 +1160,14 @@ class Mongodb::ReportGenerator
 
       total_h[:higher_than_grade_dimesions] = total_higher_than_grade_dimesion.join(",")
       total_h[:lower_than_grade_dimesions] = total_lower_than_grade_dimesion.join(",")
-      klass_avg_percent = comment_h.values.map{|item| item[:klass_average_percent]}.sum/3
+      klass_avg_percent = comment_h.map{|k,v|
+        v[:klass_average_percent] * Common::CheckpointCkp::DimesionRatio[k]
+      }.sum
       total_h[:klass_average_percent] = format_float(klass_avg_percent)
       total_h[:level] = judge_score_level klass_avg_percent
-      total_grade_average_percent = format_float(report_h["dimesion_values"].values.map{|item| item["gra_average_percent"]}.sum/3)
+      total_grade_average_percent = format_float(report_h["dimesion_values"].map{|k,v|
+        v["gra_average_percent"] * Common::CheckpointCkp::DimesionRatio[k.to_sym]
+      }.sum)
       total_h[:than_grade] = get_compare_value_label(total_h[:klass_average_percent],total_grade_average_percent)
 
       total_class_percent = report_h["each_level_number"]["total"]["class"]
