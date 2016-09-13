@@ -1060,9 +1060,7 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 </div>
 </div>",
 =end
-          "statistics"=> "",
-=begin
-          "
+          "statistics"=> "
 <div class='wrapper-md'>
 <h1 class='font-thin h3'>报告解读</h1>
 </div>
@@ -1112,8 +1110,10 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 </div>
 </div>
           ",
-=end
-          "data" => "
+
+          "data" => ""
+=begin
+          "
 <div class='wrapper-md'>
 <h1 class='font-thin h3'>报告解读</h1>
 </div>
@@ -1162,6 +1162,7 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 </div>
 </div>
           "
+=end
       }
       
       #班级测试评价模版文字
