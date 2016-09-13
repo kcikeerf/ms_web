@@ -127,22 +127,17 @@ $(function(){
             }
             if(data.information){
                 var typeObj = {
-                    quiz_type: "测试类型"
-                    qi_chu_ce_shi: "期初测试"
-                    qi_zhong_ce_shi: "期中测试"
-                    qi_mo_ce_shi: " 期末测试"
-                    mo_ni_ce_shi: "模拟测试"
-                    yue_kao: "月考"
-                    dan_yuan_ce_shi: "单元测试"
-                    xiao_sheng_chu_ce_shi: "小升初测试"
+                    quiz_type: "测试类型",
+                    qi_chu_ce_shi: "期初测试",
+                    qi_zhong_ce_shi: "期中测试",
+                    qi_mo_ce_shi: " 期末测试",
+                    mo_ni_ce_shi: "模拟测试",
+                    yue_kao: "月考",
+                    dan_yuan_ce_shi: "单元测试",
+                    xiao_sheng_chu_ce_shi: "小升初测试",
                     xue_ke_neng_li_ce_ping: "学科能力测评"
                 },
-                    rong_yi: "容易"
-                    jiao_yi: "较易"
-                    zhong_deng: "中等"
-                    jiao_nan: "较难"
-                    kun_nan: "困难"
-                };
+                levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
                 $(".top_title").text(data.information.heading||"");
                 $(".sub_title").text(data.information.subheading||"");
                 var city = (data.information.province||"")+" "+(data.information.city||"")+" "+(data.information.district||"");
