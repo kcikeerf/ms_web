@@ -754,13 +754,13 @@ var reportPage = {
 				else if($dataId == 'grade-readReport-three'){
 					$('#grade-readReport-three').html(data.data.report_explanation.three_dimesions);
 				}
-				
+				*/
 				else if($dataId == 'grade-readReport-statistics'){
 					$('#grade-readReport-statistics').html(data.data.report_explanation.statistics);
-				}*/
-				else if($dataId == 'grade-readReport-data'){
-					$('#grade-readReport-data').html(data.data.report_explanation.data);
 				}
+				// else if($dataId == 'grade-readReport-data'){
+				// 	$('#grade-readReport-data').html(data.data.report_explanation.data);
+				// }
 
 				window.onresize = function () {
 					for(var i=0; i<createdCharts.length; i++){
@@ -1241,12 +1241,14 @@ var reportPage = {
 				}
 				// else if($dataId == 'report-read-three'){
 				// 	$('#report-read-three').html(data.data.report_explanation.three_dimesions);
-				// }else if($dataId == 'report-read-checkpoint'){
-				// 	$('#report-read-checkpoint').html(data.data.report_explanation.statistics);
 				// }
-				else if($dataId == 'report-read-data'){
-					$('#report-read-data').html(data.data.report_explanation.data);
-				}else if($dataId == 'exam-knowledge'){
+				else if($dataId == 'report-read-checkpoint'){
+					$('#report-read-checkpoint').html(data.data.report_explanation.statistics);
+				}
+				// else if($dataId == 'report-read-data'){
+				// 	$('#report-read-data').html(data.data.report_explanation.data);
+				// }
+				else if($dataId == 'exam-knowledge'){
 					$('#exam-knowledge').html(data.data.quiz_comment.knowledge);
 				}else if($dataId == 'exam-skill'){
 					$('#exam-skill').html(data.data.quiz_comment.skill);
