@@ -757,7 +757,9 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 =end
 
       KlassExplanation = {
-          "three_dimesions"=>"
+          "three_dimesions"=> "",
+=begin
+          "
 <div class='wrapper-md'>
 <h1 class='font-thin h3'>报告解读</h1></div>
 <div class='hbox hbox-auto-xs hbox-auto-sm'>
@@ -1057,8 +1059,10 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 </div>
 </div>
 </div>",
-
-          "statistics"=> "
+=end
+          "statistics"=> "",
+=begin
+          "
 <div class='wrapper-md'>
 <h1 class='font-thin h3'>报告解读</h1>
 </div>
@@ -1108,6 +1112,7 @@ How many kinds of animals are talked about in the poster(海报)?<br>
 </div>
 </div>
           ",
+=end
           "data" => "
 <div class='wrapper-md'>
 <h1 class='font-thin h3'>报告解读</h1>
