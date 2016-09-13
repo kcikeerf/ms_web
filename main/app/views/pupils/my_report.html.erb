@@ -25,7 +25,8 @@
 						  <table id="logtable" class="table table-bordered table-hover">
 							  <thead>
 							  <tr>
-								  <th class="title">报告名称</th>
+								  <th class="title">试卷</th>
+								  <th class="title">学科</th>
 								  <th class="updated">发布时间</th>
 							  </tr>
 							  </thead>
@@ -39,6 +40,7 @@
 <%= paper.heading%>（<%=(I18n.t("papers.status.#{paper.paper_status}"))%>）
 <% end %>
 									  </td>
+									  <td><%= I18n.t("dict.#{paper.subject}") %></td>
 									  <td><%= paper.dt_update %></td>
                                   </tr>
                               <% end %>
