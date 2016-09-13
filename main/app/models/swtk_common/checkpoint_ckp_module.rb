@@ -53,6 +53,13 @@ module CheckpointCkpModule
       Ability = "ability"
     end
 
+
+    DimesionRatio = {
+      Dimesion::Knowledge.to_sym => 0.5,
+      Dimesion::Skill.to_sym => 0.4,
+      Dimesion::Ability.to_sym => 0.1
+    }
+
     module SubjectCkpCategory
       XiaoXue = "xiao_xue"
       ChuZhong = "chu_zhong"
