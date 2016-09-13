@@ -2232,11 +2232,12 @@ class Mongodb::ReportGenerator
       filter = {
         '_id.pap_uid' => @pap_uid,
         '_id.pup_uid' => nil,
+        '_id.grade' => item[:_id][:grade],
+        '_id.classroom' => item[:_id][:classroom],
         '_id.lv1_ckp' => nil,
         '_id.lv2_ckp' => nil,
         '_id.order' => nil,
         '_id.dimesion' => {'$exists' => true },
-        '_id.classroom' => {'$exists' => true }
       }
       klass_results = Mongodb::ReportTotalAvgResult.where(filter)
       klass_results.each{|item|
