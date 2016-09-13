@@ -52,7 +52,7 @@ class Location < ActiveRecord::Base
     report_name, grade_subject, klass_subject, pupil_subject = format_report_title current_paper.heading,current_paper.subject
     result = {}
     case role
-    when Common::Role::Analyzer
+    when Common::Role::Analyzer,Common::Role::Teacher
       param_h = {:pap_uid => pap_uid }
       grade_report = Mongodb::GradeReport.where(param_h.merge(loc_h)).first
       result ={ :key => loc_h[:grade],
@@ -64,16 +64,16 @@ class Location < ActiveRecord::Base
                 :data_type=>"grade",
                 :report_id => grade_report.nil?? "":grade_report._id,#format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
                 :items => []}
-    when Common::Role::Teacher
-      result ={ :key => loc_h[:grade],
-                :label => I18n.t("dict.ban_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
-                :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
-                :report_subject => grade_subject,
-                :pupil_number => 0,
-                :report_url => nil,
-                :data_type=> nil,
-                :report_id => nil,
-                :items => []}
+    # when Common::Role::Teacher
+    #   result ={ :key => loc_h[:grade],
+    #             :label => I18n.t("dict.ban_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
+    #             :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
+    #             :report_subject => grade_subject,
+    #             :pupil_number => 0,
+    #             :report_url => nil,
+    #             :data_type=> nil,
+    #             :report_id => nil,
+    #             :items => []}
     when Common::Role::Pupil
       result ={ :key => loc_h[:grade],
                 :label => "",#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),

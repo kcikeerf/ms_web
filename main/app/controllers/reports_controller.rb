@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class ReportsController < ApplicationController
   # use job queue to create every report
   before_action :set_paper, only: [:generate_all_reports,:new_square]
@@ -148,8 +150,9 @@ class ReportsController < ApplicationController
     if current_user.is_analyzer?
       @scope_menus = Location.get_report_menus(Common::Role::Analyzer, params[:pap_uid], loc_h)
     elsif current_user.is_teacher?
-      klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
-      loc_h[:classroom] = klass_rooms
+      # 暂时将老师和分析员可查看范围一致
+      # klass_rooms = current_user.teacher.locations.map{|loc| loc.classroom}
+      # loc_h[:classroom] = klass_rooms
       @scope_menus = Location.get_report_menus(Common::Role::Teacher,params[:pap_uid], loc_h)
     elsif current_user.is_pupil?
       loc_h[:classroom] = [current_user.pupil.location.classroom]
