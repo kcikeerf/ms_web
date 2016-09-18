@@ -7,5 +7,7 @@ module SwtkConstantsModule
     DefaultRows = 10
     DefaultSheetPassword = "forbidden_by_k12ke"
     MyDomain = "www.k12ke.com"
+    CDNDomain = "cdn.k12ke.com"
+    CDNVersion1_0 = "000016090"
   end
 end
