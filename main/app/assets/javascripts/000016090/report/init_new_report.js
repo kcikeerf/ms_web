@@ -4,3 +4,4 @@
 //=require ../../echarts.min
 //=require ../../echarts_themes/macarons
 //=require ../../echarts_themes/vintage
+//=require ../../reports/create_report
