@@ -496,6 +496,7 @@ class Mongodb::ReportGenerator
           pupil_dim_table[pos][1]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv1_avg_percent])
           pupil_dim_table[pos][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
           pupil_dim_table[pos][1]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
+          pupil_dim_table[pos][1]["value"]["total_qzp_count"] = format_float(item[:value][:qzp_total_count])
 
         elsif(item[:_id].keys.include?("lv2_ckp")) 
           lv2_ckp_key = item[:_id][:lv2_ckp]
@@ -518,6 +519,7 @@ class Mongodb::ReportGenerator
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["pup_gra_avg_percent_diff"] = convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_lv2_avg_percent])
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["full_score"] = format_float(item[:value][:full_mark])
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["correct_qzp_count"] = format_float(item[:value][:qzp_count])
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["total_qzp_count"] = format_float(item[:value][:qzp_total_count])
         else
           pupil_dim_table.unshift([Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
             {
@@ -529,7 +531,8 @@ class Mongodb::ReportGenerator
                 "pup_cls_avg_percent_diff" => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:cls_dim_avg_percent]),
                 "pup_gra_avg_percent_diff" => convert_diff_2_full_mark(item[:value][:average_percent],item[:value][:gra_dim_avg_percent]),
                 "full_score" => format_float(item[:value][:full_mark]),
-                "correct_qzp_count" => format_float(item[:value][:qzp_count])
+                "correct_qzp_count" => format_float(item[:value][:qzp_count]),
+                "total_qzp_count" => format_float(item[:value][:qzp_total_count])
               },
               "items" => []
             }
@@ -608,7 +611,9 @@ class Mongodb::ReportGenerator
       pupil_report, pupil_report_h = get_pupil_report_hash item
       dimesion = item[:_id][:dimesion]
       pupil_report_h["basic"]["class_rank"] = item[:value][:class_rank]
+      pupil_report_h["basic"]["class_pupil_number"] = item[:value][:class_pupil_number]
       pupil_report_h["basic"]["grade_rank"] = item[:value][:grade_rank]
+      pupil_report_h["basic"]["grade_pupil_number"] = item[:value][:grade_pupil_number]
       pupil_report.report_json = pupil_report_h.to_json
       pupil_report.save
     }
@@ -1207,6 +1212,7 @@ class Mongodb::ReportGenerator
         var real_total = this.weights * this.real_score;
         var full_total = this.weights * this.full_score;
         var qzp_count = 0;
+        var qzp_total_count = 1;
         if(real_total == full_total){
           qzp_count = 1;
         }
@@ -1226,7 +1232,8 @@ class Mongodb::ReportGenerator
           average_percent: real_total/full_total,
           qzp_uids: [this.qzp_uid],
           qzp_uid: this.qzp_uid,
-          qzp_count: qzp_count
+          qzp_count: qzp_count,
+          qzp_total_count: qzp_total_count
         };
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, order: this.order}, 
@@ -1298,7 +1305,8 @@ class Mongodb::ReportGenerator
           average_percent: 0,
           qzp_uids: [],
           qzp_uid: "",
-          qzp_count: 0
+          qzp_count: 0,
+          qzp_total_count: 0
         };
 
         values.forEach(function(value){
@@ -1317,9 +1325,12 @@ class Mongodb::ReportGenerator
           });
 
           value.qzp_uids.forEach(function(qzp_uid){
-            if(result.qzp_uids.indexOf(qzp_uid) == -1 && value.real_score == value.full_score){
+            if(result.qzp_uids.indexOf(qzp_uid) == -1){
               result.qzp_uids.push(qzp_uid);
-              result.qzp_count += 1;
+              result.qzp_total_count += 1;
+              if(value.real_score == value.full_score){
+                result.qzp_count += 1;
+              }
             }
           });
 

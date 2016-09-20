@@ -1618,7 +1618,9 @@ How many kinds of animals are talked about in the poster(海报)?<br>
           "quiz_date" => "",
           "score" => 0,
           "class_rank" => 0,
+          "class_pupil_number" => 0,
           "grade_rank" => 0,
+          "grade_pupil_number" => 0,
           "value_ratio" => {
             "knowledge" => 1,
             "skill" => 1,
