@@ -73,7 +73,8 @@ class ImportScoreJob < ActiveJob::Base
           I18n.t('activerecord.attributes.user.name'),
           I18n.t('activerecord.attributes.user.password'),
           I18n.t('dict.name'),
-          I18n.t('reports.generic_url')
+          I18n.t('reports.generic_url'),
+          I18n.t('reports.op_guide')
       ]
       teacher_sheet.add_row teacher_title_row
 
@@ -82,7 +83,8 @@ class ImportScoreJob < ActiveJob::Base
           I18n.t('activerecord.attributes.user.password'),
           I18n.t('dict.name'),
           I18n.t('dict.pupil_number'),
-          I18n.t('reports.generic_url')
+          I18n.t('reports.generic_url'),
+          I18n.t('reports.op_guide')
       ]
       pupil_sheet.add_row pupil_title_row
 

@@ -607,6 +607,7 @@ class Mongodb::ReportGenerator
     Mongodb::ReportStandDevDiffResult.where(filter).each{|item|
       pupil_report, pupil_report_h = get_pupil_report_hash item
       dimesion = item[:_id][:dimesion]
+      pupil_report_h["basic"]["class_rank"] = item[:value][:class_rank]
       pupil_report_h["basic"]["grade_rank"] = item[:value][:grade_rank]
       pupil_report.report_json = pupil_report_h.to_json
       pupil_report.save
@@ -1470,6 +1471,14 @@ class Mongodb::ReportGenerator
               dimesion: this._id.dimesion},
             value_obj
           );
+          emit(
+            { pap_uid: this._id.pap_uid,
+              grade: this._id.grade,
+              classroom: this._id.classroom,
+              pup_uid: this._id.pup_uid,
+              dimesion: this._id.dimesion},
+            value_obj
+          );
         }
         if(this._id.lv1_ckp){
           emit(
@@ -1784,7 +1793,7 @@ class Mongodb::ReportGenerator
     filter = {
       '_id.pap_uid' => @pap_uid,
       '_id.grade' => {'$exists' => true },
-      '_id.classroom' => nil,
+      #'_id.classroom' => nil,
       '_id.pup_uid' => nil,
       '_id.dimesion' => {'$exists' => true },
       '_id.lv1_ckp' => nil,
@@ -1826,7 +1835,7 @@ class Mongodb::ReportGenerator
       pupil_filter = {
         '_id.pap_uid' => @pap_uid,
         '_id.grade' => item[:_id][:grade],
-        '_id.classroom' => nil,
+        '_id.classroom' => item[:_id][:classroom],
         '_id.pup_uid' => {'$exists' => true },
         '_id.dimesion' => item[:_id][:dimesion],
         '_id.lv1_ckp' => nil,
@@ -1834,14 +1843,29 @@ class Mongodb::ReportGenerator
       }
 
       average_arr = item[:value][:average_stack].blank?? [] : item[:value][:average_stack].sort.reverse
-      values_h = {
-        'value.grade_rank' => 0,
-        'value.grade_pupil_number' => item[:value][:current_pupil_number]
-      }
+      if item[:id].keys.include?("classroom")
+        values_h = {
+          'value.class_rank' => 0,
+          'value.class_pupil_number' => item[:value][:current_pupil_number]
+        }
+      else
+        values_h = {
+          'value.grade_rank' => 0,
+          'value.grade_pupil_number' => item[:value][:current_pupil_number]
+        }
+      end
 
       pupils = Mongodb::ReportStandDevDiffResult.where(pupil_filter).no_timeout
       pupils.each{|pupil|
-        values_h['value.grade_rank'] = (average_arr.index(pupil[:value][:average_percent]) +1 )|| 0
+        
+        current_rank = (average_arr.index(pupil[:value][:average_percent]) +1 )|| 0
+
+        if item[:id].keys.include?("classroom")
+          values_h['value.class_rank'] = current_rank
+        else
+          values_h['value.grade_rank'] = current_rank
+        end
+
         filter = {
           '_id.pap_uid' => @pap_uid,
           '_id.grade' => pupil[:_id][:grade],

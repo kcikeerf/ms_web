@@ -14,8 +14,9 @@ Rails.application.config.assets.precompile += ['default/users.css', 'users.js']
 Rails.application.config.assets.precompile += ['zhengjuan.css', 'init_zhengjuan.js', 'ztree.js', 'ztree.css']
 # # 诊断报告
 Rails.application.config.assets.precompile += ['report.css', 
-	'init_report.js', 
-	'000016090/report/new_report.css.scss', 
+	'init_report.js',
+	'create_report.js',
+	'000016090/report/new_report.css.scss',
 	'000016090/report/init_new_report.js'
 ]
 #Rails.application.config.assets.precompile += ['new_report.css.scss', 'init_new_report.js']
