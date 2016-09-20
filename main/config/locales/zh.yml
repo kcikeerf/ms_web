@@ -127,6 +127,8 @@ zh:
     none: "无"
     total: "总体情况"
     generic_url: "报告链接"
+    op_guide: "操作说明"
+    op_guide_details: "请按以下步骤查看报告：1.登录报告链接；2.进入个人中心；3.在我的报告列表查看"
     grade_url: "年级报告链接"
     lower_than: "低"
     equal_to: "等"

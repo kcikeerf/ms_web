@@ -40,9 +40,16 @@ class Mongodb::PupilReport
       # end
       
       result = reports.map{|item|
+        rpt_h = JSON.parse(item.report_json)
         pap = Mongodb::BankPaperPap.find(item.pap_uid)
         {
           :paper_heading => pap.heading,
+          :subject => rpt_h["basic"]["subject"],
+          :quiz_type => rpt_h["basic"]["quiz_type"],
+          :quiz_date => rpt_h["basic"]["quiz_date"],
+          :score => rpt_h["basic"]["score"],
+          :class_rank => rpt_h["basic"]["class_rank"],
+          :grade_rank => rpt_h["basic"]["grade_rank"],
           :report_id => item._id.to_s,
           :dt_update => item.dt_update.strftime("%Y-%m-%d %H:%M")
         }
