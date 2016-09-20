@@ -4,6 +4,7 @@ module UzerModule
 
     PasswdRandLength = 8
     PasswdRandArr = [*'1'..'9']
+    UserNameSperator = ""
 
 	def get_tenant user_id
 		tenant = nil

@@ -872,7 +872,8 @@ class Mongodb::BankPaperPap
 #   end
 
   def format_user_name args=[]
-    args.join("_")
+    #args.join("_")
+    args.join(Common::Uzer::UserNameSperator)
   end
 
   def format_user_password_row role,params_h
@@ -881,7 +882,8 @@ class Mongodb::BankPaperPap
         :username => params_h[:user_name],
         :password => "",
         :name => params_h[:name],
-        :report_url => ""
+        :report_url => "",
+        :op_guide => I18n.t('reports.op_guide_details')
         # :tenant_uid => tenant.uid
       },
       Common::Role::Pupil.to_sym => {
@@ -889,7 +891,8 @@ class Mongodb::BankPaperPap
         :password => "",
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
-        :report_url => Common::SwtkConstants::MyDomain + "/reports/new_square?username="
+        :report_url => Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
+        :op_guide => I18n.t('reports.op_guide_details')
         # :tenant_uid => tenant.uid
       }
     }
@@ -934,6 +937,8 @@ class Mongodb::BankPaperPap
   end
 
   def generate_url
+    return Common::SwtkConstants::MyDomain 
+=begin   
     result = ""
     #目前只需要试卷的ID信息
     params_h = {
@@ -943,6 +948,7 @@ class Mongodb::BankPaperPap
     new_rum.save
     result = Common::SwtkConstants::MyDomain + "/reports/check/#{new_rum.nil?? "":new_rum.codes}"
     return result
+=end
   end
 
   def paper_name(type, is_heading=true)
