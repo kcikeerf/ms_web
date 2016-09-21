@@ -199,6 +199,7 @@ class PapersController < ApplicationController
     end
   end
 
+  #下载试卷的相关文件
   def download
     type = params[:type]
 
@@ -208,7 +209,9 @@ class PapersController < ApplicationController
 
     file = is_xlsx ? ScoreUpload.find(@paper.score_file_id) : FileUpload.find(@paper.orig_file_id)
     
-    file_name = @paper.paper_name(type) + (is_xlsx ? '.xlsx' : '.doc')
+    file_name = @paper.download_file_name(type) + (is_xlsx ? '.xlsx' : '.doc')
+    # 旧接口注释掉
+    #file_name = @paper.paper_name(type) + (is_xlsx ? '.xlsx' : '.doc')
 
     if need_deal_types.include?(type)
       head_html =<<-EOF
@@ -243,35 +246,6 @@ class PapersController < ApplicationController
     #   </p>      
     # EOF
 
-    # case type
-    # when 'paper'
-    #   file_name = "#{paper_name}试题.doc"
-    #   file_path = file.paper.current_path
-    # when 'answer'
-    #   file_name = "#{paper_name}答案.doc"
-    #   file_path = file.answer.current_path
-    # when 'revise_paper'
-    #   file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", 'revise_paper') if file.revise_paper.current_path.blank?
-    #   file_name = "#{paper_name}修正后试题.doc"
-    #   file_path = file.revise_paper.current_path     
-    # when 'revise_answer'
-    #   file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", 'revise_answer') if file.revise_answer.current_path.blank?
-    #   file_name = "#{paper_name}修正后答案.doc"
-    #   file_path = file.revise_paper.current_path
-    # when 'empty_score'
-    #   score_file = ScoreUpload.find(@paper.score_file_id)
-    #   file_name = "空成绩表.xlsx"
-    #   file_path = score_file.empty_file.current_path
-    # when 'pupils_score'
-    #   score_file = ScoreUpload.find(@paper.score_file_id)
-    #   file_name = "学生成绩表.xlsx"
-    #   file_path = score_file.filled_file.current_path
-    # when 'user_info'
-    #   score_file = ScoreUpload.find(@paper.score_file_id)
-    #   file_name = "学生用户名密码.xlsx"
-    #   file_path = score_file.usr_pwd_file.current_path
-    # end
-
     send_file file_path, filename: file_name, disposition: 'attachment'
   end
 
@@ -279,28 +253,7 @@ class PapersController < ApplicationController
     render layout: false
   end
 
-  # def import_filled_score
-  #   logger.info("======================import score: begin")
-  #   @result = I18n.t('papers.messages.upload_score.fail')
-  #   if request.post?# && remotipart_submitted? 
-  #     score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
-  #     if score_file
-  #       begin 
-  #         # analyze filled score file
-  #         str = @paper.analyze_filled_score_file score_file# rescue nil  
-  #         @result = I18n.t('papers.messages.upload_score.success') unless str.nil?
-  #         @paper.update(paper_status: Common::Paper::Status::ScoreImported)
-  #       rescue Exception => ex
-  #         logger.debug(">>>>>>>>>>>>>>>>>>Exception When Import Filled Score!")
-  #         logger.debug(ex.message)
-  #         logger.debug(ex.backtrace)
-  #       end
-  #     end
-  #   end
-  #   logger.info("======================import score: end")
-  #  render layout: false
-  # end
-
+  #上传成绩表
   def import_filled_score
     params.permit!
 
