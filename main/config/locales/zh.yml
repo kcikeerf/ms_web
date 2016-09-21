@@ -82,7 +82,7 @@ zh:
       revise_answer: '修正答案'
       empty_file: '空成绩表'
       filled_file: '学生成绩表'
-      usr_pwd_file: '老师学生的用户名密码'
+      usr_pwd_file: '老师及学生的用户名及密码'
     messages:
       save_paper:
         success: "试卷（标题：%{heading}）保存成功!"
@@ -126,6 +126,7 @@ zh:
   reports:
     none: "无"
     total: "总体情况"
+    check: "报告查看"
     generic_url: "报告链接"
     op_guide: "操作说明"
     op_guide_details: "请按以下步骤查看报告：1.登录报告链接；2.进入个人中心；3.在我的报告列表查看"
@@ -405,7 +406,10 @@ zh:
     ban_ji_bao_gao: "班级报告"
     nian_ji_bao_gao: "年级报告"
     qu_yu_bao_gao: "区域报告"
-    #年份  
+    #年份
+    nian: "年"
+    yue: "月"
+    ri: "日"
     2000_nian: "2000年"
     2001_nian: "2001年"
     2002_nian: "2002年"

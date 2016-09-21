@@ -951,9 +951,23 @@ class Mongodb::BankPaperPap
 =end
   end
 
-  def paper_name(type, is_heading=true)
-    is_heading = false if type == 'usr_pwd_file'
-    (is_heading ? (heading + '_') : '') + I18n.t("papers.name.#{type}")
+  # def paper_name(type, is_heading=true)
+  #   is_heading = false if type == 'usr_pwd_file'
+  #   (is_heading ? (heading + '_') : '') + I18n.t("papers.name.#{type}")
+  # end
+
+  def download_file_name type
+    case type
+    when 'usr_pwd_file'
+      year_str = quiz_date.strftime('%Y') + I18n.t('dict.nian')
+      grade_str = Common::Grade::List[grade.to_sym]
+      subject_str = Common::Subject::List[subject.to_sym]
+      result = year_str + grade_str + subject_str + I18n.t('reports.check') + "_"
+    else
+      result = heading + '_'
+    end
+    result += I18n.t("papers.name.#{type}")
+    result
   end
 
   def is_completed?

@@ -12,7 +12,7 @@
 	
 	<% download_list(params[:type]).each do |type| %>
 		<li>
-			<%= link_to @paper.paper_name(type), download_papers_path(pap_uid: @paper, type: type) %>
+			<%= link_to @paper.download_file_name(type), download_papers_path(pap_uid: @paper, type: type) %>
 		</li>
 	<% end %>	
 	</ul>
