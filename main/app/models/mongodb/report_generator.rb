@@ -1211,10 +1211,10 @@ class Mongodb::ReportGenerator
       function(){
         var real_total = this.weights * this.real_score;
         var full_total = this.weights * this.full_score;
-        var qzp_count = 0;
+        var flag = false;
         var qzp_total_count = 1;
         if(real_total == full_total){
-          qzp_count = 1;
+          flag = true;
         }
 
         var value_obj = {
@@ -1225,6 +1225,7 @@ class Mongodb::ReportGenerator
           real_scores: [real_total],
           full_total: full_total,
           full_score: full_total,
+          full_scores: [full_total],
           full_mark: full_total,
           reduced: 0, 
           pupil_number: 1,
@@ -1232,7 +1233,8 @@ class Mongodb::ReportGenerator
           average_percent: real_total/full_total,
           qzp_uids: [this.qzp_uid],
           qzp_uid: this.qzp_uid,
-          qzp_count: qzp_count,
+          qzp_correct_flag: [flag],
+          qzp_count: 0,
           qzp_total_count: qzp_total_count
         };
         emit(
@@ -1298,6 +1300,7 @@ class Mongodb::ReportGenerator
           real_score: 0,
           full_total: 0,
           full_score: 0,
+          full_scores: [],
           full_mark: 0,
           reduced: 1, 
           pupil_number: 0,
@@ -1305,6 +1308,7 @@ class Mongodb::ReportGenerator
           average_percent: 0,
           qzp_uids: [],
           qzp_uid: "",
+          qzp_correct_flag: [],
           qzp_count: 0,
           qzp_total_count: 0
         };
@@ -1328,11 +1332,15 @@ class Mongodb::ReportGenerator
             if(result.qzp_uids.indexOf(qzp_uid) == -1){
               result.qzp_uids.push(qzp_uid);
               result.qzp_total_count += 1;
-              if(value.real_score == value.full_score){
-                result.qzp_count += 1;
-              }
             }
           });
+
+          value.qzp_correct_flag.forEach(function(flag){
+            if(flag){
+              result.qzp_correct_flag.push(1);
+            }
+          });
+          result.qzp_count = result.qzp_correct_flag.length; 
 
         });
        
