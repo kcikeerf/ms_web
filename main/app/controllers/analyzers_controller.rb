@@ -7,9 +7,14 @@ class AnalyzersController < ApplicationController
   def my_home
     @analyzer = current_user.analyzer
     @papers_status_to_count = {}
-    @papers_data.group_by {|p| p.paper_status }.each do |k, v|
-      @papers_status_to_count[k] = v.count
-    end
+    #@papers_data.group_by {|p| p.paper_status }.each do |k, v|
+    #  @papers_status_to_count[k] = v.count
+    #end
+    filter = {
+      :user_id => current_user.id
+    }
+    results = Mongodb::BankPaperPap.get_paper_status_count(filter)
+    @papers_status_to_count = results
   end
 
   def region
@@ -20,13 +25,16 @@ class AnalyzersController < ApplicationController
   def my_paper
     paper_data = @papers_data
 
-    subject_arr = paper_data.map(&:subject).uniq.sort{|a,b| Common::Locale.mysort(Common::Subject::Order[a.nil?? "":a.to_sym],Common::Subject::Order[b.nil?? "":b.to_sym]) }
+    filter = {
+      :user_id => current_user.id
+    }
+    subject_arr = paper_data.get_column_arr(filter, "subject").sort{|a,b| Common::Locale.mysort(Common::Subject::Order[a.nil?? "":a.to_sym],Common::Subject::Order[b.nil?? "":b.to_sym]) }
     @subjects = deal_label('dict', subject_arr)
 
-    grade_arr = paper_data.map(&:grade).uniq.sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.nil?? "":a.to_sym],Common::Grade::Order[b.nil?? "":b.to_sym]) }
+    grade_arr = paper_data.get_column_arr(filter, "grade").sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.nil?? "":a.to_sym],Common::Grade::Order[b.nil?? "":b.to_sym]) }
     @grades = deal_label('dict', grade_arr)
  
-    status_arr = paper_data.map(&:paper_status).uniq.sort{|a,b| Common::Locale.mysort(Common::Locale::StatusOrder[a.nil?? "":a.to_sym],Common::Locale::StatusOrder[b.nil?? "":b.to_sym]) }
+    status_arr = paper_data.get_column_arr(filter,"paper_status").sort{|a,b| Common::Locale.mysort(Common::Locale::StatusOrder[a.nil?? "":a.to_sym],Common::Locale::StatusOrder[b.nil?? "":b.to_sym]) }
     @status = deal_label('papers.status', status_arr)
  
     province, city, district = params[:region].split('/') unless params[:region].blank?
@@ -41,6 +49,7 @@ class AnalyzersController < ApplicationController
       .by_district(district)
       .page(params[:page])
       .per(10)
+    
   end
 
   def my_log

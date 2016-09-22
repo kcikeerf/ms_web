@@ -69,6 +69,8 @@ class Mongodb::BankPaperPap
   field :dt_update, type: DateTime
 
   index({province: 1, city: 1, district:1}, {background: true})
+  index({_id: 1}, {background: true})
+  index({user_id: 1}, {background: true})
   index({grade: 1}, {background: true})
   index({subject: 1}, {background: true})
   index({paper_status: 1}, {background: true})
@@ -1004,6 +1006,49 @@ class Mongodb::BankPaperPap
    
     end
     region
+  end
+
+  def self.get_column_arr filter, col_str
+
+    map = %Q{
+      function(){
+        emit({#{col_str}: this.#{col_str}}, {});
+      }
+    }
+
+    reduce = %Q{
+      function(key, values) {
+      }
+    }
+
+    result = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
+    result.map{|a| a[:_id][col_str.to_sym] if a[:_id][col_str.to_sym].is_a? String}
+  end
+
+  def self.get_paper_status_count filter
+    result = {}
+
+    map = %Q{
+      function(){
+        emit({paper_status: this.paper_status}, {count: 1});
+      }
+    }
+
+    reduce = %Q{
+      function(key, values) {
+        var result = {
+          count: 0
+        };
+        values.forEach(function(value){
+          result.count += value.count;
+        });
+        return result;
+      }
+    }
+
+    arr = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
+    arr.each{|a| result[a["_id"]["paper_status"]] = a["value"]["count"].to_i if a["_id"]["paper_status"].is_a? String}
+    result
   end
 
   #######
