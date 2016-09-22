@@ -1212,9 +1212,13 @@ class Mongodb::ReportGenerator
         var real_total = this.weights * this.real_score;
         var full_total = this.weights * this.full_score;
         var flag = false;
+        var qzp_count = 0;
         var qzp_total_count = 1;
         if(real_total == full_total){
           flag = true;
+        }
+        if(flag){
+          qzp_count = 1;
         }
 
         var value_obj = {
@@ -1234,7 +1238,7 @@ class Mongodb::ReportGenerator
           qzp_uids: [this.qzp_uid],
           qzp_uid: this.qzp_uid,
           qzp_correct_flag: [flag],
-          qzp_count: 0,
+          qzp_count: qzp_count,
           qzp_total_count: qzp_total_count
         };
         emit(
@@ -1328,15 +1332,17 @@ class Mongodb::ReportGenerator
             }
           });
 
+          var add_quiz =false;
           value.qzp_uids.forEach(function(qzp_uid){
             if(result.qzp_uids.indexOf(qzp_uid) == -1){
               result.qzp_uids.push(qzp_uid);
               result.qzp_total_count += 1;
+              add_quiz = true;
             }
           });
 
           value.qzp_correct_flag.forEach(function(flag){
-            if(flag){
+            if(flag && add_quiz){
               result.qzp_correct_flag.push(1);
             }
           });
