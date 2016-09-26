@@ -437,6 +437,7 @@ class Mongodb::ReportGenerator
         elsif(item[:_id].keys.include?("lv2_ckp")) 
           lv2_ckp_key = item[:_id][:lv2_ckp]
           lv2_ckp_order = item[:_id][:lv2_order]
+          next unless ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_order)
           lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
           lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
           next unless lv1_ckp_order
@@ -506,6 +507,7 @@ class Mongodb::ReportGenerator
           lv2_ckp_key = item[:_id][:lv2_ckp]
           lv2_ckp_advice = item[:_id][:lv2_advice]
           lv2_ckp_order = item[:_id][:lv2_order]
+          next unless ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_order)
           lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
           lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
           next unless lv1_ckp_order
@@ -578,6 +580,7 @@ class Mongodb::ReportGenerator
         elsif(item[:_id].keys.include?("lv2_ckp"))
           lv2_ckp_key = item[:_id][:lv2_ckp]
           lv2_ckp_order = item[:_id][:lv2_order]
+          next unless ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_order)
           lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
           lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
           next unless lv1_ckp_order
