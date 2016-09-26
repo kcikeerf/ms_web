@@ -2375,7 +2375,7 @@ class Mongodb::ReportGenerator
     qzpoints = @paper.bank_quiz_qizs.map{|item| item.bank_qizpoint_qzps}.flatten
     ckps = qzpoints.map{|item| item.bank_checkpoint_ckps}.flatten.uniq
     ckps.each{|ckp|
-      next unless 
+      next unless ckp
       # search current level checkpoint
       if ckp.is_a? BankCheckpointCkp
         lv1_ckp = BankCheckpointCkp.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
