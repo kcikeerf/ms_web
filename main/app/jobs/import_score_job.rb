@@ -219,16 +219,21 @@ class ImportScoreJob < ActiveJob::Base
             param_h[:dimesion] = ckp.dimesion
             param_h[:lv1_uid] = lv1_ckp.uid
             param_h[:lv1_ckp] = lv1_ckp.checkpoint
+            param_h[:lv1_advice] = lv1_ckp.advice
             param_h[:lv1_order] = lv1_ckp.sort
             param_h[:lv2_uid] = lv2_ckp.uid
             param_h[:lv2_ckp] = lv2_ckp.checkpoint
+            param_h[:lv2_advice] = lv2_ckp.advice
             param_h[:lv2_order] = lv2_ckp.sort
             param_h[:lv3_uid] = ckp.uid
             param_h[:lv3_ckp] = ckp.checkpoint
+            param_h[:lv3_advice] = ckp.advice
             param_h[:lv3_order] = ckp.sort
             param_h[:lv_end_uid] = ckp.uid
             param_h[:lv_end_ckp] = ckp.checkpoint
+            param_h[:lv_end_advice] = ckp.advice
             param_h[:lv_end_order] = ckp.sort
+
             #调整权重系数
             # 1.单题难度关联
             #
