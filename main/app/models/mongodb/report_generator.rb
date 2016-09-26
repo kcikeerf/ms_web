@@ -2385,6 +2385,7 @@ class Mongodb::ReportGenerator
         lv1_ckp = BankSubjectCheckpointCkp.where("subject = '#{@paper.subject}' and category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, 3)}'").first
         lv2_ckp = BankSubjectCheckpointCkp.where("subject = '#{@paper.subject}' and category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, 6)}'").first
       end
+      next unless (lv1_ckp || lv2_ckp)
       dimesion = ckp.dimesion
       # lv1_ckp = ckp.class.where("node_uid = '#{@paper.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
       lv1_ckp_label = lv1_ckp.checkpoint
