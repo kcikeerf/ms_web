@@ -10,28 +10,26 @@
   </head>
   <body>
     <div class="easyui-layout" data-options="fit:true">
-      <div data-options="region:'north',border:false" 
-           style="height:60px;background:#B3DFDA;padding:20px;font-size:18px; font-weight:bold;">
-         <div style="float: left;">
-           <%=I18n.t("managers.head")%>
-         </div>
-         <div style="float: right;">
-           <%=I18n.t("managers.admin")%>：<%= current_manager.name%>
-           <a href="/managers/logout" class="easyui-linkbutton"><%= I18n.t("page.user_left_menu.logout")%></a>
-         </div>
-      </div>
-      <%= render 'shared/manager/left' %>
-      <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
-        <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
-            <div title="<%=I18n.t("managers.panel.welcome")%>" style="padding:20px;overflow:hidden;" id="home">
-                
-            <h1><%=I18n.t("managers.messages.welcome")%></h1>
-
+        <div data-options="region:'north',border:false" 
+             style="height:60px;background:#B3DFDA;padding:20px;font-size:18px; font-weight:bold;">
+            <div style="float: left;">
+              <%=I18n.t("managers.head")%>
+            </div>
+            <div style="float: right;">
+               <%=I18n.t("managers.admin")%>：<%= current_manager.name%>
+               <a href="/managers/logout" class="easyui-linkbutton"><%= I18n.t("page.user_left_menu.logout")%></a>
             </div>
         </div>
-    </div>
-  </div>
-      
+        <%= render 'shared/manager/left' %>
+        <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
+            <div id="tabs" class="easyui-tabs"  fit="true" border="false" >
+                <div title="<%=I18n.t("managers.panel.welcome")%>" style="padding:20px;overflow:hidden;" id="home">
+                    
+                <h1><%=I18n.t("managers.messages.welcome")%></h1>
+
+                </div>
+            </div>
+        </div>
     </div>
   </body>
 </html>

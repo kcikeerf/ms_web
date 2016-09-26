@@ -44,36 +44,39 @@ var setting = {
 		var addBtn = $("#addBtn_" + treeNode.tId);
 		var deleteBtn = $("#"+treeNode.tId+"_remove")
 		//出现增加节点之后的绑定的事件;
-		if (addBtn) addBtn.on("click", function(){
-			$('.checkpoint').val('');
-			$('.desc').val('');
-			$('#advice').val('');
-			$('#sort').val('');
-			$('#select-box').val('');
-		    $('#dlg').dialog('open');
-		    $('.dimesion').val(treeNode.dimesion);
-		    $('.str_pid').val(treeNode.rid);
-		   	$("#save").on('click',function(){
-		   		if($('#select-box').val() != ''){
-		   			$.post('/managers/checkpoints', $("#fm").serialize(), function(data){
-			   		 	if(data.status == 200){
-			   		 		var tree = $.fn.zTree.getZTreeObj(treeNode.dimesion + "_tree");
-			   		 		tree.addNodes(treeNode, data.data)
-			   		 	}else{
-			   		 		return;
-			   		 	}
-			   		});
-		   		}else{
-		   			alert('请选择教材目录');
-		   		};
-		   		$('.checkpoint').val('');
+		if (addBtn) {
+			addBtn.unbind('click');
+			addBtn.on("click", function(){
+				$('.checkpoint').val('');
 				$('.desc').val('');
+				$('#advice').val('');
+				$('#sort').val('');
 				$('#select-box').val('');
-				$('#save').off('click');
-				$('#dlg').dialog('close');
-		   	})
-		    return false;
-		});
+			    $('#dlg').dialog('open');
+			    $('.dimesion').val(treeNode.dimesion);
+			    $('.str_pid').val(treeNode.rid);
+			   	$("#save").on('click',function(){
+			   		if($('#select-box').val() != ''){
+			   			$.post('/managers/checkpoints', $("#fm").serialize(), function(data){
+				   		 	if(data.status == 200){
+				   		 		var tree = $.fn.zTree.getZTreeObj(treeNode.dimesion + "_tree");
+				   		 		tree.addNodes(treeNode, data.data)
+				   		 	}else{
+				   		 		return;
+				   		 	}
+				   		});
+			   		}else{
+			   			alert('请选择教材目录');
+			   		};
+			   		$('.checkpoint').val('');
+					$('.desc').val('');
+					$('#select-box').val('');
+					$('#save').off('click');
+					$('#dlg').dialog('close');
+			   	})
+			    return false;
+			});
+		}
 	};
 	/*删除事件*/
 	function zTreeBeforeRemove(treeId, treeNode) {
@@ -121,6 +124,7 @@ var setting = {
 			}
 			$('#select-box').val(arr);
 		})
+		$('#save').unbind('click');
 		$('#save').on('click',function(){
 			var nodeName = $('.checkpoint').val();
 			var _this = $(this);

@@ -1,6 +1,7 @@
 //= require ztree/js/jquery.ztree.core
 //= require ztree/js/jquery.ztree.excheck
 //= require ztree/js/jquery.ztree.exedit
+//= require init_ckeditor
 //= require_self
 
 var setting = {
@@ -44,33 +45,36 @@ var setting = {
 		var addBtn = $("#addBtn_" + treeNode.tId);
 		var deleteBtn = $("#"+treeNode.tId+"_remove")
 		//出现增加节点之后的绑定的事件;
-		if (addBtn) addBtn.on("click", function(){
-			$('.checkpoint').val('');
-			$('.desc').val('');
-			$('#advice').val('');
-			$('#sort').val('');
-			// $('#select-box').val('');
-		    $('#dlg').dialog('open');
-		    $('.dimesion').val(treeNode.dimesion);
-		    $('.str_pid').val(treeNode.rid);
-            $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
-		   	$("#save").on('click',function(){
-		   			$.post('/managers/subject_checkpoints', $("#fm").serialize(), function(data){
-			   		 	if(data.status == 200){
-			   		 		var tree = $.fn.zTree.getZTreeObj(treeNode.dimesion + "_tree");
-			   		 		tree.addNodes(treeNode, data.data);
-			   		 	}
-
-			   		});
-		   		
-		   	$('.checkpoint').val('');
+		if (addBtn){
+			addBtn.unbind("click");
+			addBtn.on("click", function(){
+				$('.checkpoint').val('');
 				$('.desc').val('');
+				$('#advice').val('');
+				$('#sort').val('');
 				// $('#select-box').val('');
-				$('#save').off('click');
-				$('#dlg').dialog('close');
-		   	})
-		    return false;
-		});
+			    $('#dlg').dialog('open');
+			    $('.dimesion').val(treeNode.dimesion);
+			    $('.str_pid').val(treeNode.rid);
+	            $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
+			   	$("#save").on('click',function(){
+			   			$.post('/managers/subject_checkpoints', $("#fm").serialize(), function(data){
+				   		 	if(data.status == 200){
+				   		 		var tree = $.fn.zTree.getZTreeObj(treeNode.dimesion + "_tree");
+				   		 		tree.addNodes(treeNode, data.data);
+				   		 	}
+
+				   		});
+			   		
+			   	$('.checkpoint').val('');
+					$('.desc').val('');
+					// $('#select-box').val('');
+					$('#save').off('click');
+					$('#dlg').dialog('close');
+			   	})
+			    return false;
+		    });
+	    }
 	};
 	/*删除事件*/
 	function zTreeBeforeRemove(treeId, treeNode) {
@@ -108,10 +112,13 @@ var setting = {
 	/*编辑事件*/
 	function zTreeBeforeEditName(treeId, treeNode){
 		$('#dlg').dialog('open');
+		replace_advice_ckeditor();
 		$('.checkpoint').val(treeNode.checkpoint);
 		treeNode.desc?$('.desc').val(treeNode.desc):$('.desc').val('');
-		treeNode.advice ? $('#advice').val(treeNode.advice) : $('#advice').val('');
+		//更新既有的建议
+		treeNode.advice ? CKEDITOR.instances.advice.setData(treeNode.advice) : CKEDITOR.instances.advice.setData('');
 		treeNode.sort ? $('#sort').val(treeNode.sort) : $('#sort').val('');
+		treeNode.uid ? $('.ckp_uid').val(treeNode.uid) : $('.ckp_uid').val('');
 	  	$.get("/managers/subject_checkpoints/"+treeNode.uid+"/edit",{},function(data){
 			var len = data.data.length;
 			var arr=[];
@@ -120,10 +127,16 @@ var setting = {
 			}
 			// $('#select-box').val(arr);
 		})
+		$('#save').unbind('click');
 		$('#save').on('click',function(){
 			var nodeName = $('.checkpoint').val();
 			var _this = $(this);
             $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
+	        for ( instance in CKEDITOR.instances ) {
+	            CKEDITOR.instances[instance].updateElement();
+	        }
+	        //更新更改后的建议
+	        treeNode.advice = CKEDITOR.instances.advice.getData();
 			$.ajax({
 				type:"put",
 				url:"/managers/subject_checkpoints/"+treeNode.uid,
@@ -174,7 +187,7 @@ var setting = {
 	}
 
 	//读取指标
-  function get_tree_data(subject, xue_duan){
+    function get_tree_data(subject, xue_duan){
 		if(subject == ''){
 			init_tree(null, null, null);
 			$('#file_upload').hide();
@@ -202,6 +215,28 @@ var setting = {
 		$.fn.zTree.init($("#skill_tree"), setting, skill);
 		$.fn.zTree.init($("#ability_tree"), setting, ability);
 		$.fn.zTree.init($("#knowledge_tree"), setting, knowledge);
+	}
+
+	function replace_advice_ckeditor(){
+		CKEDITOR.editorConfig = function( config ) {
+			//工具栏配置
+			config.toolbar_Mine =[
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat','Font', 'FontSize', 'lineheight'] },
+                { name: 'paragraph', items: ['TextColor', 'BGColor','JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Undo', 'Redo', 'Source'] }
+		    ];
+		    config.toolbar = 'Mine';
+		    //初始化高度
+		    config.height = 200;
+		    //初始化宽度
+		    config.width = 400;
+		    //禁止拖拽
+		    config.resize_enabled = false;
+		    //添加中文字体
+		    config.font_names='微软雅黑/微软雅黑;宋体/宋体;黑体/黑体;仿宋/仿宋_GB2312;楷体/楷体_GB2312;隶书/隶书;幼圆/幼圆;'+ config.font_names;
+		    //图片转码的固定地址
+            //config.replaceImgcrc = "/ckeditors/urlimage?src=";
+		};
+		(CKEDITOR.instances.advice)? "":CKEDITOR.replace("advice");
 	}
 
 	$(document).ready(function(){
