@@ -113,7 +113,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         category: params[:category],
     		checkpoint: params[:checkpoint], 
     		desc: params[:desc],
-        advice: params[:desc],
+        advice: params[:advice],
         weights: params[:weights],
         sort: new_rid,
     		is_entity: true)                 

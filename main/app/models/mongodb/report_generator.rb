@@ -52,6 +52,8 @@ class Mongodb::ReportGenerator
   def when_completed
     logger.debug("=====completed: begin=====")
     @paper.update(paper_status: Common::Paper::Status::ReportCompleted)
+    #写报告入Mongodb
+    
     logger.debug(@paper.paper_status)
     logger.debug("=====completed: end=====")
   end
@@ -481,6 +483,7 @@ class Mongodb::ReportGenerator
         pupil_dim_table = pupil_report_h["data_table"][dimesion].empty?? data_table[dimesion].deep_dup : pupil_report_h["data_table"][dimesion]
         if(item[:_id].keys.include?("lv1_ckp"))
           lv1_ckp_key = item[:_id][:lv1_ckp]
+          lv1_ckp_advice = item[:_id][:lv1_advice]
           lv1_ckp_order = item[:_id][:lv1_order]
           next unless lv1_ckp_order
           
@@ -489,6 +492,7 @@ class Mongodb::ReportGenerator
           next unless pos
 
           pupil_dim_table[pos][1]["label"] = lv1_ckp_key
+          pupil_dim_table[pos][1]["advice"] = lv1_ckp_advice
           pupil_dim_table[pos][1]["value"]["average"] = format_float(item[:value][:average])
           pupil_dim_table[pos][1]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
           pupil_dim_table[pos][1]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv1_avg_percent])
@@ -500,6 +504,7 @@ class Mongodb::ReportGenerator
 
         elsif(item[:_id].keys.include?("lv2_ckp")) 
           lv2_ckp_key = item[:_id][:lv2_ckp]
+          lv2_ckp_advice = item[:_id][:lv2_advice]
           lv2_ckp_order = item[:_id][:lv2_order]
           lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
           lv1_ckp_order = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_order"]
@@ -512,6 +517,7 @@ class Mongodb::ReportGenerator
           next unless pos_lv2
 
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["label"] = lv2_ckp_key
+          pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["advice"] = lv2_ckp_advice
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["average"] = format_float(item[:value][:average])
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["average_percent"] = convert_2_full_mark(item[:value][:average_percent])
           pupil_dim_table[pos_lv1][1]["items"][pos_lv2][1]["value"]["gra_average_percent"] = convert_2_full_mark(item[:value][:gra_dim_lv2_avg_percent])
@@ -524,6 +530,7 @@ class Mongodb::ReportGenerator
           pupil_dim_table.unshift([Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:rid], 
             {
               "label" => Common::CheckpointCkp::ReservedCkpRid[dimesion.to_sym][:total][:label],
+              "advice" => "",
               "value" => {
                 "average" => format_float(item[:value][:average]),
                 "average_percent" => convert_2_full_mark(item[:value][:average_percent]),
@@ -1245,16 +1252,16 @@ class Mongodb::ReportGenerator
           {pap_uid: this.pap_uid, grade: this.grade, order: this.order}, 
            value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion,order: this.order, lv2_ckp: this.lv2_ckp}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion,order: this.order, lv2_ckp: this.lv2_ckp, lv2_advice: this.lv2_advice}, 
            value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion}, 
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order, lv1_advice: this.lv1_advice}, 
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order, lv2_advice: this.lv2_advice}, 
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion}, 
@@ -1266,22 +1273,22 @@ class Mongodb::ReportGenerator
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, order: this.order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp, lv2_advice: this.lv2_advice},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order, lv1_advice: this.lv1_advice},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order, lv2_advice: this.lv2_advice},
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order, lv1_advice: this.lv1_advice},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order, lv2_advice: this.lv2_advice},
           value_obj);
       }
     }
