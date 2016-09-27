@@ -145,7 +145,13 @@ class ApplicationController < ActionController::Base
   end
 
   def common_json_response(status =403, data={})
-    {:status => status, :json => data.to_json }
+    result = data.to_json unless data.is_a? String
+    {:status => status, :json => result }
+  end
+
+  def reponse_json_only(data={})
+    result = data.to_json unless data.is_a? String
+    {:json => result}
   end
 
   def format_report_task_name prefix, job_type

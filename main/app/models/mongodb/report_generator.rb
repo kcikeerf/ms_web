@@ -65,17 +65,23 @@ class Mongodb::ReportGenerator
         param = item[0].to_h
         param[:report_json] = item[1].to_json
         target_model = nil
+        ali_oss_bucket = SwtkAliOss::Const[:default_bucket]
         case k
         when :grade_report
+          ali_oss_bucket = SwtkAliOss::Const[:grade_report_bucket]
           target_model = Mongodb::GradeReport
         when :class_report
+          ali_oss_bucket = SwtkAliOss::Const[:class_report_bucket]
           target_model = Mongodb::ClassReport
         when :pupil_report
+          ali_oss_bucket = SwtkAliOss::Const[:pupil_report_bucket]
           target_model = Mongodb::PupilReport
         end
         next unless target_model
         rpt = target_model.new(param)
-        rpt.save
+        if rpt.save
+          SwtkAliOss::put_report_json(ali_oss_bucket,rpt.id.to_s, rpt.report_json)
+        end
       }
     }
 
