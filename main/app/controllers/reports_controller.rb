@@ -51,11 +51,10 @@ class ReportsController < ApplicationController
       status = 500
       data = {message: I18n.t("reports.messages.grade.get_report.failed")}
     else
-      current_report = Mongodb::GradeReport.where(_id: params[:report_id]).first
-      if current_report
+      report_json = SwtkAliOss::response_report_url(SwtkAliOss::Const[:grade_report_bucket], params[:report_id])
+      unless report_json.blank?
         status = 200
-        report_json = JSON.parse(current_report.report_json)
-        data = {message: I18n.t("reports.messages.grade.get_report.success"), data: report_json}
+        data = {data: JSON.parse(report_json)}
       else
         status = 400
         data = {message: I18n.t("reports.messages.grade.get_report.failed")}
@@ -73,11 +72,10 @@ class ReportsController < ApplicationController
       status = 500
       data = {message: I18n.t("reports.messages.class.get_report.failed")}
     else
-      current_report = Mongodb::ClassReport.where(_id: params[:report_id]).first
-      if current_report
+      report_json = SwtkAliOss::response_report_url(SwtkAliOss::Const[:class_report_bucket], params[:report_id])
+      unless report_json.blank?
         status = 200
-        report_json = JSON.parse(current_report.report_json)
-        data = {message: I18n.t("reports.messages.class.get_report.success"), data: report_json}
+        data = {data: JSON.parse(report_json)}
       else
         status = 400
         data = {message: I18n.t("reports.messages.class.get_report.failed")}
@@ -95,11 +93,10 @@ class ReportsController < ApplicationController
       status = 500
       data = {message: I18n.t("reports.messages.pupil.get_report.failed")}
     else
-      current_report = Mongodb::PupilReport.where(_id: params[:report_id]).first
-      if current_report
+      report_json = SwtkAliOss::response_report_url(SwtkAliOss::Const[:pupil_report_bucket], params[:report_id])
+      unless report_json.blank?
         status = 200
-        report_json = JSON.parse(current_report.report_json)
-        data = {message: I18n.t("reports.messages.pupil.get_report.success"), data: report_json}
+        data = {data: JSON.parse(report_json)}
       else
         status = 400
         data = {message: I18n.t("reports.messages.pupil.get_report.failed")}
