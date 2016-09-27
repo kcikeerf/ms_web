@@ -57,7 +57,6 @@ class Mongodb::ReportGenerator
 
   def when_completed
     logger.debug("=====completed: begin=====")
-    @paper.update(paper_status: Common::Paper::Status::ReportCompleted)
     #写报告入Mongodb
     logger.info ">>>write report into mongodb<<<<"
     @mem_reports.each{|k,v|
@@ -85,6 +84,7 @@ class Mongodb::ReportGenerator
       }
     }
 
+    @paper.update(paper_status: Common::Paper::Status::ReportCompleted)
     logger.debug(@paper.paper_status)
     logger.debug("=====completed: end=====")
   end
@@ -526,7 +526,7 @@ class Mongodb::ReportGenerator
         pupil_dim_table = pupil_report_h["data_table"][dimesion].empty?? data_table[dimesion].deep_dup : pupil_report_h["data_table"][dimesion]
         if(item[:_id].keys.include?("lv1_ckp"))
           lv1_ckp_key = item[:_id][:lv1_ckp]
-          lv1_ckp_advice = item[:_id][:lv1_advice]
+          lv1_ckp_advice = item[:value][:lv1_advice]
           lv1_ckp_order = item[:_id][:lv1_order]
           next unless lv1_ckp_order
           
@@ -547,7 +547,7 @@ class Mongodb::ReportGenerator
 
         elsif(item[:_id].keys.include?("lv2_ckp")) 
           lv2_ckp_key = item[:_id][:lv2_ckp]
-          lv2_ckp_advice = item[:_id][:lv2_advice]
+          lv2_ckp_advice = item[:value][:lv2_advice]
           lv2_ckp_order = item[:_id][:lv2_order]
           next unless ckp_lv2_to_lv1[dimesion].keys.include?(lv2_ckp_order)
           lv1_ckp_key = ckp_lv2_to_lv1[dimesion][lv2_ckp_order]["lv1_ckp"]
@@ -1312,22 +1312,24 @@ class Mongodb::ReportGenerator
           qzp_uid: this.qzp_uid,
           qzp_correct_flag: [flag],
           qzp_count: qzp_count,
-          qzp_total_count: qzp_total_count
+          qzp_total_count: qzp_total_count,
+          lv1_advice: this.lv1_advice,
+          lv2_advice: this.lv2_advice
         };
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, order: this.order}, 
            value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion,order: this.order, lv2_ckp: this.lv2_ckp, lv2_advice: this.lv2_advice}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion,order: this.order, lv2_ckp: this.lv2_ckp}, 
            value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion}, 
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order, lv1_advice: this.lv1_advice}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order}, 
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order, lv2_advice: this.lv2_advice}, 
+          {pap_uid: this.pap_uid, grade: this.grade, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order}, 
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion}, 
@@ -1339,22 +1341,22 @@ class Mongodb::ReportGenerator
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, order: this.order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp, lv2_advice: this.lv2_advice},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, order: this.order, lv2_ckp: this.lv2_ckp},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order, lv1_advice: this.lv1_advice},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order, lv2_advice: this.lv2_advice},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order},
           value_obj);
         emit(
           {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order, lv1_advice: this.lv1_advice},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv1_ckp: this.lv1_ckp, lv1_order: this.lv1_order},
           value_obj);
         emit(
-          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order, lv2_advice: this.lv2_advice},
+          {pap_uid: this.pap_uid, grade: this.grade, classroom: this.classroom, pup_uid: this.pup_uid, dimesion: this.dimesion, lv2_ckp: this.lv2_ckp, lv2_order: this.lv2_order},
           value_obj);
       }
     }
@@ -1387,7 +1389,9 @@ class Mongodb::ReportGenerator
           qzp_uid: "",
           qzp_correct_flag: [],
           qzp_count: 0,
-          qzp_total_count: 0
+          qzp_total_count: 0,
+          lv1_advice: values[0].lv1_advice,
+          lv2_advice: values[0].lv2_advice
         };
 
         values.forEach(function(value){
