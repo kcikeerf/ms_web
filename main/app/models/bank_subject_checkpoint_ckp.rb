@@ -85,7 +85,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       result = {pid: str_pid, nodes: []}
       return result if (subject.blank? || dimesion.blank?)
       
-      ckps = where(subject: subject,category: xue_duan, dimesion: dimesion)
+      ckps = where(subject: subject,category: xue_duan, dimesion: dimesion).order({rid: :asc})
       unless str_pid.blank?
 	      ckp = ckps.find_by(uid: str_pid)
 	      ckps = ckp ? ckp.children : []
