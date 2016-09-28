@@ -90,7 +90,7 @@ class Mongodb::BankPaperPap
     def ckp_weights_modification args={}
       if !args[:dimesion].blank? && !args[:weights].blank? && !args[:difficulty].blank?
         result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[args[:dimesion].to_sym][args[:difficulty].to_sym]
-      elsif !args[:weights]
+      elsif !args[:weights].blank?
         result = args[:weights]*Common::CheckpointCkp::DifficultyModifier[:default]
       else
         result = 1
