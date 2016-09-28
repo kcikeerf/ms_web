@@ -1551,7 +1551,7 @@ var reportPage = {
 			};
 		},
 		handlePupilRadarData : function (data){
-			var arr1 = reportPage.baseFn.getKeysNoModify(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(data)));
+			var arr1 = reportPage.baseFn.getKeys(reportPage.baseFn.extendObj(reportPage.baseFn.getArrayValue(data)));
 			var dataArr1 = [];
 			//var dataArr2 = [];
 			var len = arr1.length;
