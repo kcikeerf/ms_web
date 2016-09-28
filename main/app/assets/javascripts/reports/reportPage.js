@@ -1394,7 +1394,7 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
 			    */
-				'<b>分数</b>：<span>' + (basicData.score * basicData.value_ratio["knowledge"]) +
+				'<b>分数</b>：<span>' + ((basicData.score * basicData.value_ratio["knowledge"]).toFixed(2)) +
 				'&nbsp;|</span>&nbsp;&nbsp;' +
 				'<b>名次</b>：<span>' + basicData.grade_rank + 
 				'&nbsp;|</span>&nbsp;&nbsp;' +
