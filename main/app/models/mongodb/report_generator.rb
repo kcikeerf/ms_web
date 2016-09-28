@@ -18,7 +18,7 @@ class Mongodb::ReportGenerator
 #    @ckps_qzps = args[:ckps_qzps]
 
     @paper = Mongodb::BankPaperPap.where(_id: @pap_uid).first
-    @school_label = @paper.school
+    @school_label = @paper.tenant.name_cn
     @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
     paper_h = JSON.parse(@paper.paper_json)
     paper_h["task_uid"] = args[:task_uid]
