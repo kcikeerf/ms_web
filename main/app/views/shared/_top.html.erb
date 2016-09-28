@@ -36,7 +36,8 @@
                   <li class="arrow"></li>
                   <% user_popup_menus.each do |key, value| %>
                       <li>
-                        <a href="<%= value %>"><%= t("page.user_left_menu.#{key}") %></a>
+                        <a href="<%= value %>" onclick="window.location.reload(true);"><%= t("page.user_left_menu.#{key}") %>
+                        </a>
                       </li>
                   <% end %>
                 </ul>
