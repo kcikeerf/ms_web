@@ -4,7 +4,7 @@
 //= require bootstrap.min
 //= require_self
 //= require jquery_lib/jquery.center
-//= require turbolinks
+// require turbolinks
 
 function centerModals(){
       $('.modal').each(function(i){
