@@ -133,10 +133,10 @@ class ReportsController < ApplicationController
     current_paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
 
     loc_h = {
-      :province => Common::Locale.hanzi2pinyin(current_paper.province),
-      :city => Common::Locale.hanzi2pinyin(current_paper.city),
-      :district => Common::Locale.hanzi2pinyin(current_paper.district),
-      :school => Common::Locale.hanzi2pinyin(current_paper.school),
+      :province => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:province_name_cn]),
+      :city => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:city_name_cn]),
+      :district => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:district_name_cn]),
+      :school => Common::Locale.hanzi2pinyin(current_tenant.name_cn),
       :grade => current_paper.grade
     }
     #grade_report = Mongodb::GradeReport.where(loc_h).first
