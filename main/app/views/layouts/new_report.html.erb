@@ -21,7 +21,7 @@
   <%= javascript_include_tag 'create_report', 'data-turbolinks-track' => true %>
   <script type="text/javascript">
     $(function () {
-      reportPage.init();
+      setTimeout(function(){reportPage.init();}, 1000);;
     })
   </script>
 
