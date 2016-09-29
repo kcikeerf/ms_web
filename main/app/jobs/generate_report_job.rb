@@ -110,10 +110,10 @@ class GenerateReportJob < ActiveJob::Base
       # 组装 9
       logger.info "============>>Generate Report: 诊断及改进建议<<<============"
       robj.construct_pupil_quiz_comments
-      job_tracker.update(process: 1.0)
 
       robj.when_completed
       job_tracker.update(status: Common::Job::Status::Completed)
+      job_tracker.update(process: 1.0)
     rescue Exception => ex
       logger.info "===!Excepion!==="
       logger.info "[message]"
