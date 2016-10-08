@@ -59,34 +59,86 @@ class Mongodb::ReportGenerator
     logger.debug("=====completed: begin=====")
     #写报告入Mongodb
     logger.info ">>>write report into mongodb<<<<"
-    @mem_reports.each{|k,v|
-      v.each{|item|
+    # @mem_reports.each{|k,v|
+    #   v.each{|item|
+    #     param = item[0].to_h
+    #     param[:report_json] = item[1].to_json
+    #     target_model = nil
+    #     ali_oss_bucket = SwtkAliOss::Const[:default_bucket]
+    #     case k
+    #     when :grade_report
+    #       ali_oss_bucket = SwtkAliOss::Const[:grade_report_bucket]
+    #       target_model = Mongodb::GradeReport
+    #     when :class_report
+    #       ali_oss_bucket = SwtkAliOss::Const[:class_report_bucket]
+    #       target_model = Mongodb::ClassReport
+    #     when :pupil_report
+    #       ali_oss_bucket = SwtkAliOss::Const[:pupil_report_bucket]
+    #       target_model = Mongodb::PupilReport
+    #     end
+    #     next unless target_model
+    #     rpt = target_model.new(param)
+    #     if rpt.save
+    #       SwtkAliOss::put_report_json(ali_oss_bucket,rpt.id.to_s, rpt.report_json)
+    #     end
+    #   }
+    # }
+    
+    #grade report
+    @mem_reports[:grade_report].each{|item|
         param = item[0].to_h
         param[:report_json] = item[1].to_json
-        target_model = nil
-        ali_oss_bucket = SwtkAliOss::Const[:default_bucket]
-        case k
-        when :grade_report
-          ali_oss_bucket = SwtkAliOss::Const[:grade_report_bucket]
-          target_model = Mongodb::GradeReport
-        when :class_report
-          ali_oss_bucket = SwtkAliOss::Const[:class_report_bucket]
-          target_model = Mongodb::ClassReport
-        when :pupil_report
-          ali_oss_bucket = SwtkAliOss::Const[:pupil_report_bucket]
-          target_model = Mongodb::PupilReport
-        end
-        next unless target_model
-        rpt = target_model.new(param)
+        ali_oss_bucket = SwtkAliOss::Const[:grade_report_bucket]
+        rpt = Mongodb::GradeReport.new(param)
         if rpt.save
           SwtkAliOss::put_report_json(ali_oss_bucket,rpt.id.to_s, rpt.report_json)
         end
+    }
+
+    #class report
+    @mem_reports[:class_report].each{|item|
+        param = item[0].to_h
+        param[:report_json] = item[1].to_json
+        ali_oss_bucket = SwtkAliOss::Const[:grade_report_bucket]
+        rpt = Mongodb::ClassReport.new(param)
+        if rpt.save
+          SwtkAliOss::put_report_json(ali_oss_bucket,rpt.id.to_s, rpt.report_json)
+        end
+    }
+
+    #pupil report
+    logger.debug(">>>>>>pupil report number: #{@mem_reports[:pupil_report].size}")
+    pup_rpt_arr = @mem_reports[:pupil_report].map{|a| a}
+    num_per_th = pup_rpt_arr.size/Common::Report::Thread::ThNum
+    mod_num = pup_rpt_arr.size%Common::Report::Thread::ThNum
+
+    th_arr = []
+    Common::Report::Thread::ThNum.times.each{|th|
+      start_num = th*num_per_th
+      end_num = (th+1)*num_per_th - 1 + (((th + 1) == Common::Report::Thread::ThNum)? mod_num : 0)
+      th_arr << Thread.new {
+        save_report_core(Mongodb::PupilReport, th, pup_rpt_arr[start_num..end_num])
       }
     }
+    ThreadsWait.all_waits(*th_arr)
 
     @paper.update(paper_status: Common::Paper::Status::ReportCompleted)
     logger.debug(@paper.paper_status)
     logger.debug("=====completed: end=====")
+  end
+
+  def save_report_core target_model, th_index, arr
+    logger.info ">>>>>>target_model: #{target_model}, th_index: #{th_index}, range: #{arr.size}<<<<<<"
+
+    arr.each{|item|
+        param = item[0].to_h
+        param[:report_json] = item[1].to_json
+        ali_oss_bucket = SwtkAliOss::Const[:grade_report_bucket]
+        rpt = target_model.new(param)
+        if rpt.save
+          SwtkAliOss::put_report_json(ali_oss_bucket,rpt.id.to_s, rpt.report_json)
+        end
+    }
   end
 
   def construct_gra_cls_charts
