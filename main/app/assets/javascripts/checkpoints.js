@@ -5,7 +5,8 @@ $(document).on('ready page:load', function (){
 	        view: {
 	            selectedMulti: false,
 	            showLine: true,
-	            showIcon: false
+	            showIcon: false,
+	            showTitle: true
 	        },
 	        check: {
 	            enable: true,
@@ -14,12 +15,16 @@ $(document).on('ready page:load', function (){
 	            chkboxType:{"Y": "s", "N": "s"}
 	        },
 	        data: {
-	            simpleData: {
-	                enable: true,
-	                idKey: "id",
-	                pIdKey: "pid",
-	                rootPId: null
-	            }
+                key:{
+                    name: "name",
+                    title:"title"
+                },
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pid",
+                    rootPId: null
+                }
 	        },
 	        callback: {
 	        	beforeCheck: zTreeBeforeCheck,

@@ -215,21 +215,22 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   end
 
   def organization_hash
-  	{ 
-  		id: rid, 
-  		uid: uid,
-  		rid: rid,
-  		pid: rid.slice(0, ((rid.size - 3 < 0) ? 0 :(rid.size - 3))),
-  		dimesion: dimesion,
-  		checkpoint: checkpoint,
-  		name: checkpoint,
-  		is_entity: is_entity,
-  		advice: advice,
+    { 
+      id: rid, 
+      uid: uid,
+      rid: rid,
+      pid: rid.slice(0, ((rid.size - 3 < 0) ? 0 :(rid.size - 3))),
+      dimesion: dimesion,
+      checkpoint: checkpoint,
+      name: checkpoint,
+      title: desc.blank?? checkpoint : desc,
+      is_entity: is_entity,
+      advice: advice,
       desc: desc,
       sort: sort,
       ckp_source: Common::CheckpointCkp::CkpSource::SubjectCkp,
-  		nocheck: is_entity^1,
-  	}
+      nocheck: is_entity^1,
+    }
   end
 
   private
