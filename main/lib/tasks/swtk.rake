@@ -174,14 +174,28 @@ namespace :swtk do
       if str
         arr =str.split(",")
         arr_len = arr.size
+        if arr_len < 3
+          puts "line not a correct format!" 
+          exit -1
+        end
         next if arr[0].blank?
+
+        rid = arr[0]
+        ckp_desc = arr[1..-2].join(",")
+        weights = arr[-1]
+
+        ckp_desc_arr = ckp_desc.split("__:__")
+        checkpoint = ckp_desc_arr[0]
+        desc = ckp_desc_arr[1]
+
         ckp = BankCheckpointCkp.new({:node_uid => args[:node_uid].strip,
           :dimesion => args[:dimesion].strip,
-          :rid=>arr[0],
-          :checkpoint => arr[1],
+          :rid=>rid,
+          :checkpoint => checkpoint,
+          :desc => desc,
           :advice => "建议",
-          :weights => (arr_len > 2)? arr[2] : 1,
-          :sort => arr[0],
+          :weights => weights,
+          :sort => rid,
           :is_entity => false
         })
         ckp.save
@@ -220,17 +234,30 @@ namespace :swtk do
       if str
         arr =str.split(",")
         arr_len = arr.size
+        if arr_len < 3
+          puts "line not a correct format!" 
+          exit -1
+        end
         next if arr[0].blank?
+
+        rid = arr[0].strip
+        ckp_desc = arr[1..-2].join(",")
+        weights = arr[-1].strip
+
+        ckp_desc_arr = ckp_desc.split("__:__")
+        checkpoint = ckp_desc_arr[0].nil?? "":ckp_desc_arr[0].strip
+        desc = ckp_desc_arr[1].nil?? "":ckp_desc_arr[1].strip
 
         ckp = BankSubjectCheckpointCkp.new({
           :dimesion => args[:dimesion].strip,
           :category => args[:xue_duan],
           :subject => args[:subject],
-          :rid=>arr[0],
-          :checkpoint => arr[1],
+          :rid=>rid || "",
+          :checkpoint => checkpoint || "",
+          :desc =>desc || "",
           :advice => "建议",
-          :weights => (arr_len > 2)? arr[2] : 1,
-          :sort => arr[0],
+          :weights => weights,
+          :sort => rid,
           :is_entity => false
         })
 
