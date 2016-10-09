@@ -104,7 +104,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     	subject = params[:subject]
     	return nil if subject.blank? || params[:category].blank?
 
-    	target_objs = where(subject: subject)
+    	target_objs = where(subject: subject, category: category)
     	new_rid = BankRid.get_new_rid target_objs, params[:str_pid]
 
     	new_ckp = self.new(dimesion: params[:dimesion], 
@@ -199,15 +199,15 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
 
   def children
-  	get_nodes(rid.size, rid, subject, dimesion).not_equal_rid(rid)
+  	get_nodes(rid.size, rid, subject, dimesion, category).not_equal_rid(rid)
   end
 
   def parents
-  	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion).not_equal_rid(rid)
+  	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion, category).not_equal_rid(rid)
   end
 
   def parent
-  	get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion).find_by(rid: parent_node_rid)
+  	get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category).find_by(rid: parent_node_rid)
   end
 
   def parent_node_rid
@@ -235,8 +235,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
   private
 
-  def get_nodes(length, rid, subject, dimesion)
-  	self.class.where('subject = ? and dimesion = ? and left(rid, ?) = ?', subject, dimesion, length, rid)
+  def get_nodes(length, rid, subject, dimesion, category)
+  	self.class.where('subject = ? and dimesion = ? and category = ? and left(rid, ?) = ?', subject, dimesion, category, length, rid)
   end 
 
   def delete_children
