@@ -265,7 +265,7 @@ namespace :swtk do
       end
     end
 
-    ckps = BankSubjectCheckpointCkp.where(subject: args[:subject], category: args[:xue_duan])
+    ckps = BankSubjectCheckpointCkp.where(subject: args[:subject], category: args[:xue_duan], dimesion: args[:dimesion])
     ckps.each_with_index{|ckp,index|
         next unless ckp
         p index
