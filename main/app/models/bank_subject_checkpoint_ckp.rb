@@ -101,7 +101,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     # node_uid: node structure uid
     #
     def save_ckp params
-    	subject = params[:subject]
+      subject = params[:subject]
+      category = params[:category]
     	return nil if subject.blank? || params[:category].blank?
 
     	target_objs = where(subject: subject, category: category)
