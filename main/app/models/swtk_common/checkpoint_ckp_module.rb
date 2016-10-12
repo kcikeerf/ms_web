@@ -17,7 +17,7 @@ module CheckpointCkpModule
       }
     }
 
-    DifficultyModifier = {
+    DifficultyModifierCommon = {
       :default =>1,
       :knowledge => {
         :rong_yi => 1,
@@ -32,7 +32,10 @@ module CheckpointCkpModule
         :zhong_deng => 1,
         :jiao_nan => 1,
         :kun_nan => 1
-      },
+      }
+    }
+
+    DifficultyModifier = DifficultyModifierCommon.merge({
       :ability => {
         :rong_yi => 0.4,
         :jiao_yi => 0.6,
@@ -40,7 +43,17 @@ module CheckpointCkpModule
         :jiao_nan => 0.8,
         :kun_nan => 1
       }
-    }
+    })
+
+    DifficultyModifierShuXue = DifficultyModifierCommon.merge({
+      :ability => {
+        :rong_yi => 1,
+        :jiao_yi => 1,
+        :zhong_deng => 1,
+        :jiao_nan => 1,
+        :kun_nan => 1
+      }
+    })
 
     module CkpSource
       Default = "BankCheckpointCkp"
