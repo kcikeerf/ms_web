@@ -115,6 +115,7 @@ var setting = {
 		replace_advice_ckeditor();
 		$('.checkpoint').val(treeNode.checkpoint);
 		treeNode.desc?$('.desc').val(treeNode.desc):$('.desc').val('');
+		treeNode.weights ? $('.weights').val(treeNode.weights):$('.weights').val('');
 		//更新既有的建议
 		treeNode.advice ? CKEDITOR.instances.advice.setData(treeNode.advice) : CKEDITOR.instances.advice.setData('');
 		treeNode.sort ? $('#sort').val(treeNode.sort) : $('#sort').val('');
