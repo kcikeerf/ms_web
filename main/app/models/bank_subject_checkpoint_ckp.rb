@@ -224,6 +224,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       dimesion: dimesion,
       checkpoint: checkpoint,
       name: checkpoint,
+      weights: weights,
       title: desc.blank?? checkpoint : desc,
       is_entity: is_entity,
       advice: advice,
