@@ -345,7 +345,11 @@ namespace :swtk do
 
     target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
 
-    ckp_objs = BankCheckpointCkp.where(node_uid: target_pap.node_uid)
+    ckp_model = BankCheckpointCkp.judge_ckp_source({:pap_uid => args[:pap_uid]})
+    target_subject = target_pap.subject
+    target_category =  BankNodestructure.get_subject_category(target_pap.grade)
+
+    ckp_objs = ckp_model.where(subject: target_subject, category: target_category)
     if target_pap
       if ["analyzed", "score_importing", "score_imported", "report_generating", "report_completed"].include?(target_pap.paper_status)
         #get quizs, qizpoint 
