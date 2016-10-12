@@ -238,6 +238,7 @@ class ImportScoreJob < ActiveJob::Base
             # 1.单题难度关联
             #
             param_h[:weights] = Mongodb::BankPaperPap.ckp_weights_modification({
+              :subject => target_paper.subject,
               :dimesion=> param_h[:dimesion], 
               :weights => ckp.weights, 
               :difficulty=> qizpoint_qiz.levelword2})
