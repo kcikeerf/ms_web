@@ -161,6 +161,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :project_administrators do
+    member do
+      get 'my_home'
+    end
+  end
+
   resource :papers do
     member do
       post 'paper_answer_upload'
@@ -288,7 +294,6 @@ Rails.application.routes.draw do
     get 'users/get_user_password_file', :to => 'users/registrations#get_user_password_file'
     post 'users/passwords/user_captcha_validate'
   end
-
 
   ActiveAdmin.routes(self)
   # The priority is based upon order of creation: first created -> highest priority.
