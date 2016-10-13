@@ -47,6 +47,10 @@ module LocaleModule
       PinYin.abbr(shanzi_str) 
     end
 
+    def i18n label_str
+      I18n.t(label_str, default:I18n.t("dict.unknown"))
+    end
+
     def mysort(x,y)
       x = x || ""
       y = y || ""
