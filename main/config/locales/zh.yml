@@ -462,6 +462,7 @@ zh:
     menus:
       jue_se_guan_li: "角色管理"
       quan_xian_guan_li: "权限管理"
+      project_admin_guan_li: "项目管理员管理"
       tenant_guan_li: "Tenant管理"
       tenant_yong_hu_guan_li: "Tenant管理员管理"
       fen_xi_yuan_guan_li: "分析员管理"
