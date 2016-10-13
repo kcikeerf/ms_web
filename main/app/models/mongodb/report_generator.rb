@@ -2497,7 +2497,7 @@ class Mongodb::ReportGenerator
       report_h["basic"]["classroom"] = klass_label(item[:_id][:classroom])
       report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
       report_h["basic"]["name"] = pupil.nil?? I18n.t("dict.unknown") : pupil.name
-      report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{pupil.sex}")
+      report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : Common::Locale::i18n("dict.#{pupil.sex}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
       report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
       report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
