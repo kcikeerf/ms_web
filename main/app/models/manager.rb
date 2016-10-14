@@ -24,7 +24,7 @@ class Manager < ActiveRecord::Base
         menus: [
           {id: 11, name: I18n.t("managers.menus.jue_se_guan_li"), icon: '', url: '/managers/roles'},
           {id: 12, name: I18n.t("managers.menus.quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
-          {id: 13, name: I18n.t("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/tenants'},
+          {id: 13, name: I18n.t("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/project_administrators'},
           {id: 14, name: I18n.t("managers.menus.tenant_guan_li"), icon: '', url: '/managers/tenants'},
           {id: 15, name: I18n.t("managers.menus.tenant_yong_hu_guan_li"), icon: '', url: '/managers/tenant_administrators'},
           {id: 16, name: I18n.t("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},

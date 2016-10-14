@@ -10,6 +10,8 @@ class Tenant < ActiveRecord::Base
   has_many :analyzers, foreign_key: "tenant_uid"
   has_many :teachers, foreign_key: "tenant_uid"
   has_many :locations, foreign_key: "tenant_uid"
+  has_many :project_administrators, through: :project_administrator_tenant_links
+  has_many :project_administrator_tenant_links, foreign_key: "tenant_uid"
 
   def save_tenant params
     tntNumber = self.class.generate_tenant_number
