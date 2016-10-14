@@ -1298,7 +1298,7 @@ class Mongodb::ReportGenerator
       total_grade_average_percent = format_float(report_h["dimesion_values"].map{|k,v|
         v["gra_average_percent"] * Common::CheckpointCkp::DimesionRatio[k.to_sym]
       }.sum)
-      total_h[:than_grade] = get_compare_value_label(total_h[:klass_average_percent],total_grade_average_percent)
+      total_h[:than_grade] = get_compare_value_label(total_h[:klass_average_percent]/100,total_grade_average_percent)
 
       total_class_percent = report_h["each_level_number"]["total"]["class"]
       total_grade_percent = report_h["each_level_number"]["total"]["grade"]
