@@ -1294,7 +1294,7 @@ class Mongodb::ReportGenerator
         v[:klass_average_percent] * Common::CheckpointCkp::DimesionRatio[k]
       }.sum
       total_h[:klass_average_percent] = format_float(klass_avg_percent)
-      total_h[:level] = judge_score_level klass_avg_percent
+      total_h[:level] = judge_score_level klass_avg_percent/100
       total_grade_average_percent = format_float(report_h["dimesion_values"].map{|k,v|
         v["gra_average_percent"] * Common::CheckpointCkp::DimesionRatio[k.to_sym]
       }.sum)
