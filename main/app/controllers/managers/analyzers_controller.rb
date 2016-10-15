@@ -9,19 +9,7 @@ class Managers::AnalyzersController < ApplicationController
   before_action :get_user, only: [:edit, :update]
 
   def index
-    @data = {name: I18n.t("dict.analyzer"), path: '/managers/analyzers'}
     @analyzers = Analyzer.get_list params
-
-    # 学科列表
-    @subject_list = Common::Subject::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
-
-    # tenant用地区信息
-    country_rid = Common::Area::CountryRids["zhong_guo"]
-    country = Area.where("rid = '#{country_rid}'").first
-    @province = country.children_h.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @city = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @district = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-
     respond_with({rows: @analyzers, total: @analyzers.total_count}) 
   end
 

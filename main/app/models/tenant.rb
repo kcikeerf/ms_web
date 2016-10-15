@@ -19,7 +19,7 @@ class Tenant < ActiveRecord::Base
   	paramh = {
       :number => tntNumber,
       :tenant_type => params[:tenant_type] || "",
-      :tenant_type_cn => I18n.t("tenants.types.#{params[:tenant_type]}"),
+      :tenant_type_cn => Common::Locale::i18n("tenants.types.#{params[:tenant_type]}"),
       :name => Common::Locale.hanzi2pinyin(params[:name_cn]),
       :name_en => params[:name_en] || "",
       :name_cn => params[:name_cn] || "",
@@ -45,7 +45,7 @@ class Tenant < ActiveRecord::Base
     paramh = {
       #:number => params[:number],
       :tenant_type => params[:tenant_type] || "",
-      :tenant_type_cn => I18n.t("tenants.types.#{params[:tenant_type]}"),
+      :tenant_type_cn => Common::Locale::i18n("tenants.types.#{params[:tenant_type]}"),
       :name => Common::Locale.hanzi2pinyin(params[:name_cn]),
       :name_en => params[:name_en] || "",
       :name_cn => params[:name_cn] || "",

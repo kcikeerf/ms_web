@@ -9,7 +9,7 @@ class Managers::PermissionsController < ApplicationController
     # before_action :authenticate_manager
 
 	def index
-		@data = {name: '权限', path: '/managers/permissions'}
+		#@data = {name: '权限', path: '/managers/permissions'}
 		@permissions = Permission.page(params[:page]).per(params[:rows])
 		respond_with({rows: @permissions, total: @permissions.total_count}) 
 	end

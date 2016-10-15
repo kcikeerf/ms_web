@@ -1,29 +1,47 @@
 <%= extends :manager do %>
-	<h2><%= @data[:name] %></h2>
+	<h2><%= page_info_item[:title] %></h2>
 	<div style="margin:20px 0;"></div>
 	<div id="tb">
 <% unless ["permissions", "pupils"].include? controller_name %>
-		<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newObj('<%= @data[:path] %>/');"><%= I18n.t("page.add")%></a> 
+		<a  href="#" 
+			class="easyui-linkbutton" 
+			iconCls="icon-add" plain="true" 
+			onclick="newObj('<%= LABEL("common.create")%>','<%= page_info_item[:path] %>/');">
+			<%= LABEL("common.create") %>
+		</a> 
 <% end %>
 <% unless ["roles","permissions"].include? controller_name %>
-		<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="
+		<a  href="#" 
+			class="easyui-linkbutton" 
+			iconCls="icon-edit" 
+			plain="true" 
+			onclick="
 <% if ["tenants", "analyzers", "teachers", "pupils", "project_administrators"].include? controller_name %>
-        editObjWithArea('<%= @data[:path] %>/')
+        editObjWithArea('<%= page_info_item[:path] %>/')
 <% else %>
-		editObj('<%= @data[:path] %>/')
+		editObj('<%= page_info_item[:path] %>/')
 <% end %>
-		"><%= I18n.t("page.edit")%></a>  
-		<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroy('<%= @data[:path] %>/')"><%= I18n.t("page.del")%></a>
+		"><%= LABEL("common.edit")%></a>  
+		<a  href="#" 
+			class="easyui-linkbutton" 
+			iconCls="icon-remove" 
+			plain="true" 
+			onclick="destroy('<%= page_info_item[:path] %>/')">
+			<%= LABEL("common.delete")%>
+		</a>
 <% end %>
 	</div>  
 	<!-- singleSelect:true, 当行选择-->
-	<table id='dg' class="easyui-datagrid" title="<%= @data[:name] %>列表" style="width:98%;height:550px"
-		data-options="		
-		pagination:true,
-		nowrap: false,
-		url:'<%= @data[:path] %>.json',
-		method:'get', 
-		toolbar: '#tb'">
+	<table  id='dg' 
+			class="easyui-datagrid" 
+			title="<%= LABEL("common.list")%>" 
+			style="width:98%;height:550px"
+			data-options="		
+				pagination:true,
+				nowrap: false,
+				url:'<%= page_info_item[:path] %>.json',
+				method:'get', 
+				toolbar: '#tb'">
 		<thead>
 			<tr>
 				<th field="ck" checkbox="true" width='5%'></th>
@@ -33,8 +51,12 @@
 		</thead>
 	</table>
 	<%= yield(:content) %>
-	<div id="dlg" class="easyui-dialog" style="width:400px;height:280px;padding:10px 20px" closed="true" buttons="#dlg-buttons">
-		<div class="ftitle"><%= @data[:name] %>信息</div>
+	<div id="dlg" 
+		class="easyui-dialog" 
+		style="width:600px;height:400px;" 
+		closed="true"
+		buttons="#dlg-buttons">
+		<!--div class="ftitle"><%= page_info_item[:title] %>信息</div-->
 		<%= form_tag '', id: 'fm' do  %>
 			<input type="hidden" name="_method" id='manager_method' value="post" />
 			<div id='other'>
@@ -43,7 +65,15 @@
 		<% end %>
 	</div>
 	<div id="dlg-buttons">
-		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveObj()"><%= I18n.t("page.save")%></a>
-		<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')"><%= I18n.t("page.cancel")%></a>
+		<a  href="#" 
+			class="easyui-linkbutton" 
+			iconCls="icon-ok" 
+			onclick="saveObj()">
+			<%= LABEL("common.save")%></a>
+		<a  href="#" 
+			class="easyui-linkbutton" 
+			iconCls="icon-cancel" 
+			onclick="javascript:$('#dlg').dialog('close')">
+			<%= LABEL("common.cancel")%></a>
 	</div>
 <% end %>

@@ -31,12 +31,6 @@ module LocaleModule
       :others => "7"
     }
 
-    SexList = {
-      :wu => I18n.t("common.none"),
-    	:nan => I18n.t("dict.nan"),
-    	:n̈u => I18n.t("dict.n̈u")
-    }
-
     def hanzi2pinyin hanzi_str
       PinYin.backend = PinYin::Backend::Simple.new
       PinYin.of_string(hanzi_str).join("_")
@@ -48,8 +42,13 @@ module LocaleModule
     end
 
     def i18n label_str
-      I18n.t(label_str, default:I18n.t("dict.unknown"))
+      I18n.t(label_str, default: I18n.t("common.minus"))
     end
+    
+    SexList = {
+      :nan => I18n.t("dict.nan"),
+      :n̈u => I18n.t("dict.n̈u")
+    }
 
     def mysort(x,y)
       x = x || ""

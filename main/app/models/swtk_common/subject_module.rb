@@ -16,18 +16,18 @@ module SubjectModule
     }
 
     List = {
-      :yu_wen          => I18n.t("dict.yu_wen"),
-      :shu_xue         => I18n.t("dict.shu_xue"),
-      :ying_yu         => I18n.t("dict.ying_yu"),
-      :li_shi          => I18n.t("dict.li_shi"),
-      :di_li           => I18n.t("dict.di_li"),
-      :wu_li           => I18n.t("dict.wu_li"),
-      :hua_xue         => I18n.t("dict.hua_xue"),
-      :sheng_wu        => I18n.t("dict.sheng_wu"),
-      :si_xiang_pin_de => I18n.t("dict.si_xiang_pin_de"),
-      :zheng_zhi       => I18n.t("dict.zheng_zhi"),
-      :xin_xi_ji_shu   => I18n.t("dict.xin_xi_ji_shu"),
-      :ji_shu          => I18n.t("dict.ji_shu")
+      :yu_wen          => Common::Locale::i18n("dict.yu_wen"),
+      :shu_xue         => Common::Locale::i18n("dict.shu_xue"),
+      :ying_yu         => Common::Locale::i18n("dict.ying_yu"),
+      :li_shi          => Common::Locale::i18n("dict.li_shi"),
+      :di_li           => Common::Locale::i18n("dict.di_li"),
+      :wu_li           => Common::Locale::i18n("dict.wu_li"),
+      :hua_xue         => Common::Locale::i18n("dict.hua_xue"),
+      :sheng_wu        => Common::Locale::i18n("dict.sheng_wu"),
+      :si_xiang_pin_de => Common::Locale::i18n("dict.si_xiang_pin_de"),
+      :zheng_zhi       => Common::Locale::i18n("dict.zheng_zhi"),
+      :xin_xi_ji_shu   => Common::Locale::i18n("dict.xin_xi_ji_shu"),
+      :ji_shu          => Common::Locale::i18n("dict.ji_shu")
     }
 
     Order = {

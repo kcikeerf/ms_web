@@ -9,6 +9,6 @@ class ImageUpload < ActiveRecord::Base
   validate :check_image_size
   private
   def check_image_size
-    self.errors[:base] << I18n.t(images.errors.invalid_size) if self.file.size > 0.3.megabytes
+    self.errors[:base] << Common::Locale::i18n(images.errors.invalid_size) if self.file.size > 0.3.megabytes
   end
 end

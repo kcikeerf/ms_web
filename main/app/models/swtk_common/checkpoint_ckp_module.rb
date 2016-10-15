@@ -7,13 +7,13 @@ module CheckpointCkpModule
 
     ReservedCkpRid = {
       :knowledge => {
-          :total => { :label => I18n.t("checkpoints.label.knowledge.total"), :rid => "-1"}
+          :total => { :label => Common::Locale::i18n("checkpoints.label.knowledge.total"), :rid => "-1"}
       },
       :skill => {
-          :total => { :label => I18n.t("checkpoints.label.skill.total"), :rid => "-2"}
+          :total => { :label => Common::Locale::i18n("checkpoints.label.skill.total"), :rid => "-2"}
       },
       :ability => {
-          :total => { :label => I18n.t("checkpoints.label.ability.total"), :rid => "-3"}
+          :total => { :label => Common::Locale::i18n("checkpoints.label.ability.total"), :rid => "-3"}
       }
     }
 

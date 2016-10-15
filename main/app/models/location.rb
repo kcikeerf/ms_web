@@ -56,8 +56,8 @@ class Location < ActiveRecord::Base
       param_h = {:pap_uid => pap_uid }
       grade_report = Mongodb::GradeReport.where(param_h.merge(loc_h)).first
       result ={ :key => loc_h[:grade],
-                :label => I18n.t("dict.nian_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("dict.#{page.reports.report}"),
-                :report_name => format_report_name(current_paper.heading, I18n.t("dict.nian_ji_bao_gao")),
+                :label => Common::Locale::i18n("dict.nian_ji_bao_gao"),#Common::Locale::i18n("dict.#{loc_h[:grade]}")+Common::Locale::i18n("dict.#{page.reports.report}"),
+                :report_name => format_report_name(current_paper.heading, Common::Locale::i18n("dict.nian_ji_bao_gao")),
                 :report_subject => grade_subject,
                 :pupil_number => 0,
                 :report_url => format_grade_report_url_params((grade_report.nil?? "":grade_report._id)),
@@ -66,8 +66,8 @@ class Location < ActiveRecord::Base
                 :items => []}
     # when Common::Role::Teacher
     #   result ={ :key => loc_h[:grade],
-    #             :label => I18n.t("dict.ban_ji_bao_gao"),#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
-    #             :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
+    #             :label => Common::Locale::i18n("dict.ban_ji_bao_gao"),#Common::Locale::i18n("dict.#{loc_h[:grade]}")+Common::Locale::i18n("page.reports.report"),
+    #             :report_name => format_report_name(current_paper.heading, Common::Locale::i18n("dict.ban_ji_bao_gao")),
     #             :report_subject => grade_subject,
     #             :pupil_number => 0,
     #             :report_url => nil,
@@ -76,8 +76,8 @@ class Location < ActiveRecord::Base
     #             :items => []}
     when Common::Role::Pupil
       result ={ :key => loc_h[:grade],
-                :label => "",#I18n.t("dict.#{loc_h[:grade]}")+I18n.t("page.reports.report"),
-                :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
+                :label => "",#Common::Locale::i18n("dict.#{loc_h[:grade]}")+Common::Locale::i18n("page.reports.report"),
+                :report_name => format_report_name(current_paper.heading, Common::Locale::i18n("dict.ban_ji_bao_gao")),
                 :report_subject => grade_subject,
                 :pupil_number => 0,
                 :report_url => nil,
@@ -96,11 +96,11 @@ class Location < ActiveRecord::Base
          klass_report = Mongodb::ClassReport.where(param_h).first
          next unless klass_report
          klass_pupil_number =  klass.pupils.size
-         klass_label = Common::Klass::List.keys.include?(klass.classroom.to_sym) ? I18n.t("dict.#{klass.classroom}") : klass.classroom
+         klass_label = Common::Klass::List.keys.include?(klass.classroom.to_sym) ? Common::Locale::i18n("dict.#{klass.classroom}") : klass.classroom
          klass_h = {
             :key => klass.classroom,
-            :label => klass_label + I18n.t("page.reports.report"),
-            :report_name => format_report_name(current_paper.heading, I18n.t("dict.ban_ji_bao_gao")),
+            :label => klass_label + Common::Locale::i18n("page.reports.report"),
+            :report_name => format_report_name(current_paper.heading, Common::Locale::i18n("dict.ban_ji_bao_gao")),
             :report_subject => klass_subject,
             :pupil_number => 0,
             :report_url => nil,
@@ -126,7 +126,7 @@ class Location < ActiveRecord::Base
            klass_h[:items] << {
              :key => pupil.stu_number,
              :label => pupil.name,
-             :report_name => format_report_name(current_paper.heading, I18n.t("dict.ge_ren_bao_gao")),
+             :report_name => format_report_name(current_paper.heading, Common::Locale::i18n("dict.ge_ren_bao_gao")),
              :report_subject => pupil_subject,
              :report_url => pupil_report.nil?? "":format_pupil_report_url_params((pupil_report.nil?? "":pupil_report._id)),
              :data_type => "pupil",
@@ -141,16 +141,16 @@ class Location < ActiveRecord::Base
   end
 
   def self.format_report_title heading,subject
-    report_name = heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
-    subject_prefix = I18n.t("dict.#{subject}") + "&middot"
-    grade_subject = subject_prefix + I18n.t("dict.nian_ji_bao_gao")
-    klass_subject = subject_prefix + I18n.t("dict.ban_ji_bao_gao")
-    pupil_subject = subject_prefix + I18n.t("dict.ge_ren_bao_gao")
+    report_name = heading + Common::Locale::i18n("dict.ce_shi_zhen_duan_bao_gao")
+    subject_prefix = Common::Locale::i18n("dict.#{subject}") + "&middot"
+    grade_subject = subject_prefix + Common::Locale::i18n("dict.nian_ji_bao_gao")
+    klass_subject = subject_prefix + Common::Locale::i18n("dict.ban_ji_bao_gao")
+    pupil_subject = subject_prefix + Common::Locale::i18n("dict.ge_ren_bao_gao")
     return report_name,grade_subject,klass_subject,pupil_subject
   end
 
   def self.format_report_name heading,suffix
-    heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao") + "(#{suffix})"
+    heading + Common::Locale::i18n("dict.ce_shi_zhen_duan_bao_gao") + "(#{suffix})"
   end
 
   def self.format_grade_report_url_params report_id

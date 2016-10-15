@@ -22,22 +22,22 @@ class Manager < ActiveRecord::Base
       {
         id: 1, icon: 'icon-sys', name: '用户管理',
         menus: [
-          {id: 11, name: I18n.t("managers.menus.jue_se_guan_li"), icon: '', url: '/managers/roles'},
-          {id: 12, name: I18n.t("managers.menus.quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
-          {id: 13, name: I18n.t("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/project_administrators'},
-          {id: 14, name: I18n.t("managers.menus.tenant_guan_li"), icon: '', url: '/managers/tenants'},
-          {id: 15, name: I18n.t("managers.menus.tenant_yong_hu_guan_li"), icon: '', url: '/managers/tenant_administrators'},
-          {id: 16, name: I18n.t("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},
-          {id: 17, name: I18n.t("managers.menus.jiao_shi_guan_li"), icon: '', url: '/managers/teachers'},
-          {id: 18, name: I18n.t("managers.menus.xue_sheng_guan_li"), icon: '', url: '/managers/pupils'}
+          {id: 11, name: Common::Locale::i18n("managers.menus.jue_se_guan_li"), icon: '', url: '/managers/roles'},
+          {id: 12, name: Common::Locale::i18n("managers.menus.quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
+          {id: 13, name: Common::Locale::i18n("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/project_administrators'},
+          {id: 14, name: Common::Locale::i18n("managers.menus.tenant_guan_li"), icon: '', url: '/managers/tenants'},
+          {id: 15, name: Common::Locale::i18n("managers.menus.tenant_yong_hu_guan_li"), icon: '', url: '/managers/tenant_administrators'},
+          {id: 16, name: Common::Locale::i18n("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},
+          {id: 17, name: Common::Locale::i18n("managers.menus.jiao_shi_guan_li"), icon: '', url: '/managers/teachers'},
+          {id: 18, name: Common::Locale::i18n("managers.menus.xue_sheng_guan_li"), icon: '', url: '/managers/pupils'}
         ]
       },
       {
         id: 2, icon: 'icon-sys', name: '指标体系',
         menus: [
-          # {id: 21, name: I18n.t("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
-          # {id: 22, name: I18n.t("managers.menus.zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/checkpoints'},
-          {id: 23, name: I18n.t("managers.menus.ke_mu_zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/subject_checkpoints'}
+          # {id: 21, name: Common::Locale::i18n("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
+          # {id: 22, name: Common::Locale::i18n("managers.menus.zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/checkpoints'},
+          {id: 23, name: Common::Locale::i18n("managers.menus.ke_mu_zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/subject_checkpoints'}
         ]
       }
     ]

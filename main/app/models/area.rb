@@ -43,24 +43,24 @@ class Area < ActiveRecord::Base
       :uid=> "", 
       :rid=> "", 
       :name=> "all", 
-      :name_cn=> I18n.t("areas.list.all")}]
+      :name_cn=> Common::Locale::i18n("areas.list.all")}]
   end
 
   def all_tenants
     families.map{|f| f.tenants}.flatten
   end
 
-  def self.province rid
-    Area.where("rid = ?", rid).first
-  end
+  # def self.provinces rid
+  #   Area.where("rid = ? and LENGTH(rid) >= 3 and LENGTH(rid) <= 6", rid)
+  # end
 
-  def self.city rid
-    Area.where("rid = ?", rid).first
-  end
+  # def self.cities rid
+  #   Area.where("rid = ? and LENGTH(rid) >= 7 and LENGTH(rid) <= 9", rid)
+  # end
 
-  def self.district rid
-    Area.where("rid = ?", rid).first
-  end
+  # def self.districts rid
+  #   Area.where("rid = ? and LENGTH(rid) >= 10 and LENGTH(rid) <= 12", rid)
+  # end
 
   def self.get_area params
     name_pinyin = "zhong_guo"
