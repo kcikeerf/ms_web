@@ -1,0 +1,10 @@
+<% content_for :form do %>
+<div class="easyui-tabs" style="width:100%; height:300px;">
+  <div title="<%= LABEL("managers.users.basic")%>" style="padding: 15px; overflow:scroll;">
+    <%= render partial: "shared/manager/user_basic_info" %>
+  </div>
+  <div title="<%= LABEL("managers.users.tenant")%>" style="padding: 15px; overflow:scroll;">
+    <%= render partial: "shared/manager/area_list" %>
+  </div>
+</div>
+<% end %>

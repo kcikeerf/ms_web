@@ -148,8 +148,9 @@ function msgShow(title, msgString, msgType) {
 }
 
 //创建对象
-function newObj(url){
-  $('#dlg').dialog('open').dialog('setTitle','创建');
+function newObj(title, url){
+  console.log(title+",,,,"+url);
+  $('#dlg').dialog('open').dialog('setTitle',title);
   $('#fm')[0].reset();
   $('#fm').attr('action', url);
   $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
@@ -212,7 +213,9 @@ function editObjWithArea(url){
       }, 100);
     }, 100);
     
-
+    if(row.subject_classrooms){
+      row.subject_classrooms = row.subject_classrooms.replace(/<br ?\/?>/g, "\n");
+    }
     $('#fm').form('load',row);
     $('#manager_method').val('put');
   }

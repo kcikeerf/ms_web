@@ -1,3 +1,4 @@
+<!--list columns-->
 <th data-options="field:'user_name',align:'center', width:'10%'">用户名</th>
 <th data-options="field:'name',align:'center', width:'10%'">姓名</th>
 <th data-options="field:'sex_label',align:'center', width:'5%'">性别</th>
@@ -9,6 +10,8 @@
 <th data-options="field:'phone',align:'center', width:'10%'">电话</th>
 <th data-options="field:'email',align:'center', width:'10%'">邮箱</th>
 <th data-options="field:'dt_update',align:'center', width:'15%'">更新时间</th>
+
+<!--hidden fields data-->
 <!-- <th data-options="field:'tenant_uid',align:'center', width:'5%', hidden: true">tenant uid</th>-->
 <th data-options="field:'sex',align:'center', width:'5%', hidden: false">sex key</th>
 <th data-options="field:'grade',align:'center', width:'5%', hidden: false">grade key</th>
@@ -17,65 +20,5 @@
 <th data-options="field:'city_rid',align:'center', width:'5%', hidden: true">city rid</th>
 <th data-options="field:'district_rid',align:'center', width:'5%', hidden: true">district rid</th>
 
-<% content_for :form do %>
-  <div class="fname">
-    <label>用户名:</label>
-    <%= text_field_tag :user_name, '', class: 'easyui-validatebox', required: 'true' %>
-  </div>
-  <div class="fsubject_class">
-    <label>密码:</label>
-    <%= password_field_tag :password, '', class: 'easyui-validatebox'%>
-  </div>
-  <div class="fsubject_class">
-    <label>姓名:</label>
-    <%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
-  </div>
-  <div class="fsubject_class">
-    <label>性别:</label>
-    <%= select_tag :sex, options_from_collection_for_select(@sex_list, 'key', 'value')  %>  
-  </div>
-  <div class="fsubject_class">
-    <label>省:</label>
-    <%#= select_tag :province_rid, options_from_collection_for_select(@province, 'rid', 'name_cn',@province[0].rid) , :disabled => true %>
-    <%= select_tag :province_rid, options_from_collection_for_select(@province, 'rid', 'name_cn',@province[0].rid) %>
-  </div>
-  <div class="fsubject_class">
-    <label>市:</label>
-    <%#= select_tag :city_rid, options_from_collection_for_select(@city, 'rid', 'name_cn', @city[0].rid), :disabled => true   %>
-    <%= select_tag :city_rid, options_from_collection_for_select(@city, 'rid', 'name_cn', @city[0].rid) %>
-  </div>
-  <div class="fsubject_class">
-    <label>区:</label>
-    <%#= select_tag :district_rid, options_from_collection_for_select(@district, 'rid', 'name_cn', @district[0].rid), :disabled => true  %>
-    <%= select_tag :district_rid, options_from_collection_for_select(@district, 'rid', 'name_cn', @district[0].rid) %>  
-  </div>
-  <div class="fsubject_class">
-    <label>Tenant:</label>
-    <%= select_tag :tenant_uid, options_from_collection_for_select([], 'uid', 'name_cn' ) ,class: 'easyui-validatebox' %> 
-  </div>
-  <div class="fsubject_class">
-    <label>学号:</label>
-    <%= text_field_tag :stu_number, class: 'easyui-validatebox' %>  
-  </div>
-  <div class="fsubject_class">
-    <label>年级:</label>
-    <%= select_tag :grade, options_from_collection_for_select(@grade_list, 'key', 'value', @grade_list[0].rid) %>  
-  </div>
-  <div class="fsubject_class">
-    <label>班级:</label>
-    <%= select_tag :classroom, options_from_collection_for_select(@class_room_list, 'key', 'value', @class_room_list[0].key) %>  
-  </div>
-  <div class="fsubject_class">
-    <label>QQ:</label>
-    <%= text_field_tag :qq, '', class: 'easyui-validatebox' %>
-  </div>
-  <div class="fsubject_class">
-    <label>电话:</label>
-    <%= text_field_tag :phone, '', class: 'easyui-validatebox' %>
-  </div>
-  <div class="fsubject_class">
-    <label>邮箱:</label>
-    <%= text_field_tag :email, '', class: 'easyui-validatebox' %>
-  </div>
-
-<% end %>
+<!--form in dialog-->
+<%= render partial: "shared/manager/user_form_in_dialog" %>

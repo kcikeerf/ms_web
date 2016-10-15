@@ -3,9 +3,16 @@
 
 zh:
   common:
+    minus: "－"
     none: "无"
     shi: "是"
     fou: "否"
+    create: "创建"
+    edit: "编辑"
+    delete: "删除"
+    list: "列表"
+    save: "保存"
+    cancel: "取消"
   areas:
     list:
       all: "全部"
@@ -270,6 +277,7 @@ zh:
     analyzer: "分析员"
     pupil: "学生"
     tenant_administrator: "Tenant管理员"
+    project_administrator: "项目管理员"
     pupil_number: "学号"
     name: "姓名"
     sex: "性别"
@@ -449,6 +457,9 @@ zh:
       error:
 
   managers:
+    users:
+      basic: "基本信息"
+      tenant: "Tenant"
     head: "三维题库管理Console"
     admin: "后台管理员"
     user:
@@ -473,9 +484,12 @@ zh:
       ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
+      tenant:
+        select: "请选择Tenant。"
   #定义active record表及属性的中文标示
   activerecord:
     models:
+      area: "地区"
       bank_checkpoint_ckp: "测评点表"
       bank_ckp_comment: "测评点评价模版表"
       bank_ckp_cube: "测评点立体交叉表"
@@ -487,8 +501,19 @@ zh:
       comment: "评论"
       role: "角色"
       user: "用户"
+      analyzer: "分析员"
       pupil: "学生"
+      teacher: "教师"
+      tenant: "Tenant"
+      tenant_administrator: "Tenant管理员"
+      project_administrator: "项目管理员"
+      permission: "权限"
+
     attributes:
+      area:
+        province: "省"
+        city: "市"
+        district: "区"
       bank_checkpoint_ckp:
         uid: "ID"
         dimesion: "测评方面"
@@ -557,6 +582,7 @@ zh:
         updated_at: "更新时间"
       user:
         name: "用户名"
+        real_name: "姓名"
         email: "邮箱"
         phone: "手机号"
         qq: "QQ号"
@@ -581,8 +607,12 @@ zh:
         grade: "年级"
         classroom: "班级"
         school: "学校"
+        stu_number: "学号"
+      tenant:
+
       tenant_administrator:
         name: "姓名"
+      porject_administrator:
     errors:
       messages:        
         inclusion: "不包含于列表中"

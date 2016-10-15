@@ -19,18 +19,9 @@
 		<label>编号:</label>
 		<%= text_field_tag :number, '', class: 'easyui-validatebox', :readonly => true%>
 	</div>
-	<div class="fsubject_class">
-		<label>省:</label>
-		<%= select_tag :province_rid, options_from_collection_for_select(@province, 'rid', 'name_cn',@province[0].rid) %>
-	</div>
-	<div class="fsubject_class">
-		<label>市:</label>
-		<%= select_tag :city_rid, options_from_collection_for_select(@city, 'rid', 'name_cn', @city[0].rid) %>
-	</div>
-	<div class="fsubject_class">
-		<label>区:</label>
-		<%= select_tag :district_rid, options_from_collection_for_select(@district, 'rid', 'name_cn', @district[0].rid) %>	
-	</div>
+
+    <%= render partial: "shared/manager/area_list" %>
+	
 	<div class="fname">
 		<label>名称:</label>
 		<%= text_field_tag :name_cn, '', class: 'easyui-validatebox', required: 'true' %>

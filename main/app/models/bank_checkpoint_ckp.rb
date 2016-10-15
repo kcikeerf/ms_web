@@ -36,9 +36,9 @@ class BankCheckpointCkp < ActiveRecord::Base
     # node_uid: node structure uid
     #
     def get_ckps params={}
-      result = {"knowledge" => { "label" => I18n.t("dict.knowledge"), "children"=>{}}, 
-                "skill"=>{"label"=> I18n.t("dict.skill"), "children" => {}}, 
-                "ability" => {"label" => I18n.t("dict.ability"), "children"=>{}}}
+      result = {"knowledge" => { "label" => Common::Locale::i18n("dict.knowledge"), "children"=>{}}, 
+                "skill"=>{"label"=> Common::Locale::i18n("dict.skill"), "children" => {}}, 
+                "ability" => {"label" => Common::Locale::i18n("dict.ability"), "children"=>{}}}
       cond_str = "LENGTH(rid) = ?"
       cond_str += " and node_uid = #{params["node_uid"]}" unless params["node_uid"].blank?
       arr = [self.where(cond_str, 3), self.where(cond_str, 6), self.where(cond_str, 9)]
@@ -214,7 +214,7 @@ class BankCheckpointCkp < ActiveRecord::Base
     end
 
     def root_node(dimesion)
-      {rid: '', pid: '', nocheck: true, dimesion: dimesion, name: I18n.t('managers.root_node'), open: true}
+      {rid: '', pid: '', nocheck: true, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
     end
 
     # def get_all_higher_ckps params

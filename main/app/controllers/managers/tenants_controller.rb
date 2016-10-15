@@ -9,7 +9,7 @@ class Managers::TenantsController < ApplicationController
   before_action :get_tenant, only: [:edit, :update]
 
   def index
-    @data = {name: 'Tenant', path: '/managers/tenants'}
+    #@data = {name: 'Tenant', path: '/managers/tenants'}
 
     # tenant列表数据
     @tenants = Tenant.get_list params 

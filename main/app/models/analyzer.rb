@@ -34,7 +34,7 @@ class Analyzer < ActiveRecord::Base
         :tenant_uid => item.tenant_uid,
         :tenant_name => item.tenant.nil?? "":item.tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
-        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
         :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
         :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)

@@ -4,7 +4,7 @@ class  Managers::AreasController < ApplicationController
   def get_province
     params.permit!
     country_rid = Common::Area::CountryRids["zhong_guo"]
-    @country = Area.where("rid = '#{country_rid}'").first
+    @country = Area.provinces country_rid
     render :json => @country.children_h.to_json
   end
 
@@ -36,9 +36,15 @@ class  Managers::AreasController < ApplicationController
 
   def get_tenants
     params.permit!
+    
+    result = []
 
-    areas = Area.where("rid LIKE '#{params[:area_rid]}%'")
-    tenants = areas.map{|a| a.tenants}.flatten
-    render :json => tenants.to_json
+    unless params[:area_rid].blank?
+      areas = Area.where("rid LIKE '#{params[:area_rid]}%'")
+      result = areas.map{|a| a.tenants}.flatten
+    end
+
+    result.unshift({uid: "", name_cn: Common::Locale::i18n("managers.messages.tenant.select")})
+    render :json => result.to_json
   end
 end
