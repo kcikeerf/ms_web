@@ -165,6 +165,7 @@ Rails.application.routes.draw do
   resource :project_administrators do
     member do
       get 'my_home'
+      get 'my_paper'
     end
   end
 
