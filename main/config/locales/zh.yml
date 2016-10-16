@@ -270,6 +270,7 @@ zh:
     school: "学校"
     school_number: "学校编号"
     grade: "年级"
+    xue_duan: "学段"
     classroom: "班级"
     subject_teacher: "学科教师"
     head_teacher: "班主任"
@@ -309,7 +310,7 @@ zh:
     zheng_zhi: "政治"
     xin_xi_ji_shu: "信息技术"
     ji_shu: "技术"
-    #年级   
+    #年级 
     yi_nian_ji: "一年级"
     er_nian_ji: "二年级"
     san_nian_ji: "三年级"
