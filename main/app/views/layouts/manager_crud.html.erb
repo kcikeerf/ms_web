@@ -16,7 +16,7 @@
 			iconCls="icon-edit" 
 			plain="true" 
 			onclick="
-<% if ["tenants", "analyzers", "teachers", "pupils", "project_administrators"].include? controller_name %>
+<% if ["tenants", "analyzers", "teachers", "pupils", "tenant_administrators", "project_administrators"].include? controller_name %>
         editObjWithArea('<%= page_info_item[:path] %>/')
 <% else %>
 		editObj('<%= page_info_item[:path] %>/')
@@ -56,7 +56,6 @@
 		style="width:600px;height:400px;" 
 		closed="true"
 		buttons="#dlg-buttons">
-		<!--div class="ftitle"><%= page_info_item[:title] %>信息</div-->
 		<%= form_tag '', id: 'fm' do  %>
 			<input type="hidden" name="_method" id='manager_method' value="post" />
 			<div id='other'>

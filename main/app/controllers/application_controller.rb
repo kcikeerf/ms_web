@@ -158,6 +158,11 @@ class ApplicationController < ActionController::Base
     prefix + "#" + job_type
   end
 
+  #format errors from model
+  def format_error ins
+    ins.errors.nil?? "" : ins.errors.messages.map{|k,v| "#{k}:#{v.uniq[0]}"}.join("<br>")
+  end
+
   private 
 
   def user_init
@@ -189,15 +194,15 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone, :role_name, :email, :password, :remember_me])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone, :role_name, :email, :password, :password_confirmation,:remember_me])
     devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :password, :remember_me])
     # devise_parameter_sanitizer.for(:sign_up) do |u|
     #   u.permit(:login, :email, :phone, :password, :password_confirmation,:remember_me)      
     # end
         
-    # devise_parameter_sanitizer.for(:account_update) do |u|
-    #   u.permit(:login, :email, :phone, :password, :password_confirmation, :current_password)
-    # end
+    devise_parameter_sanitizer.for(:account_update) do |u|
+      u.permit(:name, :phone, :role_name, :email, :password, :password_confirmation,:remember_me)
+    end
   end
 
 end

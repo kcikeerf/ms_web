@@ -19,38 +19,42 @@ class Analyzer < ActiveRecord::Base
   scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) if t_uid.present? }
   scope :by_keyword, ->(keyword) { where( "name LIKE '%#{keyword}%'" ) if keyword.present? }
 
-  def self.get_list params
-    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
-    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
-    result.each_with_index{|item, index|
-      area_h = {
-        :province_rid => "",
-        :city_rid => "",
-        :district_rid => ""
+  # class method definition begin
+  class << self
+    def get_list params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      result.each_with_index{|item, index|
+        area_h = {
+          :province_rid => "",
+          :city_rid => "",
+          :district_rid => ""
+        }
+        area_h = item.tenant.area_pcd if item.tenant
+        h = {
+          :tenant_uids => item.tenant_uid,
+          :tenant_name => item.tenant.nil?? "":item.tenant.name_cn,
+          :user_name => item.user.nil?? "":item.user.name,
+          :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
+          :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
+          :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
+          :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
+        }
+        h.merge!(area_h)
+        h.merge!(item.attributes)
+        h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
+        result[index] = h
       }
-      area_h = item.tenant.area_pcd if item.tenant
-      h = {
-        :tenant_uid => item.tenant_uid,
-        :tenant_name => item.tenant.nil?? "":item.tenant.name_cn,
-        :user_name => item.user.nil?? "":item.user.name,
-        :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
-        :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
-        :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
-        :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
-      }
-      h.merge!(area_h)
-      h.merge!(item.attributes)
-      h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
-      result[index] = h
-    }
-    return result
+      return result
+    end
+       
+    def save_info(options)
+      options = options.extract!(:user_id, :name, :subject, :tenant_uid)
+      create(options)
+    end
   end
-     
-  def self.save_info(options)
-    options = options.extract!(:user_id, :name, :subject, :tenant_uid)
-    create(options)
-  end
+  # class method definition end
 
   def save_obj params
     paramsh = {

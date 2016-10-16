@@ -1,7 +1,7 @@
 <div class="container-fluid">
 	<div class="row">
-		<%= render partial: "correct_ratio_section", locals:{ section_title: I18n.t("reports.correct_ratio.excellent_title"),tbody_id: "excellent_answerCase_table"} %>
-        <%= render partial: "correct_ratio_section", locals:{ section_title: I18n.t("reports.correct_ratio.good_title"),tbody_id: "good_answerCase_table"} %>
-		<%= render partial: "correct_ratio_section", locals:{ section_title: I18n.t("reports.correct_ratio.failed_title"),tbody_id: "failed_answerCase_table"} %>
+		<%= render partial: "correct_ratio_section", locals:{ section_title: LABEL("reports.correct_ratio.excellent_title"),tbody_id: "excellent_answerCase_table"} %>
+        <%= render partial: "correct_ratio_section", locals:{ section_title: LABEL("reports.correct_ratio.good_title"),tbody_id: "good_answerCase_table"} %>
+		<%= render partial: "correct_ratio_section", locals:{ section_title: LABEL("reports.correct_ratio.failed_title"),tbody_id: "failed_answerCase_table"} %>
 	</div>
 </div>

@@ -42,9 +42,10 @@ class  Managers::AreasController < ApplicationController
     unless params[:area_rid].blank?
       areas = Area.where("rid LIKE '#{params[:area_rid]}%'")
       result = areas.map{|a| a.tenants}.flatten
+      result = result.map{|item| {tenant_uids: item.uid, name_cn: item.name_cn}}
     end
 
-    result.unshift({uid: "", name_cn: Common::Locale::i18n("managers.messages.tenant.select")})
+    result.unshift({tenant_uids: "", name_cn: Common::Locale::i18n("managers.messages.tenant.select")})
     render :json => result.to_json
   end
 end

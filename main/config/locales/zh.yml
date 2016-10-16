@@ -486,6 +486,9 @@ zh:
       welcome: "欢迎访问三题库管理后台!"
       tenant:
         select: "请选择Tenant。"
+      user:
+        input_username: "请输入用户名。"
+        input_password: "请输入密码。"
   #定义active record表及属性的中文标示
   activerecord:
     models:

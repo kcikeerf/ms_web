@@ -22,9 +22,13 @@ class Managers::AnalyzersController < ApplicationController
 
     begin
       new_user.save_user(Common::Role::Analyzer, user_params)
-#      result_flag = new_user.id.nil?? false : (new_user.analyzer.nil?? false : true)
-      status = 200
-      data = {:status => 200 }
+      if new_user.errors && new_user.errors.messages.blank?
+        status = 200
+        data = {:status => 200, :message => "200" }
+      else
+        status = 500
+        data = {:status => 500, :message => format_error(new_user) }
+      end
     rescue Exception => ex
       status = 500
       data = {:status => 500, :message => ex.message}
@@ -34,19 +38,21 @@ class Managers::AnalyzersController < ApplicationController
   end
 
   def update
-  	#render json: response_json_by_obj(@user.update_user(Common::Role::Analyzer, user_params), @user)
-
     status = 403
     data = {:status => 403 }
 
     begin
       @user.update_user(Common::Role::Analyzer, user_params)
-#      result_flag = new_user.id.nil?? false : (new_user.analyzer.nil?? false : true)
-      status = 200
-      data = {:status => 200, :message => "200" }
+      if @user.errors && @user.errors.messages.blank?
+        status = 200
+        data = {:status => 200, :message => "200" }
+      else
+        status = 500
+        data = {:status => 500, :message => format_error(@user) }
+      end
     rescue Exception => ex
       status = 500
-      data = {:status => 500, :message => ex.backtrace}
+      data = {:status => 500, :message => ex.message}
     end
 
     render common_json_response(status, data)
@@ -85,6 +91,7 @@ class Managers::AnalyzersController < ApplicationController
     params.permit(
       :user_name,
       :password,
+      :password_confirmation,
       :name,
       # :province_rid,
       # :city_rid,

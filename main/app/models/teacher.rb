@@ -41,7 +41,7 @@ class Teacher < ActiveRecord::Base
         }
       end
       h = {
-        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_uids =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
         :head_teacher => head_teacher ? Common::Locale::i18n("common.shi") : Common::Locale::i18n("common.fou"),

@@ -8,7 +8,7 @@ var areaObj = {
 		areaObj.province = $('#province_rid');
 		areaObj.city = $("#city_rid");
 		areaObj.district = $("#district_rid");
-		areaObj.tenant = $("#tenant_uid");
+		areaObj.tenant = $("#tenant_uids");
 
 		areaObj.province.combobox({
 			onChange: function(){
@@ -20,6 +20,7 @@ var areaObj = {
 		areaObj.city.combobox({
 			onChange: function(){
 				areaObj.reset_district_list();
+				areaObj.reset_tenant_list();
 			}
 		});
 
@@ -47,9 +48,9 @@ var areaObj = {
 
 	reset_tenant_list: function(){
 		var area_rid = "";
-		//only district changed will get tenants
+		//only city, district changed will get tenants
 		//area_rid = "areaObj.district.combobox("getValue") ||  areaObj.city.combobox("getValue") || areaObj.province.combobox("getValue")";
-		area_rid = areaObj.district.combobox("getValue") || "";
+		area_rid = areaObj.district.combobox("getValue") || areaObj.city.combobox("getValue") || "";
 		areaObj.tenant.combobox("clear");
 		$.get('/managers/areas/get_tenants',{area_rid: area_rid},function(data){
 			areaObj.tenant.combobox("loadData", data)

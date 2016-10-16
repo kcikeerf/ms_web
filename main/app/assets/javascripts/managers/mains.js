@@ -149,7 +149,6 @@ function msgShow(title, msgString, msgType) {
 
 //创建对象
 function newObj(title, url){
-  console.log(title+",,,,"+url);
   $('#dlg').dialog('open').dialog('setTitle',title);
   $('#fm')[0].reset();
   $('#fm').attr('action', url);
@@ -195,22 +194,18 @@ function editObjWithArea(url){
     $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
 
     $('#fm').form('load',row).attr('action', url + (row.id == undefined ? row.uid : row.id));
-    areaObj.reset_city_list($('#province_rid'));
-    //need a better way
-    // to be implement
+    $('#fm').form('load',row);
+    areaObj.reset_city_list();
     setTimeout(function(){
-      $('#fm').form('load',row);
-      setTimeout(function(){
-        areaObj.reset_district_list($('#city_rid'));
+        $('#fm').form('load',row);
+        areaObj.reset_district_list();
         setTimeout(function(){
-          $('#fm').form('load',row);
-          setTimeout(function(){
-            if(areaObj.tenant_uid.length > 0){
-              areaObj.reset_tenant_list($('#district_rid'));
-            }
-          },100);
+            $('#fm').form('load',row);
+            areaObj.reset_tenant_list();
+            setTimeout(function(){
+              $('#fm').form('load',row);
+            },100);
         },100);
-      }, 100);
     }, 100);
     
     if(row.subject_classrooms){
@@ -230,7 +225,6 @@ function saveObj(){
     },
     success: function(result){
       result = JSON.parse(result);
-      console.log(result);
       if (result.status == 200){
         $('#dlg').dialog('close');      // close the dialog
         $('#dg').datagrid('reload');    // reload the user data

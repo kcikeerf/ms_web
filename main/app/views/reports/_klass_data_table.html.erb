@@ -1,6 +1,6 @@
 <table class="data-table">
 	<tr>
-		<th class="col1 colbg"><%= I18n.t("dict.#{dimesion}")%></th>
+		<th class="col1 colbg"><%= LABEL("dict.#{dimesion}")%></th>
 		<th class="col2">班级平<br>均值</th>
 		<th class="col3">班级平均得<br/>分率</th>
 		<th class="col4">班级中位数<br>得分率</th>
@@ -18,7 +18,7 @@
 		1. 带*的表示该指标不适用；<br> 
 		2. 涂色的数值为低于平均水平30%以上的指标，需要特别关注。<br>
 <% if ["skill","ability"].include? dimesion %>		
-		3. 由于只保留4位有效数字，故<%= I18n.t("dict.#{dimesion}") %>总分与<%= I18n.t("dict.#{dimesion}") %>各级指标满分之和会存在微小误差。
+		3. 由于只保留4位有效数字，故<%= LABEL("dict.#{dimesion}") %>总分与<%= LABEL("dict.#{dimesion}") %>各级指标满分之和会存在微小误差。
 <% end %>		
 	</dd>
 </dl>
