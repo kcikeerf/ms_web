@@ -7,7 +7,7 @@
     <% @page_title = t('page.user_left_menu.my_home') %>
     <title><%= @page_title ? "#{@page_title}-#{t('page.site_name')}" : t('page.site_name') %></title>
     <%= stylesheet_link_tag 'default/users', media: 'all', 'data-turbolinks-track' => true %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'users', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
   </head>
   <body>
@@ -19,7 +19,6 @@
           <!-- Nav tabs -->
           <%= render 'shared/user/left_menu' %>
           <!-- Tab panes -->
-          123
           <%= yield :work_field%>
         </div>
       </section>

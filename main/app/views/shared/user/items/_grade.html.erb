@@ -1,0 +1,4 @@
+<%= f.input :grade, 
+    label: LABEL("dict.grade"),
+    collection: Common::Grade::List.map {|k,v| [v,k]},
+    selected: current_user.role_obj.grade  %>

@@ -200,9 +200,7 @@ class ApplicationController < ActionController::Base
     #   u.permit(:login, :email, :phone, :password, :password_confirmation,:remember_me)      
     # end
         
-    devise_parameter_sanitizer.for(:account_update) do |u|
-      u.permit(:name, :phone, :role_name, :email, :password, :password_confirmation,:remember_me)
-    end
+    #devise_parameter_sanitizer.permit(:account_update, keys: [:name, :phone, :role_name, :email, :password, :password_confirmation,:remember_me])
   end
 
 end

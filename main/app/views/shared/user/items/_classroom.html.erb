@@ -1,0 +1,4 @@
+<%= f.input :classroom, 
+    label: LABEL("dict.classroom"),
+    collection: Common::Klass::List.map {|k,v| [v,k]},
+    selected: current_user.role_obj.classroom %>
