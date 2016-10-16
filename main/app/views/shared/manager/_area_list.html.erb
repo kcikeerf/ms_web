@@ -28,19 +28,18 @@
 
 <div style="margin:5px 0px 5px 15px;">
   <label><%=LABEL("activerecord.models.tenant")%></label>
-
   <select class="easyui-combobox" 
-  	id="tenant_uid" 
+  	id="tenant_uids" 
 <% if controller_name == "project_administrators" %>
-  	name="tenant_uid[]"
+  	name="tenant_uids[]"
   	multiple="true" 
   	multiline="true" 
   	style="width:200px;height:100px;"
 <% else %>
-  	name="tenant_uid"
+  	name="tenant_uids"
     style="width:200px;"
 <% end %>
-  	data-options="valueField:'uid',textField:'name_cn'">
+  	data-options="valueField:'tenant_uids',textField:'name_cn'">
     <option value=""><%= LABEL("managers.messages.tenant.select")%></option>
   </select>
 </div>

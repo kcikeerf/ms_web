@@ -19,8 +19,10 @@ class TenantAdministrator < ActiveRecord::Base
         :district_rid => ""
       }
       tenant = item.tenant
+      area_h = tenant.area_pcd if tenant
+      
       h = {
-        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_uids =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),

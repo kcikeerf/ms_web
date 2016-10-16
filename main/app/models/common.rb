@@ -3,6 +3,7 @@
 
 module Common
   include LocaleModule
+  include RegionModule
   include CheckpointCkpModule
   include GradeModule
   include KlassModule
@@ -18,12 +19,12 @@ module Common
   include WcModule
   include WxModule
 
-  module Area
-    CountryRids = {
-      "zhong_guo" => "001"
-      # add other country here
-    }
-  end
+  # module Area
+  #   CountryRids = {
+  #     "zhong_guo" => "001"
+  #     # add other country here
+  #   }
+  # end
 
   module Page
     PerPage = 10

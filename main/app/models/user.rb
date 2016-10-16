@@ -1,10 +1,10 @@
 class User < ActiveRecord::Base
-  attr_accessor :role_name, :login
+  attr_accessor :role_name, :login, :password_confirmation
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable#, :validatable
+    :recoverable, :rememberable, :trackable, :validatable, :lockable
 
   belongs_to :role
   has_one :image_upload
@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   validates :role_name, presence: true, on: :create
   validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,20}\z/ }
   
+  validates_confirmation_of :password
   validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
 
   validates :email, format: { with: /\A[^@\s]+@[^@\s]+\z/ }, allow_blank: true
@@ -96,13 +97,13 @@ class User < ActiveRecord::Base
       paramsh = {
         :name => params[:user_name], 
         :password => params[:password], 
+        :password_confirmation => params[:password_confirmation],
         :role_name => role_name,
         :qq => params[:qq] || "",
         :phone => params[:phone] || "",
         :email => params[:email] || ""
       }
-      update_attributes(paramsh)
-      return self unless save!
+      return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
       return self
@@ -120,14 +121,21 @@ class User < ActiveRecord::Base
       }
       unless params[:password].blank?
         paramsh[:password] = params[:password]
+        paramsh[:password_confirmation] = params[:password_confirmation]
         paramsh[:initial_password] = ""
       end
-      update_attributes(paramsh)
-      return self unless save!
+      p "update user>>>>>>>#{paramsh}"
+      return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
       return self
     #end
+  end
+
+  #删除关联角色对象用户的实例
+  def destroy
+    super
+    role_obj.destroy
   end
 
   def save_role_obj params

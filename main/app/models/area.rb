@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Area < ActiveRecord::Base
   self.primary_key = "uid"
 
@@ -13,6 +15,27 @@ class Area < ActiveRecord::Base
 
   def families
     self.class.where("rid LIKE '#{rid}%'")
+  end
+
+  #根据rid获取省市区的hash
+  def pcd_h
+    result = {
+      :province => {:rid => ""},
+      :city => {:rid => ""},
+      :district => {:rid => ""}
+    }
+    case area_type
+    when Common::Area::Type::Province
+      result[:province][:rid] = rid
+    when Common::Area::Type::City
+      result[:province][:rid] = parent.rid
+      result[:city][:rid] = rid
+    when Common::Area::Type::District
+      result[:province][:rid] = parent.parent.rid
+      result[:city][:rid] = parent.rid
+      result[:district][:rid] = rid
+    end
+    return result
   end
 
   def parent
