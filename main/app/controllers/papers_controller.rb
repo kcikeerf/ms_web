@@ -30,11 +30,6 @@ class PapersController < ApplicationController
     result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
 
     render :json => result.to_json
-#    respond_to do |format|
-#      format.json { render json: result.to_json }
-#    end
-#    result_json = Common::Response.exchange_record_id(result.to_json)
-#    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
   def new
@@ -52,6 +47,7 @@ class PapersController < ApplicationController
 
     render "zhengjuan"
   end
+
   # 
   # 
   def save_paper
@@ -165,25 +161,6 @@ class PapersController < ApplicationController
 
     render :json => result
   end
-
-  # def upload_filled_score_file
-  #   params.permit!
-
-  #   result = response_json
-
-  #   if params[:pap_uid]
-  #     current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-  #     params[:score_file_id] = current_pap.score_file_id
-  #     score_file = Common::Score.upload_filled_score params
-  #     if score_file
-  #       # analyze filled score file
-  #       str = current_pap.analyze_filled_score_file score_file
-  #       result = response_json(200, {data: str})
-  #     end
-  #   end
-
-  #   render :json => result
-  # end
 
   def get_empty_score_file
     params.permit!

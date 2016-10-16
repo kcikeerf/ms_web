@@ -1,4 +1,14 @@
 module UsersHelper
+  def top_title
+    result = ""
+    if current_user.is_project_administrator?
+      result = current_user.name
+    else
+      result = current_tenant.name_cn
+    end
+    return result
+  end
+
   def user_popup_menus
     if current_user.is_pupil?
       menus = {personal_center: my_home_pupils_path}
@@ -45,7 +55,7 @@ module UsersHelper
     elsif current_user.is_project_administrator?
       menus = {
         my_home: my_home_project_administrators_path,
-        #my_paper: my_paper_project_administrators_path
+        my_paper: my_paper_project_administrators_path
       }
     end
     return menus
