@@ -1,32 +1,31 @@
-<h1 class="panel-heading clearfix"><button class="btn btn-default edit" type="button"><i class="glyphicon glyphicon-pencil"></i>编辑</button>个人信息</h1>
+<h1 class="panel-heading clearfix">
+	<button class="btn btn-default edit" type="button">
+		<i class="glyphicon glyphicon-pencil"></i>
+		编辑
+	</button>
+	个人信息
+</h1>
+
 <div class="panel-body">
 	
 	<%= render 'shared/user/upload_avatar' %>
 
+    <!--展示信息-->
 	<div id="basicinfo-view">
 		<div id="basicinfo" class="form-horizontal basicinfo">
 			<%= render 'profiles/info' %>
 		</div>
 	</div>
 
+    <!--可编辑信息-->
 	<div id="basicinfo-edit" style="display:none;">
-		<%= simple_form_for(current_user.role_obj, url: save_info_profile_path, html: {class: 'form-horizontal basicinfo', method: :post}, remote: true) do |f| %>
-			<%= f.input :name, label: LABEL("dict.name") %>
-			<%= f.input :subject, 
-			    label: LABEL("dict.subject"), 
-				collection: Common::Subject::List.map {|k,v| [v,k]}, 
-			    selected: current_user.role_obj.subject unless current_user.is_pupil? %>
-			<%= f.input :grade, 
-			    label: LABEL("dict.grade"),
-                collection: Common::Grade::List.map {|k,v| [v,k]},
-			    selected: current_user.role_obj.grade if current_user.is_pupil? %>
-			<%= f.input :classroom, 
-			    label: LABEL("dict.classroom"),
-                collection: Common::Klass::List.map {|k,v| [v,k]},
-			    selected: current_user.role_obj.classroom if current_user.is_pupil? %>
-			<%= f.input :school, label: LABEL("dict.school") unless current_user.is_analyzer? %>
-			<%= f.simple_fields_for :user do |u| %>
-				<%= u.input :qq, label: LABEL("activerecord.attributes.user.qq"), required: false if current_user.is_teacher? %>
+		<%= simple_form_for(current_user.role_obj, 
+			url: save_info_profile_path, 
+			html: {class: 'form-horizontal basicinfo', method: :post}, 
+			remote: true) do |f| %>
+
+			<% edittable_info_items.each do |item| %>
+			<%= render :partial => "shared/user/items/#{item}",locals: {f: f} %>
 			<% end %>
 
 			<div class="form-group">

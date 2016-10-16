@@ -104,8 +104,11 @@ class ProfilesController < ApplicationController
 
   private
 
+  #各角色参数限制
   def resource_params
     user = [:name, :phone, :email, :qq]
+    return params.require(:project_administrator).permit(:name, user: user) if current_user.is_project_administrator?
+    return params.require(:tenant_administrator).permit(:name, user: user) if current_user.is_tenant_administrator?
     return params.require(:analyzer).permit(:name, :subject, user: user) if current_user.is_analyzer?
     return params.require(:teacher).permit(:name, :subject, :school, user: user) if current_user.is_teacher?
     return params.require(:pupil).permit(:name, :subject, :grade, :classroom, :school, user: user) if current_user.is_pupil?
