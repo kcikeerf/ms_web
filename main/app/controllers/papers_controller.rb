@@ -2,7 +2,15 @@ class PapersController < ApplicationController
 
   layout "zhengjuan"
 
-  before_action :set_paper, only: [:download, :download_page, :get_saved_paper, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
+  before_action :set_paper, only: [:download, 
+    :download_page, 
+    :get_saved_paper, 
+    :import_filled_score, 
+    :import_filled_result,
+    :submit_paper, 
+    :save_analyze,
+    :submit_analyze, 
+    :get_empty_score_file]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
@@ -181,7 +189,7 @@ class PapersController < ApplicationController
   #下载试卷的相关文件
   def download
     type = params[:type]
-    return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file filled_file usr_pwd_file}.include?(type)
+    return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file empty_result filled_file usr_pwd_file}.include?(type)
    
     #修正试卷，修正答案需要进一步处理
     # 
@@ -211,7 +219,7 @@ class PapersController < ApplicationController
     file = nil
     if %w{filled_file usr_pwd_file empty_file}.include?(type)
       file = ScoreUpload.find(@paper.score_file_id)
-    elsif %w{paper answer revise_paper revise_answer}.include?(type)
+    elsif %w{paper answer revise_paper revise_answer empty_result}.include?(type)
       file = FileUpload.find(@paper.orig_file_id)
     else
       # do nothing
@@ -219,7 +227,7 @@ class PapersController < ApplicationController
 
     #文件后缀名
     suffix = ""
-    if %w{filled_file usr_pwd_file empty_file}.include?(type)
+    if %w{filled_file usr_pwd_file empty_file empty_result}.include?(type)
       suffix = ".xlsx"
     elsif %w{paper answer revise_paper revise_answer}.include?(type)
       suffix = ".doc"
@@ -288,6 +296,11 @@ class PapersController < ApplicationController
       logger.info("====================import score: end")
     end
     render layout: false
+  end
+
+  def import_filled_result
+    params.permit!
+    render "import_filled_score", layout: false
   end
 
   private

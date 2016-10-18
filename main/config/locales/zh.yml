@@ -87,6 +87,7 @@ zh:
       answer: '原答案'
       revise_paper: '修正试卷'
       revise_answer: '修正答案'
+      empty_result: '空成绩表'
       empty_file: '空成绩表'
       filled_file: '学生成绩表'
       usr_pwd_file: '老师及学生的用户名及密码'
@@ -191,6 +192,11 @@ zh:
     abbrev:
       subject: "科"
       head_teacher: "主"
+  tests:
+    status:
+      not_started: "未测试"
+      no_score: "成绩未导入"
+      score_imported: "成绩已导入"
   #微信使用labels
   wx_commons:
     messages:

@@ -100,11 +100,11 @@ module PaperModule
       return fu
     end
  
-    def create_empty_result_list file_path
-      fs = FileUpload.new
-      fs.empty_result = Pathname.new(file_path).open
-      fs.save!
-      return fs 
+    def create_empty_result_list params
+      fu = FileUpload.where(id: params[:orig_file_id]).first
+      fu.empty_result = Pathname.new(params[:file_path]).open
+      fu.save!
+      return fu 
     end
 
     # Upload files 

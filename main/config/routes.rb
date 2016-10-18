@@ -187,6 +187,7 @@ Rails.application.routes.draw do
       get 'download_imported_score'
       get 'download_user_password_reporturl'
       match 'import_filled_score', via: [:get, :post, :patch]
+      match 'import_filled_result', via: [:get, :post, :patch]
       get 'download'
       get 'download_page'
     end 

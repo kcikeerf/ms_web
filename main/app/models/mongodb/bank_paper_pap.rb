@@ -128,6 +128,7 @@ class Mongodb::BankPaperPap
     } unless params[:information][:tenants].blank?
     ##############################
 
+    #试卷状态更新
     status = Common::Paper::Status::None
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
       status = Common::Paper::Status::New
@@ -136,6 +137,9 @@ class Mongodb::BankPaperPap
     else
       # do nothing
     end
+
+    #测试各Tenant的状态更新
+    params = update_test_tenants_status params,Common::Test::Status::NotStarted
 
     # #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
     # #tenant_uid= Tenant.get_tenant_uid params[:information]
@@ -193,15 +197,15 @@ class Mongodb::BankPaperPap
     #result = true
     #begin
 
-      #return result if params[:infromation].blank?
+    #return result if params[:infromation].blank?
     self.update_attributes({
       :order => params[:order] || "",
       :heading => params[:information][:heading] || "",
       :subheading => params[:information][:subheading] || "",
-      :province => tenant.area_pcd[:province_name_cn],#params[:information][:province] || "",
-      :city => tenant.area_pcd[:city_name_cn],#params[:information][:city] || "",
-      :district => tenant.area_pcd[:district_name_cn], #params[:information][:district] || "",
-      :school => tenant.name_cn, #params[:information][:school] || "",
+      :province => params[:information][:province] || "",
+      :city => params[:information][:city] || "",
+      :district => params[:information][:district] || "",
+      :school => params[:information][:school] || "",
       :subject => params[:information][:subject].blank? ? "": params[:information][:subject][:name],
       :grade => params[:information][:grade].blank? ? "": params[:information][:grade][:name],
       :term => params[:information][:term].blank? ? "": params[:information][:term][:name],
@@ -322,6 +326,9 @@ class Mongodb::BankPaperPap
 
       paper_h = JSON.parse(self.paper_json)
       paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
+
+      #测试各Tenant的状态更新
+      paper_h = update_test_tenants_status paper_h, Common::Test::Status::NoScore
 
       self.update_attributes({
         :paper_json => paper_h.to_json || "",
@@ -530,13 +537,13 @@ class Mongodb::BankPaperPap
       # location input field
       location_row_arr = [
         Common::Locale::i18n('dict.province'),
-        tenant.area_pcd[:province_name_cn],
+        province,
         Common::Locale::i18n('dict.city'),
-        tenant.area_pcd[:city_name_cn],
+        city,
         Common::Locale::i18n('dict.district'),
-        tenant.area_pcd[:district_name_cn],
+        district,
         Common::Locale::i18n('dict.tenant'),
-        tenant.name_cn
+        school
       ]
 
       # row 2
@@ -549,7 +556,7 @@ class Mongodb::BankPaperPap
         "name",
         "pupil_number",
         "sex",
-        tenant.uid # 隐藏tenant uid在表格中, version1.0，没什么用先埋下
+        tenant_uid # 隐藏tenant uid在表格中, version1.0，没什么用先埋下
       ]
 
       # row 3
@@ -694,7 +701,8 @@ class Mongodb::BankPaperPap
     out_excel.serialize(file_path)
 
     # score_file = Common::PaperFile.create_empty_result_list file_path
-    Common::PaperFile.create_empty_result_list file_path
+    Common::PaperFile.create_empty_result_list({:orig_file_id => orig_file_id, :file_path => file_path})
+
     # self.update(score_file_id: score_file.id)
     File.delete(file_path)
   end
@@ -1113,6 +1121,17 @@ class Mongodb::BankPaperPap
   end
   ########
 
+  def update_test_tenants_status params,status_str
+    #测试各Tenant的状态更新
+    self.bank_tests[0].bank_test_tenant_links.each{|t|
+      t.update(:tenant_status => status_str)
+    }
+    params["information"]["tenants"].each_with_index{|item, index|
+      params["information"]["tenants"][index]["tenant_status"] = status_str
+      params["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
+    }
+    return params
+  end
   #################################Mobile#####################################
 
   # 任意检索一个试卷

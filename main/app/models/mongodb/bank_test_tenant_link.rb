@@ -8,6 +8,7 @@ class Mongodb::BankTestTenantLink
 
   #field :test_id, type: String
   field :tenant_uid, type: String
+  field :tenant_status, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
