@@ -643,7 +643,9 @@ namespace :swtk do
           qzp_ckp = []
           ["knowledge", "skill", "ability"].each{|dimesion|
             ckp = BankSubjectCheckpointCkp.where({
-               :dimesion => dimesion, 
+               :dimesion => dimesion,
+               :subject => target_pap.subject,
+               :category => BankNodestructure.get_subject_category(target_pap.grade),
                :is_entity => true}).sample
             ckp_qzp = Mongodb::BankCkpQzp.new
             ckp_qzp.save_ckp_qzp  qzp["id"], ckp.uid.to_s, "BankSubjectCheckpointCkp"
