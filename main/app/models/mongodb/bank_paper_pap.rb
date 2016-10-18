@@ -693,9 +693,9 @@ class Mongodb::BankPaperPap
     file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}_empty.xlsx"
     out_excel.serialize(file_path)
 
-    score_file = Common::Score.create_empty_score file_path
-
-    self.update(score_file_id: score_file.id)
+    # score_file = Common::PaperFile.create_empty_result_list file_path
+    Common::PaperFile.create_empty_result_list file_path
+    # self.update(score_file_id: score_file.id)
     File.delete(file_path)
   end
 

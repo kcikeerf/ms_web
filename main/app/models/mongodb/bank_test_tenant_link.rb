@@ -1,4 +1,4 @@
-class Mongodb::BankTestTenantLink < ActiveRecord::Base
+class Mongodb::BankTestTenantLink
   include Mongoid::Document
   include Mongodb::MongodbPatch
   before_create :set_create_time_stamp

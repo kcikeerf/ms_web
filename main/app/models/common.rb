@@ -30,38 +30,36 @@ module Common
     PerPage = 10
   end
 
-  module Score
-    module Constants
-      AllowUserNumber = 5000
-      AllowScoreNumber = 1000
-    end
+  # module Score
+  #   module Constants
+  #     AllowUserNumber = 5000
+  #     AllowScoreNumber = 1000
+  #   end
 
-    def create_empty_score file_path
-      fs = ScoreUpload.new
-      fs.empty_file = Pathname.new(file_path).open
-      fs.save!
-      return fs 
-    end
-    module_function :create_empty_score
+  #   def create_empty_score file_path
+  #     fs = ScoreUpload.new
+  #     fs.empty_file = Pathname.new(file_path).open
+  #     fs.save!
+  #     return fs 
+  #   end
+  #   module_function :create_empty_score
 
-    def create_usr_pwd params
-      fs = ScoreUpload.where(id: params[:score_file_id]).first
-      fs.usr_pwd_file = Pathname.new(params[:file_path]).open
-      fs.save!
-      return fs 
-    end
-    module_function :create_usr_pwd
+  #   def create_usr_pwd params
+  #     fs = ScoreUpload.where(id: params[:score_file_id]).first
+  #     fs.usr_pwd_file = Pathname.new(params[:file_path]).open
+  #     fs.save!
+  #     return fs 
+  #   end
+  #   module_function :create_usr_pwd
 
-    def upload_filled_score params
-      fs = ScoreUpload.where(id: params[:score_file_id]).first
-      fs.filled_file = params[:filled_file]
-      fs.save!
-      return fs
-    end
-    module_function :upload_filled_score
-  end
-
-
+  #   def upload_filled_score params
+  #     fs = ScoreUpload.where(id: params[:score_file_id]).first
+  #     fs.filled_file = params[:filled_file]
+  #     fs.save!
+  #     return fs
+  #   end
+  #   module_function :upload_filled_score
+  # end
 
   module Task
     Type = {
@@ -1585,102 +1583,102 @@ module Common
 
   end
 
-  module PaperFile
-    module_function
-    # Upload one file 
-    def single_upload params
-#      if params[:str_tempid].blank?
-        fu = FileUpload.new
-#      else
-#        fu = FileUpload.where("id = ?", params[:str_tempid]).first
-#      end 
+#   module PaperFile
+#     module_function
+#     # Upload one file 
+#     def single_upload params
+# #      if params[:str_tempid].blank?
+#         fu = FileUpload.new
+# #      else
+# #        fu = FileUpload.where("id = ?", params[:str_tempid]).first
+# #      end 
       
-#      case params[:type]
-#      when "question"
-#        fu.paper = params[:file]
-#      when "answer"
-#        fu.answer = params[:file]
-#      end
-      fu.single = params[:file]
-      fu.save!
-      return fu
-    end
-    module_function :single_upload
+# #      case params[:type]
+# #      when "question"
+# #        fu.paper = params[:file]
+# #      when "answer"
+# #        fu.answer = params[:file]
+# #      end
+#       fu.single = params[:file]
+#       fu.save!
+#       return fu
+#     end
+#     module_function :single_upload
  
-    # Upload files 
-    def multiple_upload files_h
-      fu = FileUpload.new
-      fu.paper = files_h[:paper]
-      fu.answer = files_h[:answer]
-      fu.analysis = files_h[:analysis]
-      fu.save!
-      return fu
-    end    
-    module_function :multiple_upload
+#     # Upload files 
+#     def multiple_upload files_h
+#       fu = FileUpload.new
+#       fu.paper = files_h[:paper]
+#       fu.answer = files_h[:answer]
+#       fu.analysis = files_h[:analysis]
+#       fu.save!
+#       return fu
+#     end    
+#     module_function :multiple_upload
 
-    def paper_or_answer_upload(file, file_hash)      
-      file.revise_paper = Pathname.new(file_hash[:revise_paper]).open unless file_hash[:revise_paper].blank?
-      file.revise_answer = Pathname.new(file_hash[:revise_answer]).open unless file_hash[:revise_answer].blank?
-      file.save!
-      file
-    end
+#     def paper_or_answer_upload(file, file_hash)      
+#       file.revise_paper = Pathname.new(file_hash[:revise_paper]).open unless file_hash[:revise_paper].blank?
+#       file.revise_answer = Pathname.new(file_hash[:revise_answer]).open unless file_hash[:revise_answer].blank?
+#       file.save!
+#       file
+#     end
 
-    def generate_docx_by_html(file, html, file_name, file_column)
-      doc_str = PandocRuby.html(html).to_docx
-      file_path = File.join(Rails.root, "/tmp/#{file_name}.docx")
-      File.open(file_path, 'wb') { |f| f.write(doc_str) }
+#     def generate_docx_by_html(file, html, file_name, file_column)
+#       doc_str = PandocRuby.html(html).to_docx
+#       file_path = File.join(Rails.root, "/tmp/#{file_name}.docx")
+#       File.open(file_path, 'wb') { |f| f.write(doc_str) }
 
-      file = paper_or_answer_upload(file, {file_column.to_sym => file_path})
-      File.delete(file_path)
-      file
-    end
+#       file = paper_or_answer_upload(file, {file_column.to_sym => file_path})
+#       File.delete(file_path)
+#       file
+#     end
 
-    # Get excel file content
-    def get_excel_file_content file_path
-      result = []
-      file = nil
-      return result if file_path.blank?
-      case file_path.split('.').last.downcase
-      when 'xlsx', 'xlsm'
-        file = Roo::Excelx.new(file_path)
-      when 'xls'
-        file = Roo::Excel.new(file_path)
-#      else:
-#        file = Roo::Excelx.new(file_path)
-      end
-      sheet = file.sheet('试题分析') if file
-      sheet.each{|row|
-        result << row
-      } if sheet
-      return result
-    end
-    module_function :get_excel_file_content
+#     # Get excel file content
+#     def get_excel_file_content file_path
+#       result = []
+#       file = nil
+#       return result if file_path.blank?
+#       case file_path.split('.').last.downcase
+#       when 'xlsx', 'xlsm'
+#         file = Roo::Excelx.new(file_path)
+#       when 'xls'
+#         file = Roo::Excel.new(file_path)
+# #      else:
+# #        file = Roo::Excelx.new(file_path)
+#       end
+#       sheet = file.sheet('试题分析') if file
+#       sheet.each{|row|
+#         result << row
+#       } if sheet
+#       return result
+#     end
+#     module_function :get_excel_file_content
 
-    # Convert doc file content
-    def get_doc_file_content_as_html file_path
-      return "" if file_path.blank?
-      result = ""
-      location = file_path.split('/')[0..-2].join('/')
-      html_name = file_path.split('/').last.split('.')[0] + '_converted.html' 
+#     # Convert doc file content
+#     def get_doc_file_content_as_html file_path
+#       return "" if file_path.blank?
+#       result = ""
+#       location = file_path.split('/')[0..-2].join('/')
+#       html_name = file_path.split('/').last.split('.')[0] + '_converted.html' 
 
-      begin
-        word_cleaner_folder = Rails.root.to_s.split('/')[0..-2].join('/') + "/tools/WordCleaner7ComponentMono"
-        #cmd_str = "mono #{word_cleaner_folder}/WordCleaner7ComponentMono.exe /t '#{word_cleaner_folder}/Templates/Convert\ to\ HTML\ embed\ images.wc' /f #{file_path} /o #{location} /of #{html_name}"
-        cmd_str = "mono #{word_cleaner_folder}/WordCleaner7ComponentMono.exe /t '#{word_cleaner_folder}/Templates/swtk.wc' /f #{file_path} /o #{location} /of #{html_name}"
-        #exec cmd_str
-        #if not use popen, rails app will be interrupted
-        p cmd_str
-        IO.popen(cmd_str){|f| f.gets}
-      rescue Exception => ex
-        p ex.message
-      end
-      arr = IO.readlines(location + '/' + html_name)
-      result = arr.join('')
-      return result
-    end
-    module_function :get_doc_file_content_as_html
+#       begin
+#         word_cleaner_folder = Rails.root.to_s.split('/')[0..-2].join('/') + "/tools/WordCleaner7ComponentMono"
+#         #cmd_str = "mono #{word_cleaner_folder}/WordCleaner7ComponentMono.exe /t '#{word_cleaner_folder}/Templates/Convert\ to\ HTML\ embed\ images.wc' /f #{file_path} /o #{location} /of #{html_name}"
+#         cmd_str = "mono #{word_cleaner_folder}/WordCleaner7ComponentMono.exe /t '#{word_cleaner_folder}/Templates/swtk.wc' /f #{file_path} /o #{location} /of #{html_name}"
+#         #exec cmd_str
+#         #if not use popen, rails app will be interrupted
+#         p cmd_str
+#         IO.popen(cmd_str){|f| f.gets}
+#       rescue Exception => ex
+#         p ex.message
+#       end
+#       arr = IO.readlines(location + '/' + html_name)
+#       result = arr.join('')
+#       return result
+#     end
+#     module_function :get_doc_file_content_as_html
 
-  end
+#   end
 
   module Response
 
