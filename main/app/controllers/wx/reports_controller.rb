@@ -1,6 +1,6 @@
 class Wx::ReportsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :wx_authenticate!, :except => [:get_indivisual_report_part,:get_pupil_report,:get_list]
+  before_action :wx_authenticate!, :except => [:get_indivisual_report_part,:get_indivisual_report_1,:get_list]
   # before_action :read_reports, :only => [:get_list]
   before_action :wx_set_api_header
 
