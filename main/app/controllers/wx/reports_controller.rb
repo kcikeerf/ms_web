@@ -1,6 +1,6 @@
 class Wx::ReportsController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :wx_authenticate!, :except => [:get_indivisual_report_part,:get_indivisual_report_1,:get_list]
+  before_action :wx_authenticate!, :except => [:get_indivisual_report_part,:get_pupil_report,:get_list]
   # before_action :read_reports, :only => [:get_list]
   before_action :wx_set_api_header
 
@@ -35,8 +35,8 @@ class Wx::ReportsController < ApplicationController
     status = 403
     data = {}
 
-    current_pupil = wx_current_user.nil?? nil : wx_current_user.pupil
-    if current_pupil.nil?
+    #current_pupil = wx_current_user.nil?? nil : wx_current_user.pupil
+    if params[:wx_openid].blank? || params[:report_id].blank?#current_pupil.nil?
       status = 500
       data = { message: I18n.t("wx_users.messages.warn.invalid_binding_params") }
     elsif !params[:report_id].blank?
