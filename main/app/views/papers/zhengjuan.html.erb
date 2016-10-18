@@ -100,7 +100,9 @@
 			</div>
 			<div class="about_right">
 				<a class="edit_sanwei" href="javascript:;">三维解析试卷</a>
+<% unless current_user.is_project_administrator? %>				
 				<a class="load_list" geturl="/papers/import_filled_score" href="javascript:;">导入成绩表</a>
+<% end %>
 			</div>
 		</div>
 		<div class="createReport">

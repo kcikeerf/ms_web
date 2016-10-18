@@ -1,10 +1,9 @@
 module TestModule
   module Test
     module Status
-      NotTest = "not_test"
+      NotStarted = "not_started"
       NoScore = "no_score"
       ScoreImported = "score_imported"
-      ReportCompleted = "report_completed"
     end
   end
 end

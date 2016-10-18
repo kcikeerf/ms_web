@@ -11,10 +11,12 @@ module Common
   include PaperModule
   include ReportModule
   include RoleModule
+  include ScoreModule
   include SubjectModule
   include SwtkConstantsModule
   include TenantModule
   include TermModule
+  include TestModule
   include UzerModule
   include WcModule
   include WxModule
