@@ -181,18 +181,11 @@ class PapersController < ApplicationController
   #下载试卷的相关文件
   def download
     type = params[:type]
-
     return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file filled_file usr_pwd_file}.include?(type)
-    need_deal_types = %w{revise_paper revise_answer}
-    is_xlsx = %w{empty_file filled_file usr_pwd_file}.include?(type)
-
-    file = is_xlsx ? ScoreUpload.find(@paper.score_file_id) : FileUpload.find(@paper.orig_file_id)
-    
-    file_name = @paper.download_file_name(type) + (is_xlsx ? '.xlsx' : '.doc')
-    # 旧接口注释掉
-    #file_name = @paper.paper_name(type) + (is_xlsx ? '.xlsx' : '.doc')
-
-    if need_deal_types.include?(type)
+   
+    #修正试卷，修正答案需要进一步处理
+    # 
+    if %w{revise_paper revise_answer}.include?(type)
       head_html =<<-EOF
         <h2>#{@paper.heading}</h2>
         <h3>#{@paper.subheading}</h3>
@@ -212,18 +205,31 @@ class PapersController < ApplicationController
         end
       end
     end
+    ###
 
+    #文件对象
+    file = nil
+    if %w{filled_file usr_pwd_file empty_file}.include?(type)
+      file = ScoreUpload.find(@paper.score_file_id)
+    elsif %w{paper answer revise_paper revise_answer}.include?(type)
+      file = FileUpload.find(@paper.orig_file_id)
+    else
+      # do nothing
+    end
+
+    #文件后缀名
+    suffix = ""
+    if %w{filled_file usr_pwd_file empty_file}.include?(type)
+      suffix = ".xlsx"
+    elsif %w{paper answer revise_paper revise_answer}.include?(type)
+      suffix = ".doc"
+    else
+      # do nothing
+    end
+      
+    #文件名，文件路径
+    file_name = @paper.download_file_name(type) + suffix
     file_path = file.send(type.to_sym).current_path
-
-    # file = FileUpload.find(@paper.orig_file_id)
-    # head_html =<<-EOF
-    #   <h2>#{@paper.heading}</h2>
-    #   <h3>#{@paper.subheading}</h3>
-     
-    #   <p style="text-align:center">
-    #     <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
-    #   </p>      
-    # EOF
 
     send_file file_path, filename: file_name, disposition: 'attachment'
   end
@@ -245,7 +251,8 @@ class PapersController < ApplicationController
         @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
         @paper.current_user_id = current_user.id
 
-        score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+        #score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+        score_file = Common::Score.upload_filled_score({filled_file: params[:file]})
         if score_file
           task_name = format_report_task_name @paper.heading, Common::Task::Type[:import_score]
           new_task = TaskList.new(
