@@ -84,6 +84,7 @@ class Mongodb::BankPaperPap
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
+  has_many :bank_tests, class_name: "Mongodb::BankTest"
 
   # class method
   class << self
@@ -104,6 +105,29 @@ class Mongodb::BankPaperPap
   end
 
   def save_pap params
+    #临时处理，伴随试卷保存，创建测试
+    if self.bank_tests.blank?
+      pap_test = Mongodb::BankTest.new({
+        :name => self._id.to_s + "_" +Common::Locale.i18n("activerecord.models.bank_test"),
+        :user_id => current_user_id,
+        :quiz_date => Time.now
+      })
+      pap_test.save!
+      self.bank_tests = [pap_test]
+      save!
+    else
+      self.bank_tests[0].bank_test_tenant_links.destroy_all
+    end
+
+    params[:information][:tenants].each{|t|
+      test_tenant_link = Mongodb::BankTestTenantLink.new({
+        :tenant_uid => t[:tenant_uid]
+      })
+      test_tenant_link.save!
+      self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
+    } unless params[:information][:tenants].blank?
+    ##############################
+
     status = Common::Paper::Status::None
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
       status = Common::Paper::Status::New
@@ -113,21 +137,39 @@ class Mongodb::BankPaperPap
       # do nothing
     end
 
-    #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
-    #tenant_uid= Tenant.get_tenant_uid params[:information]
-    #target_area = Area.get_area params[:information]
-    target_current = Common::Uzer.get_tenant current_user_id
+    # #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
+    # #tenant_uid= Tenant.get_tenant_uid params[:information]
+    # #target_area = Area.get_area params[:information]
+    # target_current = Common::Uzer.get_tenant current_user_id
  
-    #json保存前的处理
-    params[:paper] = ""
-    if target_current
-      params[:information][:province] = target_current.area_pcd[:province_name_cn]
-      params[:information][:city] = target_current.area_pcd[:city_name_cn]
-      params[:information][:district] = target_current.area_pcd[:district_name_cn]
-      params[:information][:school] = target_current.name_cn
-    end
+    # #json保存前的处理
+    # params[:paper] = ""
+    # if target_current
+    #   params[:information][:province] = target_current.area_pcd[:province_name_cn]
+    #   params[:information][:city] = target_current.area_pcd[:city_name_cn]
+    #   params[:information][:district] = target_current.area_pcd[:district_name_cn]
+    #   params[:information][:school] = target_current.name_cn
+    # end
+
     #
-    target_area = Area.get_area params[:information]
+    #
+    current_user = Common::Uzer.get_user current_user_id
+    if current_user.is_project_administrator?
+      target_area = Area.where(rid: current_user.role_obj.area_rid).first
+      params[:information][:province] = target_area.pcd_h[:province][:name_cn]
+      params[:information][:city] = target_area.pcd_h[:city][:name_cn]
+      params[:information][:district] = target_area.pcd_h[:district][:name_cn]
+      params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
+    else
+      target_area = Area.get_area params[:information]
+      target_current = Common::Uzer.get_tenant current_user_id
+      if target_current
+        params[:information][:province] = target_current.area_pcd[:province_name_cn]
+        params[:information][:city] = target_current.area_pcd[:city_name_cn]
+        params[:information][:district] = target_current.area_pcd[:district_name_cn]
+        params[:information][:school] = target_current.name_cn
+      end
+    end
 
     self.update_attributes({
       :user_id => current_user_id || "",

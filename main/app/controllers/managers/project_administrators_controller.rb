@@ -98,6 +98,6 @@ class Managers::ProjectAdministratorsController < ApplicationController
       :qq, 
       :phone,
       :email,
-      :tenant_uid => [])
+      :tenant_uids => [])
   end
 end

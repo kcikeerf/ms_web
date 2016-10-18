@@ -124,7 +124,6 @@ class User < ActiveRecord::Base
         paramsh[:password_confirmation] = params[:password_confirmation]
         paramsh[:initial_password] = ""
       end
-      p "update user>>>>>>>#{paramsh}"
       return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))

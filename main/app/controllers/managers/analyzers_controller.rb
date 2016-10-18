@@ -96,7 +96,7 @@ class Managers::AnalyzersController < ApplicationController
       # :province_rid,
       # :city_rid,
       # :district_rid, 
-      :tenant_uid, 
+      :tenant_uids, 
       :subject, 
       :qq, 
       :phone,

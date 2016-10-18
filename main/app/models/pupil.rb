@@ -56,7 +56,7 @@ class Pupil < ActiveRecord::Base
       :name => params[:name], 
       :grade => params[:grade],
       :classroom => params[:classroom],
-      :tenant_uid => params[:tenant_uid]
+      :tenant_uid => params[:tenant_uids]
     }
     update_attributes(paramsh)
     save!

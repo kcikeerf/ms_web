@@ -1,0 +1,51 @@
+<% if current_user.is_project_administrator?%>
+	<div class="<%=label_klass%>">
+			<label class="item_label"><%=LABEL("page.paper.tenant_range")%>&nbsp;:</label>
+	</div> 
+
+	<div class="table-responsive">
+	<table class="table">
+		<thead>
+			<tr>
+				<th><%= LABEL("page.order_index") %></th>
+				<th><%= LABEL("activerecord.attributes.default.name") %></th>
+				<th><%= LABEL("activerecord.attributes.default.status") %></th>
+				<th><%= LABEL("page.action") %></th>
+			</tr>
+		</thead>
+		
+<% if edittable %>
+		<tbody class="tenant_range_check_list">
+ 	<% unless current_user.role_obj.tenants.blank? %>
+		<% current_user.role_obj.tenants.each_with_index do |t,index| %>
+				<tr>
+					<td><%=index+1%></td>
+					<td>
+					<div class="tenant_range_item_checkbox" 
+						 tenant_uid="<%=t.uid%>"
+						 tenant_name="<%= t.name_cn %>">
+						<span></span><%= t.name_cn %></div>
+					</td>
+					<td></td>
+					<td></td>
+				</tr>
+		<% end %>
+	<% end %>
+		</tbody>
+<% else %>
+		<tbody class="tenant_range_display_list">
+    <% unless (current_user.role_obj.tenants.blank? && @current_test && @current_test.tenants.blank?) %>
+		<% (current_user.role_obj.tenants & @current_test.tenants).each_with_index do |t,index| %>
+			<tr>
+				<td><%=index+1%></td>
+				<td><%= t.name_cn %></td>
+				<td></td>
+				<td></td>
+			</tr>
+		<% end %>
+	<% end %>
+		</tbody>
+<% end %>
+	</table>
+	</div>
+<% end %>

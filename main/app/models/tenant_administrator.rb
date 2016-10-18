@@ -38,7 +38,7 @@ class TenantAdministrator < ActiveRecord::Base
   end
 
   def save_obj params
-    paramsh = params.extract!(:user_id, :name, :tenant_uid, :comment)
+    paramsh = params.extract!(:user_id, :name, :tenant_uids, :comment)
     update_attributes(paramsh)
     save!
   end

@@ -50,11 +50,14 @@ class ProjectAdministrator < ActiveRecord::Base
   # class method definition end
 
   def save_obj params
+    area_ird = params[:province_rid] unless params[:province_rid].blank?
+    area_rid = params[:city_rid] unless params[:city_rid].blank?
+    area_rid = params[:district_rid] unless params[:district_rid].blank?
     paramsh = {
       :user_id => params[:user_id],
       :name => params[:name],
-      :area_rid => params[:district_rid] || params[:city_rid] || params[:province_rid],
-      :tenant_ids =>params[:tenant_uid]
+      :area_rid => area_rid,
+      :tenant_ids =>params[:tenant_uids]
     }
     update_attributes(paramsh)
     save!

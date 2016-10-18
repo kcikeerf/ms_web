@@ -12,6 +12,7 @@
 		<div class="contentBody"></div>
 	</div>
 </div>
+
 <!-- 试卷详情模版 -->
 <script type="text/template" class="template_detail">
 	<div class="paperDetails">
@@ -79,6 +80,10 @@
 				</ul>
 			</div>
 		</div>
+
+<!--项目管理员增加Tenant范围选择域：begin-->
+<%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "tenant", edittable: false} %>
+
 		<div class="lookPaperInfo">
 			<a class="lookPaper_q_a" href="javascript:void(0);">查看已修订的试卷、答案详情</a>
 			<a class="lookPaper_sanwei" href="javascript:void(0);">查看试卷三维解析详情</a>
@@ -158,8 +163,8 @@
 			</div>
 			<div class="source">
 				<div class="school">
-					<label>学校&nbsp;:</label><label class="school_name"><%= current_tenant.name_cn%></label>
-					<input type="hidden" value="<%= current_tenant.name_cn%>" disabled=true>
+					<label>学校&nbsp;:</label><label class="school_name"><%= test_organizer_name %></label>
+					<input type="hidden" value="<%= test_organizer_name %>" disabled=true>
 				</div>
 			</div>
 			<ul class="infoList">
@@ -349,7 +354,13 @@
 					</div>
 				</li>
 			</ul>
+
+
+<!--项目管理员增加Tenant范围选择域-->
+<%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
+
 		</div>
+
 		<div class="submitInfoWarp clearfix">
 			<p>注：您已成功上传试卷文件和答案文件<i></i></p>
 			<a class="infoBtn" href="javascript:void(0);">保存</a>

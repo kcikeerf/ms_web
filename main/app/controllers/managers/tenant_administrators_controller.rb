@@ -86,7 +86,7 @@ class Managers::TenantAdministratorsController < ApplicationController
       # :city_rid,
       # :district_rid, 
       # :tenant_uid, 
-      :tenant_uid,
+      :tenant_uids,
       :qq, 
       :phone,
       :email)

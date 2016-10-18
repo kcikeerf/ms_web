@@ -142,7 +142,7 @@ class Teacher < ActiveRecord::Base
     mapping_hash[:loc_uid] = options[:loc_uid]
     mapping_hash[:head_teacher] = options.delete(:head_teacher)
     mapping_hash[:subject] = options[:subject]
-    mapping_hash[:tenant_uid] = options[:tenant_uid]
+    mapping_hash[:tenant_uid] = options[:tenant_uids]
     options[:class_teacher_mappings_attributes] = [mapping_hash]
     create(options)
   end
