@@ -45,6 +45,8 @@ class PapersController < ApplicationController
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
 
+    #Version1.1版默认是一个试卷对应一个测试，之后对改成1对多
+    @current_test = current_pap.bank_tests[0]
     render "zhengjuan"
   end
 

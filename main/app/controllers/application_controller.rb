@@ -75,7 +75,9 @@ class ApplicationController < ActionController::Base
   #use in controller
   def current_tenant
     tenant = nil
-    if current_user.is_pupil?
+    if current_user.is_project_administrator?
+      tenant = nil
+    elsif current_user.is_pupil?
       tenant = current_user.role_obj.location.tenant
     else
       tenant = current_user.role_obj.tenant
@@ -84,13 +86,18 @@ class ApplicationController < ActionController::Base
   end
 
   def check_resource_tenant obj
+    obj_tenant_uid = (obj && obj.tenant)? obj.tenant.uid : nil
+    #若资源无所属Tenant，则为真即不抛出错误
+    return true unless obj_tenant_uid
+
     flag = false
-    if obj && obj.tenant && current_tenant
-      p "obj tenant uid >>>#{obj.tenant.uid}"
-      p "current_tenant.uid >>>>#{current_tenant.uid}"
-      flag = true if obj.tenant.uid == current_tenant.uid
+    if current_user.is_project_administrator?
+      #项目管理员的可访问中的Tenant之一
+      flag = current_user.role_obj.tenant_ids.include?(obj_tenant_uid)
+    else
+      flag = (current_tenant.uid == obj_tenant_uid) if current_tenant
     end
-    p ">>>>>#{flag}"
+
     unless flag
       render 'errors/403', status: 403,  layout: 'error'
     end

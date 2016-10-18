@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161014024312) do
+ActiveRecord::Schema.define(version: 20161017072506) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -291,6 +291,13 @@ ActiveRecord::Schema.define(version: 20161014024312) do
     t.datetime "updated_at"
   end
 
+  create_table "mongodb_bank_test_tenant_links", primary_key: "uid", force: :cascade do |t|
+    t.string   "bank_test_id", limit: 255
+    t.string   "tenant_uid",   limit: 255
+    t.datetime "dt_add"
+    t.datetime "dt_update"
+  end
+
   create_table "permissions", force: :cascade do |t|
     t.string   "name",          limit: 255
     t.string   "subject_class", limit: 255
@@ -368,6 +375,8 @@ ActiveRecord::Schema.define(version: 20161014024312) do
     t.string   "ana_uid",      limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "test_id",      limit: 255
+    t.string   "tenant_uid",   limit: 255
   end
 
   create_table "task_lists", primary_key: "uid", force: :cascade do |t|

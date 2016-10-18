@@ -88,7 +88,7 @@ class Managers::PupilsController < ApplicationController
       :province_rid,
       :city_rid,
       :district_rid, 
-      :tenant_uid, 
+      :tenant_uids, 
       :stu_number,
       :sex,
       :grade,

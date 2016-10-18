@@ -124,4 +124,10 @@ module UsersHelper
     return nil if current_user.is_project_administrator?
     current_user.tenant
   end
+
+  #
+  #等角色权限控制之后，可以去掉
+  def can_add_paper?
+    (current_user.is_project_administrator? || current_user.is_analyzer?) && (action_name=="my_paper")
+  end
 end

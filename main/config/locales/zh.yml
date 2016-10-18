@@ -409,6 +409,7 @@ zh:
     dan_yuan_ce_shi: "单元测试"
     xiao_sheng_chu_ce_shi: "小升初测试"
     xue_ke_neng_li_ce_ping: "学科能力测评"
+    lian_kao: "联考"
     #报告类型
     ce_shi_zhen_duan_bao_gao: "测试诊断报告" 
     ge_ren_bao_gao: "学生报告"
@@ -502,6 +503,7 @@ zh:
       bank_nodestructure: "课本结构树形表"
       bank_papertag_ptg: "试卷标签"
       bank_quiztag_qtg: "试题标签"
+      bank_test: "测试"
       comment: "评论"
       role: "角色"
       user: "用户"
@@ -514,6 +516,9 @@ zh:
       permission: "权限"
 
     attributes:
+      default:
+        name: "名称"
+        status: "状态"
       area:
         province: "省"
         city: "市"
@@ -617,6 +622,7 @@ zh:
       tenant_administrator:
         name: "姓名"
       porject_administrator:
+
     errors:
       messages:        
         inclusion: "不包含于列表中"
@@ -768,6 +774,8 @@ zh:
     next: '下一步'
     captcha: '验证码'
     input_captcha: '请输入验证码'
+    action: "操作"
+    order_index: "序号"
     common:
       save: "保存"
       submit: "提交"
@@ -844,6 +852,7 @@ zh:
       select_score_tip: '请选择有学生成绩的excel'
       upload_score: '上传成绩表'
       score: '成绩表'
+      tenant_range: "Tenant范围"
     pupil:
       basic_info: '个人信息'
 

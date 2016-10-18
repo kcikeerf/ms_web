@@ -152,7 +152,16 @@ $(function(){
                 $(".info_difficulty p").text(levelObj[data.information.levelword]);
                 $(".info_testTime p").text(data.information.quiz_date);
                 $(".info_score p").text(data.information.score);
+                //保留，暂时未发现可用场景
+                //update tenant list
+                // var tenant_list_html = "";
+                // data.information.tenants.forEach(function(v,i){ 
+                //     tenant_list_html += "<tr><td></td>"+i+"<td>"+v.tenant_name+"</td><td></td><td></td></tr>";
+                // });
+                // $(".tenant_range_display_list").html(tenant_list_html);
+                //
             }
+
             var html1 = "", html2 = '<ul class="rangeAll">';
             if(data.bank_node_catalogs && data.bank_node_catalogs.length){
                 for (var i=0; i<data.bank_node_catalogs.length; i++) {
@@ -502,7 +511,8 @@ $(function(){
                 quiz_type : $(".selecType .selectVal span").attr("values") || "",   //考试类型
                 levelword : $(".selectDifficulty .selectVal span").attr("values") || "",    //难度
                 quiz_duration : $(".selectTime .selectVal span").attr("values") || "",  //考试时长
-                score : $(".selectScore .selectVal input").val() || "0"  //满分值   
+                score : $(".selectScore .selectVal input").val() || "0",  //满分值
+                tenants: $.map($(".tenant_range_item_checkbox.active"), function(v,i){ return {tenant_uid: v.getAttribute("tenant_uid"), tenant_name: v.getAttribute("tenant_name")}})
             };
             $(".selecTerm li.active").length && (paper.paperData.information.node_uid=$(".selecTerm li.active").attr("uid"));
             paper.paperData.bank_node_catalogs = [];
@@ -769,6 +779,11 @@ $(function(){
             $(".saveWarp .saveBtn").addClass("active");
             $(this).toggleClass("active");
         });
+        //Tenant范围各项
+        doc.on("click",".tenant_range_item_checkbox",function(){
+            $(this).toggleClass("active");
+        });
+
         doc.on("input propertychange",".attribute input, .attribute textarea",function(){
             $(".saveWarp .saveBtn").addClass("active");
             paper.changeState = true;
@@ -1390,6 +1405,17 @@ $(function(){
             //     active_county.length && $(".selectCounty .selectVal span").attr("values",active_county.text()).text(active_county.text());
             // }
         }
+
+        if(paper.paperData.information && paper.paperData.information.tenants){
+            var target_tenant_uids = $.map(paper.paperData.information.tenants, function(v){ return v.tenant_uid});
+            console.log(target_tenant_uids);
+            $(".tenant_range_check_list .tenant_range_item_checkbox").each(function(){
+                if(target_tenant_uids.includes($(this)[0].getAttribute("tenant_uid"))){
+                    $(this).addClass("active");
+                }
+            });
+        }
+
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){
