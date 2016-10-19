@@ -187,7 +187,11 @@ zh:
   tasks:
     type:
       create_report: "生成报告"
-      import_score: "导入成绩"
+      import_result: "导入成绩表"
+    status:
+      in_active: "未执行"
+      active: "执行中"
+      completed: "完成"
   teachers:
     abbrev:
       subject: "科"
@@ -197,6 +201,10 @@ zh:
       not_started: "未测试"
       no_score: "成绩未导入"
       score_imported: "成绩已导入"
+  swtk_errors:
+    parameter_invalid_error: "参数无效！"
+    object_not_found: "对象未找到或不存在(详细：%{message})"
+
   #微信使用labels
   wx_commons:
     messages:

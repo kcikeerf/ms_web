@@ -196,6 +196,9 @@ $(function(){
                 case "analyzed":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .progress").show();
+                    }
                     break;
                 case "score_importing":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
@@ -204,7 +207,7 @@ $(function(){
                         $(".tenant_result_list .progress").show();
                     }
                     else{
-                        $(".paperDetails .progress").show();
+                        $(".paperDetails > .progress").show();
                         paper.setInterVal();
                     }
                     break;
@@ -218,7 +221,7 @@ $(function(){
                 case "report_generating":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
                     $(".lookPaperInfo, .createReport").show();
-                    $(".paperDetails .progress").show();
+                    $(".paperDetails > .progress").show();
                     $(".createReport a").removeClass("active");
                     //project administrator tenant action
                     $(".tenant_result_list").hide();
@@ -298,7 +301,7 @@ $(function(){
                     dataType: "json",
                     success: function(data){
                         if(data && data.task_uid){
-                            $(".progress").show();
+                            $(".paperDetails > .progress").show();
                             paper.paperData.task_uid = data.task_uid;
                             paper.setInterVal();
                         }
@@ -1207,8 +1210,8 @@ $(function(){
                     if(data.status == "success"){
                         var percent = data.process*100+"%";
                         var display_label = data.name + "(" +(data.process * 100).toFixed(2) + "%" +")";
-                        $(".progress_label").html(display_label);
-                        $(".progress .finish").css("width",percent);
+                        $(".paperDetails > .progress_label").html(display_label);
+                        $(".paperDetails > .progress .finish").css("width",percent);
                         if(data.process == 1){
                             //location.reload();
                         }/*else{

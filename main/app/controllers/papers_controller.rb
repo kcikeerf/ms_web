@@ -75,6 +75,7 @@ class PapersController < ApplicationController
       current_pap.save_pap(params)
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
+      #current_pap.save_paper_rollback
       result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
     end
     render :json => result
@@ -112,6 +113,7 @@ class PapersController < ApplicationController
         result = response_json(200, {pap_uid: @paper._id.to_s})
         #result = response_json(200, {messages: I18n.t("papers.messages.submit_paper.success", current_pap.heading)})
       rescue Exception => ex
+        #@paper.submit_pap_rollback
         result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.message)})
       end
     else
@@ -262,7 +264,7 @@ class PapersController < ApplicationController
         #score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
         score_file = Common::Score.upload_filled_score({filled_file: params[:file]})
         if score_file
-          task_name = format_report_task_name @paper.heading, Common::Task::Type[:import_score]
+          task_name = format_report_task_name @paper.heading, Common::Task::Type::ImportResult
           new_task = TaskList.new(
             name: task_name,
             pap_uid: @paper._id.to_s)
@@ -300,7 +302,47 @@ class PapersController < ApplicationController
 
   def import_filled_result
     params.permit!
-    render "import_filled_score", layout: false
+
+    if request.post?
+      logger.info("====================import result rquest: begin")
+      result = {:status => 403, :task_uid => ""}
+
+      begin
+        raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
+        params[:test_id] =  @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
+        score_file = Common::Score.upload_filled_result(params)
+        if score_file          
+          # Job
+          Thread.new do
+            ImportResultJob.perform_later({
+              :score_file_id => score_file.id,
+              :tenant_uid => params[:tenant_uid],
+              :pap_uid => params[:pap_uid]
+            })
+          end
+          status = 200
+          result[:status] = status
+          current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
+          result[:task_uid] = current_task.nil?? "":current_task.uid
+        else
+          status = 500
+          result[:status] = status
+          result[:message] = I18n.t("scores.messages.error.upload_failed")
+        end
+      rescue Exception => ex
+        status = 500
+        result[:status] = status
+        result[:message] = I18n.t("scores.messages.error.upload_exception")
+        @result = result.to_json
+        logger.debug ">>>ex.message<<<"
+        logger.debug ex.message
+        logger.debug ">>>ex.backtrace<<<"
+        logger.debug ex.backtrace
+      end
+      @result = result.to_json
+      logger.info("====================import score request: end")
+    end
+    render layout: false
   end
 
   private

@@ -14,17 +14,15 @@ class ReportsController < ApplicationController
     result = {:task_uid => ""}
 
     begin
-      #create a task to follow all the jobs
-      task_name = format_report_task_name @paper.heading, Common::Task::Type[:create_report]
-      new_task = TaskList.new(
-        name: task_name,
-        pap_uid: params[:pap_uid])
-      new_task.save!
+      # Task info
+      target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
+      task_uid = target_task.nil?? "" :target_task.uid
+      target_task.touch(:dt_update)
 
       # create a job
       Thread.new do
         GenerateReportJob.perform_later({
-          :task_uid => new_task.uid,
+          :task_uid => task_uid,
           :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
           :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
           :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
@@ -33,7 +31,7 @@ class ReportsController < ApplicationController
       end
 
       status = 200
-      result[:task_uid] = new_task.uid
+      result[:task_uid] = task_uid
     rescue Exception => ex
       status = 500
       result[:task_uid] = ex.message

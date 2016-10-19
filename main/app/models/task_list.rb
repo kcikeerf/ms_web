@@ -7,8 +7,11 @@ class TaskList < ActiveRecord::Base
 
   before_create :init_uid
 
-  belongs_to :analyzer, foreign_key: "ana_uid"
+  belongs_to :user, foreign_key: "user_id"
   has_many :job_lists, foreign_key: "task_uid"
+
+  scope :by_task_status, ->(str) { where(status: str) }
+  scope :by_task_type, ->(str) { where(task_type: str) }
 
   private
 
