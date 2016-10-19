@@ -7,7 +7,7 @@ class JobList < ActiveRecord::Base
 
   before_create :init_uid
 
-  belongs_to :taks_list, foreign_key: "task_uid"
+  belongs_to :task_list, foreign_key: "task_uid"
 
   private
 

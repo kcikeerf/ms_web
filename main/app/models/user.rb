@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
 
   has_many :wx_user_mappings, foreign_key: "user_id"
   has_many :wx_users, through: :wx_user_mappings
+  has_many :task_lists, foreign_key: "user_id"
 
   before_create :set_role#, :check_existed?
 

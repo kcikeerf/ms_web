@@ -86,7 +86,7 @@ class Mongodb::BankPaperPap
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
   has_many :bank_tests, class_name: "Mongodb::BankTest"
 
-  # class method
+  ########类方法定义：begin#######
   class << self
     def ckp_weights_modification args={}
       if !args[:subject].blank? && !args[:dimesion].blank? && !args[:weights].blank? && !args[:difficulty].blank?
@@ -102,10 +102,103 @@ class Mongodb::BankPaperPap
         result = 1
       end
     end
+
+    def get_column_arr filter, col_str
+
+      map = %Q{
+        function(){
+          emit({#{col_str}: this.#{col_str}}, {});
+        }
+      }
+
+      reduce = %Q{
+        function(key, values) {
+        }
+      }
+
+      result = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
+      result.map{|a| a[:_id][col_str.to_sym] if a[:_id][col_str.to_sym].is_a? String}
+    end
+
+    def get_paper_status_count filter
+      result = {}
+
+      map = %Q{
+        function(){
+          emit({paper_status: this.paper_status}, {count: 1});
+        }
+      }
+
+      reduce = %Q{
+        function(key, values) {
+          var result = {
+            count: 0
+          };
+          values.forEach(function(value){
+            result.count += value.count;
+          });
+          return result;
+        }
+      }
+
+      arr = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
+      arr.each{|a| result[a["_id"]["paper_status"]] = a["value"]["count"].to_i if a["_id"]["paper_status"].is_a? String}
+      result
+    end
+
+    def region(papers)
+      map = %Q{
+          function(){
+            emit({province: this.province, city: this.city}, {district: this.district})
+          }
+        }
+
+      reduce = %Q{
+        function(key, values) {
+          var result = {district: []};
+          values.forEach(function(value) {  
+            result.district.push(value.district);     
+          });
+          return result;
+        }
+      }
+     
+      region = []
+      provinces = papers.distinct(:province)
+      region_data =  papers.map_reduce(map, reduce).out(inline: true)
+
+      provinces.each do |province|
+        city = []
+        # region_data.select{|r| city << {name: r["_id"]["city"], label: Common::Locale::i18n('area.' + r["_id"]["city"]), area: [*r["value"]["district"]].uniq.map{|m| {name: m, label: Common::Locale::i18n('area.' + m)} }} if r["_id"]["province"] == province }
+        # region << {name: province, label: Common::Locale::i18n('area.' + province), city: city}
+        region_data.select{ |r| city << {name: r["_id"]["city"], label: r["_id"]["city"], area: Array(r["value"]["district"]).uniq.map{|m| {name: m, label: m} }} if r["_id"]["province"] == province }
+        region << {name: province, label: province, city: city}
+     
+      end
+      region
+    end
+
+    ##############################
+    #            微信             #
+    ##############################
+    # 任意检索一个试卷
+    # 参数：
+    #   grade: 年级
+    #   term: 学期
+    #   subject: 学科
+    #
+    def get_a_paper params_h
+      where(params_h).sample
+    end
+
   end
+  ########类方法定义：end#######
+
 
   def save_pap params
-    #临时处理，伴随试卷保存，创建测试
+    ##############################
+    #临时处理，伴随试卷保存
+    #创建测试
     if self.bank_tests.blank?
       pap_test = Mongodb::BankTest.new({
         :name => self._id.to_s + "_" +Common::Locale.i18n("activerecord.models.bank_test"),
@@ -126,8 +219,8 @@ class Mongodb::BankPaperPap
       test_tenant_link.save!
       self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
     } unless params[:information][:tenants].blank?
-    ##############################
 
+    ##############################
     #试卷状态更新
     status = Common::Paper::Status::None
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
@@ -137,26 +230,29 @@ class Mongodb::BankPaperPap
     else
       # do nothing
     end
-
     #测试各Tenant的状态更新
-    params = update_test_tenants_status params,Common::Test::Status::NotStarted
+    params = update_test_tenants_status(params,
+      Common::Test::Status::NotStarted,
+      self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
+    )
 
-    # #area_Uid, area_rid = Area.get_area_uid_rid params[:informtion]
-    # #tenant_uid= Tenant.get_tenant_uid params[:information]
-    # #target_area = Area.get_area params[:information]
-    # target_current = Common::Uzer.get_tenant current_user_id
- 
-    # #json保存前的处理
-    # params[:paper] = ""
-    # if target_current
-    #   params[:information][:province] = target_current.area_pcd[:province_name_cn]
-    #   params[:information][:city] = target_current.area_pcd[:city_name_cn]
-    #   params[:information][:district] = target_current.area_pcd[:district_name_cn]
-    #   params[:information][:school] = target_current.name_cn
-    # end
+    ##############################
+    #Task List创建： 上传成绩， 生成报告
+    [Common::Task::Type::ImportResult, Common::Task::Type::CreateReport].each{|tk|
+      tkl = TaskList.new({
+        :name => id.to_s + "_" + Common::Locale::i18n("tasks.type." + tk),
+        :task_type => tk,
+        #:pap_uid => id.to_s,
+        :status => Common::Task::Status::InActive
+      })
+      tkl.save!
+      tkl_link = Mongodb::BankTestTaskLink.new(:task_uid => tkl.uid)
+      tkl_link.save!
+      bank_tests[0].bank_test_task_links.push(tkl_link)
+    }
 
-    #
-    #
+    ##############################
+    #地理位置信息
     current_user = Common::Uzer.get_user current_user_id
     if current_user.is_project_administrator?
       target_area = Area.where(rid: current_user.role_obj.area_rid).first
@@ -175,6 +271,8 @@ class Mongodb::BankPaperPap
       end
     end
 
+    ##############################
+    #试卷保存
     self.update_attributes({
       :user_id => current_user_id || "",
       :area_uid => target_area.nil?? "" : target_area.uid,
@@ -187,9 +285,19 @@ class Mongodb::BankPaperPap
       :answer_html => params[:answer_html] || "",
       :paper_status => status
     })
+
+    ##############################
+    #有异常，抛出
     unless self.errors.messages.empty?
       raise SwtkErrors::SavePaperHasError.new(I18.t("papers.messages.save_paper.debug", :message => self.errors.messages)) 
     end
+  end
+
+  def save_pap_rollback
+    #delete bank_test_tenant_links
+    #delete bank_test
+    #delete test task list
+    #delete bank_paper_pap
   end
 
   def submit_pap params
@@ -284,6 +392,11 @@ class Mongodb::BankPaperPap
     })
   end
 
+  def submit_pap_rollback
+    #
+    #
+  end
+
   def save_ckp params
     result = true
 
@@ -302,6 +415,10 @@ class Mongodb::BankPaperPap
       result=false
     end
     return result
+  end
+
+  def save_ckp_rollback
+    #
   end
 
   def submit_ckp params
@@ -328,7 +445,11 @@ class Mongodb::BankPaperPap
       paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
 
       #测试各Tenant的状态更新
-      paper_h = update_test_tenants_status paper_h, Common::Test::Status::NoScore
+      paper_h = update_test_tenants_status(
+        paper_h,
+        Common::Test::Status::NoScore,
+        self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
+      )
 
       self.update_attributes({
         :paper_json => paper_h.to_json || "",
@@ -341,11 +462,19 @@ class Mongodb::BankPaperPap
     return result
   end
 
+  def submit_ckp_rollback
+
+  end
+
   def bank_node_catalogs
     cat_uids = self.bank_pap_cats.map{|cat| cat.uid }
     cat_uids.map{|uid|
       BankNodeCatalog.where(uid: uid) 
     }
+  end
+
+  def task_lists
+    TaskList.where(:pap_uid => id.to_s)
   end
 
   #
@@ -384,38 +513,6 @@ class Mongodb::BankPaperPap
     return result
   end
 
-  #
-  # 
-  #
-  # def get_pap_ckp_ancestors
-  #   result = {
-  #     :knowledge => {},
-  #     :skill => {},
-  #     :ability => {}
-  #   }
-  #   qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
-  #   qzpoints.each{|qzp|
-  #     qzp.bank_checkpoint_ckps.each{|ckp|
-  #       next unless ckp
-  #       # search current level checkpoint
-  #       lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 3)}'").first
-  #       lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, 6)}'").first
-
-  #       result[ckp.dimesion.to_sym]
-
-  #       lv1_temph = result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym] || {}
-  #       result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym] = lv1_temph
-  #       result[ckp.dimesion.to_sym][lv1_ckp.checkpoint.to_sym][lv2_ckp.checkpoint.to_sym] = {}
-
-  #     }
-  #   }
-  #   return result
-  # end
-
-  #
-  # used for report
-  # get dimesion total score and each checkpoint total score
-  #
   def get_dimesion_ckp_total_score ckps_qzps
     total_score = {
       :knowledge => 0, 
@@ -707,227 +804,6 @@ class Mongodb::BankPaperPap
     File.delete(file_path)
   end
 
-#   # analyze filled score file
-#   def analyze_filled_score_file file
-#     # score file with scores filled
-#     filled_file = Roo::Excelx.new(file.filled_file.current_path)
-#     #
-#     # test
-#     #filled_file = Roo::Excelx.new("/Users/freekick/Workspace/Qidian/swtk/main/uploads/score_upload/5/empty_score.xlsx")
-     
-#     # read score sheet
-#     sheet = filled_file.sheet(Common::Locale::i18n('scores.excel.score_title')) if filled_file
-
-#     # read title
-#     loc_row = sheet.row(1)
-#     hidden_row = sheet.row(2)
-#     order_row = sheet.row(3)
-#     title_row = sheet.row(4)
-
-#     # initial data
-#     data_start_row = 5
-#     data_start_col = 8
-#     total_row = sheet.count
-#     total_cols = hidden_row.size
-
-#     loc_h = {
-#       :province => Common::Locale.hanzi2pinyin(loc_row[1]),
-#       :city => Common::Locale.hanzi2pinyin(loc_row[3]),
-#       :district => Common::Locale.hanzi2pinyin(loc_row[5]),
-#       :school => Common::Locale.hanzi2pinyin(loc_row[7]),
-#       :tenant_uid => tenant.uid
-# #      :school_number => Location.generate_school_number
-#     }
-#     subject = self.subject
-
-#     #excel for user password
-#     out_excel = Axlsx::Package.new
-#     wb = out_excel.workbook
-#     teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.teacher_password_title'))
-#     pupil_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.pupil_password_title'))
-
-#     teacher_sheet.sheet_protection.password = 'forbidden_by_qidian'
-#     pupil_sheet.sheet_protection.password = 'forbidden_by_qidian'
-
-#     teacher_title_row = [
-#         Common::Locale::i18n('activerecord.attributes.user.name'),
-#         Common::Locale::i18n('activerecord.attributes.user.password'),
-#         Common::Locale::i18n('dict.name'),
-#         Common::Locale::i18n('reports.generic_url')
-#     ]
-#     teacher_sheet.add_row teacher_title_row
-
-#     pupil_title_row = [
-#         Common::Locale::i18n('activerecord.attributes.user.name'),
-#         Common::Locale::i18n('activerecord.attributes.user.password'),
-#         Common::Locale::i18n('dict.name'),
-#         Common::Locale::i18n('dict.pupil_number'),
-#         Common::Locale::i18n('reports.generic_url')
-#     ]
-#     pupil_sheet.add_row pupil_title_row
-
-#     #
-#     teacher_username_in_sheet = []
-#     pupil_username_in_sheet = []
-#     #######start to analyze#######      
-#     (data_start_row..total_row).each{|index|
-#       row = sheet.row(index)
-#       grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
-#       cells = {
-#         :grade => grade_pinyin,
-#         :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
-#         :classroom => Common::Locale.hanzi2pinyin(row[1]),
-#         :head_teacher => row[2],
-#         :teacher => row[3],
-#         :pupil_name => row[4],
-#         :stu_number => row[5],
-#         :sex => row[6]
-#       }
-
-#       #
-#       # get location
-#       #
-#       loc_h[:grade] = cells[:grade]
-#       loc_h[:classroom] = cells[:classroom]
-#       loc = Location.where(loc_h).first
-#       if loc.nil?
-#         ## 
-#         # parameters: province, city, district, school
-#         #
-
-#         ###
-#         # 因为tenant要预先注册，此处不需要创建学校
-#         #
-#         # school_numbers = Location.get_school_numbers
-#         # new_school_number = Location.generate_school_number
-#         # count = 1
-#         # while school_numbers.include?(new_school_number)
-#         #   new_school_number = Location.generate_school_number
-#         #   break if count > 100 # avoid infinite loop
-#         #   count+=1
-#         # end
-
-#         #loc_h[:school_number] = new_school_number
-#         ###
-
-#         loc = Location.new(loc_h)
-#         loc.save!
-#       end
-       
-#       user_row_arr = []
-#       # 
-#       # create teacher user 
-#       #
-#       head_tea_h = {
-#         :loc_uid => loc.uid,
-#         :name => cells[:head_teacher],
-#         :subject => self.subject,
-#         :head_teacher => true,
-#         :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:head_teacher])])
-#       }
-#       user_row_arr =format_user_password_row(Common::Role::Teacher, head_tea_h)
-#       unless teacher_username_in_sheet.include?(user_row_arr[0])
-#         teacher_sheet.add_row user_row_arr
-#         teacher_username_in_sheet << user_row_arr[0]
-#       end
-      
-#       tea_h = {
-#         :loc_uid => loc.uid,
-#         :name => cells[:teacher],
-#         :subject => self.subject,
-#         :head_teacher => false,
-#         :user_name => format_user_name([tenant.number,Common::Subject::Abbrev[self.subject.to_sym],Common::Locale.hanzi2abbrev(cells[:teacher])])
-#       }
-#       user_row_arr = format_user_password_row(Common::Role::Teacher, tea_h)
-#       unless teacher_username_in_sheet.include?(user_row_arr[0])
-#         teacher_sheet.add_row user_row_arr
-#         teacher_username_in_sheet << user_row_arr[0]
-#       end
-
-#       #
-#       # create pupil user
-#       #
-#       pup_h = {
-#         :loc_uid => loc.uid,
-#         :name => cells[:pupil_name],
-#         :stu_number => cells[:stu_number],
-#         :grade => cells[:grade],
-#         :classroom => cells[:classroom],
-#         :subject => self.subject,
-#         :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
-#         :user_name => format_user_name([tenant.number,cells[:stu_number],Common::Locale.hanzi2abbrev(cells[:pupil_name])])
-#       }
-#       user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)
-#       unless pupil_username_in_sheet.include?(user_row_arr[0])
-#         pupil_sheet.add_row user_row_arr
-#         pupil_username_in_sheet << user_row_arr[0]
-#       end
-
-#       current_user = User.where(name: pup_h[:user_name]).first
-#       current_pupil = current_user.nil?? nil : current_user.pupil
-
-#       (data_start_col..(total_cols-1)).each{|qzp_index|
-#         param_h = {
-#           :province => loc_h[:province],
-#           :city => loc_h[:city],
-#           :district => loc_h[:district],
-#           :school => loc_h[:school],
-#           :grade => cells[:grade],
-#           :classroom => cells[:classroom],         
-#           :pup_uid => current_pupil.nil?? "":current_pupil.uid,
-#           :pap_uid => self._id.to_s,
-#           :qzp_uid => hidden_row[qzp_index],
-#           :tenant_uid => tenant.uid,
-#           :order => order_row[qzp_index],
-#           :real_score => row[qzp_index],
-#           :full_score => title_row[qzp_index]
-#         }
-
-#         qizpoint = Mongodb::BankQizpointQzp.where(_id: hidden_row[qzp_index]).first
-#         qizpoint_qiz = qizpoint.nil?? nil : qizpoint.bank_quiz_qiz 
-#         #next unless qizpoint
-#         ckps = qizpoint.bank_checkpoint_ckps
-#         ckps.each{|ckp|
-#           next unless ckp
-#           if ckp.is_a? BankCheckpointCkp
-#             lv1_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,3)}'").first
-#             lv2_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0,6)}'").first
-#           elsif ckp.is_a? BankSubjectCheckpointCkp
-#             lv1_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,3)}'").first
-#             lv2_ckp = BankSubjectCheckpointCkp.where("category = '#{cells[:xue_duan]}' and rid = '#{ckp.rid.slice(0,6)}'").first
-#           end
-#           param_h[:dimesion] = ckp.dimesion
-#           param_h[:lv1_uid] = lv1_ckp.uid
-#           param_h[:lv1_ckp] = lv1_ckp.checkpoint
-#           param_h[:lv1_order] = lv1_ckp.sort
-#           param_h[:lv2_uid] = lv2_ckp.uid
-#           param_h[:lv2_ckp] = lv2_ckp.checkpoint
-#           param_h[:lv2_order] = lv2_ckp.sort
-#           param_h[:lv3_uid] = ckp.uid
-#           param_h[:lv3_ckp] = ckp.checkpoint
-#           param_h[:lv3_order] = ckp.sort
-#           param_h[:lv_end_uid] = ckp.uid
-#           param_h[:lv_end_ckp] = ckp.checkpoint
-#           param_h[:lv_end_order] = ckp.sort
-#           #调整权重系数
-#           # 1.单题难度关联
-#           #
-#           param_h[:weights] = self.class.ckp_weights_modification({:dimesion=> param_h[:dimesion], :weights => ckp.weights, :difficulty=> qizpoint_qiz.levelword2})
-#           qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
-#           qizpoint_score.save!
-#         }
-#       }
-#     }
-
-#     # create user password file
-#     file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}_password.xlsx"
-#     out_excel.serialize(file_path)
-#     file_h = {:score_file_id => self.score_file_id, :file_path => file_path}
-#     score_file = Common::Score.create_usr_pwd file_h
-#     #File.delete(file_path)
-#     #######finish analyze#######  
-#   end
-
   def format_user_name args=[]
     #args.join("_")
     args.join(Common::Uzer::UserNameSperator)
@@ -995,23 +871,7 @@ class Mongodb::BankPaperPap
 
   def generate_url
     return Common::SwtkConstants::MyDomain 
-=begin   
-    result = ""
-    #目前只需要试卷的ID信息
-    params_h = {
-      :pap_uid => self._id.to_s
-    } 
-    new_rum = ReportUrlMapping.new({:params_json => params_h.to_json })
-    new_rum.save
-    result = Common::SwtkConstants::MyDomain + "/reports/check/#{new_rum.nil?? "":new_rum.codes}"
-    return result
-=end
   end
-
-  # def paper_name(type, is_heading=true)
-  #   is_heading = false if type == 'usr_pwd_file'
-  #   (is_heading ? (heading + '_') : '') + Common::Locale::i18n("papers.name.#{type}")
-  # end
 
   def download_file_name type
     case type
@@ -1031,81 +891,6 @@ class Mongodb::BankPaperPap
     paper_status == Common::Paper::Status::ReportCompleted
   end
 
-  def self.region(papers)
-    map = %Q{
-        function(){
-          emit({province: this.province, city: this.city}, {district: this.district})
-        }
-      }
-
-    reduce = %Q{
-      function(key, values) {
-        var result = {district: []};
-        values.forEach(function(value) {  
-          result.district.push(value.district);     
-        });
-        return result;
-      }
-    }
-   
-    region = []
-    provinces = papers.distinct(:province)
-    region_data =  papers.map_reduce(map, reduce).out(inline: true)
-
-    provinces.each do |province|
-      city = []
-      # region_data.select{|r| city << {name: r["_id"]["city"], label: Common::Locale::i18n('area.' + r["_id"]["city"]), area: [*r["value"]["district"]].uniq.map{|m| {name: m, label: Common::Locale::i18n('area.' + m)} }} if r["_id"]["province"] == province }
-      # region << {name: province, label: Common::Locale::i18n('area.' + province), city: city}
-      region_data.select{ |r| city << {name: r["_id"]["city"], label: r["_id"]["city"], area: Array(r["value"]["district"]).uniq.map{|m| {name: m, label: m} }} if r["_id"]["province"] == province }
-      region << {name: province, label: province, city: city}
-   
-    end
-    region
-  end
-
-  def self.get_column_arr filter, col_str
-
-    map = %Q{
-      function(){
-        emit({#{col_str}: this.#{col_str}}, {});
-      }
-    }
-
-    reduce = %Q{
-      function(key, values) {
-      }
-    }
-
-    result = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
-    result.map{|a| a[:_id][col_str.to_sym] if a[:_id][col_str.to_sym].is_a? String}
-  end
-
-  def self.get_paper_status_count filter
-    result = {}
-
-    map = %Q{
-      function(){
-        emit({paper_status: this.paper_status}, {count: 1});
-      }
-    }
-
-    reduce = %Q{
-      function(key, values) {
-        var result = {
-          count: 0
-        };
-        values.forEach(function(value){
-          result.count += value.count;
-        });
-        return result;
-      }
-    }
-
-    arr = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
-    arr.each{|a| result[a["_id"]["paper_status"]] = a["value"]["count"].to_i if a["_id"]["paper_status"].is_a? String}
-    result
-  end
-
   #######
   #等到bank_paper_pap_pointers弄完，移植走
   def grade_reports
@@ -1121,28 +906,20 @@ class Mongodb::BankPaperPap
   end
   ########
 
-  def update_test_tenants_status params,status_str
+  def update_test_tenants_status params,status_str,tenant_uids=[]
     #测试各Tenant的状态更新
     self.bank_tests[0].bank_test_tenant_links.each{|t|
-      t.update(:tenant_status => status_str)
+      t.update(:tenant_status => status_str) if tenant_uids.include?(t[:tenant_uid])
     }
     params["information"]["tenants"].each_with_index{|item, index|
-      params["information"]["tenants"][index]["tenant_status"] = status_str
-      params["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
+      if tenant_uids.include?(item["tenant_uid"])
+        params["information"]["tenants"][index]["tenant_status"] = status_str
+        params["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
+      end
     }
     return params
   end
-  #################################Mobile#####################################
 
-  # 任意检索一个试卷
-  # 参数：
-  #   grade: 年级
-  #   term: 学期
-  #   subject: 学科
-  #
-  def self.get_a_paper params_h
-    self.where(params_h).sample
-  end
 
 end
 
