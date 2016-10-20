@@ -226,10 +226,12 @@ class Mongodb::BankPaperPap
     if params[:information][:heading] && params[:bank_quiz_qizs].blank?
       status = Common::Paper::Status::New
     elsif params[:information][:heading] && params[:bank_quiz_qizs] && self.bank_quiz_qizs.blank?
-      status = Common::Paper::Status::Editting    
+      status = Common::Paper::Status::Editting  
     else
       # do nothing
     end
+    params["information"]["paper_status"] = status
+
     #测试各Tenant的状态更新
     params = update_test_tenants_status(params,
       Common::Test::Status::NotStarted,
@@ -238,6 +240,8 @@ class Mongodb::BankPaperPap
 
     ##############################
     #Task List创建： 上传成绩， 生成报告
+    params["information"]["tasks"] = {}
+    bank_tests[0].bank_test_task_links.destroy_all
     [Common::Task::Type::ImportResult, Common::Task::Type::CreateReport].each{|tk|
       tkl = TaskList.new({
         :name => id.to_s + "_" + Common::Locale::i18n("tasks.type." + tk),
@@ -248,6 +252,7 @@ class Mongodb::BankPaperPap
       tkl.save!
       tkl_link = Mongodb::BankTestTaskLink.new(:task_uid => tkl.uid)
       tkl_link.save!
+      params["information"]["tasks"][tk] = tkl.uid
       bank_tests[0].bank_test_task_links.push(tkl_link)
     }
 
@@ -302,10 +307,7 @@ class Mongodb::BankPaperPap
 
   def submit_pap params
     params = params.deep_dup
-    #result = true
-    #begin
 
-    #return result if params[:infromation].blank?
     self.update_attributes({
       :order => params[:order] || "",
       :heading => params[:information][:heading] || "",
@@ -330,10 +332,6 @@ class Mongodb::BankPaperPap
     unless self.errors.messages.empty?
       raise SwtkErrors::SavePaperHasError.new(I18.t("papers.messages.save_paper.debug", :message => self.errors.messages)) 
     end
-
-    #rescue Exception => ex
-    #  result = false
-    #end
    
     # update node catalogs of paper
     #begin
@@ -348,10 +346,6 @@ class Mongodb::BankPaperPap
         end
       }
     end
-    #rescue Exception => ex
-    #  result = false
-    #  self.update_attributes({:paper_status => Common::Paper::Status::Editting})
-    #end
 
     # save all quiz
     #begin
@@ -372,22 +366,13 @@ class Mongodb::BankPaperPap
           raise SwtkErrors::SavePaperHasError.new(I18.t("papers.messages.save_paper.debug", :message => qiz.errors.messges))
         end
         self.bank_quiz_qizs.push(qiz)
-        #
-        # not sure to be implemented
-        #
-        #store quiz history
-        #qiz_hist = Mongodb::BankQuizQizHistory.new(order: quiz.order, score:quiz.score)
-        #qiz.bank_quiz_qiz_history = qiz_hist
-        #self.bank_quiz_qizs.push(qiz)
       }
     end
-    #rescue Exception => ex
-    #  result = false
-    #  self.update_attributes({:paper_status => Common::Paper::Status::Editting})
-    #end
-    #return result
+
+    status = Common::Paper::Status::Editted
+    params["information"]["paper_status"] = status
     self.update_attributes({
-      :paper_status => Common::Paper::Status::Editted,
+      :paper_status => status,
       :paper_json => params.to_json || ""
     })
   end
@@ -398,23 +383,17 @@ class Mongodb::BankPaperPap
   end
 
   def save_ckp params
-    result = true
+    status = Common::Paper::Status::Analyzing
+    #return result if params[:infromation].blank?
 
-    begin
-      status = Common::Paper::Status::Analyzing
-      #return result if params[:infromation].blank?
+    paper_h = JSON.parse(self.paper_json)
+    paper_h["information"]["paper_status"] = status
+    paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
 
-      paper_h = JSON.parse(self.paper_json)
-      paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
-
-      self.update_attributes({
-        :paper_json => paper_h.to_json || "",
-        :paper_status => status
-      })
-    rescue Exception => ex
-      result=false
-    end
-    return result
+    self.update_attributes({
+      :paper_json => paper_h.to_json || "",
+      :paper_status => status
+    })
   end
 
   def save_ckp_rollback
@@ -422,44 +401,36 @@ class Mongodb::BankPaperPap
   end
 
   def submit_ckp params
-    result = true
-
-    begin
-      status = Common::Paper::Status::Analyzed
-      if params[:bank_quiz_qizs]
-        params[:bank_quiz_qizs].each{|param|
-          # get quiz
-          current_qiz = Mongodb::BankQuizQiz.where(_id: param[:id]).first
-          param["bank_qizpoint_qzps"].each{|bqq|
-            # get quiz point
-            qiz_point = Mongodb::BankQizpointQzp.where(_id: bqq[:id]).first
-            if bqq["bank_checkpoints_ckps"]
-              current_qiz.save_qzp_all_ckps qiz_point,bqq
-            end
-          }
-          #result = Mongodb::BankQuizQiz.save_all_qzps current_qiz, param
+    status = Common::Paper::Status::Analyzed
+    if params[:bank_quiz_qizs]
+      params[:bank_quiz_qizs].each{|param|
+        # get quiz
+        current_qiz = Mongodb::BankQuizQiz.where(_id: param[:id]).first
+        param["bank_qizpoint_qzps"].each{|bqq|
+          # get quiz point
+          qiz_point = Mongodb::BankQizpointQzp.where(_id: bqq[:id]).first
+          if bqq["bank_checkpoints_ckps"]
+            current_qiz.save_qzp_all_ckps qiz_point,bqq
+          end
         }
-      end
-
-      paper_h = JSON.parse(self.paper_json)
-      paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
-
-      #测试各Tenant的状态更新
-      paper_h = update_test_tenants_status(
-        paper_h,
-        Common::Test::Status::NoScore,
-        self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
-      )
-
-      self.update_attributes({
-        :paper_json => paper_h.to_json || "",
-        :paper_status => status
-      })
-    rescue Exception => ex
-      result=false
-      self.update_attributes({:paper_status => ex.message})# Common::Paper::Status::Analyzing})
+      }
     end
-    return result
+
+    paper_h = JSON.parse(self.paper_json)
+    paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
+
+    #测试各Tenant的状态更新
+    paper_h = update_test_tenants_status(
+      paper_h,
+      Common::Test::Status::NoScore,
+      self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
+    )
+
+    paper_h["information"]["paper_status"] = status
+    self.update_attributes({
+      :paper_json => paper_h.to_json || "",
+      :paper_status => status
+    })
   end
 
   def submit_ckp_rollback
