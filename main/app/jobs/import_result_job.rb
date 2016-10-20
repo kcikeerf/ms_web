@@ -1,6 +1,11 @@
 # -*- coding: UTF-8 -*-
 
 require 'thwait'
+require 'location'
+require 'bank_checkpoint_ckp'
+require 'bank_subject_checkpoint_ckp'
+require 'mongodb/bank_qizpoint_qzp'
+require 'mongodb/bank_qizpoint_score'
 
 class ImportResultJob < ActiveJob::Base
   queue_as :result
@@ -14,6 +19,11 @@ class ImportResultJob < ActiveJob::Base
       target_paper = Mongodb::BankPaperPap.where(id: params[:pap_uid]).first 
       raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "paper id: #{params[:pap_uid]}")) unless target_paper
       raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "test object")) unless target_paper.bank_tests[0]
+      raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "test no tenant associated")) if target_paper.bank_tests[0].bank_test_tenant_links.blank?
+
+      unless target_paper.bank_tests[0].tenants.map(&:uid).include?(params[:tenant_uid])
+        raise SwtkErrors::TestTenantNotAssociatedError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => ""))
+      end
 
       target_tenant = Tenant.where(uid: params[:tenant_uid]).first
       raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "tenant object")) unless target_tenant
@@ -48,8 +58,13 @@ class ImportResultJob < ActiveJob::Base
       })
       job_tracker.save!
       logger.info "job uid: #{job_tracker.uid}"
+      temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first
+      temp.update({
+        :tenant_status => Common::Test::Status::ScoreImporting,
+        :job_uid => job_tracker.uid
+      })
       target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
-
+      return true
       ###
       logger.info ">>> 读取excel title <<<"
       job_tracker.update(status: Common::Job::Status::Processing)
@@ -125,7 +140,7 @@ class ImportResultJob < ActiveJob::Base
         th_arr << Thread.new {
           import_score_core({
             :th_index => th,
-            :result_sheet => result_sheet.clone,
+            :result_sheet => result_sheet,
             :hidden_row => hidden_row,
             :order_row => order_row,
             :title_row => title_row,
@@ -137,8 +152,8 @@ class ImportResultJob < ActiveJob::Base
             :loc_h => loc_h,
             :target_paper => target_paper,
             :target_tenant => target_tenant,
-            :teacher_sheet => teacher_sheet.clone,
-            :pupil_sheet => pupil_sheet.clone
+            :teacher_sheet => teacher_sheet,
+            :pupil_sheet => pupil_sheet
 
           })
         }
@@ -159,7 +174,7 @@ class ImportResultJob < ActiveJob::Base
       logger.warn ex.message
       logger.info "[backtrace]"
       logger.warn ex.backtrace
-    ensure 
+    ensure
       logger.info "============>>Import Result Job: End<<=============="
     end
   end
@@ -187,7 +202,6 @@ class ImportResultJob < ActiveJob::Base
             :stu_number => row[5],
             :sex => row[6]
           }
-
           #
           # get location
           #
@@ -199,7 +213,6 @@ class ImportResultJob < ActiveJob::Base
             loc.save!
           end
           raise SwtkErrors::NotFoundError.new(I18.t("swtk_errors.object_not_found", :message => "location, loc_h:#{args[:loc_h]}")) unless loc
-           
           user_row_arr = []
           # 
           # create teacher user 
@@ -265,6 +278,7 @@ class ImportResultJob < ActiveJob::Base
           current_pupil = current_user.nil?? nil : current_user.pupil
 
           logger.info ">>>thread index #{args[:th_index]} cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
+          count = 0
           (args[:data_start_col]..(args[:total_cols]-1)).each{|qzp_index|
             param_h = {
               :province => args[:loc_h][:province],
@@ -326,6 +340,7 @@ class ImportResultJob < ActiveJob::Base
               qizpoint_score = Mongodb::BankQizpointScore.new(param_h)
               qizpoint_score.save!
             }
+            count += 1
           }
 
           # process_value = 5 + 9*(index+1)/(total_row-data_start_row)
@@ -333,7 +348,7 @@ class ImportResultJob < ActiveJob::Base
         }
       rescue Exception => ex
         logger.info ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.message})<<<"
-        logger.warn ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.backtrace})<<<"
+        logger.debug ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.backtrace})<<<"
       ensure
         logger.info ">>>thread index #{args[:th_index]}: end<<<"
       end

@@ -2,8 +2,9 @@ module ReportModule
   module Report
 
     module Thread
-      NumPerTh = 30
-      ThNum = 30
+      NumPerTh = 50
+      ThNum = 5
+      ThNumMax = 20
     end
 
     module Url

@@ -34,7 +34,7 @@ class Mongodb::BankTest
         :tenant_uid => t.tenant_uid,
         :tenant_name => t.tenant.name_cn,
         :tenant_status => t.tenant_status,
-        :job_id => t.job_id
+        :job_uid => t.job_uid
       } 
     }
   end

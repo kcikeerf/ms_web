@@ -4,4 +4,5 @@ module SwtkErrors
  class ParameterInvalidError < StandardError;end
  class UserExistedError < StandardError;end
  class SaveOnlineTestError < StandardError;end
+ class TestTenantNotAssociatedError < StandardError;end
 end

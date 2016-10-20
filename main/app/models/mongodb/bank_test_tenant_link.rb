@@ -1,3 +1,6 @@
+# -*- coding: UTF-8 -*-
+#
+
 class Mongodb::BankTestTenantLink
   include Mongoid::Document
   include Mongodb::MongodbPatch
@@ -9,7 +12,8 @@ class Mongodb::BankTestTenantLink
   #field :test_id, type: String
   field :tenant_uid, type: String
   field :tenant_status, type: String
-  field :job_id, type: String
+  #等之后设计了Task Job Panel此字段可弃用
+  field :job_uid, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

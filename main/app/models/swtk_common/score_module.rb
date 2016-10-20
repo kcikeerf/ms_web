@@ -3,8 +3,9 @@ module ScoreModule
     module_function
 
     module Thread
-      NumPerTh = 10
-      ThNum = 30
+      NumPerTh = 50
+      ThNum = 5
+      ThNumMax =20 
     end
 
     module Constants

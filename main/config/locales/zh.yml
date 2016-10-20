@@ -200,6 +200,7 @@ zh:
     status:
       not_started: "未测试"
       no_score: "成绩未导入"
+      score_importing: "成绩导入中"
       score_imported: "成绩已导入"
   swtk_errors:
     parameter_invalid_error: "参数无效！"

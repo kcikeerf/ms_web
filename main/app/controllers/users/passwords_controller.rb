@@ -72,7 +72,7 @@ class Users::PasswordsController < Devise::PasswordsController
       end
     else
       #email
-      if $redis.get("password_#{login}") != auth_number
+      if $cache_redis.get("password_#{login}") != auth_number
         return render json: response_json(500, I18n.t('messages.invalid_email'))
       end
     end

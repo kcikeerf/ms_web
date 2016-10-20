@@ -1,19 +1,23 @@
-var topics = {};
+var swtk_global_topics = {};
  
 jQuery.Topic = function( id ) {
   var callbacks, method,
-    topic = id && topics[ id ];
+    topic = id && swtk_global_topics[ id ];
  
   if ( !topic ) {
     callbacks = jQuery.Callbacks();
     topic = {
       publish: callbacks.fire,
       subscribe: callbacks.add,
-      unsubscribe: callbacks.remove
+      unsubscribe: callbacks.remove,
+      destroy: function(){
+        delete swtk_global_topics[id];
+      }
     };
     if ( id ) {
-      topics[ id ] = topic;
+      swtk_global_topics[ id ] = topic;
     }
   }
+
   return topic;
 };

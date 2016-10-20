@@ -182,7 +182,6 @@ $(function(){
             }
             $(".paper_editor").attr("parttype",type);
             //试卷状态判断
-            console.log(data.information.paper_status);
             switch(data.information.paper_status){
                 case "editted":
                 case "analyzing":
@@ -204,7 +203,16 @@ $(function(){
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
                     if($(".tenant_result_list")){
-                        $(".tenant_result_list .progress").show();
+                        $(".tenant_result_list .score_importing").show();
+
+                        $.each($(".tenant_result_list .score_importing .progress-bar"),function(i,item){
+                            var target_task_uid = data.information.tasks.import_result;
+                            var target_job_uid = item.getAttribute("job-uid");
+                            window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                            $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].execute());
+                            $.Topic("tenant_score_importing").publish();
+                        });
+                        
                     }
                     else{
                         $(".paperDetails > .progress").show();
@@ -212,6 +220,7 @@ $(function(){
                     }
                     break;
                 case "score_imported":
+                    $.Topic("tenant_score_importing").destroy();
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
                     $(".lookPaperInfo, .createReport").show();
                     //project administrator tenant action
