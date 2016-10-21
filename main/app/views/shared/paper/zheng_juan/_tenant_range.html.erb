@@ -1,8 +1,9 @@
 <% if current_user.is_project_administrator?%>
-	<div class="<%=label_klass%>">
-			<label class="item_label"><%=LABEL("page.paper.tenant_range")%>&nbsp;:</label>
-	</div> 
+<!-- 	<div class="<%=label_klass%>">
+			<label class="item_label"><%#=LABEL("page.paper.test_range")%>&nbsp;:</label>
+	</div>  -->
 
+	<div class="hint"><%=LABEL("page.paper.test_range")%></div>
 	<div class="table-responsive">
 	<table class="table">
 		<thead>
@@ -45,7 +46,18 @@
 					<div class="tenant_result_list">
 					<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
 						<div style="font-size: 10px;">
-						<a href="javascript:;" geturl="/papers/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" class="download_link link_grade" style="font-size: 14px;">学生成绩表下载</a>
+							<a href="javascript:;" 
+								geturl="/papers/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" 
+								class="download_link link_grade" 
+								style="font-size: 14px;">
+							学生成绩表下载</a>
+						</div>
+						<div style="font-size: 10px;">
+							<a href="javascript:;" 
+								geturl="/papers/download_page?type=user_password_reporturl" 
+								class="download_link link_user"
+								style="font-size: 14px;">
+							用户名、密码、报告链接汇总表下载</a>
 						</div>
 					<% else %>
 						<div style="float: left;">

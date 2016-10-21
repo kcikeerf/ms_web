@@ -76,7 +76,7 @@ class PapersController < ApplicationController
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
       #current_pap.save_paper_rollback
-      result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
+      result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
     end
     render :json => result
   end
@@ -89,15 +89,18 @@ class PapersController < ApplicationController
     if !params[:pap_uid].blank?
       begin
         current_pap = Mongodb::BankPaperPap.get_pap params[:pap_uid]
-        result_h = JSON.parse(current_pap.paper_json)
-        #此处暂做保留，之后删掉
-        result_h["information"]["paper_status"] = current_pap.paper_status
-        result_h["pap_uid"] = current_pap._id.to_s
+        if current_pap
+          result_h = JSON.parse(current_pap.paper_json)
+          #此处暂做保留，之后删掉
+          result_h["information"]["paper_status"] = current_pap.paper_status
+          result_h["pap_uid"] = current_pap._id.to_s
 
-        result = response_json(200, result_h.to_json)
+          result = response_json(200, result_h.to_json)
+        end
       rescue Exception => ex 
-        result = response_json(500)
-        logger.info(ex.message)
+        result = response_json(500, Common::Locale::i18n("papers.messages.get_paper.fail"))
+        logger.debug(ex.message)
+        logger.debug(ex.backtrace)
       end
     else
       result = response_json(500)
