@@ -30,7 +30,7 @@ class Managers::ProjectAdministratorsController < ApplicationController
         raise format_error(new_user)
       end
     rescue Exception => ex
-      new_user.destroy!
+      new_user.destroy! if new_user.id
       status = 500
       data = {:status => 500, :message => ex.message}
     end

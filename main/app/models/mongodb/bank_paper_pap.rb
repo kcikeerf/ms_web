@@ -185,7 +185,12 @@ class Mongodb::BankPaperPap
       when Common::Paper::Status::Analyzed,Common::Paper::Status::ScoreImporting
         if !target_pap.bank_tests[0].blank? && !target_pap.bank_tests[0].tenant_list.blank?
           unless target_pap.bank_tests[0].tenant_list.map{|a| a[:tenant_status] == Common::Paper::Status::ScoreImported}.include?(false)
-            target_pap.update(:paper_status => Common::Paper::Status::ScoreImported)
+            paper_json_h = JSON.parse(target_pap.paper_json)
+            paper_json_h["information"]["paper_status"] = Common::Paper::Status::ScoreImported
+            target_pap.update({
+              :paper_status => Common::Paper::Status::ScoreImported,
+              :paper_json => paper_json_h.to_json
+            })
           end
         end
       else

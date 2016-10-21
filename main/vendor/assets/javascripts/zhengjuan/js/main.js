@@ -195,9 +195,9 @@ $(function(){
                 case "analyzed":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
-                    if($(".tenant_result_list")){
-                        $(".tenant_result_list .progress").show();
-                    }
+                    // if($(".tenant_result_list")){
+                        //$(".tenant_result_list .progress").show();
+                    // }
                     break;
                 case "score_importing":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
