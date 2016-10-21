@@ -25,11 +25,13 @@ class Mongodb::BankTest
 
   def tenant_list
     bank_test_tenant_links.map{|t|
+      job = JobList.where(uid: t.job_uid).first
       {
         :tenant_uid => t.tenant_uid,
         :tenant_name => t.tenant.name_cn,
         :tenant_status => t.tenant_status,
-        :job_uid => t.job_uid
+        :job_uid => t.job_uid,
+        :job_progress => job.nil?? 0 : (job.process*100).to_i
       } 
     }
   end
