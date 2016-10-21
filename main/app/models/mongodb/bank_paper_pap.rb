@@ -178,6 +178,22 @@ class Mongodb::BankPaperPap
       region
     end
 
+    def get_pap pap_uid
+      target_pap = Mongodb::BankPaperPap.where(_id: pap_uid).first
+      #判断状态是否需要更新
+      case target_pap.paper_status
+      when Common::Paper::Status::Analyzed,Common::Paper::Status::ScoreImporting
+        if !target_pap.bank_tests[0].blank? && !target_pap.bank_tests[0].tenant_list.blank?
+          unless target_pap.bank_tests[0].tenant_list.map{|a| a[:tenant_status] == Common::Paper::Status::ScoreImported}.include?(false)
+            target_pap.update(:paper_status => Common::Paper::Status::ScoreImported)
+          end
+        end
+      else
+        #do nothing
+      end
+      target_pap
+    end
+
     ##############################
     #            微信             #
     ##############################
@@ -194,8 +210,8 @@ class Mongodb::BankPaperPap
   end
   ########类方法定义：end#######
 
-
   def save_pap params
+    params[:pap_uid] = id.to_s
     ##############################
     #临时处理，伴随试卷保存
     #创建测试
@@ -844,19 +860,19 @@ class Mongodb::BankPaperPap
     return Common::SwtkConstants::MyDomain 
   end
 
-  def download_file_name type
-    case type
-    when 'usr_pwd_file'
-      year_str = quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian')
-      grade_str = Common::Grade::List[grade.to_sym]
-      subject_str = Common::Subject::List[subject.to_sym]
-      result = year_str + grade_str + subject_str + Common::Locale::i18n('reports.check') + "_"
-    else
-      result = heading + '_'
-    end
-    result += Common::Locale::i18n("papers.name.#{type}")
-    result
-  end
+  # def download_file_name type
+  #   case type
+  #   when 'usr_pwd_file'
+  #     year_str = quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian')
+  #     grade_str = Common::Grade::List[grade.to_sym]
+  #     subject_str = Common::Subject::List[subject.to_sym]
+  #     result = year_str + grade_str + subject_str + Common::Locale::i18n('reports.check') + "_"
+  #   else
+  #     result = heading + '_'
+  #   end
+  #   result += Common::Locale::i18n("papers.name.#{type}")
+  #   result
+  # end
 
   def is_completed?
     paper_status == Common::Paper::Status::ReportCompleted

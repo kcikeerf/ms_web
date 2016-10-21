@@ -14,6 +14,7 @@ module Common
   include ScoreModule
   include SubjectModule
   include SwtkConstantsModule
+  include SwtkRedisModule
   include TaskJobModule
   include TenantModule
   include TermModule

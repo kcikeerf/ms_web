@@ -224,7 +224,9 @@ $(function(){
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
                     $(".lookPaperInfo, .createReport").show();
                     //project administrator tenant action
-                    $(".tenant_result_list").hide();
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+                    }
                     //
                     break
                 case "report_generating":

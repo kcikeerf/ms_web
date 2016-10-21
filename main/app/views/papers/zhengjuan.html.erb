@@ -91,7 +91,9 @@
 		<div class="hint">相关文件</div>
 		<a href="javascript:;" geturl="/papers/download_page?type=original_paper_answer" class="download_link link_paper">原始试题、答案下载</a>
 		<a href="javascript:;" geturl="/papers/download_page?type=modified_paper_answer_emptyscore" class="download_link link_form">已修订的试卷、答案、录入表（空）下载</a>
+<% unless current_user.is_project_administrator? %>	
 		<a href="javascript:;" geturl="/papers/download_page?type=imported_score" class="download_link link_grade">学生成绩表下载</a>
+<% end %>
 		<a href="javascript:;" geturl="/papers/download_page?type=user_password_reporturl" class="download_link link_user">用户名、密码、报告链接汇总表下载</a>
 		<a href="javascript:;" class="paper_editor">修订试卷</a>
 		<div class="paper_about clearfix">
