@@ -23,11 +23,6 @@ class Mongodb::BankTest
     Tenant.where(uid: tenant_uids)
   end
 
-  def tasks
-    task_uids = bank_test_task_links.map(&:task_uid)
-    TaskList.where(uid: task_uids)
-  end
-
   def tenant_list
     bank_test_tenant_links.map{|t|
       {
@@ -39,6 +34,11 @@ class Mongodb::BankTest
     }
   end
 
+  def tasks
+    task_uids = bank_test_task_links.map(&:task_uid)
+    TaskList.where(uid: task_uids)
+  end
+
   def task_list
     bank_test_task_links.map{|t|
       {
@@ -48,5 +48,9 @@ class Mongodb::BankTest
         :task_type => t.task.task_type
       }
     }
+  end
+
+  def score_uploads
+    ScoreUpload.where(test_id: id.to_s)
   end
 end

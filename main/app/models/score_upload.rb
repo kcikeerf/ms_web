@@ -4,4 +4,6 @@ class ScoreUpload < ActiveRecord::Base
   mount_uploader :usr_pwd_file, UserPasswordUploader
 
   #belongs_to :analyzer, foreign_key: "ana_uid"
+  scope :by_tenant_uid, ->(uid) { where(tenant_uid: uid).order({updated_at: :desc}) }
+
 end

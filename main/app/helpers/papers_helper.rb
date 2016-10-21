@@ -1,17 +1,21 @@
 module PapersHelper
-  def download_list(type)		
+  def download_list(type)
+    ftype_arr = []
     case type
     when 'original_paper_answer'
-      %w{paper answer}
+      ftype_arr = %w{paper answer}
     when 'modified_paper_answer_emptyscore'
-      %w{revise_paper revise_answer empty_result}
+      ftype_arr = %w{revise_paper revise_answer empty_result}
     when 'imported_score'
-      %w{filled_file}
+      ftype_arr = %w{filled_file}
     when 'user_password_reporturl'
-      %w{usr_pwd_file}
+      ftype_arr = %w{usr_pwd_file}
     else
-      []
+      # do nothing
     end
+    ftype_arr.map{|ftype|
+      {:pap_uid => @paper.id.to_s, :type => ftype, :tenant_uid=> params[:tenant_uid], :file_name => download_file_name(ftype)}
+    }
   end
 
   def download_file_name type
