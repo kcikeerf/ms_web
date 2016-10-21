@@ -49,6 +49,11 @@ ProgressBarUpdater.prototype.success_func = function(data){
 	var self = this;
 	var items = $.grep(data.jobs, function(e){ return e.job_uid == self.updater.job_uid; });
 	self.updater.target.style.width = items[0].progress*100+"%";
+	self.updater.target.innerHTML = (items[0].progress*100).toFixed(0)+"%";
+	if(items[0].progress >= 1){
+		self.destroy();
+		//location.reload();
+	}
 }
 
 ProgressBarUpdater.prototype.error_func = function(){

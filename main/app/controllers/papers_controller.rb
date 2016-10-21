@@ -87,11 +87,18 @@ class PapersController < ApplicationController
     result = response_json
     
     if !params[:pap_uid].blank?
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      result_h = JSON.parse(current_pap.paper_json)
-      result_h["information"]["paper_status"] = current_pap.paper_status
-      result_h["pap_uid"] = current_pap._id.to_s
-      result = response_json(200, result_h.to_json)
+      begin
+        current_pap = Mongodb::BankPaperPap.get_pap params[:pap_uid]
+        result_h = JSON.parse(current_pap.paper_json)
+        #此处暂做保留，之后删掉
+        result_h["information"]["paper_status"] = current_pap.paper_status
+        result_h["pap_uid"] = current_pap._id.to_s
+
+        result = response_json(200, result_h.to_json)
+      rescue Exception => ex 
+        result = response_json(500)
+        logger.info(ex.message)
+      end
     else
       result = response_json(500)
     end

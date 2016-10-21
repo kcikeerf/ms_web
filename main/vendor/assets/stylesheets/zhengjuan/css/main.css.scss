@@ -43,7 +43,7 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .createReport a, .lookReport a{display: block;border: 1px solid #dfdfdf;line-height: 28px;text-align: center;color: #333; border-radius: 3px;}
 .createReport a.active:hover, .lookReport a.active:hover{background-color: #4FB393;color: #fff;border-color: #4FB393;}
 .paperDetails .progress_label{text-align: center;}
-.paperDetails .progress{display: none; height: 10px;border: 1px solid #dcdcdc;margin-top: 5px;}
+.paperDetails .progress{display: none; height: 10px;border: 1px solid #dcdcdc;margin-top: 3px;}
 .paperDetails .progress .finish{height: 100%;background-color: #5cb85c;width: 0;}
 .createReport p.error{color: #f00;font-size: 13px;margin-top: 5px;}
 

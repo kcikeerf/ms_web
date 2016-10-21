@@ -43,28 +43,33 @@
 <!-- 				<td><%#= LABEL("tests.status." + t[:tenant_status]) %></td> -->
 				<td class="tenant_action">
 					<div class="tenant_result_list">
+					<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
+						<div style="font-size: 10px;">
+						<a href="javascript:;" geturl="/papers/download_page?type=imported_score&tenant_uid=<%=t[:tenant_uid]%>" class="download_link link_grade" style="font-size: 14px;">学生成绩表下载</a>
+						</div>
+					<% else %>
 						<div style="float: left;">
 						<button type="button" 
 								class="btn btn-default btn-xs" 
 								geturl="/papers/import_filled_result?tenant_uid=<%=t[:tenant_uid]%>" 
 								href="javascript:;"
-							<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>								
-								disabled
-							<% end %>
-								>导入成绩表</button>
+								>
+								导入成绩表
+								</button>
 						</div>
 						<div style="float: left; width: 20px;display: block;">&nbsp;
 						</div>
-						<div class="progress <%=t[:tenant_status]%>" style="float: left; width: 100px;">
+						<div class="progress <%=t[:tenant_status]%>" style="float: left; width: 100px;height:20px;">
 							<div class="progress-bar progress-bar-success" 
 								job-uid="<%=t[:job_uid]%>"
 								role="progressbar" 
 								aria-valuenow="0" 
 								aria-valuemin="0" 
 								aria-valuemax="100" 
-								style="width:0%; ">
+								style="width:0%; font-size: 10px;color: #000000;">
 							</div>
 						</div>
+					<% end %>
 					</div>
 				</td>
 			</tr>

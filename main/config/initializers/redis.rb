@@ -16,3 +16,4 @@ redis_namespace = "cache"
 url = "redis://#{redis_server}:#{redis_port}/#{redis_db_num}"
 
 $cache_redis = Redis.new(host: redis_server, port: redis_port, db: redis_db_num, namespace: redis_namespace)
+

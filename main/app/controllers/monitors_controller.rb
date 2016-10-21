@@ -7,7 +7,7 @@ class MonitorsController < ApplicationController
 
     target_task = TaskList.where(uid: params[:task_uid]).first
     if target_task
-      target_jobs = target_task.job_lists
+      target_jobs = target_task.job_lists.order({dt_update: :desc})
 
       result[:name] = target_task.name
       result[:jobs] = target_jobs.map{|j|

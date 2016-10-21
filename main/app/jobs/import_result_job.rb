@@ -43,6 +43,12 @@ class ImportResultJob < ActiveJob::Base
       logger.info "tenant id: #{params[:tenant_uid]}"
       logger.info "score file id: #{params[:score_file_id]}"
 
+       # p ">>>初始化<<<"
+       # p "paper id: #{params[:pap_uid]}"
+       # p "test id: #{target_paper.bank_tests[0].id.to_s}"
+       # p "tenant id: #{params[:tenant_uid]}"
+       # p "score file id: #{params[:score_file_id]}"
+
       # 获取Task信息，创建JOB
       target_task = target_paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
       target_task.touch(:dt_update)
@@ -58,13 +64,25 @@ class ImportResultJob < ActiveJob::Base
       })
       job_tracker.save!
       logger.info "job uid: #{job_tracker.uid}"
+      # p "job uid: #{job_tracker.uid}"
+      #为了记录处理的进度
+      redis_key = Common::SwtkRedis::Prefix::ImportResult + params[:tenant_uid]
+      Common::SwtkRedis::set_key(redis_key, 0)
+
       temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first
       temp.update({
         :tenant_status => Common::Test::Status::ScoreImporting,
         :job_uid => job_tracker.uid
       })
+
+      #delete old scores
+      old_scores = Mongodb::BankQizpointScore.where({
+        :pap_uid => params[:pap_uid], 
+        :test_id => target_paper.bank_tests[0].id.to_s,
+        :tenant_uid => params[:tenant_uid]})
+      old_scores.destroy_all unless old_scores.blank?
       target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
-      return true
+
       ###
       logger.info ">>> 读取excel title <<<"
       job_tracker.update(status: Common::Job::Status::Processing)
@@ -140,16 +158,20 @@ class ImportResultJob < ActiveJob::Base
         th_arr << Thread.new {
           import_score_core({
             :th_index => th,
+            :redis_key => redis_key,
             :result_sheet => result_sheet,
             :hidden_row => hidden_row,
             :order_row => order_row,
             :title_row => title_row,
+            :total_row => total_row,
             :start_num => start_num,
             :end_num => end_num,
             :data_start_row => data_start_row,
             :data_start_col => data_start_col,
             :total_cols => total_cols,
             :loc_h => loc_h,
+            :job_tracker => job_tracker,
+            :phase_total => phase_total,
             :target_paper => target_paper,
             :target_tenant => target_tenant,
             :teacher_sheet => teacher_sheet,
@@ -166,21 +188,30 @@ class ImportResultJob < ActiveJob::Base
       file_h = {:score_file_id => target_paper.score_file_id, :file_path => file_path}
       score_file = Common::Score.create_usr_pwd file_h
 
-      #job_tracker.update(process: 1.0)
+      job_tracker.update(process: 1.0)
+      temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
+      #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
+      # p "Exception Msg=> #{ex.mesage}"
+      # p "#{ex.backtrace}"
       logger.info "===Excepion==="
       logger.info "[message]"
       logger.warn ex.message
       logger.info "[backtrace]"
       logger.warn ex.backtrace
     ensure
+       # p "导入结束"
+       # p "tenant id: #{params[:tenant_uid]}"
+      logger.info("redis 计数值: #{Common::SwtkRedis::get_value(redis_key)}")
+      Common::SwtkRedis::del_keys(redis_key)
       logger.info "============>>Import Result Job: End<<=============="
     end
   end
 
   def self.import_score_core args={}
       logger.info ">>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
+      # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       begin
         #主线程读取用户信息
         teacher_username_in_sheet = []
@@ -278,6 +309,8 @@ class ImportResultJob < ActiveJob::Base
           current_pupil = current_user.nil?? nil : current_user.pupil
 
           logger.info ">>>thread index #{args[:th_index]} cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
+          # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: row:#{index},  cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
+
           count = 0
           (args[:data_start_col]..(args[:total_cols]-1)).each{|qzp_index|
             param_h = {
@@ -286,7 +319,8 @@ class ImportResultJob < ActiveJob::Base
               :district => args[:loc_h][:district],
               :school => args[:loc_h][:school],
               :grade => cells[:grade],
-              :classroom => cells[:classroom],         
+              :classroom => cells[:classroom],
+              :test_id => args[:target_paper].bank_tests[0].id.to_s, 
               :pup_uid => current_pupil.nil?? "":current_pupil.uid,
               :pap_uid => args[:target_paper]._id.to_s,
               :qzp_uid => args[:hidden_row][qzp_index],
@@ -342,11 +376,16 @@ class ImportResultJob < ActiveJob::Base
             }
             count += 1
           }
-
-          # process_value = 5 + 9*(index+1)/(total_row-data_start_row)
-          # job_tracker.update(process: process_value/phase_total.to_f)
+          Common::SwtkRedis::incr_key(args[:redis_key])
+          #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
+          redis_count = Common::SwtkRedis::get_value(args[:redis_key]).to_f
+          process_value = 5 + 9*redi_count/(args[:total_row]-args[:data_start_row]).to_f
+          #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: process_value => #{process_value}"
+          args[:job_tracker].update(process: process_value/args[:phase_total].to_f)
         }
       rescue Exception => ex
+        # p "Exception Msg=> #{ex.mesage}"
+        # p "#{ex.backtrace}"
         logger.info ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.message})<<<"
         logger.debug ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.backtrace})<<<"
       ensure

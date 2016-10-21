@@ -2,3 +2,4 @@ version1.0 -> version1.1
 
 1. 需要讲旧的ScoreUpload的empty_file记录都迁移到FileUpload上 rake db:seed
 2. 为所有的试卷创建两个Task：上传成绩和生成报告
+3. 需要启动redis-server --daemonize yes

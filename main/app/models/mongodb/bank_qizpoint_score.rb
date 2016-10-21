@@ -24,7 +24,8 @@ class Mongodb::BankQizpointScore
   field :school, type: String
   field :grade, type: String
   field :classroom, type: String
-  #   
+  #
+  field :test_id, type: String
   field :pup_uid, type: String #pupil id
   field :pap_uid, type: String #paper id
   field :qzp_uid, type: String #qizpoint id
