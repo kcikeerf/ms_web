@@ -82,7 +82,7 @@
 		</div>
 
 <!--项目管理员增加Tenant范围选择域：begin-->
-<%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "tenant", edittable: false} %>
+<%#= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "tenant", edittable: false} %>
 
 		<div class="lookPaperInfo">
 			<a class="lookPaper_q_a" href="javascript:void(0);">查看已修订的试卷、答案详情</a>
@@ -92,9 +92,20 @@
 		<a href="javascript:;" geturl="/papers/download_page?type=original_paper_answer" class="download_link link_paper">原始试题、答案下载</a>
 		<a href="javascript:;" geturl="/papers/download_page?type=modified_paper_answer_emptyscore" class="download_link link_form">已修订的试卷、答案、录入表（空）下载</a>
 <% unless current_user.is_project_administrator? %>	
-		<a href="javascript:;" geturl="/papers/download_page?type=imported_score" class="download_link link_grade">学生成绩表下载</a>
+		<a href="javascript:;" 
+			geturl="/papers/download_page?type=imported_score" 
+			class="download_link link_grade">
+		学生成绩表下载</a>
+
+		<a href="javascript:;" 
+			geturl="/papers/download_page?type=user_password_reporturl" 
+			class="download_link link_user">
+		用户名、密码、报告链接汇总表下载</a>
 <% end %>
-		<a href="javascript:;" geturl="/papers/download_page?type=user_password_reporturl" class="download_link link_user">用户名、密码、报告链接汇总表下载</a>
+
+<!--项目管理员增加Tenant范围选择域：begin-->
+<%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "tenant", edittable: false} %>
+
 		<a href="javascript:;" class="paper_editor">修订试卷</a>
 		<div class="paper_about clearfix">
 			<div class="about_left">
@@ -102,11 +113,12 @@
 			</div>
 			<div class="about_right">
 				<a class="edit_sanwei" href="javascript:;">三维解析试卷</a>
-<% unless current_user.is_project_administrator? %>				
+<% unless current_user.is_project_administrator? %>	
 				<a class="load_list" geturl="/papers/import_filled_score" href="javascript:;">导入成绩表</a>
 <% end %>
 			</div>
 		</div>
+
 		<div class="createReport">
 			<a href="javascript:;" class="active">生成报告</a>
 			<!--div class="progress">
@@ -114,13 +126,18 @@
 			</div-->
 			<p class="error"></p>
 		</div>
+
+<% unless current_user.is_project_administrator? %>	
 		<div class="lookReport">
 			<a href="/reports/new_square" class="active">在线查看报告</a>
 		</div>
+<% end %>
+
 		<div class="progress_label"></div>
 		<div class="progress">
 			<div class="finish"></div>
 		</div>
+
 	</div>
 </script>
 <!-- 试卷上传模版 -->
@@ -361,7 +378,7 @@
 
 
 <!--项目管理员增加Tenant范围选择域-->
-<%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
+<%=render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
 
 		</div>
 

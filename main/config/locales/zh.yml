@@ -92,6 +92,8 @@ zh:
       filled_file: '学生成绩表'
       usr_pwd_file: '老师及学生的用户名及密码'
     messages:
+      get_paper:
+        fail: "获取试卷发生异常错误！"
       save_paper:
         success: "试卷（标题：%{heading}）保存成功!"
         fail: "试卷（原因：%{message}）保存失败!"
@@ -868,6 +870,7 @@ zh:
       upload_score: '上传成绩表'
       score: '成绩表'
       tenant_range: "Tenant范围"
+      test_range: "测试范围"
     pupil:
       basic_info: '个人信息'
 

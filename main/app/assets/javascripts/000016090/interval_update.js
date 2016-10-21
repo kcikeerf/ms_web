@@ -42,7 +42,7 @@ var ProgressBarUpdater = function(target, task_uid, job_uid){
 	this.data = {task_uid: task_uid};
 	this.job_uid = job_uid;
 	this.updater = null;
-	this.interval_time = 3000;
+	this.interval_time = 10000;
 }
 
 ProgressBarUpdater.prototype.success_func = function(data){

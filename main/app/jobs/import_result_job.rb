@@ -379,7 +379,7 @@ class ImportResultJob < ActiveJob::Base
           Common::SwtkRedis::incr_key(args[:redis_key])
           #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
           redis_count = Common::SwtkRedis::get_value(args[:redis_key]).to_f
-          process_value = 5 + 9*redi_count/(args[:total_row]-args[:data_start_row]).to_f
+          process_value = 5 + 9*redis_count/(args[:total_row]-args[:data_start_row]).to_f
           #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: process_value => #{process_value}"
           args[:job_tracker].update(process: process_value/args[:phase_total].to_f)
         }
