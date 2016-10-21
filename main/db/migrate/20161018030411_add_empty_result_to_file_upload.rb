@@ -4,9 +4,10 @@ class AddEmptyResultToFileUpload < ActiveRecord::Migration
 
   	Mongodb::BankPaperPap.all.each{|p|
       if p.orig_file_id && p.score_file_id
-        fu = FileUpload.find(p.orig_file_id)
-        su = ScoreUpload.find(p.score_file_id)
-        fu.empty_result = Pathname.new(fu.current_path).open
+        fu = FileUpload.where(id: p.orig_file_id).first
+        su = ScoreUpload.where(id: p.score_file_id).first
+        next if fu.nil? || su.nil?
+        fu.empty_result = Pathname.new(su.empty_file.current_path).open if File.exists?(su.empty_file.current_path)
         fu.save!
       end
   	}

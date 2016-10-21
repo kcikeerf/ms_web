@@ -135,10 +135,11 @@ class User < ActiveRecord::Base
   #删除关联角色对象用户的实例
   def destroy
     super
-    role_obj.destroy
+    role_obj.destroy if role_obj
   end
 
   def save_role_obj params
+    begin
     role_obj = 
       case 
       when is_analyzer? then (analyzer.nil?? Analyzer.new : analyzer)
@@ -150,6 +151,10 @@ class User < ActiveRecord::Base
       end
 
     role_obj.save_obj(params) if role_obj
+    rescue Exception => ex
+      p ex.messages
+      p ex.backtrace
+    end
   end
 
   def save_after(options)

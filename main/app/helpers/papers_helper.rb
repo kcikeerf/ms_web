@@ -24,7 +24,12 @@ module PapersHelper
       year_str = @paper.quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian')
       grade_str = Common::Grade::List[@paper.grade.to_sym]
       subject_str = Common::Subject::List[@paper.subject.to_sym]
-      result = year_str + grade_str + subject_str + Common::Locale::i18n('reports.check') + "_"
+      if current_user.is_project_administrator?
+        target_tenant = Tenant.find(params[:tenant_uid])
+        result = target_tenant.name_cn + '_' 
+      else
+        result = year_str + grade_str + subject_str + Common::Locale::i18n('reports.check') + "_"
+      end
     when 'filled_file'
       if current_user.is_project_administrator?
         target_tenant = Tenant.find(params[:tenant_uid])
