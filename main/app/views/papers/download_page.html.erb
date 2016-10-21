@@ -9,11 +9,9 @@
 </div>
 <div class="modal-body">
 	<ul>
-	<% download_list(params[:type]).each do |type| %>
+	<% download_list(params[:type]).each do |item| %>
 		<li>
-			<%= link_to download_file_name(type), 
-						download_papers_path(pap_uid: @paper, type: type, tenant_uid: params[:tenant_uid]) ,
-						:target => "_blank"%>
+			<%= link_to item[:file_name], download_papers_path(item), :target => "_blank"%>
 		</li>
 	<% end %>	
 	</ul>
