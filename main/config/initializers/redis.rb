@@ -12,8 +12,8 @@
 redis_server = 'localhost'
 redis_port = 6379
 redis_db_num = 0
-redis_namespace = "cache"
 url = "redis://#{redis_server}:#{redis_port}/#{redis_db_num}"
+$redis_cnn = Redis.new(host: redis_server, port: redis_port, db: redis_db_num)
 
-$cache_redis = Redis.new(host: redis_server, port: redis_port, db: redis_db_num, namespace: redis_namespace)
-
+$cache_redis = Redis::Namespace.new(:cache, :redis => $redis_cnn)
+$sidekiq_redis = Redis::Namespace.new(:sidekiq, :redis => $redis_cnn)

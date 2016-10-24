@@ -66,3 +66,4 @@
 # Mongodb::ReportQuizCommentsResult.destroy_all
 
 SwtkConfig.new(:name => "version", :value=>"1.1").save
+SwtkConfig.new(:name => "sv_cpu_cores", :value=>"2").save

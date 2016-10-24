@@ -4,9 +4,9 @@
 
 :queues:
     - default
-    - [report, 10]
-    - [myqueue, 1]
-    - [mailers, 1]
+    - [report, 2]
+    - [result, 2]
+    - [score. 2]
 
 development:
   :concurrency: 5
