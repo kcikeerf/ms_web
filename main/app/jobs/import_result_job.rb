@@ -8,10 +8,11 @@ require 'mongodb/bank_qizpoint_qzp'
 require 'mongodb/bank_qizpoint_score'
 
 class ImportResultJob < ActiveJob::Base
-  queue_as :result
+  queue_as :default
 
-  def self.perform_later(*args)
+  def perform(*args)
     begin
+      #p "开始时间: #{Time.now.strftime('%s')}"
       logger.info "============>>Import Result Job: Begin<<=============="
       params = args[0]
 
@@ -62,12 +63,14 @@ class ImportResultJob < ActiveJob::Base
         :status => Common::Job::Status::InQueue,
         :process => 1/phase_total.to_f
       })
+      # job_tracker = JobList.find(params[:job_uid])
       job_tracker.save!
       logger.info "job uid: #{job_tracker.uid}"
       # p "job uid: #{job_tracker.uid}"
       #为了记录处理的进度
-      redis_key = Common::SwtkRedis::Prefix::ImportResult + params[:tenant_uid]
-      Common::SwtkRedis::set_key(redis_key, 0)
+      redis_key = Common::SwtkRedis::Prefix::ImportResult + job_tracker.uid
+      redis_ns = :sidekiq_redis
+      Common::SwtkRedis::set_key(redis_ns,redis_key, 0)
 
       temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first
       temp.update({
@@ -146,10 +149,15 @@ class ImportResultJob < ActiveJob::Base
 
       #上传成绩多线程处理
       logger.info ">>>多线程读取<<<"
-      num_per_th = Common::Score::Thread::NumPerTh
-      th_number = total_row/num_per_th + 1
+      # num_per_th = Common::Score::Thread::NumPerTh
+      # th_number = total_row/num_per_th + 1
+      # mod_num = total_row%num_per_th
+      
+      th_number = Common::Score::Thread::ThNum
+      num_per_th = total_row/Common::Score::Thread::ThNum
       mod_num = total_row%num_per_th
       logger.info "线程数量: #{th_number}, 行数: #{total_row}"
+      #p "线程数量: #{th_number}, 行数: #{total_row}"
 
       th_arr = []
       th_number.times.each{|th|
@@ -159,6 +167,7 @@ class ImportResultJob < ActiveJob::Base
           import_score_core({
             :th_index => th,
             :redis_key => redis_key,
+            :redis_ns => redis_ns,
             :result_sheet => result_sheet,
             :hidden_row => hidden_row,
             :order_row => order_row,
@@ -193,25 +202,25 @@ class ImportResultJob < ActiveJob::Base
       #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
-      # p "Exception Msg=> #{ex.mesage}"
-      # p "#{ex.backtrace}"
+      #p "Exception Msg=> #{ex.message}"
+      #p "#{ex.backtrace}"
       logger.info "===Excepion==="
       logger.info "[message]"
       logger.warn ex.message
       logger.info "[backtrace]"
       logger.warn ex.backtrace
     ensure
-       # p "导入结束"
+      #p "导入结束: #{Time.now.strftime('%s')}"
        # p "tenant id: #{params[:tenant_uid]}"
-      logger.info("redis 计数值: #{Common::SwtkRedis::get_value(redis_key)}")
-      Common::SwtkRedis::del_keys(redis_key)
+      logger.info("redis 计数值: #{Common::SwtkRedis::get_value(redis_ns,redis_key)}")
+      Common::SwtkRedis::del_keys(redis_ns, redis_key)
       logger.info "============>>Import Result Job: End<<=============="
     end
   end
 
-  def self.import_score_core args={}
+  def import_score_core args={}
       logger.info ">>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
-      # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
+      #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       begin
         #主线程读取用户信息
         teacher_username_in_sheet = []
@@ -376,16 +385,17 @@ class ImportResultJob < ActiveJob::Base
             }
             count += 1
           }
-          Common::SwtkRedis::incr_key(args[:redis_key])
-          #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
-          redis_count = Common::SwtkRedis::get_value(args[:redis_key]).to_f
+          #p "row: #{index} >>> col count: #{count}"
+          Common::SwtkRedis::incr_key(args[:redis_ns], args[:redis_key])
+          # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
+          redis_count = Common::SwtkRedis::get_value(args[:redis_ns], args[:redis_key]).to_f
           process_value = 5 + 9*redis_count/(args[:total_row]-args[:data_start_row]).to_f
           #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: process_value => #{process_value}"
           args[:job_tracker].update(process: process_value/args[:phase_total].to_f)
         }
       rescue Exception => ex
-        # p "Exception Msg=> #{ex.mesage}"
-        # p "#{ex.backtrace}"
+        #p "Exception Msg=> #{ex.mesage}"
+        #p "#{ex.backtrace}"
         logger.info ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.message})<<<"
         logger.debug ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.backtrace})<<<"
       ensure
