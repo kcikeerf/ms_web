@@ -6,25 +6,34 @@ module SwtkRedisModule
       ImportResult = "/import_results/"
     end
 
-    def set_key k,v
-  	  $cache_redis.set k,v
+    def current_redis ns
+      case ns
+      when :sidekiq_redis
+        $sidekiq_redis
+      else
+        $cache_redis
+      end
+    end
+
+    def set_key ns,k,v
+  	  current_redis(ns).set k,v
   	end
 
-    def incr_key str
-      $cache_redis.incr(str)
+    def incr_key ns,str
+      current_redis(ns).incr(str)
     end
 
-    def get_value str
-      $cache_redis.get(str)
+    def get_value ns,str
+      current_redis(ns).get(str)
     end
 
-    def del_keys str
-      arr = find_keys str
-      $cache_redis.del(*arr)
+    def del_keys ns,str
+      arr = find_keys ns,str
+      current_redis(ns).del(*arr)
     end
 
-    def find_keys str
-      $cache_redis.keys(str)
+    def find_keys ns,str
+      current_redis(ns).keys(str)
     end
   end
 end

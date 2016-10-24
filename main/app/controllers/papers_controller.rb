@@ -329,13 +329,13 @@ class PapersController < ApplicationController
         score_file = Common::Score.upload_filled_result(params)
         if score_file          
           # Job
-          Thread.new do
-            ImportResultJob.perform_later({
-              :score_file_id => score_file.id,
-              :tenant_uid => params[:tenant_uid],
-              :pap_uid => params[:pap_uid]
-            })
-          end
+          ImportResultJob.perform_later({
+            #:task_uid => target_task.uid,
+            :score_file_id => score_file.id,
+            :tenant_uid => params[:tenant_uid],
+            :pap_uid => params[:pap_uid]
+          })
+          #end
           status = 200
           result[:status] = status
           current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
