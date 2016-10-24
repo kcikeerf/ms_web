@@ -808,8 +808,8 @@ class Mongodb::BankPaperPap
         :password => "",
         :name => params_h[:name],
         :report_url => "",
-        :op_guide => Common::Locale::i18n('reports.op_guide_details')
-        # :tenant_uid => tenant.uid
+        :op_guide => Common::Locale::i18n('reports.op_guide_details'),
+        :tenant_uid => params_h[:tenant_uid]
       },
       Common::Role::Pupil.to_sym => {
         :username => params_h[:user_name],
@@ -817,14 +817,15 @@ class Mongodb::BankPaperPap
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
         :report_url => Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
-        :op_guide => Common::Locale::i18n('reports.op_guide_details')
-        # :tenant_uid => tenant.uid
+        :op_guide => Common::Locale::i18n('reports.op_guide_details'),
+        :tenant_uid => params_h[:tenant_uid]
       }
     }
 
-    params_h[:tenant_uid] = tenant.nil?? "":tenant.uid
+    params_h[:tenant_uid] = (tenant.nil?? "":tenant.uid) if params_h[:tenant_uid].blank?
 
     ret = User.add_user params_h[:user_name],role, params_h
+
     target_username = ""
     if (ret.is_a? Array) && ret.empty?
       row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.info.old_user")

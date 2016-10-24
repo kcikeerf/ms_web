@@ -259,6 +259,7 @@ class ImportResultJob < ActiveJob::Base
           #
           head_tea_h = {
             :loc_uid => loc.uid,
+            :tenant_uid => args[:target_tenant].uid,
             :name => cells[:head_teacher],
             :subject => args[:target_paper].subject,
             :head_teacher => true,
@@ -276,6 +277,7 @@ class ImportResultJob < ActiveJob::Base
           
           tea_h = {
             :loc_uid => loc.uid,
+            :tenant_uid => args[:target_tenant].uid,
             :name => cells[:teacher],
             :subject => args[:target_paper].subject,
             :head_teacher => false,
@@ -296,6 +298,7 @@ class ImportResultJob < ActiveJob::Base
           #
           pup_h = {
             :loc_uid => loc.uid,
+            :tenant_uid => args[:target_tenant].uid,
             :name => cells[:pupil_name],
             :stu_number => cells[:stu_number],
             :grade => cells[:grade],

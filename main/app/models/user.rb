@@ -49,23 +49,29 @@ class User < ActiveRecord::Base
     #pupil: User.add_user('xxx', 'pupil', {loc_uid: '1111111', name: 'xx', stu_number: '1234', sex: 'nan'})
     #teacher: User.add_user('xxx', 'teacher', {loc_uid: '1111111', name: 'xx', subject: 'english', head_teacher: true})
     def add_user(name, role_name, options={})
-      password = generate_rand_password
-      transaction do 
-        user = find_by(name: name)
-        if user
-          #学生只能属于一个班级，若有更新，将更改Location
-          user.pupil.update(:loc_uid => options[:loc_uid]) if user.is_pupil? && !options[:loc_uid].blank?
-          ClassTeacherMapping.find_or_save_info(user.teacher, options) if user.is_teacher?
-          return [user.name, user.initial_password] unless user.initial_password.blank?
-          return []
+      begin
+        password = generate_rand_password
+        transaction do 
+          user = find_by(name: name)
+          if user
+            #学生只能属于一个班级，若有更新，将更改Location
+            user.pupil.update(:loc_uid => options[:loc_uid]) if user.is_pupil? && !options[:loc_uid].blank?
+            ClassTeacherMapping.find_or_save_info(user.teacher, options) if user.is_teacher?
+            return [user.name, user.initial_password] unless user.initial_password.blank?
+            return []
+          end
+          user = new(name: name, password: password, password_confirmation: password, role_name: role_name, initial_password: password)
+          return false unless user.save
+
+          #确定地区
+
+          user.save_after(options.merge({user_id: user.id}))
+          return [user.name, password]
         end
-        user = new(name: name, password: password, role_name: role_name, initial_password: password)
-        return false unless user.save
-
-        #确定地区
-
-        user.save_after(options.merge({user_id: user.id}))
-        return [user.name, password]
+      rescue Exception => ex
+        p "ex.message::#{ex.message}"
+        p "ex.backtrace::#{ex.backtrace}"
+        return false
       end
     end
 
@@ -255,6 +261,11 @@ class User < ActiveRecord::Base
 
   def password_required?
     !persisted? || !password.nil? || !password_confirmation.nil?
+  end
+
+  # Email is not required
+  def email_required?
+    false
   end
 
   def set_role
