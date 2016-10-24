@@ -3,6 +3,7 @@
 
 module Common
   include LocaleModule
+  include SwtkConstantsModule
   include RegionModule
   include CheckpointCkpModule
   include GradeModule
@@ -13,7 +14,6 @@ module Common
   include RoleModule
   include ScoreModule
   include SubjectModule
-  include SwtkConstantsModule
   include SwtkRedisModule
   include TaskJobModule
   include TenantModule
