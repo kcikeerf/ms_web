@@ -7,7 +7,7 @@ class Teacher < ActiveRecord::Base
 
   belongs_to :tenant, foreign_key: "tenant_uid"
   belongs_to :user
-  has_many :class_teacher_mappings, foreign_key: "tea_uid"
+  has_many :class_teacher_mappings, foreign_key: "tea_uid", dependent: :destroy
 
   # has_many :classrooms, foreign_key: 'tea_id'
   scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) }

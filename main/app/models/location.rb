@@ -8,7 +8,7 @@ class Location < ActiveRecord::Base
   include InitUid
 
   belongs_to :tenant, foreign_key: "tenant_uid"
-  has_many :class_teacher_mappings, foreign_key: "loc_uid"
+  has_many :class_teacher_mappings, foreign_key: "loc_uid", dependent: :destroy
   # has_many :teachers, foreign_key: "tea_uid"
   has_many :pupils, foreign_key: "loc_uid"
 

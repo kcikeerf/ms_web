@@ -4,9 +4,9 @@
 
 :queues:
     - default
-    - [report, 2]
+    - [report, 5]
     - [result, 2]
-    - [score. 2]
+    - [score, 1]
 
 development:
   :concurrency: 5
