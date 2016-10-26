@@ -13,10 +13,10 @@ class Wx::PapersController < ApplicationController
 
   	if params[:wx_openid].blank?
   	  status = 500
-      data = {message: I18n.t("wx_users.messages.warn.not_wx_user")}
+      data = {message: Common::Locale::i18n("wx_users.messages.warn.not_wx_user")}
   	elsif params[:grade].blank? || params[:term].blank? || params[:subject].blank?
   	  status = 400
-      data = {message: I18n.t("wx_commons.messages.warn.invalid_params")}
+      data = {message: Common::Locale::i18n("wx_commons.messages.warn.invalid_params")}
     else
       params_h ={
       	:grade => params[:grade],
@@ -33,10 +33,10 @@ class Wx::PapersController < ApplicationController
         paper_h["paper"]["paper_html"] = ""
         paper_h["paper"]["answer_html"] = ""
         status = 200
-        data = {paper_json: paper_h.to_json, message: I18n.t("wx_commons.messages.info.get_success")}
+        data = {paper_json: paper_h.to_json, message: Common::Locale::i18n("wx_commons.messages.info.get_success")}
       else
       	status = 400
-        data = {message: I18n.t("wx_papers.messages.info.no_paper")}
+        data = {message: Common::Locale::i18n("wx_papers.messages.info.no_paper")}
       end
     end
 
@@ -50,10 +50,10 @@ class Wx::PapersController < ApplicationController
 
   	if params[:wx_openid].blank?
   	  status = 500
-  	  data = {message: I18n.t("wx_users.messages.warn.not_wx_user")}
+  	  data = {message: Common::Locale::i18n("wx_users.messages.warn.not_wx_user")}
   	elsif params[:bank_quiz_qizs].blank?
   	  status = 400
-  	  data = {message: I18n.t("wx_scores.messages.warn.no_quizs")}
+  	  data = {message: Common::Locale::i18n("wx_scores.messages.warn.no_quizs")}
     else
       begin
       	#未来视情况作JOB处理
@@ -65,7 +65,7 @@ class Wx::PapersController < ApplicationController
       	  :wx_openid => params[:wx_openid],
       	  :result_json => params.to_json 
       	})
-      	raise SwtkErrors::SaveOnlineTestError.new(I18n.t("online_tests.messages.error.save_failed")) unless target_mot.save
+      	raise SwtkErrors::SaveOnlineTestError.new(Common::Locale::i18n("online_tests.messages.error.save_failed")) unless target_mot.save
 
         #录入得分点
         #删除同一试卷的旧得分点
@@ -110,12 +110,12 @@ class Wx::PapersController < ApplicationController
         raise unless mobile_report
 
         status = 200
-        data = {report_id: mobile_report._id.to_s, message: I18n.t("wx_scores.messages.info.save_success")}
+        data = {report_id: mobile_report._id.to_s, message: Common::Locale::i18n("wx_scores.messages.info.save_success")}
       rescue Exception => ex
       	status = 500
         logger.info("=====试卷提交过程中发生异常message：#{ex.message}")
         logger.info("=====试卷提交过程中发生异常bactrace：#{ex.backtrace}")
-      	data = {message: I18n.t("wx_scores.messages.error.save_exception")}
+      	data = {message: Common::Locale::i18n("wx_scores.messages.error.save_exception")}
       end
     end
 

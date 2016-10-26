@@ -20,4 +20,6 @@ class Mongodb::ClassReport
    
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
+
+  index({_id: 1}, {background: true})
 end

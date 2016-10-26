@@ -203,9 +203,9 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   	get_nodes(rid.size, rid, subject, dimesion, category).not_equal_rid(rid)
   end
 
-  def parents
-  	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion, category).not_equal_rid(rid)
-  end
+  # def parents
+  # 	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion, category).not_equal_rid(rid)
+  # end
 
   def parent
   	get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category).find_by(rid: parent_node_rid)

@@ -8,6 +8,7 @@ module Common
   include CheckpointCkpModule
   include GradeModule
   include KlassModule
+  include Mongodb
   include NodeVersionModule
   include PaperModule
   include ReportModule
@@ -22,6 +23,17 @@ module Common
   include UzerModule
   include WcModule
   include WxModule
+
+  module_function
+
+  def valid_json?(str)
+    begin
+      JSON.parse(str)
+      return true
+    rescue JSON::ParserError => e
+      return false
+    end
+  end
 
   module Page
     PerPage = 10

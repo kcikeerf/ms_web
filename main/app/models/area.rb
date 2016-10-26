@@ -9,36 +9,93 @@ class Area < ActiveRecord::Base
 
   has_many :tenants, foreign_key: "area_uid"
 
+  ########类方法定义：begin#######
+  class << self
+    def get_area params
+      name_pinyin = "zhong_guo"
+      if params[:district]
+        name_pinyin = Common::Locale::hanzi2pinyin(params[:district])
+      elsif params[:city]
+        name_pinyin = Common::Locale::hanzi2pinyin(params[:city])
+      elsif params[:province_rid]
+        name_pinyin = Common::Locale::hanzi2pinyin(params[:province])
+      end
+      result = Area.where(:name => name_pinyin).first
+      return result
+    end  
+
+    def get_area_by_name params
+      name_str = "zhong_guo"
+      if params[:district]
+        name_str = params[:district]
+      elsif params[:city]
+        name_str = params[:city]
+      elsif params[:province]
+        name_str = params[:province]
+      end
+      result = Area.where(:name => name_str).first
+      return result
+    end  
+
+    def get_area_uid_rid params
+      areaUid = ""
+      areaRid = ""
+      if params[:district_rid]
+        target_area = Area.where(:rid => params[:district_rid]).first
+        areaRid = params[:district_rid]
+      elsif params[:city_rid]
+        target_area = Area.where(:rid => params[:city_rid]).first
+        areaRid = params[:city_rid]
+      elsif params[:province_rid]
+        target_area = Area.where(:rid => params[:province_rid]).first
+        areaRid = params[:province_rid]
+      end
+      areaUid = target_area.uid if target_area
+      return areaUid,areaRid  
+    end
+  
+    def default_option
+      result = [{
+        :uid=> "", 
+        :rid=> "", 
+        :name=> "all", 
+        :name_cn=> Common::Locale::i18n("areas.list.all")}]
+    end
+  end
+  ########类方法定义：end#######
+
   def papers
     Mongodb::BankPaperPap.where(:area_uid => rid).to_a
-  end
-
-  def families
-    self.class.where("rid LIKE '#{rid}%'")
   end
 
   #根据rid获取省市区的hash
   def pcd_h
     result = {
-      :province => {:rid => "", :name_cn => ""},
-      :city => {:rid => "", :name_cn => ""},
-      :district => {:rid => "", :name_cn => ""}
+      :province => {:rid => "", :name=>"", :name_cn => ""},
+      :city => {:rid => "", :name=>"", :name_cn => ""},
+      :district => {:rid => "",:name=>"", :name_cn => ""}
     }
     case area_type
     when Common::Area::Type::Province
       result[:province][:rid] = rid
+      result[:province][:name] = name
       result[:province][:name_cn] = name_cn
     when Common::Area::Type::City
       result[:province][:rid] = parent.rid
+      result[:province][:name] = name
       result[:province][:name_cn] = parent.name_cn
       result[:city][:rid] = rid
+      result[:city][:name] = name
       result[:city][:name_cn] = name_cn
     when Common::Area::Type::District
       result[:province][:rid] = parent.parent.rid
+      result[:province][:name] = name
       result[:province][:name_cn] = parent.parent.name_cn
       result[:city][:rid] = parent.rid
+      result[:city][:name] = name
       result[:city][:name_cn] = parent.name_cn
       result[:district][:rid] = rid
+      result[:district][:name] = name
       result[:district][:name_cn] = name_cn
     end
     return result
@@ -67,57 +124,12 @@ class Area < ActiveRecord::Base
     result + children.map{|c| {:uid=> c.uid, :rid=> c.rid, :name=> c.name, :name_cn=>c.name_cn}}
   end
 
-  def self.default_option
-    result = [{
-      :uid=> "", 
-      :rid=> "", 
-      :name=> "all", 
-      :name_cn=> Common::Locale::i18n("areas.list.all")}]
+  def families
+    self.class.where("rid LIKE '#{rid}%'")
   end
 
   def all_tenants
     families.map{|f| f.tenants}.flatten
   end
 
-  # def self.provinces rid
-  #   Area.where("rid = ? and LENGTH(rid) >= 3 and LENGTH(rid) <= 6", rid)
-  # end
-
-  # def self.cities rid
-  #   Area.where("rid = ? and LENGTH(rid) >= 7 and LENGTH(rid) <= 9", rid)
-  # end
-
-  # def self.districts rid
-  #   Area.where("rid = ? and LENGTH(rid) >= 10 and LENGTH(rid) <= 12", rid)
-  # end
-
-  def self.get_area params
-    name_pinyin = "zhong_guo"
-    if params[:district]
-      name_pinyin = Common::Locale::hanzi2pinyin(params[:district])
-    elsif params[:city]
-      name_pinyin = Common::Locale::hanzi2pinyin(params[:city])
-    elsif params[:province_rid]
-      name_pinyin = Common::Locale::hanzi2pinyin(params[:province])
-    end
-    result = Area.where(:name => name_pinyin).first
-    return result
-  end  
-
-  def self.get_area_uid_rid params
-    areaUid = ""
-    areaRid = ""
-    if params[:district_rid]
-      target_area = Area.where(:rid => params[:district_rid]).first
-      areaRid = params[:district_rid]
-    elsif params[:city_rid]
-      target_area = Area.where(:rid => params[:city_rid]).first
-      areaRid = params[:city_rid]
-    elsif params[:province_rid]
-      target_area = Area.where(:rid => params[:province_rid]).first
-      areaRid = params[:province_rid]
-    end
-    areaUid = target_area.uid if target_area
-    return areaUid,areaRid  
-  end
 end

@@ -26,6 +26,8 @@ class Mongodb::PupilReport
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
+  index({_id: 1}, {background: true})
+
   class << self
     def get_list params, pup_uid
       result = []

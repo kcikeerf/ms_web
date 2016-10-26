@@ -1,18 +1,7 @@
 class Mongodb::BankQizpointScore
   include Mongoid::Document
   include Mongoid::Timestamps
-
-  # for levels checkpoints
-  # dimesion
-  # level1 checkpoint: lv1_ckp
-  # level2 checkpoint: lv2_ckp
-  # level3 checkpoint: lv3_ckp
-  # weights
-  # 
   include Mongoid::Attributes::Dynamic
-  #
-
-#  validates :pap_uid, :qiz_uid, length:{maximum: 36}
 
   before_save :format_float
 
@@ -35,6 +24,10 @@ class Mongodb::BankQizpointScore
   field :full_score, type: Float
 
   belongs_to :bank_quiz_score, class_name: "Mongodb::BankQuizScore"
+
+  index({_id: 1}, {background: true})
+  index({dt_update:-1},{background: true})
+  index({test_id: 1, pup_uid: 1}, {background: true})  
 
   private
   def format_float

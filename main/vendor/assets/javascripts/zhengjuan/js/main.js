@@ -17,6 +17,7 @@ $(function(){
         paperSaveUrl : "/papers/save_paper",    //整卷保存接口
         paperSubmitUrl : "/papers/submit_paper",    //整卷提交接口
         createReport : "/reports/generate_all_reports",  //生成报告接口
+        generateReports : "/reports/generate_reports",  //生成报告接口        
         get_task_status : "/monitors/get_task_status",  //查询报告进度接口
         paperUrl : "/papers/get_paper",  //访问已生成试卷路径
         init : function(){

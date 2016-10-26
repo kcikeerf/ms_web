@@ -14,6 +14,7 @@ class Mongodb::BankQuizQiz
 =end
 
   #field :uid, type: String
+  field :subject, type: String
   field :node_uid, type: String
   field :pap_uid, type: String
   field :tbs_uid, type: String
@@ -52,6 +53,7 @@ class Mongodb::BankQuizQiz
 
 #      self.bank_qizpoint_qzps=[]
       self.update_attributes({
+        :subject => params["subject"] || "",
         :node_uid => params["node_uid"] || "",
         :pap_uid => params["pap_uid"] || "",
         :tbs_uid => params["tbs_uid"] || "",
@@ -115,6 +117,8 @@ class Mongodb::BankQuizQiz
       ckp = Mongodb::BankCkpQzp.new
       ckp.save_ckp_qzp qiz_point._id.to_s, bcc["uid"], bcc["ckp_source"]
     }
+
+
   end
 
   def destroy_quiz
