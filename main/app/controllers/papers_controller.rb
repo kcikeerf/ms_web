@@ -329,7 +329,7 @@ class PapersController < ApplicationController
         score_file = Common::Score.upload_filled_result(params)
         if score_file          
           # Job
-          ImportResultJob.perform_later({
+          ImportResultsJob.perform_later({
             #:task_uid => target_task.uid,
             :score_file_id => score_file.id,
             :tenant_uid => params[:tenant_uid],

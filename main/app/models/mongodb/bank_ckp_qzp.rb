@@ -8,13 +8,13 @@ class Mongodb::BankCkpQzp
   field :source_type, type: String
 #  field :weights, type: Float
 
-  def save_ckp_qzp qzp_uid=nil, ckp_uid=nil, source_type=nil
-    self.ckp_uid = ckp_uid.nil?? nil:ckp_uid
-    self.qzp_uid = qzp_uid.nil?? nil:qzp_uid
-    self.source_type = source_type.nil?? nil:source_type
-    self.save!
+  def save_ckp_qzp qzpUid=nil, ckpUid=nil, sourceType=nil
+    ckp_uid = ckpUid.nil?? nil:ckpUid
+    qzp_uid = qzpUid.nil?? nil:qzpUid
+    source_type = sourceType.nil?? nil:sourceType
+    save!
     return true
-  end 
+  end
 
   def destroy_ckp_qzp
     begin

@@ -12,6 +12,9 @@ class Location < ActiveRecord::Base
   # has_many :teachers, foreign_key: "tea_uid"
   has_many :pupils, foreign_key: "loc_uid"
 
+  scope :by_tenant, ->(id) { where(tenant_uid: id) }
+  scope :by_area, ->(rid) { where("rid LIKE '#{rid}%'") }
+
   def teachers
     self.class_teacher_mappings.map{|item| 
       {

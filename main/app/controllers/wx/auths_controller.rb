@@ -18,22 +18,22 @@ class Wx::AuthsController < ApplicationController
         if target_wx_user.binded_user? target_user.name
           if target_user.role_obj.nil?
             status = 500
-            data = {message: I18n.t("wx_users.messages.warn.invalid_binded")}
+            data = {message: Common::Locale::i18n("wx_users.messages.warn.invalid_binded")}
           else
             status = 200
-            data = {message: I18n.t("wx_users.messages.info.is_binded")}
+            data = {message: Common::Locale::i18n("wx_users.messages.info.is_binded")}
           end
         else
           status = 500
-          data = {message: I18n.t("wx_users.messages.warn.not_binded")}
+          data = {message: Common::Locale::i18n("wx_users.messages.warn.not_binded")}
         end
       else
         status = 500
-        data = {message: I18n.t("wx_users.messages.warn.not_binded")}
+        data = {message: Common::Locale::i18n("wx_users.messages.warn.not_binded")}
       end
     else
       status = 400
-      data = {message:I18n.t("wx_commons.messages.warn.invalid_params")}
+      data = {message:Common::Locale::i18n("wx_commons.messages.warn.invalid_params")}
     end
     render common_json_response(status, data)
   end
@@ -54,22 +54,22 @@ class Wx::AuthsController < ApplicationController
           if target_wx_user
             if target_wx_user.binded_user? params[:user_name]
               status = 200
-              data = {message: I18n.t("wx_users.messages.info.is_binded")}
+              data = {message: Common::Locale::i18n("wx_users.messages.info.is_binded")}
             else
               target_wx_user.with_lock do
                 #超过微信帐户绑定限制
                 if target_wx_user.users.count > Common::Wx::WxBindingUserLimit
                   status = 500
-                  data = {message:I18n.t("wx_users.messages.warn.wx_binding_limit")}
+                  data = {message: Common::Locale::i18n("wx_users.messages.warn.wx_binding_limit", :limit => Common::Wx::WxBindingUserLimit)}
                 #超过题库帐户绑定限制
                 elsif target_user.wx_users.count > Common::Wx::UserBindingWxLimit
                   status = 500
-                  data = {message:I18n.t("wx_users.messages.warn.user_binding_limit")}
+                  data = {message: Common::Locale::i18n("wx_users.messages.warn.user_binding_limit", :limit => Common::Wx::UserBindingWxLimit)}
                 #正确绑定
                 else
                   target_wx_user.users << target_user
                   status = 200
-                  data = {message: I18n.t("wx_users.messages.info.wx_binded")}
+                  data = {message: Common::Locale::i18n("wx_users.messages.info.wx_binded")}
                 end
               end
             end
@@ -80,19 +80,19 @@ class Wx::AuthsController < ApplicationController
             })
             current_wx_user.save!
             status = 200
-            data = {message: I18n.t("wx_users.messages.info.wx_binded")}
+            data = {message: Common::Locale::i18n("wx_users.messages.info.wx_binded")}
           end
         rescue Exception => ex
           status = 500
-          data = {message: ex.backtrace}#I18n.t("wx_users.messages.error.wx_not_binded")}
+          data = {message: ex.backtrace}#Common::Locale::i18n("wx_users.messages.error.wx_not_binded")}
         end
       else
         status = 500
-        data = {message:I18n.t("wx_users.messages.error.login_failed")}
+        data = {message:Common::Locale::i18n("wx_users.messages.error.login_failed")}
       end
     else
       status = 400
-      data = {message:I18n.t("wx_commons.messages.warn.invalid_params")}
+      data = {message:Common::Locale::i18n("wx_commons.messages.warn.invalid_params")}
     end
     render common_json_response(status, data)
   end
@@ -113,23 +113,23 @@ class Wx::AuthsController < ApplicationController
           if target_wx_user.binded_user? params[:user_name]
             WxUserMapping.where(:wx_uid =>target_wx_user.uid, :user_id=>target_user.id).destroy_all
             status = 200
-            data = {message: I18n.t("wx_users.messages.info.wx_unbinded")}
+            data = {message: Common::Locale::i18n("wx_users.messages.info.wx_unbinded")}
           else
             status = 200
-            data = {message: I18n.t("wx_users.messages.info.not_binded")}
+            data = {message: Common::Locale::i18n("wx_users.messages.info.not_binded")}
           end
         else
           status = 500
-          data = {message:I18n.t("wx_users.messages.warn.invalid_wx_user")}
+          data = {message:Common::Locale::i18n("wx_users.messages.warn.invalid_wx_user")}
         end
       rescue Exception => ex
         status = 500
-        data = {message: ex.backtrace}#I18n.t("wx_users.messages.error.wx_not_binded")}
+        data = {message: ex.backtrace}#Common::Locale::i18n("wx_users.messages.error.wx_not_binded")}
       end
 
     else
       status = 400
-      data = {message:I18n.t("wx_commons.messages.warn.invalid_params")}
+      data = {message:Common::Locale::i18n("wx_commons.messages.warn.invalid_params")}
     end
     render common_json_response(status, data)
   end
@@ -148,7 +148,7 @@ class Wx::AuthsController < ApplicationController
         data = {data: ulist.to_json}
       else
         status = 500
-        data = {message: I18n.t("wx_users.messages.warn.not_binded")}
+        data = {message: Common::Locale::i18n("wx_users.messages.warn.not_binded")}
       end
     end
     render common_json_response(status, data)

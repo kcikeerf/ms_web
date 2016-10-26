@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Mongodb::MobileReportTotalAvgResultTest < ActiveSupport::TestCase
+class GenerateKlassReportJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

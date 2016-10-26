@@ -5,8 +5,8 @@ class Mongodb::BankPaperPap
   attr_accessor :current_user_id
 
   include Mongoid::Document
-
   include Mongodb::MongodbPatch
+
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
 
@@ -62,7 +62,7 @@ class Mongodb::BankPaperPap
 #  field :ckp_source_type, type: String
   #field :paper_saved_json, type: String
   #field :paper_analyzed_json, type: String
-  field :analyze_json, type: String
+  # field :analyze_json, type: String
   field :paper_status, type: String
 
   field :dt_add, type: DateTime
@@ -375,6 +375,7 @@ class Mongodb::BankPaperPap
         # store quiz
         qzp_arr = []
         qiz = Mongodb::BankQuizQiz.new
+        quiz["subject"] = subject
         qzp_arr = qiz.save_quiz quiz
         if qiz.errors.messages.empty?
           params[:bank_quiz_qizs][index][:id]=qiz._id.to_s
@@ -396,6 +397,12 @@ class Mongodb::BankPaperPap
       :paper_status => status,
       :paper_json => params.to_json || ""
     })
+
+    #update qizpoint ckps json
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps.each{|qzp|
+      qzp.format_ckps_json
+    }
   end
 
   def submit_pap_rollback

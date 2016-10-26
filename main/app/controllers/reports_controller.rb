@@ -40,6 +40,12 @@ class ReportsController < ApplicationController
     render common_json_response(status, result)  
   end
 
+  def generate_reports
+    logger.info(">>>>>>>generate_reports: begin<<<<<<<")
+
+    logger.info("====================generate_report: end")
+  end
+
   def get_grade_report
     params.permit!
 

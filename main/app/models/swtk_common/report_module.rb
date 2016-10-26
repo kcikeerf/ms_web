@@ -37,6 +37,12 @@ module ReportModule
       PersonalAbilityLine = "personal_ability_line" 
     end
 
+    module Group
+      Klass = "klass"
+      Grade = "grade"
+      Project = "project"
+    end
+
     module Format
       #班级报告解读文字
 =begin

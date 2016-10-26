@@ -12,17 +12,17 @@ class Wx::ReportsController < ApplicationController
 
     if params[:wx_openid].blank?
       status = 500
-      data = {message: I18n.t("wx_users.messages.warn.not_wx_user")}
+      data = {message: Common::Locale::i18n("wx_users.messages.warn.not_wx_user")}
     elsif params[:report_id].blank?
       status = 400
-      data = {message: I18n.t("wx_commons.messages.warn.invalid_params")}
+      data = {message: Common::Locale::i18n("wx_commons.messages.warn.invalid_params")}
     else
       target_report = Mongodb::PupilMobileReport.where(:_id => params[:report_id]).first
       status = 200
       if target_report
-        data = {message: I18n.t("wx_reports.messages.info.got_report"), report_json: target_report.simple_report_wx_notbinded}
+        data = {message: Common::Locale::i18n("wx_reports.messages.info.got_report"), report_json: target_report.simple_report_wx_notbinded}
       else
-        data = {message: I18n.t("wx_reports.messages.info.no_report")}
+        data = {message: Common::Locale::i18n("wx_reports.messages.info.no_report")}
       end
     end
 
@@ -38,20 +38,20 @@ class Wx::ReportsController < ApplicationController
     #current_pupil = wx_current_user.nil?? nil : wx_current_user.pupil
     if params[:wx_openid].blank? || params[:report_id].blank?#current_pupil.nil?
       status = 500
-      data = { message: I18n.t("wx_users.messages.warn.invalid_binding_params") }
+      data = { message: Common::Locale::i18n("wx_users.messages.warn.invalid_binding_params") }
     elsif !params[:report_id].blank?
       #target_report = Mongodb::PupilMobileReport.where(:pup_uid=>current_pupil.uid.to_s, :_id => params[:report_id]).first
       target_report = Mongodb::PupilMobileReport.where(:_id => params[:report_id]).first
       status = 200
       if target_report
       	report_json = target_report.report_json.blank?? Common::Report::Format::PupilMobile : target_report.report_json
-      	data = {message: I18n.t("wx_reports.messages.info.got_report"), report_json: report_json}
+      	data = {message: Common::Locale::i18n("wx_reports.messages.info.got_report"), report_json: report_json}
       else
-      	data = {message: I18n.t("wx_reports.messages.info.no_report")}
+      	data = {message: Common::Locale::i18n("wx_reports.messages.info.no_report")}
       end
     else
       status = 500
-      data = {message: I18n.t("wx_reports.messages.error.got_report_failed")}
+      data = {message: Common::Locale::i18n("wx_reports.messages.error.got_report_failed")}
     end
     render common_json_response(status, data)
   end
@@ -64,7 +64,7 @@ class Wx::ReportsController < ApplicationController
 
     if wx_current_user.nil?
       status = 500
-      data = { message: I18n.t("wx_users.messages.warn.invalid_wx_user") }
+      data = { message: Common::Locale::i18n("wx_users.messages.warn.invalid_wx_user") }
     elsif wx_current_user.is_pupil?
       list = Mongodb::PupilReport.get_list params, wx_current_user.pupil.uid
       status = 200
@@ -86,19 +86,19 @@ class Wx::ReportsController < ApplicationController
     current_pupil = wx_current_user.nil?? nil : wx_current_user.pupil
     if current_pupil.nil?
       status = 500
-      data = { message: I18n.t("wx_users.messages.warn.invalid_binding_params") }
+      data = { message: Common::Locale::i18n("wx_users.messages.warn.invalid_binding_params") }
     elsif !params[:report_id].blank?
       target_report = Mongodb::PupilReport.where(:_id => params[:report_id]).first
       status = 200
       if target_report
         report_json = target_report.report_json.blank?? Common::Report::Format::PupilMobile : target_report.report_json
-        data = {message: I18n.t("wx_reports.messages.info.got_report"), report_json: report_json}
+        data = {message: Common::Locale::i18n("wx_reports.messages.info.got_report"), report_json: report_json}
       else
-        data = {message: I18n.t("wx_reports.messages.info.no_report")}
+        data = {message: Common::Locale::i18n("wx_reports.messages.info.no_report")}
       end
     else
       status = 500
-      data = {message: I18n.t("wx_reports.messages.error.got_report_failed")}
+      data = {message: Common::Locale::i18n("wx_reports.messages.error.got_report_failed")}
     end
     render common_json_response(status, data)
   end
