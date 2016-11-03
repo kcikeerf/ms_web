@@ -1071,7 +1071,7 @@ var reportPage = {
 					stack: "总量",
 					label: {
 						normal: {
-							show: true,
+							show: false,
 							position: ['10%' ,'100%'],
 							textStyle: {
 								fontSize: 16,
