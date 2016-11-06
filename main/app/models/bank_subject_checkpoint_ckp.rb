@@ -235,6 +235,12 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     }
   end
 
+  # 获取所属指标体系全部指标包括自己
+  #
+  def families
+    ( subject.nil? || category.nil? )? [] : self.class.where(subject: subject, category: category)
+  end
+
   private
 
   def get_nodes(length, rid, subject, dimesion, category)

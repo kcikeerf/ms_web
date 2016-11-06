@@ -11,3 +11,7 @@ version1.0 -> version1.1
 	- mongodb/grade_report
 
 6. 导入成绩时，若发现无指标mapping，则生成
+7. 将报告->cloud resource ->test绑定
+8. 为既有试卷，创建默认的test
+9. 将旧报告迁移到新的报告逻辑
+   1）对于试卷的既有的报告，绑定到试卷的test的对应的cloud resource

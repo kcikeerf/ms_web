@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
 
 require 'thwait'
-require 'location'
-require 'bank_checkpoint_ckp'
-require 'bank_subject_checkpoint_ckp'
-require 'mongodb/bank_qizpoint_qzp'
-require 'mongodb/bank_test_score'
+# require 'location'
+# require 'bank_checkpoint_ckp'
+# require 'bank_subject_checkpoint_ckp'
+# require 'mongodb/bank_qizpoint_qzp'
+# require 'mongodb/bank_test_score'
 
 class ImportResultsJob < ActiveJob::Base
   queue_as :default
@@ -85,7 +85,7 @@ class ImportResultsJob < ActiveJob::Base
 
       #为了记录处理的进度
       redis_key = Common::SwtkRedis::Prefix::ImportResult + job_tracker.uid
-      redis_ns = :sidekiq_redis
+      redis_ns = Common::SwtkRedis::Ns::Sidekiq
       Common::SwtkRedis::set_key(redis_ns,redis_key, 0)
 
       temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first

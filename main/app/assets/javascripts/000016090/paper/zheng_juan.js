@@ -1,6 +1,6 @@
 //= require application
-//= require 000016090/topic
-//= require 000016090/interval_update
+//= require topic
+//= require interval_update
 //= require zhengjuan/js/jquery-form
 //= require init_ckeditor
 //= require zhengjuan/js/area

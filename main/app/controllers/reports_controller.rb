@@ -2,7 +2,7 @@
 
 class ReportsController < ApplicationController
   # use job queue to create every report
-  before_action :set_paper, only: [:generate_all_reports,:new_square]
+  before_action :set_paper, only: [:generate_all_reports, :generate_reports, :new_square]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
@@ -41,9 +41,47 @@ class ReportsController < ApplicationController
   end
 
   def generate_reports
-    logger.info(">>>>>>>generate_reports: begin<<<<<<<")
+    Common::method_template_log_only(__method__.to_s()) {
+      params.permit!
 
-    logger.info("====================generate_report: end")
+      result = {:task_uid => ""}
+
+      begin
+        # Task info
+        target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
+        task_uid = target_task.nil?? "" :target_task.uid
+        target_task.touch(:dt_update)
+
+        test_id = @paper.bank_tests[0].id
+
+        #将数据分组建立job groups， monitoring job
+        #job_groups = Common::ReportPlus::sigoto_siwake({ :task_uid => task_uid, :test_id => test_id.to_s, :top_group => "project"})
+
+        # job_tracker = JobList.new({
+        #   :name => Common::Job::Type::Monitoring,
+        #   :task_uid => task_uid,
+        #   :job_type => Common::Job::Type::Monitoring,
+        #   :status => Common::Job::Status::NotInQueue,
+        #   :process => 0
+        # })
+        # job_tracker.save!
+        Thread.new do
+          GenerateReportsJob.perform_later({
+            :test_id => test_id.to_s,
+            :task_uid => task_uid,
+            :top_group => params[:top_group]
+            # :job_uid => job_tracker.uid,
+            # :job_groups => job_groups
+          })
+        end
+        status = 200
+        result[:task_uid] = task_uid
+      rescue Exception => ex
+        status = 500
+        result[:task_uid] = ex.message
+      end
+      render common_json_response(status, result)  
+    }
   end
 
   def get_grade_report
@@ -169,6 +207,11 @@ class ReportsController < ApplicationController
     render :layout => 'new_report'
   end
 
+  def new_square_v1_1
+
+    render :layout => '00016110/report'
+  end
+
   def grade
     render :layout => false
   end
@@ -185,6 +228,6 @@ class ReportsController < ApplicationController
 
   def set_paper
     @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-    @paper.current_user_id = current_user.id
+    @paper.current_user_id = 4651#current_user.id
   end
 end

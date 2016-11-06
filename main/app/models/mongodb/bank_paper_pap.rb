@@ -472,75 +472,126 @@ class Mongodb::BankPaperPap
     }
   end
 
-  def task_lists
-    TaskList.where(:pap_uid => id.to_s)
+  # 获取试卷关联指标的树形结构数据
+  # 用于:
+  #   1) 查看试卷指标<->试题关联
+  #   2) 报告模版生成
+  #
+  def associated_checkpoints
+    result = {
+      Common::CheckpointCkp::Dimesion::Knowledge => [],
+      Common::CheckpointCkp::Dimesion::Skill => [],
+      Common::CheckpointCkp::Dimesion::Ability => []
+    }
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps.each{|qzp| 
+      qzp.bank_checkpoint_ckps.each{|qzp_ckp|
+        next unless qzp_ckp
+
+        #ckp_ancestors = BankRid.get_all_higher_nodes(qzp_ckp.families,qzp_ckp)
+        ckps_arr = []
+        ckps_arr.unshift(qzp_ckp)
+        while !qzp_ckp.parent.nil?
+          qzp_ckp = qzp_ckp.parent
+          ckps_arr.unshift(qzp_ckp)
+        end
+        ckps_arr.each{|ckp|
+          index = result[ckp.dimesion].find_index{|item| item[:uid] == ckp.uid}
+          if index.nil?
+            item = {
+              :uid => ckp.uid,
+              :order => ckp.sort,
+              :rid => ckp.rid,
+              :checkpoint => ckp.checkpoint,
+              :advice => ckp.advice,
+              :is_entity => ckp.is_entity,
+              :qzps_full_score_total => qzp.score.nil?? 0 : qzp.score,
+              :qzps => [qzp.id.to_s]
+            }
+            result[ckp.dimesion] << item
+          else
+            result[ckp.dimesion][index][:qzps_full_score_total] += qzp.score.nil?? 0 : qzp.score
+            result[ckp.dimesion][index][:qzps].push(qzp.id.to_s)
+          end
+        }
+      }
+    }
+
+    result.each{|k,v|
+      result[k] = v.sort{|a,b| Common::CheckpointCkp::compare_rid(a[:order], b[:order])}
+    }
+    return result
   end
+
+  # def task_lists
+  #   TaskList.where(:pap_uid => id.to_s)
+  # end
 
   #
   # used for report
   # checkpoints and qizpoints mapping
   #
-  def get_pap_ckps_qzp_mapping
-    result = {
-      :knowledge => {:level1=>{}, :level2=>{}},
-      :skill => {:level1=>{}, :level2=>{}},
-      :ability => {:level1=>{}, :level2=>{}}
-    }
-    qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
-    qzpoints.each{|qzp|
-      qzp.bank_checkpoint_ckps.each{|ckp|
-        next unless ckp
-        levels = [*1..Common::Report::CheckPoints::Levels]
-        levels.each{|lv|
-          # search current level checkpoint
-          if ckp.is_a? BankCheckpointCkp
-            lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
-          elsif ckp.is_a? BankSubjectCheckpointCkp
-            xue_duan = BankNodestructure.get_subject_category(self.grade)
-            lv_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
-          end
-          temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
-          result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] = temp_arr
-          result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] << { 
-            :ckp_uid => ckp.uid,
-            :weights => ckp.weights,
-            :qzp_uid => qzp._id.to_s
-          }
-        }
-      }
-    }
-    return result
-  end
+  # def get_pap_ckps_qzp_mapping
+  #   result = {
+  #     :knowledge => {:level1=>{}, :level2=>{}},
+  #     :skill => {:level1=>{}, :level2=>{}},
+  #     :ability => {:level1=>{}, :level2=>{}}
+  #   }
+  #   qzpoints = self.bank_quiz_qizs.map{|a| a.bank_qizpoint_qzps}.flatten
+  #   qzpoints.each{|qzp|
+  #     qzp.bank_checkpoint_ckps.each{|ckp|
+  #       next unless ckp
+  #       levels = [*1..Common::Report::CheckPoints::Levels]
+  #       levels.each{|lv|
+  #         # search current level checkpoint
+  #         if ckp.is_a? BankCheckpointCkp
+  #           lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+  #         elsif ckp.is_a? BankSubjectCheckpointCkp
+  #           xue_duan = BankNodestructure.get_subject_category(self.grade)
+  #           lv_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
+  #         end
+  #         temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
+  #         result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] = temp_arr
+  #         result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] << { 
+  #           :ckp_uid => ckp.uid,
+  #           :weights => ckp.weights,
+  #           :qzp_uid => qzp._id.to_s
+  #         }
+  #       }
+  #     }
+  #   }
+  #   return result
+  # end
 
-  def get_dimesion_ckp_total_score ckps_qzps
-    total_score = {
-      :knowledge => 0, 
-      :skill => 0, 
-      :ability => 0
-    }
+  # def get_dimesion_ckp_total_score ckps_qzps
+  #   total_score = {
+  #     :knowledge => 0, 
+  #     :skill => 0, 
+  #     :ability => 0
+  #   }
 
-    ckp_total_score = {
-       :knowledge => {:level1 =>{}, :level2=>{}},
-       :skill => {:level1 =>{}, :level2=>{}},
-       :ability => {:level1 =>{}, :level2=>{}}
-    }
+  #   ckp_total_score = {
+  #      :knowledge => {:level1 =>{}, :level2=>{}},
+  #      :skill => {:level1 =>{}, :level2=>{}},
+  #      :ability => {:level1 =>{}, :level2=>{}}
+  #   }
 
-    ckps_qzps.each{|dimesion_key, dimesions|
-      dimesions.each{|level_key, levels|
-        levels.each{|lv_ckp, values|
-          ckp_total_score[dimesion_key.to_sym][level_key.to_sym][lv_ckp.to_sym] = 0
-          values.each{|value|
-            qzp = Mongodb::BankQizpointQzp.where(_id: value[:qzp_uid]).first
-            if qzp
-              total_score[dimesion_key.to_sym] += qzp.score*value[:weights]
-              ckp_total_score[dimesion_key.to_sym][level_key.to_sym][lv_ckp.to_sym] += qzp.score*value[:weights]
-            end
-          }
-        }
-      }
-    }
-    return total_score, ckp_total_score
-  end
+  #   ckps_qzps.each{|dimesion_key, dimesions|
+  #     dimesions.each{|level_key, levels|
+  #       levels.each{|lv_ckp, values|
+  #         ckp_total_score[dimesion_key.to_sym][level_key.to_sym][lv_ckp.to_sym] = 0
+  #         values.each{|value|
+  #           qzp = Mongodb::BankQizpointQzp.where(_id: value[:qzp_uid]).first
+  #           if qzp
+  #             total_score[dimesion_key.to_sym] += qzp.score*value[:weights]
+  #             ckp_total_score[dimesion_key.to_sym][level_key.to_sym][lv_ckp.to_sym] += qzp.score*value[:weights]
+  #           end
+  #         }
+  #       }
+  #     }
+  #   }
+  #   return total_score, ckp_total_score
+  # end
 
   #未来要实现可属于多个tenant
   def tenant
@@ -890,21 +941,6 @@ class Mongodb::BankPaperPap
   def is_completed?
     paper_status == Common::Paper::Status::ReportCompleted
   end
-
-  #######
-  #等到bank_paper_pap_pointers弄完，移植走
-  def grade_reports
-    Mongodb::GradeReport.where(:pap_uid => _id.to_s).to_a
-  end
-
-  def class_reports
-    Mongodb::ClassReport.where(:pap_uid => _id.to_s).to_a
-  end
-
-  def pupil_reports
-    Mongodb::PupilReport.where(:pap_uid => _id.to_s).to_a
-  end
-  ########
 
   def update_test_tenants_status params,status_str,tenant_uids=[]
     #测试各Tenant的状态更新

@@ -11,7 +11,6 @@ class AddAreaUidAreaRidToLocations < ActiveRecord::Migration
       next unless loc
       target_area = Area.get_area_by_name({:province => loc.province, :city => loc.city, :district => loc.district})
       unless loc.update_attributes({:area_uid => target_area.uid,:area_rid => target_area.rid})
-        p loc
         exit -1
       end
     }

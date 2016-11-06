@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GenerateProjectReportJobTest < ActiveJob::TestCase
+class Mongodb::ReportPupilStoreTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
