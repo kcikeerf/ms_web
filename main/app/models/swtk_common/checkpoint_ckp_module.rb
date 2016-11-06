@@ -79,10 +79,22 @@ module CheckpointCkpModule
       GaoZhong = "gao_zhong"
     end
 
-    def ckp_types_loop(&block)
+    def ckp_types_loop(key_str=nil,&block)
       nodes = {}
-      TYPE.each do |t|
+      key_arr = TYPE.clone
+      key_arr.push(key_str) unless key_str.blank?
+      key_arr.each do |t|
         nodes[t.to_sym] = proc.call(t)
+      end
+      nodes
+    end
+
+    def dimesions_loop(key_str=nil,&block)
+      nodes = {}
+      key_arr = TYPE.clone
+      key_arr.push(key_str) unless key_str.blank?
+      key_arr.each do |t|
+        nodes[t] = proc.call(t)
       end
       nodes
     end

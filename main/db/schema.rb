@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161024093337) do
+ActiveRecord::Schema.define(version: 20161103081456) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 20161024093337) do
     t.string   "task_uid",  limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "job_type",  limit: 255
   end
 
   create_table "locations", primary_key: "uid", force: :cascade do |t|
@@ -384,13 +385,14 @@ ActiveRecord::Schema.define(version: 20161024093337) do
   end
 
   create_table "task_lists", primary_key: "uid", force: :cascade do |t|
-    t.string   "name",      limit: 255
-    t.string   "pap_uid",   limit: 255
-    t.string   "status",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "pap_uid",    limit: 255
+    t.string   "status",     limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
-    t.string   "user_id",   limit: 255
-    t.string   "task_type", limit: 255
+    t.string   "user_id",    limit: 255
+    t.string   "task_type",  limit: 255
+    t.boolean  "monitoring", limit: 1
   end
 
   create_table "teachers", primary_key: "uid", force: :cascade do |t|

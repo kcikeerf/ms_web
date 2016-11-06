@@ -196,6 +196,7 @@ Rails.application.routes.draw do
   resource :reports do
     member do
       post 'generate_all_reports'
+      post 'generate_reports'
       get 'class_report'
       get 'pupil_report'
       get 'get_grade_report'
@@ -204,6 +205,7 @@ Rails.application.routes.draw do
       # get 'square'
       get 'check/:codes', to: "reports#first_login_check_report"
       get 'new_square'
+      get 'new_square_v1_1'
       get 'grade'
       get 'klass'
       get 'pupil'
@@ -388,4 +390,6 @@ Rails.application.routes.draw do
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

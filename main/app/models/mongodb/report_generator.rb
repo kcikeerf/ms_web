@@ -24,7 +24,7 @@ class Mongodb::ReportGenerator
     paper_h["task_uid"] = args[:task_uid]
     @paper.update(paper_json: paper_h.to_json)
 
-    @ckps_qzps = @paper.get_pap_ckps_qzp_mapping
+    #@ckps_qzps = @paper.get_pap_ckps_qzp_mapping
 
     @mem_reports = {
       :grade_report => {},

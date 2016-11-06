@@ -8,10 +8,10 @@ module Common
   include CheckpointCkpModule
   include GradeModule
   include KlassModule
-  include Mongodb
   include NodeVersionModule
   include PaperModule
   include ReportModule
+  include ReportPlusModule
   include RoleModule
   include ScoreModule
   include SubjectModule
@@ -23,8 +23,37 @@ module Common
   include UzerModule
   include WcModule
   include WxModule
+  include Mongodb
 
   module_function
+
+  def logger
+    Rails.logger
+  end
+
+  def method_template_with_rescue(from_where, &block)
+    logger.info(">>>>>>#{from_where}: begin<<<<<<<")
+    begin
+      yield
+    rescue Exception => ex
+      logger.debug ">>>Exception!<<<"
+      logger.debug ex.message
+      logger.debug ex.backtrace
+    end
+    logger.info(">>>>>>#{from_where}: end<<<<<<<")
+  end
+
+  def method_template_log_only(from_where, &block)
+    logger.debug(">>>>>>#{from_where}: begin<<<<<<<")
+    begin
+      yield
+    rescue Exception => ex
+      logger.debug ">>>Exception!<<<"
+      logger.debug ex.message
+      logger.debug ex.backtrace
+    end
+    logger.debug(">>>>>>#{from_where}: end<<<<<<<")
+  end
 
   def valid_json?(str)
     begin
@@ -35,12 +64,45 @@ module Common
     end
   end
 
+  def insert_item_to_arr_with_order type, target_arr, arr
+    keys = target_arr.map{|a| a[0]}
+    last_key = ""
+    keys.each{|key|
+      case type
+      when "quiz"
+        if Common::Paper::quiz_order(arr[0], key) < 0
+          last_key = key
+          break
+        end
+      when "klass"
+        a = Common::Locale.hanzi2pinyin(arr[0])
+        b = Common::Locale.hanzi2pinyin(key)
+        if Common::Locale.mysort(Common::Klass::Order[a],Common::Klass::Order[b]) < 0
+          last_key = key
+          break
+        end
+      when "checkpoint"
+        if Common::CheckpointCkp::compare_rid(arr[0], key) < 0
+          last_key = key
+          break
+        end
+      when "dimesion"
+        if Common::Locale.mysort(arr[0],key) < 0
+          last_key = key
+          break
+        end
+      end
+    }
+    target_arr.insert_before(last_key, arr)
+    return target_arr
+  end
+
   module Page
     PerPage = 10
   end
 
   module Image
- 
+    module_function
     def file_upload(user, file, crop)
       fu = user.image_upload || user.build_image_upload
       fu.crop_x = crop["x"]
@@ -52,12 +114,9 @@ module Common
       fu.save
       return fu 
     end
-    module_function :file_upload
-
   end
 
   module Response
-
     # Analyze the params to check callback type
     def get_callback_type params
       params[:callback].blank? ? "3,,no" : ((params[:callback]=='window.name')? "1,,#{params[:callback]}" : "2,,#{params[:callback]}")

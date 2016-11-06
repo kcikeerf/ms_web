@@ -15,11 +15,18 @@ module TaskJobModule
   end
 
   module Job
+    Timeout = 86400 # one day
+    LoopInterval = 10 # 10 seconds
+
     module Type
       CreateReport = "create_report"
       CreatePupilReport = "create_pupil_report"
       CreateClassReport = "create_class_report"
       ImportScore = "import_score"
+      GeneratePupilReports = "generate_pupil_reports"
+      GenerateGroupReports = "generate_group_reports"
+      ConstructReports = "construct_reports"
+      Monitoring = "monitoring"
     end
 
     module Status
