@@ -1949,8 +1949,8 @@ class Mongodb::ReportGenerator
       '_id.grade' => {'$exists' => true },
       #'_id.classroom' => nil,
       '_id.pup_uid' => nil,
-      # '_id.dimesion' => {'$exists' => true },
-      '_id.dimesion' => "knowledge",
+      '_id.dimesion' => {'$exists' => true },
+      #'_id.dimesion' => "knowledge",
       '_id.lv1_ckp' => nil,
       '_id.lv2_ckp' => nil
     }
@@ -1992,23 +1992,28 @@ class Mongodb::ReportGenerator
         '_id.grade' => item[:_id][:grade],
         '_id.classroom' => item[:_id][:classroom],
         '_id.pup_uid' => {'$exists' => true },
-        '_id.dimesion' => "knowledge",
-#        '_id.dimesion' => item[:_id][:dimesion],
+        #'_id.dimesion' => "knowledge",
+        '_id.dimesion' => item[:_id][:dimesion],
         '_id.lv1_ckp' => nil,
         '_id.lv2_ckp' => nil
       }
 
+      is_knowledge = (item[:_id][:dimesion] == "knowledge")
+
       average_arr = item[:value][:average_stack].blank?? [] : item[:value][:average_stack].sort.reverse
       if item[:id].keys.include?("classroom")
-        values_h = {
+        values1_h = {
           'value.class_rank' => 0,
           'value.class_pupil_number' => item[:value][:current_pupil_number]
         }
+        
+        values2_h = {'value.class_rank_knowledge' => 0} if is_knowledge
       else
-        values_h = {
+        values1_h = {
           'value.grade_rank' => 0,
           'value.grade_pupil_number' => item[:value][:current_pupil_number]
         }
+        values2_h = {'value.grade_rank_knowledge' => 0} if is_knowledge
       end
 
       pupils = Mongodb::ReportStandDevDiffResult.where(pupil_filter).no_timeout
@@ -2017,19 +2022,33 @@ class Mongodb::ReportGenerator
         current_rank = (average_arr.index(pupil[:value][:average_percent]) +1 )|| 0
 
         if item[:id].keys.include?("classroom")
-          values_h['value.class_rank'] = current_rank
+          values1_h['value.class_rank'] = current_rank
+          values2_h['value.class_rank_knowledge'] = current_rank if is_knowledge
         else
-          values_h['value.grade_rank'] = current_rank
+          values1_h['value.grade_rank'] = current_rank
+          values2_h['value.grade_rank_knowledge'] = current_rank if is_knowledge
         end
 
-        filter = {
+        filter1 = {
           '_id.pap_uid' => @pap_uid,
           '_id.grade' => pupil[:_id][:grade],
           '_id.pup_uid' => pupil[:_id][:pup_uid],
-          '_id.dimesion' => {'$exists' => true }#pupil[:_id][:dimesion]
+          '_id.dimesion' => pupil[:_id][:dimesion]
         }
-        target_pupils = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout
-        target_pupils.update_all(values_h)
+        target_pupils1 = Mongodb::ReportStandDevDiffResult.where(filter1).no_timeout
+        target_pupils1.update_all(values1_h)
+        if is_knowledge
+          filter2 = {
+            '_id.pap_uid' => @pap_uid,
+            '_id.grade' => pupil[:_id][:grade],
+            '_id.pup_uid' => pupil[:_id][:pup_uid],
+            '_id.dimesion' => {'$exists' => true }
+          }
+          target_pupils2 = Mongodb::ReportStandDevDiffResult.where(filter2).no_timeout
+          target_pupils2.update_all(values2_h)
+        end
+
+
       }
     }  
   end
@@ -2208,8 +2227,8 @@ class Mongodb::ReportGenerator
           level75_average_percent_total: 0
         };
 
-        if(this.value.grade_rank && this.value.grade_pupil_number && this.value.grade_rank != 0 && this.value.grade_pupil_number!=0){
-          percentile = 100 - (100*this.value.grade_rank - 50)/this.value.grade_pupil_number;
+        if(this.value.grade_rank_knowledge && this.value.grade_pupil_number && this.value.grade_rank_knowledge != 0 && this.value.grade_pupil_number!=0){
+          percentile = 100 - (100*this.value.grade_rank_knowledge - 50)/this.value.grade_pupil_number;
         } else {
           percentile = 0;
         }
