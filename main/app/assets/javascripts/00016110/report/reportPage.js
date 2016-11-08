@@ -39,84 +39,85 @@ var reportPage = {
 	},
 	bindEvent: function(){
 		/*顶部导航*/
-		$('.zy-report-nav-container').hover(function() {
-			$('.zy-grade-menu').show();
-			$('.zy-grade-menu > li').hover(function() {
-				$(this).addClass('active').siblings('li').removeClass('active');
-				$(this).children('ul').show();
-				$(this).siblings('li').children('ul').hide();
-				$('.zy-class-menu').show();
-				$('.zy-class-menu > li').on('mouseover', function() {
-					$(this).addClass('active').siblings('li').removeClass('active');
-					$(this).children('ul').show();
-					$(this).siblings('li').children('ul').hide();
-				});
-			}, function() {
-				$('.zy-class-menu').hide();
-				$('.zy-class-menu > li > ul').hide();
-				$('.zy-class-menu > li').removeClass('active');
-			});
-		}, function() {
-			$('.zy-grade-menu').hide();
-			$('.zy-grade-menu > li > ul').hide();
-			$('.zy-grade-menu > li').removeClass('active');
-		});
+		// $('.zy-report-nav-container').hover(function() {
+		// 	$('.zy-project-menu').show();
+		// 	$('.zy-project-menu > li').hover(function() {
+		// 		$(this).addClass('active').siblings('li').removeClass('active');
+		// 		$(this).children('ul').show();
+		// 		$(this).siblings('li').children('ul').hide();
+		// 		$('.zy-grade-menu').show();
+		// 		$('.zy-grade-menu > li').on('mouseover', function() {
+		// 			$(this).addClass('active').siblings('li').removeClass('active');
+		// 			$(this).children('ul').show();
+		// 			$(this).siblings('li').children('ul').hide();
+		// 		});
+		// 	}, function() {
+		// 		$('.zy-grade-menu').hide();
+		// 		$('.zy-grade-menu > li > ul').hide();
+		// 		$('.zy-grade-menu > li').removeClass('active');
+		// 	});
+		// }, function() {
+		// 	$('.zy-project-menu').hide();
+		// 	$('.zy-project-menu').hide();
+		// 	$('.zy-project-menu > li > ul').hide();
+		// 	$('.zy-project-menu > li').removeClass('active');
+		// });
 
-		$('.zy-class-menu > li > a').on('click', function() {
-			var reportType = $(this).attr('data_type');
-			var reportId = $(this).attr('report_id');
-			var gradeReportId = $(this).attr('grade_report_id');
-			var reportName = $(this).attr('report_name');
+		// $('.zy-class-menu > li > a').on('click', function() {
+		// 	var reportType = $(this).attr('data_type');
+		// 	var reportId = $(this).attr('report_id');
+		// 	var gradeReportId = $(this).attr('grade_report_id');
+		// 	var reportName = $(this).attr('report_name');
 
-			var reportInfo = {
-				reportType: reportType,
-				reportName: reportName,
-				reportId: reportId,
-				upperReportIds: {
-					gradeReportId: gradeReportId,
-				}
-			}
+		// 	var reportInfo = {
+		// 		reportType: reportType,
+		// 		reportName: reportName,
+		// 		reportId: reportId,
+		// 		upperReportIds: {
+		// 			gradeReportId: gradeReportId,
+		// 		}
+		// 	}
 
-			$('.zy-report-type').html('班级报告');
-			if(!reportId){
-				return false;
-			}
-			if (reportType == 'klass') {
-				$('#reportContent').load('/reports/klass',function(){
-					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
-				});
+		// 	$('.zy-report-type').html('班级报告');
+		// 	if(!reportId){
+		// 		return false;
+		// 	}
+		// 	if (reportType == 'klass') {
+		// 		$('#reportContent').load('/reports/klass',function(){
+		// 			reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
+		// 		});
 
-			}
-		});
-		$('.zy-student-menu > li > a').on('click', function() {
-			var reportType = $(this).attr('data_type');
-			var reportId = $(this).attr('report_id');
-			var classReportId = $(this).attr('class_report_id');
-			var gradeReportId = $(this).attr('grade_report_id');
-			var reportName = $(this).attr('report_name');
+		// 	}
+		// });
+		// $('.zy-student-menu > li > a').on('click', function() {
+		// 	var reportType = $(this).attr('data_type');
+		// 	var reportId = $(this).attr('report_id');
+		// 	var classReportId = $(this).attr('class_report_id');
+		// 	var gradeReportId = $(this).attr('grade_report_id');
+		// 	var reportName = $(this).attr('report_name');
 
-			var reportInfo = {
-				reportType: reportType,
-				reportName: reportName,
-				reportId: reportId,
-				upperReportIds: {
-					gradeReportId: gradeReportId,
-					classReportId: classReportId,
-				}
-			}
+		// 	var reportInfo = {
+		// 		reportType: reportType,
+		// 		reportName: reportName,
+		// 		reportId: reportId,
+		// 		upperReportIds: {
+		// 			gradeReportId: gradeReportId,
+		// 			classReportId: classReportId,
+		// 		}
+		// 	}
 
-			if(!reportId){
-				return false;
-			}
+		// 	if(!reportId){
+		// 		return false;
+		// 	}
 
-			$('.zy-report-type').html('学生报告');
+		// 	$('.zy-report-type').html('学生报告');
 
-			if (reportType == 'pupil') {
-				$('#reportContent').load('/reports/pupil',function(){
-					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getPupilUrl);
-				});
-			};
-		});
+		// 	if (reportType == 'pupil') {
+		// 		$('#reportContent').load('/reports/pupil',function(){
+		// 			reportPage.baseFn.getReportAjax(reportInfo, reportPage.getPupilUrl);
+		// 		});
+		// 	};
+		// });
 		/*
 		$(document).on('click','#tab-menu li[data-id]',function(event){
 			$select = $(this).attr('data-id');
@@ -481,6 +482,19 @@ var reportPage = {
           	$.extend(result, obj_arr[i]);
           }
           return result;
+		},
+		report_menu_construct: function(target_class_name){
+			$(target_class_name).hover(function() {
+				$(target_class_name).show();
+				$(target_class_name + ">li").hover(function() {
+					$(this).addClass('active').siblings('li').removeClass('active');
+					$(this).children('ul').show();
+					$(this).siblings('li').children('ul').hide();
+					report_menu_construct(target_class_name + ">li>ul");
+				})
+			},function(){
+
+			});
 		}
 	},
 
