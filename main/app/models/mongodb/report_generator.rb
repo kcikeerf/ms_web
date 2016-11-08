@@ -2227,24 +2227,30 @@ class Mongodb::ReportGenerator
           level75_average_percent_total: 0
         };
 
-        if(this.value.grade_rank_knowledge && this.value.grade_pupil_number && this.value.grade_rank_knowledge != 0 && this.value.grade_pupil_number!=0){
-          percentile = 100 - (100*this.value.grade_rank_knowledge - 50)/this.value.grade_pupil_number;
+        if(this.value.grade_rank && this.value.grade_pupil_number && this.value.grade_rank != 0 && this.value.grade_pupil_number!=0){
+          percentile = 100 - (100*this.value.grade_rank - 50)/this.value.grade_pupil_number;
         } else {
           percentile = 0;
         }
 
         value_obj.percentile = percentile;
 
-        if( 0.0 <= percentile && percentile <= #{Common::Report::FourSection::Level25} ){
+        if(this.value.grade_rank_knowledge && this.value.grade_pupil_number && this.value.grade_rank_knowledge != 0 && this.value.grade_pupil_number!=0){
+          knowledge_percentile = 100 - (100*this.value.grade_rank_knowledge - 50)/this.value.grade_pupil_number;
+        } else {
+          knowledge_percentile = 0;
+        }
+
+        if( 0.0 <= knowledge_percentile && knowledge_percentile <= #{Common::Report::FourSection::Level25} ){
           value_obj.level0_number = 1;
           value_obj.level0_average_percent_total = this.value.average_percent;
-        } else if (#{Common::Report::FourSection::Level25} < percentile && percentile <= #{Common::Report::FourSection::Level50}){
+        } else if (#{Common::Report::FourSection::Level25} < knowledge_percentile && knowledge_percentile <= #{Common::Report::FourSection::Level50}){
           value_obj.level25_number = 1;
           value_obj.level25_average_percent_total = this.value.average_percent;
-        } else if (#{Common::Report::FourSection::Level50} < percentile && percentile <= #{Common::Report::FourSection::Level75}){
+        } else if (#{Common::Report::FourSection::Level50} < knowledge_percentile && knowledge_percentile <= #{Common::Report::FourSection::Level75}){
           value_obj.level50_number = 1;
           value_obj.level50_average_percent_total = this.value.average_percent;
-        } else if (#{Common::Report::FourSection::Level75} < percentile && percentile <= 100){
+        } else if (#{Common::Report::FourSection::Level75} < knowledge_percentile && knowledge_percentile <= 100){
           value_obj.level75_number = 1;
           value_obj.level75_average_percent_total = this.value.average_percent;
         }
