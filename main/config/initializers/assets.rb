@@ -25,7 +25,8 @@ Rails.application.config.assets.precompile += [
 	'create_report.js',
 	'000016090/report/new_report.css.scss',
 	'000016090/report/init_new_report.js',
-	'00016110/report/init_new_report.js',
+	'00016110/report.css.scss',
+	'00016110/report/init_report.js',
 #百度eCharts.js
 	'echarts.min.js', 
 	'echarts_themes/macarons.js', 

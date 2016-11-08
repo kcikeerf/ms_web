@@ -1,4 +1,3 @@
-<% item_html = report_menus_field @scope_menus %>
 <div class="zy-report-container">
   <!--诊断报告头部 end-->
   <div class="zy-report-topNav">
@@ -7,7 +6,7 @@
         <span>查看报告</span>
         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
       </a>
-      <%= item_html.html_safe %>
+      <%= (report_menus_field @scope_menus).html_safe %>
     </div>
     <div class="zy-breadcrumb-container"></div>
   </div>
