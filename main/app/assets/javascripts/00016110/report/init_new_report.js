@@ -5,4 +5,4 @@
 //=require ../../echarts_themes/macarons
 //=require ../../echarts_themes/vintage
 //=require reports/echartOption
-//=require reportPage
+//=require ./reportPage
