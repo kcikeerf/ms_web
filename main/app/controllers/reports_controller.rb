@@ -2,7 +2,7 @@
 
 class ReportsController < ApplicationController
   # use job queue to create every report
-  before_action :set_paper, only: [:generate_all_reports, :generate_reports, :new_square]
+  before_action :set_paper, only: [:generate_all_reports, :generate_reports, :new_square, :square_v1_1]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
@@ -207,8 +207,10 @@ class ReportsController < ApplicationController
     render :layout => 'new_report'
   end
 
-  def new_square_v1_1
-
+  def square_v1_1
+    params.permit!
+    test_id = @paper.bank_tests[0].id.to_s
+    @scope_menus = Common::ReportPlus::report_nav_menus({:test_id => test_id, :top_group => params[:top_group]})
     render :layout => '00016110/report'
   end
 

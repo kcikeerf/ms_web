@@ -14,6 +14,7 @@ class Location < ActiveRecord::Base
 
   scope :by_tenant, ->(id) { where(tenant_uid: id) }
   scope :by_area, ->(rid) { where("rid LIKE '#{rid}%'") }
+  scope :by_grade, ->(str) { where(grade: str) }
 
   def teachers
     self.class_teacher_mappings.map{|item| 

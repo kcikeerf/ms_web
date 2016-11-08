@@ -97,6 +97,40 @@ module Common
     return target_arr
   end
 
+  def compare_eng_num_str(x,y)
+    result = 0
+    x = x || ""
+    y = y || ""
+    length = (x.length < y.length) ? x.length : y.length
+
+    0.upto(length-1) do |i|
+      if x[i] == y[i]
+        next
+      else
+        if x[i] =~ /[0-9a-z]/
+          if y[i] =~ /[0-9a-z]/
+            result = x[i] <=> y[i]
+            break
+          else
+            result = 1
+            break
+          end
+        elsif y[i] =~ /[0-9a-z]/
+          result = -1
+          break
+        else
+          result = x[i] <=> y[i]
+          break
+        end
+      end
+    end
+    if result == 0
+      return (x.length > y.length)? 1:-1
+    else
+      return result
+    end
+  end
+
   module Page
     PerPage = 10
   end

@@ -205,7 +205,7 @@ Rails.application.routes.draw do
       # get 'square'
       get 'check/:codes', to: "reports#first_login_check_report"
       get 'new_square'
-      get 'new_square_v1_1'
+      get 'square_v1_1'
       get 'grade'
       get 'klass'
       get 'pupil'
