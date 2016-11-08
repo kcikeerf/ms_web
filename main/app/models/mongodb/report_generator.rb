@@ -1949,7 +1949,8 @@ class Mongodb::ReportGenerator
       '_id.grade' => {'$exists' => true },
       #'_id.classroom' => nil,
       '_id.pup_uid' => nil,
-      '_id.dimesion' => {'$exists' => true },
+      # '_id.dimesion' => {'$exists' => true },
+      '_id.dimesion' => "knowledge",
       '_id.lv1_ckp' => nil,
       '_id.lv2_ckp' => nil
     }
@@ -1991,7 +1992,8 @@ class Mongodb::ReportGenerator
         '_id.grade' => item[:_id][:grade],
         '_id.classroom' => item[:_id][:classroom],
         '_id.pup_uid' => {'$exists' => true },
-        '_id.dimesion' => item[:_id][:dimesion],
+        '_id.dimesion' => "knowledge",
+#        '_id.dimesion' => item[:_id][:dimesion],
         '_id.lv1_ckp' => nil,
         '_id.lv2_ckp' => nil
       }
@@ -2024,7 +2026,7 @@ class Mongodb::ReportGenerator
           '_id.pap_uid' => @pap_uid,
           '_id.grade' => pupil[:_id][:grade],
           '_id.pup_uid' => pupil[:_id][:pup_uid],
-          '_id.dimesion' => pupil[:_id][:dimesion]
+          '_id.dimesion' => {'$exists' => true }#pupil[:_id][:dimesion]
         }
         target_pupils = Mongodb::ReportStandDevDiffResult.where(filter).no_timeout
         target_pupils.update_all(values_h)
