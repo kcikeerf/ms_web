@@ -48,6 +48,7 @@ class Mongodb::PupilReport
           :quiz_type => rpt_h["basic"]["quiz_type"],
           :quiz_date => rpt_h["basic"]["quiz_date"],
           :score => rpt_h["basic"]["score"],
+          :value_ratio => rpt_h["basic"]["value_ratio"],
           :class_rank => rpt_h["basic"]["class_rank"],
           :grade_rank => rpt_h["basic"]["grade_rank"],
           :report_id => item._id.to_s,
