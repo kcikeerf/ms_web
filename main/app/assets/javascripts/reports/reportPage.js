@@ -63,6 +63,7 @@ var reportPage = {
 		});
 
 		$('.zy-class-menu > li > a').on('click', function() {
+			console.log("clicked");
 			var reportType = $(this).attr('data_type');
 			var reportId = $(this).attr('report_id');
 			var gradeReportId = $(this).attr('grade_report_id');

@@ -39,19 +39,14 @@ module Common
       logger.debug ">>>Exception!<<<"
       logger.debug ex.message
       logger.debug ex.backtrace
+    ensure
+      logger.info(">>>>>>#{from_where}: end<<<<<<<")
     end
-    logger.info(">>>>>>#{from_where}: end<<<<<<<")
   end
 
   def method_template_log_only(from_where, &block)
     logger.debug(">>>>>>#{from_where}: begin<<<<<<<")
-    begin
-      yield
-    rescue Exception => ex
-      logger.debug ">>>Exception!<<<"
-      logger.debug ex.message
-      logger.debug ex.backtrace
-    end
+    yield
     logger.debug(">>>>>>#{from_where}: end<<<<<<<")
   end
 
