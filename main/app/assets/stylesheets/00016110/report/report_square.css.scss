@@ -1,0 +1,262 @@
+@charset "utf-8";
+.zy-col {
+	margin-bottom: 3rem;
+}
+.zy-report-topNav {
+	display: flex;
+	align-items: center;
+	.zy-report-nav-container {
+		width: $sidebar-width;
+		position: relative;
+		li {
+			//position: relative;
+		}
+		.zy-report-navEntry {
+			display: inline-block;
+			padding: 15px 20px;
+			font-size: 24px;
+			color: #fff;
+			background: #15a892;
+			width: 100%;
+			span.glyphicon {
+				float: right;
+			}
+		}
+		.zy-report-menu {
+			display: none;
+			min-width: 200px;
+			width: auto;
+			position: absolute;
+			top: 0;
+			left: 199px;
+			background-color: #fff;
+			border: 1px solid rgba(0, 0, 0, 0.15);
+			border-radius: 3px;
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+			background-clip: padding-box;
+			margin: 0;
+			padding: 0;
+			.title {
+				font-size: 20px;
+				border-style: solid;
+				border-color: #15a892;
+				border-width: 0 0 0.5px 0;
+				text-align: center;
+			}
+			> li {
+				> a {
+					display: block;
+					padding: 15px 20px;
+					color: #212121;
+					cursor: pointer;
+					&:hover,
+					&:focus {
+						background-color: #f5f5f5;
+					}
+					span.glyphicon {
+						float: right;
+					}
+				}
+			}
+			> .active {
+				color: #000000;
+			}
+		}
+		.zy-pupil-menu {
+					-webkit-box-shadow: 3px 3px 5px #ccc;
+					-moz-box-shadow: 3px 3px 5px #ccc;
+					box-shadow: 3px 3px 5px #ccc;
+					background: #fff;
+					border-top: 1px solid #eee;
+					width: 400px;
+					display: none;
+					position: absolute;
+					left: 199px;
+					top: 0;
+					overflow: hidden;
+					//padding: 12px;
+					> li {
+						> a {
+							color: #212121;
+							padding: 10px 0;
+							text-align: center;
+							width: 33%;
+							float: left;
+							&:hover {
+								color: #fff;
+								background-color: $color-main;
+								cursor: pointer;
+							}
+						}
+					}
+		}
+
+	}
+}
+.zy-report-type {}
+.zy-breadcrumb-container {
+	height: 56px;
+	.zy-breadcrumb {
+		padding: 1rem 0;
+		background: none;
+		list-style: none;
+		border-radius: 3px;
+		margin: 0;
+		padding-left: 15px;
+		> li {
+			display: inline-block;
+		}
+		> .active {
+			color: #727272;
+		}
+	}
+}
+.zy-chart-wrapper-left {
+	padding-right: 45px;
+	//margin-left: -30px;
+}
+.zy-chart-wrapper-mid {
+	padding-left: 30px;
+	padding-right: 30px;
+	margin-left: -15px;
+	margin-right: -15px;
+}
+.zy-chart-wrapper-right {
+	padding-left: 45px;
+	//margin-right: -30px;
+}
+.zy-chart-container {
+	width: 100%;
+	height: 520px;
+	margin-bottom: 3rem;
+}
+.dropdown_box{
+	width: $sidebar-width;
+	background: #15a892;
+	position: relative;
+	flex-shrink: 0;
+}
+.exam-name{
+	padding-left: 20px;
+	letter-spacing: 1.5px;
+}
+.classMenu{
+	padding: 15px 20px;
+	display: block;
+	font-size: 20px;
+	cursor: pointer;
+	color: $white;
+	&:focus,
+	&.focus {
+		text-decoration: none;
+		color: $white;
+	}
+	&:hover {
+		color: $white;
+	}
+	span {
+		float: right;
+	}
+}
+.grade-top-list{
+	height:60px;
+	line-height:60px;
+	border:1px solid #ccc;
+}
+.grade-top-list li{
+	float:left;
+	line-height:60px;
+}
+#knowledge_line1,#knowledge_line1{
+	width:500px;
+	height:400px;
+}
+/* 报告container */
+.report-content{
+	display: flex;
+}
+
+/* 报告左侧导航栏 */
+.zy-report-leftNav {
+	width: $sidebar-width;
+	flex-shrink: 0;
+}
+.zy-report-title {
+
+}
+.zy-report-subtitle {
+	border-left: 4px solid #15a892;
+	padding-left: 10px;
+}
+
+.tab-pane {
+	.row {
+		margin-bottom: 2rem;
+	}
+}
+
+.zy-hr-dashed {
+	border: 1px dashed #b6b6b6;
+}
+
+.zy-report-footer {
+	text-align: right;
+}
+.zy-btn-modal {
+	color: #fff;
+	background-color: #15a892;
+	letter-spacing: 2px;
+	margin-left: 2rem;
+}
+.zy-dropdown {
+	.zy-dropdown-menu {
+		color: #212121;
+		position: absolute;
+		top: 100%;
+		left: 0;
+		z-index: 1000;
+		display: none;
+		float: left;
+		min-width: 160px;
+		padding: 5px 0;
+		margin: 2px 0 0;
+		list-style: none;
+		font-size: 16px;
+		text-align: left;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		border: 1px solid rgba(0, 0, 0, 0.15);
+		border-radius: 3px;
+		-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+		background-clip: padding-box;
+		> li {
+			> a {
+				color: #212121;
+				&:hover,
+				&:focus {
+					background-color: #212121;
+				}
+			}
+		}
+	}
+}
+.zy-table-note {
+	margin-top: 1rem;
+	ol {
+		list-style-type: decimal;
+		li {
+			list-style: inherit;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+

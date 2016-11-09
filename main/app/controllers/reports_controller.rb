@@ -79,6 +79,9 @@ class ReportsController < ApplicationController
       rescue Exception => ex
         status = 500
         result[:task_uid] = ex.message
+        logger.debug ">>>Exception!<<<"
+        logger.debug ex.message
+        logger.debug ex.backtrace
       end
       render common_json_response(status, result)  
     }
@@ -208,10 +211,24 @@ class ReportsController < ApplicationController
   end
 
   def square_v1_1
-    params.permit!
-    test_id = @paper.bank_tests[0].id.to_s
-    @scope_menus = Common::ReportPlus::report_nav_menus({:test_id => test_id, :top_group => params[:top_group]})
-    render :layout => '00016110/report'
+    Common::method_template_log_only(__method__.to_s()) {
+      params.permit!
+
+      test_id = @paper.bank_tests[0].id.to_s
+      begin
+        @scope_menus = Common::ReportPlus::report_nav_menus({:test_id => test_id, :top_group => params[:top_group]})
+      rescue Exception => ex
+        @scope_menus = []
+        logger.debug ">>>Exception<<<"
+        logger.debug ex.message
+        logger.debug ex.backtrace
+      end
+      render :layout => '00016110/report'
+    }
+  end
+
+  def project
+    render :layout => false
   end
 
   def grade

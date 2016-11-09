@@ -2,6 +2,10 @@ module ReportsHelper
   def report_menus_field menus
     return "" if menus.blank?
     menu_panel_title = ""
+    str = %Q{
+      <ul class="zy-report-menu">
+      %{menu_panel_title}
+    }
     case menus[0][:data_type]
     when "project"
       data_type = "project"
@@ -22,18 +26,16 @@ module ReportsHelper
       data_type = "student"
       menu_panel_title = %Q{
         <div class="title">#{LABEL("dict.ge_ren_bao_gao")}</div>        
+      }
+      str = %Q{
+        <ul class="zy-report-menu zy-pupil-menu">
+        %{menu_panel_title}
       } 
     else
       data_type= menus[0][:data_type]
     end
-    # str = %Q{
-    #   <ul class="zy-#{data_type}-menu">
-    #   #{menu_panel_title}
-    # }
-    str = %Q{
-      <ul class="zy-report-menu">
-      #{menu_panel_title}
-    }
+    str %= {:menu_panel_title => menu_panel_title}
+
     menus.each{|menu|
       inner_a = %Q{
         <span title="#{menu[:label]}">#{abbrev_menu_label menu[:label]}</span>
@@ -53,6 +55,7 @@ module ReportsHelper
           %{items}
         </li>
       }
+
       menu_str %= {
         :inner_a => inner_a,
         :items => report_menus_field(menu[:items])

@@ -39,107 +39,14 @@ var reportPage = {
 	},
 	bindEvent: function(){
 		/*顶部导航*/
-		// $('.zy-report-nav-container').hover(function() {
-		// 	$('.zy-project-menu').show();
-		// 	$('.zy-project-menu > li').hover(function() {
-		// 		$(this).addClass('active').siblings('li').removeClass('active');
-		// 		$(this).children('ul').show();
-		// 		$(this).siblings('li').children('ul').hide();
-		// 		$('.zy-grade-menu').show();
-		// 		$('.zy-grade-menu > li').on('mouseover', function() {
-		// 			$(this).addClass('active').siblings('li').removeClass('active');
-		// 			$(this).children('ul').show();
-		// 			$(this).siblings('li').children('ul').hide();
-		// 		});
-		// 	}, function() {
-		// 		$('.zy-grade-menu').hide();
-		// 		$('.zy-grade-menu > li > ul').hide();
-		// 		$('.zy-grade-menu > li').removeClass('active');
-		// 	});
-		// }, function() {
-		// 	$('.zy-project-menu').hide();
-		// 	$('.zy-project-menu').hide();
-		// 	$('.zy-project-menu > li > ul').hide();
-		// 	$('.zy-project-menu > li').removeClass('active');
-		// });
-
-		// $('.zy-class-menu > li > a').on('click', function() {
-		// 	var reportType = $(this).attr('data_type');
-		// 	var reportId = $(this).attr('report_id');
-		// 	var gradeReportId = $(this).attr('grade_report_id');
-		// 	var reportName = $(this).attr('report_name');
-
-		// 	var reportInfo = {
-		// 		reportType: reportType,
-		// 		reportName: reportName,
-		// 		reportId: reportId,
-		// 		upperReportIds: {
-		// 			gradeReportId: gradeReportId,
-		// 		}
-		// 	}
-
-		// 	$('.zy-report-type').html('班级报告');
-		// 	if(!reportId){
-		// 		return false;
-		// 	}
-		// 	if (reportType == 'klass') {
-		// 		$('#reportContent').load('/reports/klass',function(){
-		// 			reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
-		// 		});
-
-		// 	}
-		// });
-		// $('.zy-student-menu > li > a').on('click', function() {
-		// 	var reportType = $(this).attr('data_type');
-		// 	var reportId = $(this).attr('report_id');
-		// 	var classReportId = $(this).attr('class_report_id');
-		// 	var gradeReportId = $(this).attr('grade_report_id');
-		// 	var reportName = $(this).attr('report_name');
-
-		// 	var reportInfo = {
-		// 		reportType: reportType,
-		// 		reportName: reportName,
-		// 		reportId: reportId,
-		// 		upperReportIds: {
-		// 			gradeReportId: gradeReportId,
-		// 			classReportId: classReportId,
-		// 		}
-		// 	}
-
-		// 	if(!reportId){
-		// 		return false;
-		// 	}
-
-		// 	$('.zy-report-type').html('学生报告');
-
-		// 	if (reportType == 'pupil') {
-		// 		$('#reportContent').load('/reports/pupil',function(){
-		// 			reportPage.baseFn.getReportAjax(reportInfo, reportPage.getPupilUrl);
-		// 		});
-		// 	};
-		// });
-		/*
-		$(document).on('click','#tab-menu li[data-id]',function(event){
-			$select = $(this).attr('data-id');
-			$('#myTabContent div.tab-pane').hide();
-			$('#'+$select+'').fadeIn();
-			$('#tab-menu li[data-id]').each(function(){
-				$(this).removeClass('active');
-			})
-			$(this).addClass('active');
+		reportPage.baseFn.report_menu_construct('.zy-report-nav-container');
+		$('ul.zy-report-menu > li > a').on('click', function(){
+			var data_type = $(this).attr('data_type');
+			var report_url = $(this).attr('report_url');
+			$('#reportContent').load('/reports/'+data_type,function(){
+				reportPage.baseFn.getReportAjax(report_url,{reportType: data_type});
+			});
 		});
-		*/
-		/*
-		$(document).on('click','#xialatab',function(event){
-			var $this = $(this).children('ul');
-			if($this.is(':hidden')){
-				$this.slideDown();
-			}else{
-				$this.slideUp();
-			}
-		});
-		*/
-
 		$(document).on('show.bs.collapse','.panel-collapse',function(){
 			$(this).prev().removeClass('collapse-close');
 			$(this).prev().addClass('collapse-open');
@@ -151,25 +58,23 @@ var reportPage = {
 	},
 	/*基础方法*/
 	baseFn: {
-		getReportAjax: function(reportInfo, url){
-			var reportType = reportInfo.reportType;
-			var params = "report_id=" + reportInfo.reportId;
+		getReportAjax: function(url,options={}){
 			$.ajax({
 				url: url,
 				type: "GET",
-				data: params,
+				data: "",
 				dataType: "json",
 				success: function(data){
 					//$('#reportContent')[0].style = "position:relative;display:flex;"
 					//$('#reportContent')[0].style = "display: block;"
-					if(reportType=="grade"){
+					if(options.reportType=="grade"){
 						reportPage.Grade.createReport(data, reportInfo.upperReportIds);
 					}
-					else if(reportType=="klass"){
+					else if(options.reportType=="klass"){
 						reportPage.Class.createReport(data, reportInfo.upperReportIds);
 					}
-					else if(reportType=="pupil"){
-						reportPage.Pupil.createReport(data, reportInfo.upperReportIds);
+					else if(options.reportType=="pupil"){
+						reportPage.Pupil.createReport(data);
 					}
 				},
 				error: function(data){
@@ -483,17 +388,14 @@ var reportPage = {
           }
           return result;
 		},
-		report_menu_construct: function(target_class_name){
-			$(target_class_name).hover(function() {
-				$(target_class_name).show();
-				$(target_class_name + ">li").hover(function() {
-					$(this).addClass('active').siblings('li').removeClass('active');
-					$(this).children('ul').show();
-					$(this).siblings('li').children('ul').hide();
-					report_menu_construct(target_class_name + ">li>ul");
-				})
+		report_menu_construct: function(current_list){
+			$(current_list).hover(function(){
+		 		$(this).children("ul.zy-report-menu").show();
+		 		$(this).children("ul.zy-report-menu").children('li').show();
+				reportPage.baseFn.report_menu_construct(current_list + " > ul.zy-report-menu > li ");
 			},function(){
-
+		 		$(this).children("ul.zy-report-menu").hide();
+		 		$(this).children("ul.zy-report-menu").children('li').hide();
 			});
 		}
 	},
@@ -1397,10 +1299,10 @@ var reportPage = {
 
 	Pupil: {
 		basicData: null,
-		createReport : function(data, upperReportIds){
-			reportPage.Pupil.basicData = data.data.basic; 
-			var basicData = reportPage.Pupil.basicData;
+		createReport : function(data){
 			console.log(data);
+			reportPage.Pupil.basicData = data.basic; 
+			var basicData = reportPage.Pupil.basicData;
 			var pupilNavStr =
 				/*
 				'<b>学校</b>：<span>'+basicData.school
@@ -1408,127 +1310,127 @@ var reportPage = {
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>班级</b>：<span>'+basicData.classroom
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>姓名</b>：<span>'+basicData.name
 			    */
-				'<b>分数</b>：<span>' + ((basicData.score * basicData.value_ratio["knowledge"]).toFixed(2)) +
+				'<b>分数</b>：<span>' + //
 				'&nbsp;|</span>&nbsp;&nbsp;' +
-				'<b>名次</b>：<span>' + basicData.grade_rank + 
+				'<b>名次</b>：<span>' + //basicData.grade_rank + 
 				'&nbsp;|</span>&nbsp;&nbsp;' +
 				'<b>性别</b>：<span>'+basicData.sex
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>'+basicData.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>'+basicData.quiz_type
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>'+basicData.quiz_date;
-			var gradeReportId = upperReportIds.gradeReportId;
-			var classReportId = upperReportIds.classReportId;
-			var breadcrumb =
-				'<ol class="breadcrumb zy-breadcrumb">' +
-				'<li class="active">' +
-				basicData.school +
-				'</li>' +
-				'<li class="zy-breadcrumb-grade">' +
-				'<a href="#" report_id="' +
-				gradeReportId +
-				'">' +
-				basicData.grade +
-				'</a>' +
-				'</li>' +
-				'<li class="zy-breadcrumb-class">' +
-				'<a href="#" ' +
-				'report_id="' +
-				classReportId +
-				'" grade_report_id="' +
-				gradeReportId +
-				'">' +
-				basicData.classroom +
-				'</a>' +
-				'</li>' +
-				'<li class="active">' +
-				basicData.name +
-				'</li>' +
-				'</ol>';
-			$('.zy-breadcrumb-container').html(breadcrumb);
-			$('.zy-breadcrumb-grade > a').on('click', function() {
-				var reportType = 'grade';
-				var reportId = $(this).attr('report_id');
-				var reportInfo = {
-					reportType: reportType,
-					reportId: reportId,
-					upperReportIds: {}
-				}
+			// var gradeReportId = upperReportIds.gradeReportId;
+			// var classReportId = upperReportIds.classReportId;
+			// var breadcrumb =
+			// 	'<ol class="breadcrumb zy-breadcrumb">' +
+			// 	'<li class="active">' +
+			// 	basicData.school +
+			// 	'</li>' +
+			// 	'<li class="zy-breadcrumb-grade">' +
+			// 	'<a href="#" report_id="' +
+			// 	gradeReportId +
+			// 	'">' +
+			// 	basicData.grade +
+			// 	'</a>' +
+			// 	'</li>' +
+			// 	'<li class="zy-breadcrumb-class">' +
+			// 	'<a href="#" ' +
+			// 	'report_id="' +
+			// 	classReportId +
+			// 	'" grade_report_id="' +
+			// 	gradeReportId +
+			// 	'">' +
+			// 	basicData.classroom +
+			// 	'</a>' +
+			// 	'</li>' +
+			// 	'<li class="active">' +
+			// 	basicData.name +
+			// 	'</li>' +
+			// 	'</ol>';
+			// $('.zy-breadcrumb-container').html(breadcrumb);
+			// $('.zy-breadcrumb-grade > a').on('click', function() {
+			// 	var reportType = 'grade';
+			// 	var reportId = $(this).attr('report_id');
+			// 	var reportInfo = {
+			// 		reportType: reportType,
+			// 		reportId: reportId,
+			// 		// upperReportIds: {}
+			// 	}
 
-				if(!reportId){
-					return false;
-				}
-				$('.zy-report-type').html('年级报告');
-				$('#reportContent').load('/reports/grade',function(){
-					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
-				});
-			});
-			$('.zy-breadcrumb-class > a').on('click', function() {
-				var reportType = 'klass';
-				var reportId = $(this).attr('report_id');
-				var gradeReportId = $(this).attr('grade_report_id');
-				var reportInfo = {
-					reportType: reportType,
-					reportId: reportId,
-					upperReportIds: {
-						gradeReportId: gradeReportId,
-					}
-				}
+			// 	if(!reportId){
+			// 		return false;
+			// 	}
+			// 	$('.zy-report-type').html('年级报告');
+			// 	$('#reportContent').load('/reports/grade',function(){
+			// 		reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
+			// 	});
+			// });
+			// $('.zy-breadcrumb-class > a').on('click', function() {
+			// 	var reportType = 'klass';
+			// 	var reportId = $(this).attr('report_id');
+			// 	var gradeReportId = $(this).attr('grade_report_id');
+			// 	var reportInfo = {
+			// 		reportType: reportType,
+			// 		reportId: reportId,
+			// 		// upperReportIds: {
+			// 		// 	gradeReportId: gradeReportId,
+			// 		// }
+			// 	}
 
-				if(!reportId){
-					return false;
-				}
-				$('.zy-report-type').html('班级报告');
-				$('#reportContent').load('/reports/klass',function(){
-					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
-				});
-			});
+			// 	if(!reportId){
+			// 		return false;
+			// 	}
+			// 	$('.zy-report-type').html('班级报告');
+			// 	$('#reportContent').load('/reports/klass',function(){
+			// 		reportPage.baseFn.getReportAjax(reportInfo, reportPage.getClassUrl);
+			// 	});
+			// });
 			$('.zy-report-type').html('学生报告');
 			$('#pupil-top-nav').html(pupilNavStr);
-			var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
-			var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
-			var nodeArr_radar = ['pupil_knowledge_radar','pupil_skill_radar','pupil_ability_radar'];
-			var nodeArr_diff = ['pupil_knowledge_diff','pupil_skill_diff','pupil_ability_diff'];
-			var createdCharts = [];
-			for(var i = 0 ; i < objArr.length ; i++){
-				var optionRadar = echartOption.getOption.Pupil.setPupilRadarOption(objArr[i]);
-				var optionDiff = echartOption.getOption.Pupil.setPupilDiffOption(objArr[i]);
-				createdCharts.push(echartOption.createEchart(optionRadar,nodeArr_radar[i]));
-				createdCharts.push(echartOption.createEchart(optionDiff,nodeArr_diff[i]));
-			}
+			// var PupilDiagnoseObj = reportPage.Pupil.getPupilDiagnoseData(data.data);
+			// var objArr = [PupilDiagnoseObj.knowledge,PupilDiagnoseObj.skill,PupilDiagnoseObj.ability];
+			// var nodeArr_radar = ['pupil_knowledge_radar','pupil_skill_radar','pupil_ability_radar'];
+			// var nodeArr_diff = ['pupil_knowledge_diff','pupil_skill_diff','pupil_ability_diff'];
+			// var createdCharts = [];
+			// for(var i = 0 ; i < objArr.length ; i++){
+			// 	var optionRadar = echartOption.getOption.Pupil.setPupilRadarOption(objArr[i]);
+			// 	var optionDiff = echartOption.getOption.Pupil.setPupilDiffOption(objArr[i]);
+			// 	createdCharts.push(echartOption.createEchart(optionRadar,nodeArr_radar[i]));
+			// 	createdCharts.push(echartOption.createEchart(optionDiff,nodeArr_diff[i]));
+			// }
 
-			window.onresize = function () {
-				for(var i=0; i<createdCharts.length; i++){
-					createdCharts[i].resize();
-				}
-			};
+			// window.onresize = function () {
+			// 	for(var i=0; i<createdCharts.length; i++){
+			// 		createdCharts[i].resize();
+			// 	}
+			// };
 
-			$('#tab-menu li[data-id]').on('click', function (e) {
-				createdCharts = [];
-				var $dataId = $(e.target).attr('data-id');
+			// $('#tab-menu li[data-id]').on('click', function (e) {
+			// 	createdCharts = [];
+			// 	var $dataId = $(e.target).attr('data-id');
 
-				$('#myTabContent div.tab-pane').hide();
-				$('#'+$dataId+'').fadeIn();
-				$('#tab-menu li[data-id]').each(function(){
-					$(this).removeClass('active');
-				})
-				$(this).addClass('active');
+			// 	$('#myTabContent div.tab-pane').hide();
+			// 	$('#'+$dataId+'').fadeIn();
+			// 	$('#tab-menu li[data-id]').each(function(){
+			// 		$(this).removeClass('active');
+			// 	})
+			// 	$(this).addClass('active');
 
-				if($dataId == 'improve-sugg'){
-					$('#improve-sugg').html(data.data.quiz_comment);
-				}else if($dataId == 'table-data-knowledge'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil','knowledge');
-					$('#pupil_knowledge_percentile').html(data.data.percentile.knowledge);
-					$('#knowledge_data_table').html(tableStr);
-				}else if($dataId == 'table-data-skill'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil','skill');
-					$('#pupil_skill_percentile').html(data.data.percentile.skill);
-					$('#skill_data_table').html(tableStr);
-				}else if($dataId == 'table-data-ability'){
-					var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil','ability');
-					$('#pupil_ability_percentile').html(data.data.percentile.ability);
-					$('#ability_data_table').html(tableStr);
-				}
-			})
+			// 	if($dataId == 'improve-sugg'){
+			// 		$('#improve-sugg').html(data.data.quiz_comment);
+			// 	}else if($dataId == 'table-data-knowledge'){
+			// 		var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.knowledge,'pupil','knowledge');
+			// 		$('#pupil_knowledge_percentile').html(data.data.percentile.knowledge);
+			// 		$('#knowledge_data_table').html(tableStr);
+			// 	}else if($dataId == 'table-data-skill'){
+			// 		var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.skill,'pupil','skill');
+			// 		$('#pupil_skill_percentile').html(data.data.percentile.skill);
+			// 		$('#skill_data_table').html(tableStr);
+			// 	}else if($dataId == 'table-data-ability'){
+			// 		var tableStr = reportPage.baseFn.getTableStr(data.data.data_table.ability,'pupil','ability');
+			// 		$('#pupil_ability_percentile').html(data.data.percentile.ability);
+			// 		$('#ability_data_table').html(tableStr);
+			// 	}
+			// })
 		},
 		getPupilDiagnoseData : function(data){
 			return obj = {
