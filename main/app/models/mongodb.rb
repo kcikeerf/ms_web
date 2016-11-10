@@ -21,29 +21,31 @@ module Mongodb
     group_types = Common::Report::Group::ListArr
     base_result_klass_arr = []
     base_result_klass_arr += group_types.map{|t|
+      collect_type = t.capitalize 
       [
-        "Report#{t}BaseResult",
-        "Report#{t}Lv1CkpResult",
-        "Report#{t}Lv2CkpResult",
-        "Report#{t}LvEndCkpResult",
-        "Report#{t}OrderResult",
-        "Report#{t}OrderLv1CkpResult",
-        "Report#{t}OrderLv2CkpResult",
-        "Report#{t}OrderLvEndCkpResult"
+        "Report#{collect_type}BaseResult",
+        "Report#{collect_type}Lv1CkpResult",
+        "Report#{collect_type}Lv2CkpResult",
+        "Report#{collect_type}LvEndCkpResult",
+        "Report#{collect_type}OrderResult",
+        "Report#{collect_type}OrderLv1CkpResult",
+        "Report#{collect_type}OrderLv2CkpResult",
+        "Report#{collect_type}OrderLvEndCkpResult"
       ]
     }
 
     pupil_stat_klass_arr = []
     pupil_stat_klass_arr += group_types[1..-1].map{|t|
+      collect_type = t.capitalize 
       [
-        "Report#{t}BeforeBasePupilStatResult",
-        "Report#{t}BeforeLv1CkpPupilStatResult",
-        "Report#{t}BeforeLv2CkpPupilStatResult",
-        "Report#{t}BeforeLvEndCkpPupilStatResult",
-        "Report#{t}BasePupilStatResult",
-        "Report#{t}Lv1CkpPupilStatResult",
-        "Report#{t}Lv2CkpPupilStatResult",
-        "Report#{t}LvEndCkpPupilStatResult"
+        "Report#{collect_type}BeforeBasePupilStatResult",
+        "Report#{collect_type}BeforeLv1CkpPupilStatResult",
+        "Report#{collect_type}BeforeLv2CkpPupilStatResult",
+        "Report#{collect_type}BeforeLvEndCkpPupilStatResult",
+        "Report#{collect_type}BasePupilStatResult",
+        "Report#{collect_type}Lv1CkpPupilStatResult",
+        "Report#{collect_type}Lv2CkpPupilStatResult",
+        "Report#{collect_type}LvEndCkpPupilStatResult"
       ]
     }
 

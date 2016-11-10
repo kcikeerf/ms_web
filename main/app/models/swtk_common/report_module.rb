@@ -18,6 +18,9 @@ module ReportModule
       ReportLocation = Rails.root.to_s + "/public/"
       # 报告保存格式
       # /reports/测试id／类型／租户uid／类型id
+      #
+      # /reports/测试id／tenants／租户uid／班级uid／学生uid
+      # /reports/测试id／tenants/Tenant uid／Location uid/Pupil uid
 
       def store_report_json path, file_name, str
         FileUtils.mkdir_p path
@@ -30,7 +33,7 @@ module ReportModule
     end
 
     module CheckPoints
-      DefaultLevel = 1
+      DefaultLevel = 2
       DefaultLevelFrom = 1
       DefaultLevelTo = 2
       DefaultLevelEnd = 3
@@ -68,7 +71,7 @@ module ReportModule
     end
 
     module Group
-      ListArr = ["Pupil", "Klass", "Grade", "Project"]
+      ListArr = ["pupil", "klass", "grade", "project"]
       Pupil = "pupil"
       Klass = "klass"
       Grade = "grade"
