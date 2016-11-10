@@ -32,10 +32,10 @@ class GenerateReportsJob < ActiveJob::Base
           :pupil => Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))
         }
 
-        end_index = Common::Report::Group::ListArr.find_index(params[:top_group].capitalize)
+        end_index = Common::Report::Group::ListArr.find_index(params[:top_group].downcase)
         Common::Report::Group::ListArr[1..end_index].each{|group|
-          generator_h[group.downcase.to_sym] = Mongodb::ReportGroupGenerator.new({:group_type => group.downcase}.merge(params))
-          constructor_h[group.downcase.to_sym] = Mongodb::ReportConstructor.new({:group_type => group.downcase}.merge(params))
+          generator_h[group.to_sym] = Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
+          constructor_h[group.to_sym] = Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
         }
 
         # 清除旧记录

@@ -8,7 +8,7 @@ class GenerateGroupReportsJob < ActiveJob::Base
       logger.info "#{args}"
       params = args[0]
 
-      if Common::Report::Group::ListArr[1..-1].include?(params[:group_type].capitalize)
+      if Common::Report::Group::ListArr[1..-1].include?(params[:group_type].downcase)
         # JOB的分处理的数量
         phase_total = 5
         # job_tracker = JobList.new({
