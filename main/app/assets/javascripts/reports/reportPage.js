@@ -186,7 +186,7 @@ var reportPage = {
 				console.log(correctRatio);
 				var str = '';
 				for(var i = 0; i < qid.length ; i++){
-					if(correctRatio[i].correct_ratio){
+					if(correctRatio[i]){
 						str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i].correct_ratio+'</td><td>'+ correctRatio[i].checkpoint +'</td></tr>';
 					} else {
 						str += '<tr><td>'+qid[i]+'</td><td>'+correctRatio[i]+'</td><td> - </td></tr>';
