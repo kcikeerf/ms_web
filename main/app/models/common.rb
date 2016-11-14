@@ -70,9 +70,12 @@ module Common
           break
         end
       when "klass"
-        a = Common::Locale.hanzi2pinyin(arr[0])
-        b = Common::Locale.hanzi2pinyin(key)
-        if Common::Locale.mysort(Common::Klass::Order[a],Common::Klass::Order[b]) < 0
+        if Common::Locale.mysort(Common::Klass::Order(arr[0]),Common::Klass::Order(key)) < 0
+          last_key = key
+          break
+        end
+      when "project", "grade", "pupil"
+        if compare_eng_num_str(arr[0], key) < 0
           last_key = key
           break
         end
