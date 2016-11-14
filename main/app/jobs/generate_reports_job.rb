@@ -20,7 +20,7 @@ class GenerateReportsJob < ActiveJob::Base
         })
         job_tracker.save!
 
-        _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, [params[:test_id], "ckps_mapping"]){
+        _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, ["tests", params[:test_id], "ckps_mapping"]){
           ckps_mapping = Common::ReportPlus::data_ckps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
           ckps_mapping
         }
@@ -84,7 +84,7 @@ class GenerateReportsJob < ActiveJob::Base
         ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.5)
 
-        pid = fork do 
+        #pid = fork do 
           # 组装
           th_arr = []
           constructor_h.each{|k,v|
@@ -104,7 +104,7 @@ class GenerateReportsJob < ActiveJob::Base
           ThreadsWait.all_waits(*th_arr)
           job_tracker.update(process: 0.8)
 
-          Common::Report::Group::ListArr[1..end_index].reverse.each{|item|
+          Common::Report::Group::ListArr[0..end_index].reverse.each{|item|
             th_arr = []
             th_arr << Thread.new do 
               constructor_h[item.downcase.to_sym].san_kumikan_no_data_koukan_koutiku
@@ -116,9 +116,9 @@ class GenerateReportsJob < ActiveJob::Base
           Common::ReportPlus::kumitate_no_owari( Common::SwtkRedis::Ns::Sidekiq, params[:test_id] )
           job_tracker.update(status: Common::Job::Status::Completed)
           job_tracker.update(process: 1.0)
-          Signal.trap("TERM") { puts "finished!"; exit }
-        end
-        logger.info "construct process id: #{pid}"
+        #  Signal.trap("TERM") { puts "finished!"; exit }
+        #end
+        #logger.info "construct process id: #{pid}"
       else
         raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => ""))
       end

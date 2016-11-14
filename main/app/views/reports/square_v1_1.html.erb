@@ -2,50 +2,9 @@
   <!--诊断报告头部 end-->
   <div class="zy-report-topNav">
     <div class="zy-report-nav-container">
-      <a class="zy-report-navEntry">
-        <span>查看报告</span>
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-      </a>
-      <%= (report_menus_field @scope_menus).html_safe %>
+      <%= render partial: "nav_menus" %>
     </div>
     <div class="zy-breadcrumb-container"></div>
   </div>
   <div id="reportContent" class="clearfix report-content"></div>
 </div>
-<!-- <div class="dropdown">
-<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" data-submenu="">
-  Dropdown <span class="caret"></span>
-</button>
-
-<ul class="dropdown-menu">
-
-<li class="dropdown-submenu">
-  <a tabindex="0">Action</a>
-  <ul class="dropdown-menu">
-      <li><a tabindex="0">Sub action</a></li>
-      <li class="dropdown-submenu">
-      <a tabindex="0">Another sub action</a>
-
-      <ul class="dropdown-menu">
-        <li><a tabindex="0">Sub action</a></li>
-        <li><a tabindex="0">Another sub action</a></li>
-        <li><a tabindex="0">Something else here</a></li>
-      </ul>
-      </li>
-      <li><a tabindex="0">Something else here</a></li>
-      <li class="disabled"><a tabindex="-1">Disabled action</a></li>
-      <li class="dropdown-submenu">
-      <a tabindex="0">Another action</a>
-
-      <ul class="dropdown-menu">
-        <li><a tabindex="0">Sub action</a></li>
-        <li><a tabindex="0">Another sub action</a></li>
-        <li><a tabindex="0">Something else here</a></li>
-      </ul>
-      </li>
-  </ul>
-</li>
-
-</ul>
-
-</div> -->
