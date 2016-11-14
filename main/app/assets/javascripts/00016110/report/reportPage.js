@@ -1,7 +1,6 @@
 var reportPage = {
-	getGradeUrl : '/reports/get_grade_report',
-	getClassUrl : '/reports/get_class_report',
-	getPupilUrl : '/reports/get_pupil_report',
+	rootGroup: null,
+	rootUrl: null,
 	ProjectData : null,
 	CurrentProjectId : null,
 	CurrentProjectUrl : null,
@@ -17,56 +16,45 @@ var reportPage = {
 	CurrentBreadCrumbChildren : [],
 	TopGroup : null,
 	BreadCrumbs : [],
+	GroupRoute : ["test", "project", "grade", "klass", "pupil", "end"],
+	BreadCrumbObj :{
+		test: {selected: 0, list: [], html_str: ""}, 
+		project: {selected: 0, list: [], html_str: ""}, 
+		grade: {selected: 0, list: [], html_str: ""}, 
+		klass: {selected: 0, list: [], html_str: ""}, 
+		pupil: {selected: 0, list: [], html_str: ""},
+		end: {selected: 0, list: [], html_str: ""}
+	},
 	ReportCkpStartLevel: 1,
 	FullScore: 100,
 	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 
-	init: function(test_id){
-
-
-		// 记录定点Group类型
-		// reportPage.TopGroup = $('.zy-report-menu > li > a:first').attr("data_type");
-
-		// 导航添加事件
-		// $('.zy-report-menu > li > a').on('click', function() {
-			// var reportType = $(this).attr('data_type');
-			// // var reportId = $(this).attr('report_id');
-			// var reportName = $(this).attr('report_name');
-
-			// var reportInfo = {
-			// 	reportType: reportType,
-			// 	reportName: reportName,
-			// 	reportId: reportId,
-			// 	upperReportIds: {}
-			// }
-
-			// if(!reportId){
-			// 	return false;
-			// }
-			// $('.zy-report-type').html('年级报告');
-			// if(reportType == 'grade'){
-			// 	$('#reportContent').load('/reports/grade',function(){
-			// 		reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
-			// 	});
-			// }
-		// });
-
-		/*默认显示*/
-		// 之后改，不能延迟，而是触发　
-		// setTimeout(function(){$('.zy-report-menu > li > a:first').trigger('click');}, 1000);
-
+	init: function(root_group, root_url){
+		//
 		reportPage.bindEvent();
-		$('.zy-report-menu > li > a:first').trigger('click');
+		//
+
+		//var root_url = "/reports_warehouse/tests/"+test_id+""+test_id+".json";
+		// var url_arr = root_url.split(".json");
+		// var nav_url = url_arr[0] + "/nav.json";
+		reportPage.rootGroup = root_group;
+		reportPage.rootUrl = root_url;
+		reportPage.baseFn.getReportAjax( root_url, { report_group: root_group }, function(data){
+			reportPage.baseFn.update_current_node(data.root_group, data.root_url);
+		},{ root_group: root_group, root_url: root_url });
+		
+		//reportPage.baseFn.construct_break_crumbs("project", "test", test_url);
+		//$('.zy-report-menu > li > a:first').trigger('click');
 	},
 	bindEvent: function(){
 		/*顶部导航*/
-		reportPage.baseFn.report_menu_construct('.zy-report-nav-container');
-		$('ul.zy-report-menu > li > a').on('click', function(){
-			var data_type = $(this).attr('data_type');
-			var report_url = $(this).attr('report_url');
-			reportPage.baseFn.update_current_node(data_type, report_url);
-		});
+		//reportPage.baseFn.report_menu_construct('.zy-report-nav-container');
+		// $('ul.zy-report-menu > li > a').on('click', function(){
+		// 	var data_type = $(this).attr('data_type');
+		// 	var report_url = $(this).attr('report_url');
+		// 	reportPage.baseFn.update_current_node(data_type, report_url);
+		// });
 		$(document).on('show.bs.collapse','.panel-collapse',function(){
 			$(this).prev().removeClass('collapse-close');
 			$(this).prev().addClass('collapse-open');
@@ -113,7 +101,11 @@ var reportPage = {
 
 					// 若是来自导航信息的请求
 					if (options.ajax_type == "nav") {
-						args.data = data[args["current_group"]];
+						if(args["current_group"] == "test"){
+							args.data = data[""];
+						} else {
+							args.data = data[args["current_group"]];
+						}
 						reportPage.CurrentBreadCrumbChildren = args.data.slice(0);
 					} else if (options.ajax_type == "crumb_children") {
 						reportPage.CurrentBreadCrumbChildren[args.data.length].resp = data;
@@ -129,9 +121,14 @@ var reportPage = {
 			});
 		},
 		
-		get_report_menus: function(current_group, id){
+		// get_report_menus: function(current_url){
+		// 	var url_arr = current_url.split(".json");
+		// 	var nav_url = url_arr[0] + "/nav.json";
 
-		},
+		// 	reportPage.baseFn.getReportAjax( nav_url, { ajax_type: "nav"}, function(){
+
+		// 	} );
+		// },
 
 		// 当前menu触发
 		update_current_node: function(current_group, report_url){
@@ -255,6 +252,12 @@ var reportPage = {
 					case "grade":
 						createReportFunc = reportPage.Grade.createReport;
 						break;
+					case "klass":
+					 	// do nothing
+					 	break;
+					case "pupil":
+						// do nothing
+						break;
 				}
 				reportPage.baseFn.getReportAjax( args["current_url"], { reportType: args["current_group"]}, createReportFunc );
 				return true;
@@ -263,49 +266,102 @@ var reportPage = {
 				reportPage.baseFn.getReportAjax( "/reports_warehouse/" + current_sub_crumb[1].report_url, {ajax_type: "crumb_children"}, reportPage.baseFn.get_crumb_right, args );
 			}
 		},
-		construct_break_crumbs: function(current_group) {
-			reportPage.BreadCrumbs = ['</ol>'];
-			switch(current_group){
-				case "pupil":
-					reportPage.BreadCrumbs.unshift('<li class="zy-breadcrumb-grade">' +
-				    '<a href="#" data_type="pupil" report_url="' + reportPage.CurrentPupilUrl + '">' + reportPage.PupilData.basic.name + '</a>' +
-					'</li>');
-					if(reportPage.TopGroup == "pupil"){ break; }
-				case "klass":
-					reportPage.BreadCrumbs.unshift('<li class="zy-breadcrumb-grade">' +
-				    '<a href="#" data_type="klass" report_url="' + reportPage.CurrentKlassUrl + '">' + reportPage.KlassData.basic.classroom + '</a>' +
-					'</li>');
-					if(reportPage.TopGroup == "klass"){ break; }
-				case "grade":
-					reportPage.BreadCrumbs.unshift('<li class="zy-breadcrumb-grade">' +
-				    '<a href="#" data_type="grade" report_url="' + reportPage.CurrentGradeUrl + '">' + reportPage.GradeData.basic.school + '</a>' +
-					'</li>');
-					if(reportPage.TopGroup == "grade"){ break; }
-				case "project":
-					reportPage.BreadCrumbs.unshift('<li class="zy-breadcrumb-grade">' +
-				    '<a href="#" data_type="project" report_url="' + reportPage.CurrentProjectUrl + '">' + reportPage.ProjectData.basic.school + '</a>' +
-					'</li>');
-					if(reportPage.TopGroup == "project"){ break; }
+		construct_break_crumbs: function(next_group, current_group, current_report_url) {
+			// 学生的情况，只更新名字
+			if(current_group == "pupil"){
+				reportPage.BreadCrumbObj["end"].html_str = '<li>'+reportPage.BreadCrumbObj["pupil"].list[reportPage.BreadCrumbObj["pupil"].selected][1].label;+'</li>'
+				reportPage.baseFn.update_bread_crumbs();
+				return true;
 			}
-			reportPage.BreadCrumbs.unshift('<ol class="breadcrumb zy-breadcrumb">');
+
+			// 清空下级菜单
+			var current_group_index = reportPage.GroupRoute.findIndex(function(item){ return item == next_group });
+			var family_groups = reportPage.GroupRoute.slice(current_group_index, reportPage.GroupRoute.length);
+			var children_groups = reportPage.GroupRoute.slice(current_group_index+1, reportPage.GroupRoute.length);
+			for (var index in children_groups){
+				reportPage.BreadCrumbObj[children_groups[index]].html_str = "";
+				reportPage.BreadCrumbObj[children_groups[index]].list = [];
+			}
+
+			//获取
+			var url_arr = current_report_url.split(".json");
+			var nav_url = url_arr[0] + "/nav.json";
+
+			reportPage.baseFn.getReportAjax( nav_url, { ajax_type: "nav"}, function(data){
+				if(!data){ return false; }
+				var resp = data;
+				reportPage.BreadCrumbObj[resp.next_group].list = resp.data;
+				var current_crumb_label = "";
+				//var current_crumb_report_url = "";
+				switch(resp.current_group){
+					// case "pupil":
+					// 	current_crumb_label = reportPage.BreadCrumbObj["pupil"].list[reportPage.BreadCrumbObj["pupil"].selected][1].label;
+					// 	//current_crumb_report_url = reportPage.CurrentPupilUrl;
+					// 	break;
+					case "klass":
+						current_crumb_label = reportPage.BreadCrumbObj["klass"].list[reportPage.BreadCrumbObj["klass"].selected][1].label;
+						//current_crumb_report_url = reportPage.CurrentKlassUrl;					
+						break;
+					case "grade":
+						current_crumb_label = reportPage.BreadCrumbObj["grade"].list[reportPage.BreadCrumbObj["grade"].selected][1].label;
+						//current_crumb_report_url = reportPage.CurrentGradeUrl;						
+						break;
+					case "project":
+						current_crumb_label = "项目报告";//reportPage.BreadCrumbObj["project"].list[reportPage.BreadCrumbObj["project"].selected][1].label;
+						//current_crumb_report_url = reportPage.CurrentProjectUrl;	
+						break;
+					case "test":
+						current_crumb_label = "Home";
+						//current_crumb_report_url = current_url;	
+						break;
+				}
+				
+				var html_str = '<li class="dropdown report_menu_item">'+
+					'<a href="#" class="dropdown-toggle" data-toggle="dropdown" data_type="'+resp.current_group+'" report_url="'+current_report_url+'">'+
+					current_crumb_label+'</a><span class="glyphicon glyphicon-menu-down"></span><ul class="dropdown-menu">';
+				
+				for (var index in resp.data){
+					html_str += ('<li class="report_menu_item"><a href="#" '
+						+ ' menu_index=' + index
+						+ ' data_type="' + resp.next_group
+						+ '" report_url="/reports_warehouse/' + resp.data[index][1].report_url + '">' 
+						+ resp.data[index][1].label 
+						+ '</a></li>');
+				}
+				html_str += '</ul></li>';
+				reportPage.BreadCrumbObj[resp.next_group].html_str = html_str;
+				reportPage.baseFn.update_bread_crumbs();
+			},{next_group: next_group,current_group: current_group});
+		},
+		update_bread_crumbs: function(){
+			reportPage.BreadCrumbs = []
+			reportPage.BreadCrumbs.push('<ol class="breadcrumb zy-breadcrumb">');
+			for (var index in reportPage.GroupRoute){
+				var target_html = reportPage.BreadCrumbObj[reportPage.GroupRoute[index]].html_str;
+				if(target_html){
+					reportPage.BreadCrumbs.push(target_html);
+				}
+			}
+			reportPage.BreadCrumbs.push("</ol>");
 			$('.zy-breadcrumb-container').html(reportPage.BreadCrumbs.join(""));
-			$('.zy-breadcrumb-grade > a').on('click', function() {
-				var data_type = $(this).attr('data_type');
-				var report_url = $(this).attr('report_url');
-				reportPage.baseFn.update_current_node(data_type, report_url);
+			$('.report_menu_item > a').on('click', function(){
+				if($(this).attr("menu_index")){
+					reportPage.BreadCrumbObj[$(this).attr("data_type")].selected = $(this).attr("menu_index");
+				}
+				reportPage.baseFn.update_current_node($(this).attr("data_type"), $(this).attr("report_url"));
 			});
 		},
 		// 导航菜单组装
-		report_menu_construct: function(current_list){
-			$(current_list).hover(function(){
-		 		$(this).children("ul.zy-report-menu").show();
-		 		$(this).children("ul.zy-report-menu").children('li').show();
-				reportPage.baseFn.report_menu_construct(current_list + " > ul.zy-report-menu > li ");
-			},function(){
-		 		$(this).children("ul.zy-report-menu").hide();
-		 		$(this).children("ul.zy-report-menu").children('li').hide();
-			});
-		},
+		// report_menu_construct: function(current_list){
+		// 	$(current_list).hover(function(){
+		//  		$(this).children("ul.zy-report-menu").show();
+		//  		$(this).children("ul.zy-report-menu").children('li').show();
+		// 		reportPage.baseFn.report_menu_construct(current_list + " > ul.zy-report-menu > li ");
+		// 	},function(){
+		//  		$(this).children("ul.zy-report-menu").hide();
+		//  		$(this).children("ul.zy-report-menu").children('li').hide();
+		// 	});
+		// },
 		//==========================
 		/*答题情况*/
 		getAnswerCaseTable : function(data){
@@ -703,7 +759,7 @@ var reportPage = {
 	Project: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("project");
+			reportPage.baseFn.construct_break_crumbs("grade", "project", reportPage.CurrentProjectUrl);
 			//基本信息
 			var gradeNavStr =
 				'<b>学校数量</b>：<span>' +
@@ -1185,7 +1241,7 @@ var reportPage = {
 	Grade: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("grade");
+			reportPage.baseFn.construct_break_crumbs("klass", "grade", reportPage.CurrentGradeUrl);
 			//基本信息
 			var gradeNavStr =
 				'<b>班级数量</b>：<span>' +
@@ -1667,7 +1723,7 @@ var reportPage = {
 	Class: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("klass");
+			reportPage.baseFn.construct_break_crumbs("pupil", "klass", reportPage.CurrentKlassUrl);
 			//基本信息
 			var classNavStr =
 				'<b>班级人数</b>：<span>' + reportPage.KlassData.data.knowledge.base.pupil_number
@@ -1980,7 +2036,7 @@ var reportPage = {
 	Pupil: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("pupil");
+			reportPage.baseFn.construct_break_crumbs(null, "pupil", null);
 			//基本信息
 			var pupilNavStr =
 			'<b>分数</b>：<span>' + reportPage.baseFn.formatTimesValue(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +

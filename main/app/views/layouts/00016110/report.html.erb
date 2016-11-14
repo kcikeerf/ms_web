@@ -23,7 +23,7 @@
   <%= javascript_include_tag '00016110/report/init_report', 'data-turbolinks-track' => true %>
   <script type="text/javascript">
     $(function () {
-      setTimeout(function(){reportPage.init(<%=@test_id%>);}, 1000);;
+      setTimeout(function(){reportPage.init("project", "/reports_warehouse/tests/<%=@test_id%>/project/<%=@test_id%>.json");}, 1000);;
     })
   </script>
 

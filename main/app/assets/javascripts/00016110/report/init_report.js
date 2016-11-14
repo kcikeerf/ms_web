@@ -6,5 +6,5 @@
 //=require echarts_themes/vintage
 //=require ./echartOption
 //=require ./reportPage
-//=require ./bootstrap-submenu.min
-//=require ./bootstrap-submenu-docs
+//require ./bootstrap-submenu.min
+//require ./bootstrap-submenu-docs
