@@ -136,7 +136,7 @@ class ReportsController < ApplicationController
       :province => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:province_name_cn]),
       :city => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:city_name_cn]),
       :district => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:district_name_cn]),
-      :tenant_uid => current_tenant.uid,
+      :school => Common::Locale.hanzi2pinyin(current_tenant.name_cn),
       :grade => current_paper.grade
     }
     #grade_report = Mongodb::GradeReport.where(loc_h).first
