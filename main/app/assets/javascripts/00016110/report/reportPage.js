@@ -22,39 +22,42 @@ var reportPage = {
 	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 
-	init: function(){
+	init: function(test_id){
+
+
 		// 记录定点Group类型
-		reportPage.TopGroup = $('.zy-report-menu > li > a:first').attr("data_type");
+		// reportPage.TopGroup = $('.zy-report-menu > li > a:first').attr("data_type");
 
 		// 导航添加事件
-		$('.zy-report-menu > li > a').on('click', function() {
-			var reportType = $(this).attr('data_type');
-			var reportId = $(this).attr('report_id');
-			var reportName = $(this).attr('report_name');
+		// $('.zy-report-menu > li > a').on('click', function() {
+			// var reportType = $(this).attr('data_type');
+			// // var reportId = $(this).attr('report_id');
+			// var reportName = $(this).attr('report_name');
 
-			var reportInfo = {
-				reportType: reportType,
-				reportName: reportName,
-				reportId: reportId,
-				upperReportIds: {}
-			}
+			// var reportInfo = {
+			// 	reportType: reportType,
+			// 	reportName: reportName,
+			// 	reportId: reportId,
+			// 	upperReportIds: {}
+			// }
 
-			if(!reportId){
-				return false;
-			}
-			$('.zy-report-type').html('年级报告');
-			if(reportType == 'grade'){
-				$('#reportContent').load('/reports/grade',function(){
-					reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
-				});
-			}
-		});
+			// if(!reportId){
+			// 	return false;
+			// }
+			// $('.zy-report-type').html('年级报告');
+			// if(reportType == 'grade'){
+			// 	$('#reportContent').load('/reports/grade',function(){
+			// 		reportPage.baseFn.getReportAjax(reportInfo, reportPage.getGradeUrl);
+			// 	});
+			// }
+		// });
 
 		/*默认显示*/
 		// 之后改，不能延迟，而是触发　
-		setTimeout(function(){$('.zy-report-menu > li > a:first').trigger('click');}, 1000);
+		// setTimeout(function(){$('.zy-report-menu > li > a:first').trigger('click');}, 1000);
 
 		reportPage.bindEvent();
+		$('.zy-report-menu > li > a:first').trigger('click');
 	},
 	bindEvent: function(){
 		/*顶部导航*/
@@ -125,6 +128,11 @@ var reportPage = {
 				}
 			});
 		},
+		
+		get_report_menus: function(current_group, id){
+
+		},
+
 		// 当前menu触发
 		update_current_node: function(current_group, report_url){
 			$('#reportContent').load('/reports/'+current_group,function(){

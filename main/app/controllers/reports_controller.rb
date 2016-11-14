@@ -214,15 +214,16 @@ class ReportsController < ApplicationController
     Common::method_template_log_only(__method__.to_s()) {
       params.permit!
 
-      test_id = @paper.bank_tests[0].id.to_s
-      begin
-        @scope_menus = Common::ReportPlus::report_nav_menus({:test_id => test_id, :top_group => params[:top_group]})
-      rescue Exception => ex
-        @scope_menus = []
-        logger.debug ">>>Exception<<<"
-        logger.debug ex.message
-        logger.debug ex.backtrace
-      end
+      @test_id = @paper.bank_tests[0].id.to_s
+      # begin
+      #   # @init_menus = 
+      #   #@scope_menus = Common::ReportPlus::report_nav_menus({:test_id => test_id, :top_group => params[:top_group]})
+      # rescue Exception => ex
+      #   #@scope_menus = []
+      #   logger.debug ">>>Exception<<<"
+      #   logger.debug ex.message
+      #   logger.debug ex.backtrace
+      # end
       render :layout => '00016110/report'
     }
   end
