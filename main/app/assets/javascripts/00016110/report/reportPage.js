@@ -95,13 +95,15 @@ var reportPage = {
 					}
 
 					// 若是来自导航信息的请求
-					if (options.ajax_type == "nav") {
+					if (options.ajax_type == "nav" || options.ajax_type == "nav_only") {
 						if(args["current_group"] == "test"){
 							args.data = data[""];
 						} else {
 							args.data = data[args["current_group"]];
 						}
-						reportPage.CurrentBreadCrumbChildren = args.data.slice(0);
+						if(options.ajax_type != "nav_only"){
+							reportPage.CurrentBreadCrumbChildren = args.data.slice(0);
+						}
 					} else if (options.ajax_type == "crumb_children") {
 						reportPage.CurrentBreadCrumbChildren[args.data.length].resp = data;
 					}
@@ -252,7 +254,7 @@ var reportPage = {
 				reportPage.baseFn.getReportAjax( current_sub_crumb[1].report_url, {ajax_type: "crumb_children"}, reportPage.baseFn.get_crumb_right, args );
 			}
 		},
-		construct_break_crumbs: function(next_group, current_group, current_report_url) {
+		construct_bread_crumbs: function(next_group, current_group, current_report_url) {
 			// 学生的情况，只更新名字
 			if(current_group == "pupil"){
 				reportPage.BreadCrumbObj["end"].html_str = '<li>'+reportPage.BreadCrumbObj["pupil"].list[reportPage.BreadCrumbObj["pupil"].selected][1].label;+'</li>'
@@ -273,7 +275,7 @@ var reportPage = {
 			var url_arr = current_report_url.split(".json");
 			var nav_url = url_arr[0] + "/nav.json";
 
-			reportPage.baseFn.getReportAjax( nav_url, { ajax_type: "nav"}, function(data){
+			reportPage.baseFn.getReportAjax( nav_url, { ajax_type: "nav_only", }, function(data){
 				if(!data){ return false; }
 				var resp = data;
 				reportPage.BreadCrumbObj[resp.next_group].list = resp.data;
@@ -458,7 +460,6 @@ var reportPage = {
 			ckp_level = typeof ckp_level !== 'undefined' ? ckp_level : reportPage.ReportCkpStartLevel;
 			vertical_key = typeof vertical_key !== 'undefined' ? vertical_key : true;
 
-			//console.log(value_arr);
 			// [{"key1":"value1", "key2":"value2"}, {"key1":"value1", "key2":"value2"}]
 			var arr = reportPage.baseFn.get_lv_n_ckp_data(value_arr, ckp_level);//getValue(reportPage.baseFn.extendObj(value_arr));
 			var keys = [];
@@ -684,7 +685,7 @@ var reportPage = {
 	Project: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("grade", "project", reportPage.CurrentProjectUrl);
+			reportPage.baseFn.construct_bread_crumbs("grade", "project", reportPage.CurrentProjectUrl);
 			//基本信息
 			var gradeNavStr =
 				'<b>学校数量</b>：<span>' +
@@ -797,7 +798,7 @@ var reportPage = {
 					var value_type_arr = ["average_percent", "median_percent", "med_avg_diff", "diff_degree"];
 					for (var index in value_type_arr){
 						var value_table = reportPage.Project.handleNormTable(value_type_arr[index], "skill");
-						$('#knowledge_' + value_type_arr[index]).html(value_table);
+						$('#skill_' + value_type_arr[index]).html(value_table);
 					}
 				}
 				else if($dataId == 'grade-checkpoint-ability'){
@@ -806,18 +807,18 @@ var reportPage = {
 					var value_type_arr = ["average_percent", "median_percent", "med_avg_diff", "diff_degree"];
 					for (var index in value_type_arr){
 						var value_table = reportPage.Project.handleNormTable(value_type_arr[index], "ability");
-						$('#knowledge_' + value_type_arr[index]).html(value_table);
+						$('#ability_' + value_type_arr[index]).html(value_table);
 					}
 				}
-				// else if($dataId == 'grade-checkpoint-total'){
-				// 	var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
-				// 	var objArr = [Checkpoints.total.average_percent,Checkpoints.total.median_percent,Checkpoints.total.med_avg_diff,Checkpoints.total.diff_degree];
-				// 	var nodeArr = ['total_Grade_average_percent','total_Grade_median_percent','total_Grade_med_avg_diff','total_Grade_diff_degree'];
-				// 	for(var i = 0 ; i < nodeArr.length ; i++){
-				// 		var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-				// 		createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
-				// 	};
-				// }
+				else if($dataId == 'grade-checkpoint-total'){
+					createdCharts.concat(reportPage.Project.getCheckpointClassData("total"));
+
+					var value_type_arr = ["average_percent", "median_percent", "med_avg_diff", "diff_degree"];
+					for (var index in value_type_arr){
+						var value_table = reportPage.Project.handleNormTable(value_type_arr[index], "total");
+						$('#total_' + value_type_arr[index]).html(value_table);
+					}
+				}
 				else if($dataId == 'grade-classPupilNum-knowledge'){
 					createdCharts.concat(reportPage.Project.getClassPupilNumData("knowledge"));
 
@@ -926,7 +927,6 @@ var reportPage = {
 		},
 		// 组装人数比例数据格式
 		constructGradeNumScaleArr : function(data){
-			console.log(data);
 			var result = {excellent: [], good: [], failed: []};
 			var excellentArr = goodArr = failedArr = [];
 			var excellentPercentArr = reportPage.baseFn.get_key_values(data, "excellent_percent")[1];
@@ -994,7 +994,11 @@ var reportPage = {
 			return result;
 		},
 		constructCheckpointClassData : function(dimesion){
-			var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			if(dimesion!="total"){
+				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			} else {
+				var ckpArr = ["knowledge","skill","ability"];
+			} 
 			var classNameArr = $.map(reportPage.CurrentBreadCrumbChildren,function(value, index){return value[1].label});
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -1006,7 +1010,6 @@ var reportPage = {
 			var value_type_arr = ["average_percent", "diff_degree", "med_avg_diff", "median_percent"]
 			for (var i in value_type_arr) {
 				var value_type = value_type_arr[i];
-				console.log(value_type);
 				result[value_type] = {
 					xaxis : classNameArr,
 					colorArr : colorArr,
@@ -1088,7 +1091,11 @@ var reportPage = {
 		handleNormTable : function(value_type, dimesion){
 
 			var class_data_arr = reportPage.Project.get_class_data_arr(value_type, dimesion);
-			var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			if(dimesion != "total"){
+				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			} else {
+				var ckpArr = ["知识","技能","能力"];
+			} 
 			var classNameArr = $.map(reportPage.CurrentBreadCrumbChildren,function(value, index){return value[1].label});
 
 			var thStr = '<td class="grade-titlt">班级</td>';
@@ -1126,10 +1133,22 @@ var reportPage = {
 				var data = null;
 				if(	reportPage.CurrentBreadCrumbChildren[index] && 
 					reportPage.CurrentBreadCrumbChildren[index].resp &&
-					reportPage.CurrentBreadCrumbChildren[index].resp.data && 
-					reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion] &&
-					reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion].lv_n){
-					data = reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion].lv_n;
+					reportPage.CurrentBreadCrumbChildren[index].resp.data){
+					if(dimesion != "total"){
+						data = reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion].lv_n;
+					} else {
+						knowledge_obj = reportPage.CurrentBreadCrumbChildren[index].resp.data["knowledge"].base;
+						knowledge_obj.checkpoint = "知识";
+						skill_obj = reportPage.CurrentBreadCrumbChildren[index].resp.data["skill"].base;
+						skill_obj.checkpoint = "技能";
+						ability_obj = reportPage.CurrentBreadCrumbChildren[index].resp.data["ability"].base;
+						ability_obj.checkpoint = "能力";
+					    data = [
+							{knowledge: knowledge_obj},
+							{skill: skill_obj},
+							{ability: ability_obj}
+						];
+					}
 				}
 				switch(value_type){
 					case "average_percent":
@@ -1164,7 +1183,7 @@ var reportPage = {
 	Grade: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("klass", "grade", reportPage.CurrentGradeUrl);
+			reportPage.baseFn.construct_bread_crumbs("klass", "grade", reportPage.CurrentGradeUrl);
 			//基本信息
 			var gradeNavStr =
 				'<b>班级数量</b>：<span>' +
@@ -1277,7 +1296,7 @@ var reportPage = {
 					var value_type_arr = ["average_percent", "median_percent", "med_avg_diff", "diff_degree"];
 					for (var index in value_type_arr){
 						var value_table = reportPage.Grade.handleNormTable(value_type_arr[index], "skill");
-						$('#knowledge_' + value_type_arr[index]).html(value_table);
+						$('#skill_' + value_type_arr[index]).html(value_table);
 					}
 				}
 				else if($dataId == 'grade-checkpoint-ability'){
@@ -1286,18 +1305,18 @@ var reportPage = {
 					var value_type_arr = ["average_percent", "median_percent", "med_avg_diff", "diff_degree"];
 					for (var index in value_type_arr){
 						var value_table = reportPage.Grade.handleNormTable(value_type_arr[index], "ability");
-						$('#knowledge_' + value_type_arr[index]).html(value_table);
+						$('#ability_' + value_type_arr[index]).html(value_table);
 					}
 				}
-				// else if($dataId == 'grade-checkpoint-total'){
-				// 	var Checkpoints = reportPage.Grade.getCheckpointData(data.data.each_checkpoint_horizon);
-				// 	var objArr = [Checkpoints.total.average_percent,Checkpoints.total.median_percent,Checkpoints.total.med_avg_diff,Checkpoints.total.diff_degree];
-				// 	var nodeArr = ['total_Grade_average_percent','total_Grade_median_percent','total_Grade_med_avg_diff','total_Grade_diff_degree'];
-				// 	for(var i = 0 ; i < nodeArr.length ; i++){
-				// 		var option = echartOption.getOption.Grade.setCheckpointOption(objArr[i]);
-				// 		createdCharts.push(echartOption.createEchart(option,nodeArr[i]));
-				// 	};
-				// }
+				else if($dataId == 'grade-checkpoint-total'){
+					createdCharts.concat(reportPage.Grade.getCheckpointClassData("total"));
+
+					var value_type_arr = ["average_percent", "median_percent", "med_avg_diff", "diff_degree"];
+					for (var index in value_type_arr){
+						var value_table = reportPage.Grade.handleNormTable(value_type_arr[index], "total");
+						$('#total_' + value_type_arr[index]).html(value_table);
+					}
+				}
 				else if($dataId == 'grade-classPupilNum-knowledge'){
 					createdCharts.concat(reportPage.Grade.getClassPupilNumData("knowledge"));
 
@@ -1406,7 +1425,6 @@ var reportPage = {
 		},
 		// 组装人数比例数据格式
 		constructGradeNumScaleArr : function(data){
-			console.log(data);
 			var result = {excellent: [], good: [], failed: []};
 			var excellentArr = goodArr = failedArr = [];
 			var excellentPercentArr = reportPage.baseFn.get_key_values(data, "excellent_percent")[1];
@@ -1474,7 +1492,11 @@ var reportPage = {
 			return result;
 		},
 		constructCheckpointClassData : function(dimesion){
-			var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			if (dimesion != "total"){
+				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			} else {
+				var ckpArr = ["知识","技能","能力"];
+			}
 			var classNameArr = $.map(reportPage.CurrentBreadCrumbChildren,function(value, index){return value[1].label});
 			var colorArr = [] ;
 			var normNameArr = [];
@@ -1486,7 +1508,6 @@ var reportPage = {
 			var value_type_arr = ["average_percent", "diff_degree", "med_avg_diff", "median_percent"]
 			for (var i in value_type_arr) {
 				var value_type = value_type_arr[i];
-				console.log(value_type);
 				result[value_type] = {
 					xaxis : classNameArr,
 					colorArr : colorArr,
@@ -1568,7 +1589,11 @@ var reportPage = {
 		handleNormTable : function(value_type, dimesion){
 
 			var class_data_arr = reportPage.Grade.get_class_data_arr(value_type, dimesion);
-			var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			if(dimesion != "total"){
+				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
+			} else {
+				var ckpArr = ["知识","技能","能力"];
+			}
 			var classNameArr = $.map(reportPage.CurrentBreadCrumbChildren,function(value, index){return value[1].label});
 
 			var thStr = '<td class="grade-titlt">班级</td>';
@@ -1606,10 +1631,22 @@ var reportPage = {
 				var data = null;
 				if(	reportPage.CurrentBreadCrumbChildren[index] && 
 					reportPage.CurrentBreadCrumbChildren[index].resp &&
-					reportPage.CurrentBreadCrumbChildren[index].resp.data && 
-					reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion] &&
-					reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion].lv_n){
-					data = reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion].lv_n;
+					reportPage.CurrentBreadCrumbChildren[index].resp.data){
+					if(dimesion != "total"){
+						data = reportPage.CurrentBreadCrumbChildren[index].resp.data[dimesion].lv_n;
+					} else {
+						knowledge_obj = reportPage.CurrentBreadCrumbChildren[index].resp.data["knowledge"].base;
+						knowledge_obj.checkpoint = "知识";
+						skill_obj = reportPage.CurrentBreadCrumbChildren[index].resp.data["skill"].base;
+						skill_obj.checkpoint = "技能";
+						ability_obj = reportPage.CurrentBreadCrumbChildren[index].resp.data["ability"].base;
+						ability_obj.checkpoint = "能力";
+					    data = [
+							{knowledge: knowledge_obj},
+							{skill: skill_obj},
+							{ability: ability_obj}
+						];
+					}
 				}
 				switch(value_type){
 					case "average_percent":
@@ -1644,7 +1681,7 @@ var reportPage = {
 	Class: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs("pupil", "klass", reportPage.CurrentKlassUrl);
+			reportPage.baseFn.construct_bread_crumbs("pupil", "klass", reportPage.CurrentKlassUrl);
 			//基本信息
 			var classNavStr =
 				'<b>班级人数</b>：<span>' + reportPage.KlassData.data.knowledge.base.pupil_number
@@ -2014,7 +2051,7 @@ var reportPage = {
 	Pupil: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_break_crumbs(null, "pupil", null);
+			reportPage.baseFn.construct_bread_crumbs(null, "pupil", null);
 			//基本信息
 			var pupilNavStr =
 			'<b>分数</b>：<span>' + reportPage.baseFn.formatTimesValue(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +
