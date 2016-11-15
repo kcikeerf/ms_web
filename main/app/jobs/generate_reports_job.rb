@@ -20,22 +20,27 @@ class GenerateReportsJob < ActiveJob::Base
         })
         job_tracker.save!
 
-        _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, ["tests", params[:test_id], "ckps_mapping"]){
-          ckps_mapping = Common::ReportPlus::data_ckps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
-          ckps_mapping
+        _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, ["tests", params[:test_id], "ckps_qzps_mapping"]){
+          ckps_qzps_mapping = Common::ReportPlus::data_ckps_qzps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
+          ckps_qzps_mapping
+        }
+
+        _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, ["tests", params[:test_id], "qzps_ckps_mapping"]){
+          qzps_ckps_mapping = Common::ReportPlus::data_qzps_ckps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
+          qzps_ckps_mapping
         }
 
         generator_h = {
-          :pupil => Mongodb::ReportPupilGenerator.new({:group_type => "pupil"}.merge(params))
+          "pupil" => Mongodb::ReportPupilGenerator.new({:group_type => "pupil"}.merge(params))
         }
         constructor_h = {
-          :pupil => Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))
+          "pupil" => Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))
         }
 
         end_index = Common::Report::Group::ListArr.find_index(params[:top_group].downcase)
         Common::Report::Group::ListArr[1..end_index].each{|group|
-          generator_h[group.to_sym] = Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
-          constructor_h[group.to_sym] = Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
+          generator_h[group] = Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
+          constructor_h[group] = Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
         }
 
         # 清除旧记录
@@ -48,7 +53,7 @@ class GenerateReportsJob < ActiveJob::Base
         ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.1)
 
-        # 计算
+        # 计算1
         th_arr = []
         th_arr << Thread.new do 
           generator_h[:pupil].cal_round_1
@@ -66,6 +71,7 @@ class GenerateReportsJob < ActiveJob::Base
         ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.2)
 
+        # 计算1.5
         th_arr = []
         generator_h.each{|k,v|
           th_arr << Thread.new do 
@@ -75,6 +81,7 @@ class GenerateReportsJob < ActiveJob::Base
         ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.35)
 
+        # 计算2
         th_arr = []
         generator_h.each{|k,v|
           th_arr << Thread.new do 
@@ -85,7 +92,7 @@ class GenerateReportsJob < ActiveJob::Base
         job_tracker.update(process: 0.5)
 
         #pid = fork do 
-          # 组装
+          # 组装1
           th_arr = []
           constructor_h.each{|k,v|
             th_arr << Thread.new do 
@@ -93,8 +100,9 @@ class GenerateReportsJob < ActiveJob::Base
             end
           }
           ThreadsWait.all_waits(*th_arr)
-          job_tracker.update(process: 0.6)
+          job_tracker.update(process: 0.7)
 
+          # 组装2
           th_arr = []
           constructor_h.each{|k,v|
             th_arr << Thread.new do 
@@ -104,16 +112,16 @@ class GenerateReportsJob < ActiveJob::Base
           ThreadsWait.all_waits(*th_arr)
           job_tracker.update(process: 0.8)
 
+          # 结束处理
           Common::Report::Group::ListArr[0..end_index].reverse.each{|item|
             th_arr = []
             th_arr << Thread.new do 
-              constructor_h[item.downcase.to_sym].san_kumikan_no_data_koukan_koutiku
+              constructor_h[item].owari
             end
             ThreadsWait.all_waits(*th_arr)
           }
           job_tracker.update(process: 0.9)
 
-          Common::ReportPlus::kumitate_no_owari( Common::SwtkRedis::Ns::Sidekiq, params[:test_id] )
           job_tracker.update(status: Common::Job::Status::Completed)
           job_tracker.update(process: 1.0)
         #  Signal.trap("TERM") { puts "finished!"; exit }

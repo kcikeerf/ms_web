@@ -27,6 +27,7 @@ class BankCheckpointCkp < ActiveRecord::Base
   scope :not_equal_rid, ->(rid) { where.not(rid: rid) }
   scope :by_node_uid, ->(uid) { where(node_uid: uid) }
   scope :is_entity, -> { where(is_entity: true) }
+  scope :by_dimesion, ->(str) { where(dimesion: str) }
 
   DEFAULT_LEVEL = [[1], [2], [3,100]]#{level1: [1], level2: [2], level3: [3,100]}
 

@@ -523,6 +523,42 @@ class Mongodb::BankPaperPap
     return result
   end
 
+  # 返回得分点与指标的Mapping数组
+  #
+  # [return]: Array
+  def qzps_checkpoints_mapping ckp_level=1
+    result = []
+    return result if bank_quiz_qizs.blank?
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    return result if qzps.blank?
+    target_level = ckp_level
+    target_level = -1 if ckp_level > Common::Report::CheckPoints::DefaultLevelEnd
+    pap_checkpoint_model = qzps[0].bank_checkpoint_ckps[0].class
+    qzps.each_with_index{|qzp, index|
+      qzp.format_ckps_json if qzp.ckps_json.blank?
+      ckp_h = JSON.parse(qzp.ckps_json)
+      target_level_ckp_h = Common::CheckpointCkp.ckp_types_loop {|dimesion|
+        ckp_h[dimesion].map{|ckp|
+          ckp_uid = ckp.keys[0].split("/")[target_level]
+          target_ckp = pap_checkpoint_model.where(uid: ckp_uid).first
+          {
+            "uid" => ckp_uid,
+            "rid" => ckp.values[0]["rid"].split("/")[target_level],
+            "weights" => ckp.values[0]["weights"].split("/")[target_level],
+            "checkpoint" => target_ckp.blank?? nil : target_ckp.checkpoint
+          }
+        }.uniq
+      }
+      result << {
+        "qzp_order" => (index+1).to_s,
+        "qzp_type" => qzp.type,
+        "ckps" => target_level_ckp_h
+      }
+    }
+    return result
+  end
+  
+
   # def task_lists
   #   TaskList.where(:pap_uid => id.to_s)
   # end

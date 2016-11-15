@@ -70,7 +70,7 @@ module Common
           break
         end
       when "klass"
-        if Common::Locale.mysort(Common::Klass::Order(arr[0]),Common::Klass::Order(key)) < 0
+        if Common::Locale.mysort(Common::Klass::Order[arr[0]],Common::Klass::Order[key]) < 0
           last_key = key
           break
         end
