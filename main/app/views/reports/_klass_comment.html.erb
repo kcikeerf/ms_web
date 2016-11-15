@@ -4,8 +4,8 @@
 <div class='hbox hbox-auto-xs hbox-auto-sm'>
 	<div class='col'>
 		<div class='clearfix padder-lg'>
-			<dl class="klass_diagnosis">
-				<dt><i class="title"></i></dt>
+			<dl class="klass_diagnosis <%= dimesion %>">
+				<dt><i class="title"><%= title %></i></dt>
 				<dd>
 					<ul>
 <!--本班情况：指标-->
@@ -32,22 +32,22 @@
 						<li>
 本班的平均得分率是<mark><i class="self_weights_score_average_percent"></i></mark>，
 在本次考试中，达到了<mark><i class="self_weights_score_average_percent_level"></i></mark>水平。
-与年级平均水平相比，<mark><i class="grade_in_group_weights_score_average_percent_level"></i></mark>于年级平均水平。
+与年级平均水平相比，<mark><i class="compare_with_grade_weights_score_average_percent_level"></i></mark>于年级平均水平。
 						</li>						
 						<li>
-本班的得分率 ≥ 85的人数比例是<mark><i class="self_excellent_pupil_number_percent"></i>, 
+本班的得分率 ≥ 85的人数比例是<mark><i class="self_excellent_pupil_number_percent"></i></mark>>, 
 表明在本次考试中，知识得分率在 85 以上的学生人数占本班全部考试人数的<mark><i class="self_excellent_pupil_number_percent"></i></mark>，
-与年级相比，<mark><i class="grade_in_group_excellent_percent_level"></i></mark>于年级的比例。
+与年级相比，<mark><i class="compare_with_grade_excellent_pupil_number_percent"></i></mark>于年级的比例。
 						</li>
 						<li>
 本班的60 ≤ 得分率 < 85的人数比例是<mark><i class="self_good_pupil_number_percent"></i></mark>, 
 表明在本次考试中，知识得分率在 60-85之间的学生人数占本班全部考试人数的<mark><i class="self_good_pupil_number_percent"></i></mark>，
-与年级相比，<mark><i class="grade_in_group_good_percent_level"></i></mark>于年级的比例。
+与年级相比，<mark><i class="compare_with_grade_good_pupil_number_percent"></i></mark>于年级的比例。
 						</li>
 						<li>
 本班的得分率 < 60的人数比例是<mark><i class="self_failed_pupil_number_percent"></i></mark>, 
 表明在本次考试中，知识得分率在60以下的学生人数占本班全部考试人数的<mark><i class="self_failed_pupil_number_percent"></i></mark>，
-与年级相比，<mark><i class="grade_in_group_failed_percent_level"></i></mark>于年级的比例。
+与年级相比，<mark><i class="compare_with_grade_failed_pupil_number_percent"></i></mark>于年级的比例。
 						</li>
 					</ul>
 				</dd>

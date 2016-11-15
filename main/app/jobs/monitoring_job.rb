@@ -15,9 +15,9 @@ class MonitoringJob < ActiveJob::Base
         @phase_total = job_groups.flatten.size
         job_tracker = JobList.where(uid: params[:job_uid]).first
 
-        _, papers_ckps_mapping = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, [params[:test_id], "ckps_mapping"]){
-          ckps_mapping = Common::ReportPlus::data_ckps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
-          ckps_mapping
+        _, papers_ckps_mapping = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, [params[:test_id], "ckps_qzps_mapping"]){
+          ckps_qzps_mapping = Common::ReportPlus::data_ckps_qzps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
+          ckps_qzps_mapping
         }
 
         begin

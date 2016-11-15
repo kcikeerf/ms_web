@@ -49,9 +49,9 @@ class ImportResultsJob < ActiveJob::Base
         qzp.format_ckps_json 
       }
       ###
-      qzps_ckps_mapping = {}
+      qzps_ckps_mapping_h = {}
       paper_qzps.each{|qzp|
-      	qzps_ckps_mapping[qzp.id.to_s] = JSON.parse(qzp.ckps_json)
+      	qzps_ckps_mapping_h[qzp.id.to_s] = JSON.parse(qzp.ckps_json)
       }
 
       logger.info(">>>初始化<<<")
@@ -197,7 +197,7 @@ class ImportResultsJob < ActiveJob::Base
             :job_tracker => job_tracker,
             :phase_total => phase_total,
             :target_paper => target_paper,
-            :qzps_ckps_mapping => qzps_ckps_mapping,
+            :qzps_ckps_mapping_h => qzps_ckps_mapping_h,
             :target_tenant => target_tenant,
             :teacher_sheet => teacher_sheet,
             :pupil_sheet => pupil_sheet
@@ -362,7 +362,7 @@ class ImportResultsJob < ActiveJob::Base
               :full_score => args[:title_row][qzp_index]
             })
             qizpoint = qzps_h[qzp_index]
-            qzp_ckp_h = args[:qzps_ckps_mapping][qizpoint.id.to_s]
+            qzp_ckp_h = args[:qzps_ckps_mapping_h][qizpoint.id.to_s]
             qzp_ckp_h.each{|dimesion, ckps|
               col_params[:dimesion] = dimesion
               ckps.each{|ckp|
