@@ -43,15 +43,15 @@ class GenerateReportsJob < ActiveJob::Base
         #   "pupil" => Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))
         # }
 
-        genreator_arr = []
-        constructor_arr = []
+        genreator_arr = [Mongodb::ReportPupilGenerator.new({:group_type => "pupil"}.merge(params))]
+        constructor_arr = [Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))]
 
         end_index = Common::Report::Group::ListArr.find_index(params[:top_group].downcase)
         # Common::Report::Group::ListArr[0..end_index].each{|group|
         #   generator_h[group] = Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
         #   constructor_h[group] = Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
         # }
-        Common::Report::Group::ListArr[0..end_index].each{|group|
+        Common::Report::Group::ListArr[1..end_index].each{|group|
           genreator_arr << Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
           constructor_arr << Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
         }
