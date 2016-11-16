@@ -63,7 +63,7 @@
 			<tr>
 				<td class="title">
 					<a href="/papers/get_paper?pap_uid=<%=paper._id%>"><%= "#{paper.heading}-#{paper.subheading}".truncate(30) %></a>
-<% if !paper.bank_tests[0] || paper.bank_tests[0]report_version.blank? %>					
+<% if !paper.bank_tests[0] || paper.bank_tests[0].report_version.blank? %>					
 					<%= link_to '[查看报告]', new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
 <% else %>
 					<%= link_to '[查看报告]', square_v1_1_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
