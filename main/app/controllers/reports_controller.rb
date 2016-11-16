@@ -52,6 +52,8 @@ class ReportsController < ApplicationController
         task_uid = target_task.nil?? "" :target_task.uid
         target_task.touch(:dt_update)
 
+        @paper.bank_tests[0].update(:report_version => "1.1")
+
         test_id = @paper.bank_tests[0].id
 
         #将数据分组建立job groups， monitoring job
@@ -65,11 +67,16 @@ class ReportsController < ApplicationController
         #   :process => 0
         # })
         # job_tracker.save!
+        # if current_user.is_project_administrator?
+        #   top_group = Common::Report::Group::Project
+        # else
+        #   top_group = Common::Report::Group::Grade
+        # end
         Thread.new do
           GenerateReportsJob.perform_later({
             :test_id => test_id.to_s,
             :task_uid => task_uid,
-            :top_group => params[:top_group]
+            :top_group => Common::Report::Group::Project #进一步修改，默认项目,"project"
             # :job_uid => job_tracker.uid,
             # :job_groups => job_groups
           })
