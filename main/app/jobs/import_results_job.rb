@@ -361,7 +361,7 @@ class ImportResultsJob < ActiveJob::Base
               :real_score => row[qzp_index],
               :full_score => args[:title_row][qzp_index]
             })
-            qizpoint = qzps_h[qzp_index]
+            qizpoint = qzps_h[qzp_index - args[:data_start_col]]
             qzp_ckp_h = args[:qzps_ckps_mapping_h][qizpoint.id.to_s]
             qzp_ckp_h.each{|dimesion, ckps|
               col_params[:dimesion] = dimesion
