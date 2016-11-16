@@ -89,7 +89,7 @@ class GenerateReportsJob < ActiveJob::Base
         job_tracker.update(process: 0.4)
 
         # 计算2
-        genreator_arr.each{|item|
+        genreator_arr[1..-1].each{|item|
           item.cal_round_2
         }
         job_tracker.update(process: 0.5)
