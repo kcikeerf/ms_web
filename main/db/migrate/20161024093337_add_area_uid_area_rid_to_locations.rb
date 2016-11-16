@@ -1,8 +1,6 @@
 class AddAreaUidAreaRidToLocations < ActiveRecord::Migration
   def up
     change_table :locations do |t|
-      t.remove :area_uid
-      t.remove :area_rid
       t.column :area_uid, :string
       t.column :area_rid, :string
     end
