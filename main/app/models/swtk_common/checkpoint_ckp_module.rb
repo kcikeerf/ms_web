@@ -7,13 +7,13 @@ module CheckpointCkpModule
 
     ReservedCkpRid = {
       :knowledge => {
-          :total => { :label => I18n.t("checkpoints.label.knowledge.total"), :rid => "-1"}
+          :total => { :label => Common::Locale::i18n("checkpoints.label.knowledge.total"), :rid => "-1"}
       },
       :skill => {
-          :total => { :label => I18n.t("checkpoints.label.skill.total"), :rid => "-2"}
+          :total => { :label => Common::Locale::i18n("checkpoints.label.skill.total"), :rid => "-2"}
       },
       :ability => {
-          :total => { :label => I18n.t("checkpoints.label.ability.total"), :rid => "-3"}
+          :total => { :label => Common::Locale::i18n("checkpoints.label.ability.total"), :rid => "-3"}
       }
     }
 
@@ -79,46 +79,28 @@ module CheckpointCkpModule
       GaoZhong = "gao_zhong"
     end
 
-    def ckp_types_loop(&block)
+    def ckp_types_loop(key_str=nil,&block)
       nodes = {}
-      TYPE.each do |t|
+      key_arr = TYPE.clone
+      key_arr.push(key_str) unless key_str.blank?
+      key_arr.each do |t|
         nodes[t.to_sym] = proc.call(t)
       end
       nodes
     end
 
-    def compare_rid(x,y)
-      result = 0
-      x = x || ""
-      y = y || ""
-      length = (x.length < y.length) ? x.length : y.length
+    def dimesions_loop(key_str=nil,&block)
+      nodes = {}
+      key_arr = TYPE.clone
+      key_arr.push(key_str) unless key_str.blank?
+      key_arr.each do |t|
+        nodes[t] = proc.call(t)
+      end
+      nodes
+    end
 
-      0.upto(length-1) do |i|
-        if x[i] == y[i]
-          next
-        else
-          if x[i] =~ /[0-9a-z]/
-            if y[i] =~ /[0-9a-z]/
-              result = x[i] <=> y[i]
-              break
-            else
-              result = 1
-              break
-            end
-          elsif y[i] =~ /[0-9a-z]/
-            result = -1
-            break
-          else
-            result = x[i] <=> y[i]
-            break
-          end
-        end
-      end
-      if result == 0
-        return (x.length > y.length)? 1:-1
-      else
-        return result
-      end
+    def compare_rid(x,y)
+      return Common::compare_eng_num_str(x, y)
     end
   end
 end

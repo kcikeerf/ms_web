@@ -9,16 +9,7 @@ class Managers::TenantAdministratorsController < ApplicationController
   before_action :get_user, only: [:edit, :update]
 
   def index
-    @data = {name: I18n.t("dict.tenant_administrator"), path: '/managers/tenant_administrators'}
     @tenant_administrators = TenantAdministrator.get_list params
-
-    # tenant用地区信息
-    country_rid = Common::Area::CountryRids["zhong_guo"]
-    country = Area.where("rid = '#{country_rid}'").first
-    @province = country.children_h.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @city = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @district = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-
     respond_with({rows: @tenant_administrators, total: @tenant_administrators.total_count}) 
   end
 
@@ -95,7 +86,7 @@ class Managers::TenantAdministratorsController < ApplicationController
       # :city_rid,
       # :district_rid, 
       # :tenant_uid, 
-      :tenant_uid,
+      :tenant_uids,
       :qq, 
       :phone,
       :email)

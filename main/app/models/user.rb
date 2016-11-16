@@ -1,22 +1,24 @@
 class User < ActiveRecord::Base
-  attr_accessor :role_name, :login
+  attr_accessor :role_name, :login, :password_confirmation
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable#, :validatable
+    :recoverable, :rememberable, :trackable, :validatable#, :lockable
 
   belongs_to :role
   has_one :image_upload
 
   has_many :wx_user_mappings, foreign_key: "user_id"
   has_many :wx_users, through: :wx_user_mappings
+  has_many :task_lists, foreign_key: "user_id"
 
   before_create :set_role#, :check_existed?
 
   validates :role_name, presence: true, on: :create
   validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,20}\z/ }
   
+  validates_confirmation_of :password
   validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
 
   validates :email, format: { with: /\A[^@\s]+@[^@\s]+\z/ }, allow_blank: true
@@ -47,23 +49,29 @@ class User < ActiveRecord::Base
     #pupil: User.add_user('xxx', 'pupil', {loc_uid: '1111111', name: 'xx', stu_number: '1234', sex: 'nan'})
     #teacher: User.add_user('xxx', 'teacher', {loc_uid: '1111111', name: 'xx', subject: 'english', head_teacher: true})
     def add_user(name, role_name, options={})
-      password = generate_rand_password
-      transaction do 
-        user = find_by(name: name)
-        if user
-          #学生只能属于一个班级，若有更新，将更改Location
-          user.pupil.update(:loc_uid => options[:loc_uid]) if user.is_pupil? && !options[:loc_uid].blank?
-          ClassTeacherMapping.find_or_save_info(user.teacher, options) if user.is_teacher?
-          return [user.name, user.initial_password] unless user.initial_password.blank?
-          return []
+      begin
+        password = generate_rand_password
+        transaction do 
+          user = find_by(name: name)
+          if user
+            #学生只能属于一个班级，若有更新，将更改Location
+            user.pupil.update(:loc_uid => options[:loc_uid]) if user.is_pupil? && !options[:loc_uid].blank?
+            ClassTeacherMapping.find_or_save_info(user.teacher, options) if user.is_teacher?
+            return [user.name, user.initial_password] unless user.initial_password.blank?
+            return []
+          end
+          user = new(name: name, password: password, password_confirmation: password, role_name: role_name, initial_password: password)
+          return false unless user.save
+
+          #确定地区
+
+          user.save_after(options.merge({user_id: user.id}))
+          return [user.name, password]
         end
-        user = new(name: name, password: password, role_name: role_name, initial_password: password)
-        return false unless user.save
-
-        #确定地区
-
-        user.save_after(options.merge({user_id: user.id}))
-        return [user.name, password]
+      rescue Exception => ex
+        p "ex.message::#{ex.message}"
+        p "ex.backtrace::#{ex.backtrace}"
+        return false
       end
     end
 
@@ -96,13 +104,13 @@ class User < ActiveRecord::Base
       paramsh = {
         :name => params[:user_name], 
         :password => params[:password], 
+        :password_confirmation => params[:password_confirmation],
         :role_name => role_name,
         :qq => params[:qq] || "",
         :phone => params[:phone] || "",
         :email => params[:email] || ""
       }
-      update_attributes(paramsh)
-      return self unless save!
+      return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
       return self
@@ -120,27 +128,39 @@ class User < ActiveRecord::Base
       }
       unless params[:password].blank?
         paramsh[:password] = params[:password]
+        paramsh[:password_confirmation] = params[:password_confirmation]
         paramsh[:initial_password] = ""
       end
-      update_attributes(paramsh)
-      return self unless save!
+      return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
       return self
     #end
   end
 
+  #删除关联角色对象用户的实例
+  def destroy
+    super
+    role_obj.destroy if role_obj
+  end
+
   def save_role_obj params
+    begin
     role_obj = 
       case 
       when is_analyzer? then (analyzer.nil?? Analyzer.new : analyzer)
       when is_pupil? then (pupil.nil?? Pupil.new : pupil)
       when is_teacher? then (teacher.nil?? Teacher.new : teacher)
       when is_tenant_administrator? then (tenant_administrator.nil?? TenantAdministrator.new : tenant_administrator)
+      when is_project_administrator? then (project_administrator.nil?? ProjectAdministrator.new : project_administrator)
       else nil
       end
 
     role_obj.save_obj(params) if role_obj
+    rescue Exception => ex
+      p ex.messages
+      p ex.backtrace
+    end
   end
 
   def save_after(options)
@@ -150,6 +170,7 @@ class User < ActiveRecord::Base
       when is_pupil? then Pupil
       when is_teacher? then Teacher
       when is_tenant_administrator? then TenantAdministrator
+      when is_project_administrator? then ProjectAdministrator
       else nil
       end
 
@@ -200,6 +221,7 @@ class User < ActiveRecord::Base
     return teacher if is_teacher?
     return pupil if is_pupil?
     return tenant_administrator if is_tenant_administrator?
+    return project_administrator if is_project_administrator?
   end  
 
   def role?(r)
@@ -239,6 +261,11 @@ class User < ActiveRecord::Base
 
   def password_required?
     !persisted? || !password.nil? || !password_confirmation.nil?
+  end
+
+  # Email is not required
+  def email_required?
+    false
   end
 
   def set_role

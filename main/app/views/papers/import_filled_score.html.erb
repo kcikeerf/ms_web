@@ -16,7 +16,9 @@
 		<div class="form-group">
 			<!--label><%#= t('page.paper.score') %></label-->
 			<input type="file" name='file' id="">
-			<%= hidden_field_tag 'pap_uid', @paper.id %>
+			<%#= hidden_field_tag 'pap_uid', @paper.id %>
+			<input type="hidden" name='pap_uid' value="<%=params[:pap_uid]%>">
+			<input type="hidden" name='tenant_uid' value="<%=params[:tenant_uid]%>">
 			<p class="help-block"><%= t('page.paper.select_score_tip') %></p>
 		</div>
 		<button type="submit" class="btn btn-default"><%= t("page.submit") %></button>
@@ -24,6 +26,6 @@
 </div>
 <!-- <div class="modal-footer">
 	<button class="btn" data-dismiss="modal" aria-hidden="true">
-		<%#= I18n.t("page.close")%>
+		<%#= LABEL("page.close")%>
 	</button>
 </div> -->

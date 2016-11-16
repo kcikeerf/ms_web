@@ -19,8 +19,10 @@ class TenantAdministrator < ActiveRecord::Base
         :district_rid => ""
       }
       tenant = item.tenant
+      area_h = tenant.area_pcd if tenant
+      
       h = {
-        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_uids =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
@@ -36,7 +38,7 @@ class TenantAdministrator < ActiveRecord::Base
   end
 
   def save_obj params
-    paramsh = params.extract!(:user_id, :name, :tenant_uid, :comment)
+    paramsh = params.extract!(:user_id, :name, :tenant_uids, :comment)
     update_attributes(paramsh)
     save!
   end

@@ -7,7 +7,7 @@ class Teacher < ActiveRecord::Base
 
   belongs_to :tenant, foreign_key: "tenant_uid"
   belongs_to :user
-  has_many :class_teacher_mappings, foreign_key: "tea_uid"
+  has_many :class_teacher_mappings, foreign_key: "tea_uid", dependent: :destroy
 
   # has_many :classrooms, foreign_key: 'tea_id'
   scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) }
@@ -41,12 +41,12 @@ class Teacher < ActiveRecord::Base
         }
       end
       h = {
-        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_uids =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
-        :head_teacher => head_teacher ? I18n.t("common.shi") : I18n.t("common.fou"),
+        :head_teacher => head_teacher ? Common::Locale::i18n("common.shi") : Common::Locale::i18n("common.fou"),
         :subject => item.subject,
-        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
         :subject_classrooms => item.subjects_classrooms_mapping.map{|m| "#{m[:subject_cn]},#{m[:grade_cn]}#{m[:classroom_cn]}(#{m[:type]})" }.join("<br>"),
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
         :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
@@ -83,12 +83,12 @@ class Teacher < ActiveRecord::Base
       loc = Location.where(:uid => item.loc_uid).first
       {
         :subject => item.subject,
-        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
         :grade => loc.grade,
-        :grade_cn => I18n.t("dict.#{loc.grade}"),
+        :grade_cn => Common::Locale::i18n("dict.#{loc.grade}"),
         :classroom => loc.classroom,
-        :classroom_cn => I18n.t("dict.#{loc.classroom}"),
-        :type => item.head_teacher ? I18n.t("teachers.abbrev.head_teacher") : I18n.t("teachers.abbrev.subject")
+        :classroom_cn => Common::Locale::i18n("dict.#{loc.classroom}"),
+        :type => item.head_teacher ? Common::Locale::i18n("teachers.abbrev.head_teacher") : Common::Locale::i18n("teachers.abbrev.subject")
       }
     }
   end
@@ -142,7 +142,7 @@ class Teacher < ActiveRecord::Base
     mapping_hash[:loc_uid] = options[:loc_uid]
     mapping_hash[:head_teacher] = options.delete(:head_teacher)
     mapping_hash[:subject] = options[:subject]
-    mapping_hash[:tenant_uid] = options[:tenant_uid]
+    mapping_hash[:tenant_uid] = options[:tenant_uids]
     options[:class_teacher_mappings_attributes] = [mapping_hash]
     create(options)
   end

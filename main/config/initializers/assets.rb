@@ -8,26 +8,34 @@ Rails.application.config.assets.version = '1.0'
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
 # Rails.application.config.assets.precompile += %w( search.js )
 
-# # 用户中心
-Rails.application.config.assets.precompile += ['default/users.css', 'users.js']
-# # 整卷解析
-Rails.application.config.assets.precompile += ['zhengjuan.css', 'init_zhengjuan.js', 'ztree.js', 'ztree.css']
-# # 诊断报告
-Rails.application.config.assets.precompile += ['report.css', 
+
+Rails.application.config.assets.precompile += [
+#用户中心
+	'default/users.css', 
+	'users.js',
+#整卷解析
+	'zhengjuan.css', 
+	'init_zhengjuan.js', 
+	'ztree.js', 
+	'ztree.css',
+	'000016090/paper/zheng_juan.js',
+#诊断报告
+	'report.css', 
 	'init_report.js',
 	'create_report.js',
 	'000016090/report/new_report.css.scss',
-	'000016090/report/init_new_report.js'
-]
-#Rails.application.config.assets.precompile += ['new_report.css.scss', 'init_new_report.js']
-
-# # 百度eCharts.js
-Rails.application.config.assets.precompile += ['echarts.min.js', 'echarts_themes/macarons.js', 'echarts_themes/vintage.js']
-
-Rails.application.config.assets.precompile += ['managers/mains.css', 'managers/mains.js']
-
-Rails.application.config.assets.precompile += ['managers/subject_checkpoints.js', 'managers/checkpoints.css', 'managers/checkpoints.js']
-
-Rails.application.config.assets.precompile += ['jquery.remotipart.js']
-
-Rails.application.config.assets.precompile += ['default/ques-bank.css']
+	'000016090/report/init_new_report.js',
+	'00016110/report.css.scss',
+	'00016110/report/init_report.js',
+#百度eCharts.js
+	'echarts.min.js', 
+	'echarts_themes/macarons.js', 
+	'echarts_themes/vintage.js',
+#managers	
+	'managers/mains.css', 
+	'managers/mains.js',
+	'managers/subject_checkpoints.js', 
+	'managers/checkpoints.css', 
+	'managers/checkpoints.js',
+	'jquery.remotipart.js',
+	'default/ques-bank.css']

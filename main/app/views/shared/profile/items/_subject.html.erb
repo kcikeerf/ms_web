@@ -1,0 +1,4 @@
+<div class="form-group">
+	<label class="control-label"><%= LABEL("dict.subject") %></label>
+	<%= LABEL("dict.#{current_user.role_obj.nil?? 'unknown': current_user.role_obj.subject}") %>
+</div>

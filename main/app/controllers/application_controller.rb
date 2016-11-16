@@ -14,7 +14,8 @@ class ApplicationController < ActionController::Base
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
     cond3 = (controller_name == "Managers::SessionsController" && action_name == "new")
-    if cond1 || cond2 || cond3
+    cond4 = (controller_name == "ReportsController" && action_name == "generate_reports")
+    if cond1 || cond2 || cond3 || cond4
       next
     end
 
@@ -75,7 +76,9 @@ class ApplicationController < ActionController::Base
   #use in controller
   def current_tenant
     tenant = nil
-    if current_user.is_pupil?
+    if current_user.is_project_administrator?
+      tenant = nil
+    elsif current_user.is_pupil?
       tenant = current_user.role_obj.location.tenant
     else
       tenant = current_user.role_obj.tenant
@@ -84,13 +87,18 @@ class ApplicationController < ActionController::Base
   end
 
   def check_resource_tenant obj
+    obj_tenant_uid = (obj && obj.tenant)? obj.tenant.uid : nil
+    #若资源无所属Tenant，则为真即不抛出错误
+    return true unless obj_tenant_uid
+
     flag = false
-    if obj && obj.tenant && current_tenant
-      p "obj tenant uid >>>#{obj.tenant.uid}"
-      p "current_tenant.uid >>>>#{current_tenant.uid}"
-      flag = true if obj.tenant.uid == current_tenant.uid
+    if current_user.is_project_administrator?
+      #项目管理员的可访问中的Tenant之一
+      flag = current_user.role_obj.tenant_ids.include?(obj_tenant_uid)
+    else
+      flag = (current_tenant.uid == obj_tenant_uid) if current_tenant
     end
-    p ">>>>>#{flag}"
+
     unless flag
       render 'errors/403', status: 403,  layout: 'error'
     end
@@ -158,6 +166,11 @@ class ApplicationController < ActionController::Base
     prefix + "#" + job_type
   end
 
+  #format errors from model
+  def format_error ins
+    ins.errors.nil?? "" : ins.errors.messages.map{|k,v| "#{k}:#{v.uniq[0]}"}.join("<br>")
+  end
+
   private 
 
   def user_init
@@ -189,15 +202,13 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone, :role_name, :email, :password, :remember_me])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name, :phone, :role_name, :email, :password, :password_confirmation,:remember_me])
     devise_parameter_sanitizer.permit(:sign_in, keys: [:login, :password, :remember_me])
     # devise_parameter_sanitizer.for(:sign_up) do |u|
     #   u.permit(:login, :email, :phone, :password, :password_confirmation,:remember_me)      
     # end
         
-    # devise_parameter_sanitizer.for(:account_update) do |u|
-    #   u.permit(:login, :email, :phone, :password, :password_confirmation, :current_password)
-    # end
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name, :phone, :role_name, :email, :password, :password_confirmation,:remember_me])
   end
 
 end

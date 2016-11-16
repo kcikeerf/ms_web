@@ -13,19 +13,17 @@
           </a>
         </div>
         <div class="zy-tenant-container">
-          <a href="#" class="zy-tenant-title"><%= current_tenant.nil?? "":current_tenant.name_cn%></a>
+          <a href="#" class="zy-tenant-title"><%= top_title %></a>
         </div>
         <nav role="navigation" class="zy-navbar-nav">
           <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-              <% if current_user.is_analyzer? %>
-                  <% if current_page?('/analyzers/my_paper') %>
-                  <li>
-                    <a href="/papers/new" class="btn zy-btn-login">
-                      <span><%= t('page.paper.add_paper') %></span>
-                    </a>
-                  </li>
-                  <% end %>
+              <% if can_add_paper? %>
+                <li>
+                  <a href="/papers/new" class="btn zy-btn-login">
+                    <span><%= t('page.paper.add_paper') %></span>
+                  </a>
+                </li>
               <% end %>
               <li>
                 <button class="btn zy-btn-user" id="dropdownMenu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

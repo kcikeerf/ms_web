@@ -1,0 +1,4 @@
+<%= f.input :subject, 
+    label: LABEL("dict.subject"), 
+	collection: Common::Subject::List.map {|k,v| [v,k]}, 
+    selected: current_user.role_obj.subject %>

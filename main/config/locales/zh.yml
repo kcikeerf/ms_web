@@ -3,9 +3,16 @@
 
 zh:
   common:
+    minus: "－"
     none: "无"
     shi: "是"
     fou: "否"
+    create: "创建"
+    edit: "编辑"
+    delete: "删除"
+    list: "列表"
+    save: "保存"
+    cancel: "取消"
   areas:
     list:
       all: "全部"
@@ -80,10 +87,13 @@ zh:
       answer: '原答案'
       revise_paper: '修正试卷'
       revise_answer: '修正答案'
+      empty_result: '空成绩表'
       empty_file: '空成绩表'
       filled_file: '学生成绩表'
       usr_pwd_file: '老师及学生的用户名及密码'
     messages:
+      get_paper:
+        fail: "获取试卷发生异常错误！"
       save_paper:
         success: "试卷（标题：%{heading}）保存成功!"
         fail: "试卷（原因：%{message}）保存失败!"
@@ -130,6 +140,7 @@ zh:
     generic_url: "报告链接"
     op_guide: "操作说明"
     op_guide_details: "请按以下步骤查看报告：1.登录报告链接；2.进入个人中心；3.在我的报告列表查看"
+    project_url: "项目报告链接"
     grade_url: "年级报告链接"
     lower_than: "低"
     equal_to: "等"
@@ -179,11 +190,25 @@ zh:
   tasks:
     type:
       create_report: "生成报告"
-      import_score: "导入成绩"
+      import_result: "导入成绩表"
+    status:
+      in_active: "未执行"
+      active: "执行中"
+      completed: "完成"
   teachers:
     abbrev:
       subject: "科"
       head_teacher: "主"
+  tests:
+    status:
+      not_started: "未测试"
+      no_score: "成绩未导入"
+      score_importing: "成绩导入中"
+      score_imported: "成绩已导入"
+  swtk_errors:
+    parameter_invalid_error: "参数无效！"
+    object_not_found: "对象未找到或不存在(详细：%{message})"
+
   #微信使用labels
   wx_commons:
     messages:
@@ -206,8 +231,8 @@ zh:
         invalid_pupil: "请确认此学生账户是否存在"
         invalid_binding_params: "您的微信绑定参数无效！"
         invalid_wx_user: "您的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
-        wx_binding_limit: "您的微信帐户绑定题库帐户超过%{limit}个，若希望绑定更多的题库帐户请联系题库！"
-        user_binding_limit: "指定的题库帐户绑定微信帐户超过%{limit}个，若希望绑定更多的题库帐户请联系题库！"
+        wx_binding_limit: "您的微信帐户绑定题库帐户超过 %{limit} 个，若希望绑定更多的题库帐户请联系题库！"
+        user_binding_limit: "指定的题库帐户绑定微信帐户超过 %{limit} 个，若希望绑定更多的题库帐户请联系题库！"
       error:
         login_failed: "您输入的用户名或密码有错误，未通过认证！"
         wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
@@ -259,10 +284,12 @@ zh:
     province: "省"
     city: "市"
     district: "区"
+    project: "项目"
     tenant: "Tenant"
     school: "学校"
     school_number: "学校编号"
     grade: "年级"
+    xue_duan: "学段"
     classroom: "班级"
     subject_teacher: "学科教师"
     head_teacher: "班主任"
@@ -270,6 +297,7 @@ zh:
     analyzer: "分析员"
     pupil: "学生"
     tenant_administrator: "Tenant管理员"
+    project_administrator: "项目管理员"
     pupil_number: "学号"
     name: "姓名"
     sex: "性别"
@@ -301,7 +329,7 @@ zh:
     zheng_zhi: "政治"
     xin_xi_ji_shu: "信息技术"
     ji_shu: "技术"
-    #年级   
+    #年级 
     yi_nian_ji: "一年级"
     er_nian_ji: "二年级"
     san_nian_ji: "三年级"
@@ -400,11 +428,13 @@ zh:
     dan_yuan_ce_shi: "单元测试"
     xiao_sheng_chu_ce_shi: "小升初测试"
     xue_ke_neng_li_ce_ping: "学科能力测评"
+    lian_kao: "联考"
     #报告类型
     ce_shi_zhen_duan_bao_gao: "测试诊断报告" 
     ge_ren_bao_gao: "学生报告"
     ban_ji_bao_gao: "班级报告"
     nian_ji_bao_gao: "年级报告"
+    xiang_mu_bao_gao: "项目报告"
     qu_yu_bao_gao: "区域报告"
     #年份
     nian: "年"
@@ -449,6 +479,9 @@ zh:
       error:
 
   managers:
+    users:
+      basic: "基本信息"
+      tenant: "Tenant"
     head: "三维题库管理Console"
     admin: "后台管理员"
     user:
@@ -462,6 +495,7 @@ zh:
     menus:
       jue_se_guan_li: "角色管理"
       quan_xian_guan_li: "权限管理"
+      project_admin_guan_li: "项目管理员管理"
       tenant_guan_li: "Tenant管理"
       tenant_yong_hu_guan_li: "Tenant管理员管理"
       fen_xi_yuan_guan_li: "分析员管理"
@@ -472,9 +506,15 @@ zh:
       ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
+      tenant:
+        select: "请选择Tenant。"
+      user:
+        input_username: "请输入用户名。"
+        input_password: "请输入密码。"
   #定义active record表及属性的中文标示
   activerecord:
     models:
+      area: "地区"
       bank_checkpoint_ckp: "测评点表"
       bank_ckp_comment: "测评点评价模版表"
       bank_ckp_cube: "测评点立体交叉表"
@@ -483,11 +523,26 @@ zh:
       bank_nodestructure: "课本结构树形表"
       bank_papertag_ptg: "试卷标签"
       bank_quiztag_qtg: "试题标签"
+      bank_test: "测试"
       comment: "评论"
       role: "角色"
       user: "用户"
+      analyzer: "分析员"
       pupil: "学生"
+      teacher: "教师"
+      tenant: "Tenant"
+      tenant_administrator: "Tenant管理员"
+      project_administrator: "项目管理员"
+      permission: "权限"
+
     attributes:
+      default:
+        name: "名称"
+        status: "状态"
+      area:
+        province: "省"
+        city: "市"
+        district: "区"
       bank_checkpoint_ckp:
         uid: "ID"
         dimesion: "测评方面"
@@ -556,6 +611,7 @@ zh:
         updated_at: "更新时间"
       user:
         name: "用户名"
+        real_name: "姓名"
         email: "邮箱"
         phone: "手机号"
         qq: "QQ号"
@@ -580,8 +636,13 @@ zh:
         grade: "年级"
         classroom: "班级"
         school: "学校"
+        stu_number: "学号"
+      tenant:
+
       tenant_administrator:
         name: "姓名"
+      porject_administrator:
+
     errors:
       messages:        
         inclusion: "不包含于列表中"
@@ -733,6 +794,8 @@ zh:
     next: '下一步'
     captcha: '验证码'
     input_captcha: '请输入验证码'
+    action: "操作"
+    order_index: "序号"
     common:
       save: "保存"
       submit: "提交"
@@ -809,6 +872,8 @@ zh:
       select_score_tip: '请选择有学生成绩的excel'
       upload_score: '上传成绩表'
       score: '成绩表'
+      tenant_range: "Tenant范围"
+      test_range: "测试范围"
     pupil:
       basic_info: '个人信息'
 
