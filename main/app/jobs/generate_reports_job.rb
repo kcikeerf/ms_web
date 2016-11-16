@@ -118,11 +118,11 @@ class GenerateReportsJob < ActiveJob::Base
 
         # 结束处理
         Common::Report::Group::ListArr[0..end_index].reverse.each{|item|
-          th_arr = []
-          th_arr << Thread.new do 
-            constructor_h[item].owari
-          end
-          ThreadsWait.all_waits(*th_arr)
+          #th_arr = []
+          #th_arr << Thread.new do 
+          constructor_h[item].owari
+          #end
+          #ThreadsWait.all_waits(*th_arr)
         }
         job_tracker.update(process: 0.9)
 
