@@ -1,2 +1,38 @@
 module Managers::MainsHelper
+  def page_info_item
+    case controller_name
+    when "analyzers"
+      title = I18n.t("activerecord.models.analyzer")
+      path = "/managers/analyzers"
+    when "permissions"
+      title = I18n.t("activerecord.models.permission")
+      path = "/managers/permissions"
+    when "pupils"
+      title = I18n.t("activerecord.models.pupil")
+      path = "/managers/pupils"
+    when "project_administrators"
+      title = I18n.t("activerecord.models.project_administrator")
+      path = "/managers/project_administrators"
+    when "roles"
+      title = I18n.t("activerecord.models.role")
+      path = "/managers/roles"
+    when "teachers"
+      title = I18n.t("activerecord.models.teacher")
+      path = "/managers/teachers"
+    when "tenants"
+      title = I18n.t("activerecord.models.tenant")
+      path = "/managers/tenants"
+    when "tenant_administrators"
+      title = I18n.t("activerecord.models.tenant_administrator")
+      path = "/managers/tenant_administrators"
+    else
+      title = I18n.t("dict.unknown")
+      path = "/managers/"
+    end
+    result = {
+      :title => title,
+      :path => path
+    }
+    result
+  end
 end

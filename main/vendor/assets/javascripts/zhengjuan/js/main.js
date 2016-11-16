@@ -17,6 +17,7 @@ $(function(){
         paperSaveUrl : "/papers/save_paper",    //整卷保存接口
         paperSubmitUrl : "/papers/submit_paper",    //整卷提交接口
         createReport : "/reports/generate_all_reports",  //生成报告接口
+        generateReports : "/reports/generate_reports",  //生成报告接口        
         get_task_status : "/monitors/get_task_status",  //查询报告进度接口
         paperUrl : "/papers/get_paper",  //访问已生成试卷路径
         init : function(){
@@ -152,7 +153,19 @@ $(function(){
                 $(".info_difficulty p").text(levelObj[data.information.levelword]);
                 $(".info_testTime p").text(data.information.quiz_date);
                 $(".info_score p").text(data.information.score);
+                // 保留，暂时未发现可用场景
+                // update tenant list
+                // var tenant_list_html = "";
+                // data.information.tenants.forEach(function(v,i){ 
+                //     tenant_list_html += ""
+                //     +"<tr><td>"+(i+1)+"</td><td>"
+                //     +v.tenant_name+"</td><td>"
+                //     +v.tenant_status_label+'</td><td><button type="button" class="btn btn-default" disabled>成绩上传</button></td></tr>';
+                // });
+                // $(".tenant_range_display_list").html(tenant_list_html);
+                
             }
+
             var html1 = "", html2 = '<ul class="rangeAll">';
             if(data.bank_node_catalogs && data.bank_node_catalogs.length){
                 for (var i=0; i<data.bank_node_catalogs.length; i++) {
@@ -175,32 +188,78 @@ $(function(){
                 case "analyzing":
                     $(".lookPaperInfo").show().find(".lookPaper_sanwei").hide();
                     $(".paper_about").show().find(".load_list").hide();
+                    //project administrator tenant action
+                    $(".tenant_result_list").hide();
+                    //
                     $(".link_paper").css("display","block");
                     break;
                 case "analyzed":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
+                    // if($(".tenant_result_list")){
+                        //$(".tenant_result_list .progress").show();
+                    // }
                     break;
                 case "score_importing":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
-                    $(".paperDetails .progress").show();
-                    paper.setInterVal();
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+
+                        $.each($(".tenant_result_list .score_importing .progress-bar"),function(i,item){
+                            var target_task_uid = data.information.tasks.import_result;
+                            var target_job_uid = item.getAttribute("job-uid");
+                            window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                            $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].execute());
+                            $.Topic("tenant_score_importing").publish();
+                        });
+                        
+                    }
+                    else{
+                        $(".paperDetails > .progress").show();
+                        paper.setInterVal();
+                    }
                     break;
                 case "score_imported":
+                    $.Topic("tenant_score_importing").destroy();
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
-                    $(".lookPaperInfo, .createReport").show();
+                    $(".lookPaperInfo, .createReport:first").show();
+                    //project administrator tenant action
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+                    }
+                    //
                     break
                 case "report_generating":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
                     $(".lookPaperInfo, .createReport").show();
-                    $(".paperDetails .progress").show();
+                    $(".paperDetails > .progress.createReport").show();
                     $(".createReport a").removeClass("active");
-                    paper.setInterVal();
+                    $(".createReport a").html("报告生成中...");
+                    //project administrator tenant action
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+                    }
+                    //
+                    //paper.setInterVal();
+ 
+                     $.each($(".progress.createReport > .progress-bar"),function(i,item){
+                        var target_task_uid = data.information.tasks.create_report;
+                        var target_job_uid = item.getAttribute("job-uid");
+                        window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                        $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].execute());
+                        $.Topic("paper_report_generating").publish();
+                    });
+
                     break;
                 case "report_completed":
                     $(".download_link").css("display","block");
                     $(".lookPaperInfo, .lookReport").show();
+                    //project administrator tenant action
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+                    }
+                    //
                     var pap_uid = paper.getQueryString(location.href,"pap_uid");
                         pap_uid && $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?pap_uid="+pap_uid);
                     break;
@@ -262,13 +321,13 @@ $(function(){
                     school : paper.paperData.information.school
                 };
                 $.ajax({
-                    url: paper.createReport,
+                    url: paper.generateReports,
                     type: "post",
                     data: dataObj,
                     dataType: "json",
                     success: function(data){
                         if(data && data.task_uid){
-                            $(".progress").show();
+                            $(".paperDetails > .progress").show();
                             paper.paperData.task_uid = data.task_uid;
                             paper.setInterVal();
                         }
@@ -280,7 +339,7 @@ $(function(){
                 });
             });
             //打开模态框
-            $(".download_link, .load_list, .download_list").on("click",function(){
+            $(".download_link, .load_list, .download_list, .tenant_result_list button").on("click",function(){
                 var getUrl = $(this).attr("geturl") || "",
                     pap_uid = paper.paperData.pap_uid,
                     parame = getUrl.indexOf("?") < 0 ? "?pap_uid="+pap_uid : "&pap_uid="+pap_uid;
@@ -502,7 +561,13 @@ $(function(){
                 quiz_type : $(".selecType .selectVal span").attr("values") || "",   //考试类型
                 levelword : $(".selectDifficulty .selectVal span").attr("values") || "",    //难度
                 quiz_duration : $(".selectTime .selectVal span").attr("values") || "",  //考试时长
-                score : $(".selectScore .selectVal input").val() || "0"  //满分值   
+                score : $(".selectScore .selectVal input").val() || "0",  //满分值
+                tenants: $.map($(".tenant_range_item_checkbox.active"), function(v,i){ 
+                    return {tenant_uid: v.getAttribute("tenant_uid"), 
+                            tenant_name: v.getAttribute("tenant_name"),
+                            tenant_status: "",
+                            tenant_status_label: ""}
+                })
             };
             $(".selecTerm li.active").length && (paper.paperData.information.node_uid=$(".selecTerm li.active").attr("uid"));
             paper.paperData.bank_node_catalogs = [];
@@ -769,6 +834,11 @@ $(function(){
             $(".saveWarp .saveBtn").addClass("active");
             $(this).toggleClass("active");
         });
+        //Tenant范围各项
+        doc.on("click",".tenant_range_item_checkbox",function(){
+            $(this).toggleClass("active");
+        });
+
         doc.on("input propertychange",".attribute input, .attribute textarea",function(){
             $(".saveWarp .saveBtn").addClass("active");
             paper.changeState = true;
@@ -1166,10 +1236,10 @@ $(function(){
                     if(data.status == "success"){
                         var percent = data.process*100+"%";
                         var display_label = data.name + "(" +(data.process * 100).toFixed(2) + "%" +")";
-                        $(".progress_label").html(display_label);
-                        $(".progress .finish").css("width",percent);
+                        $(".paperDetails > .progress_label").html(display_label);
+                        $(".paperDetails > .progress .finish").css("width",percent);
                         if(data.process == 1){
-                            location.reload();
+                            //location.reload();
                         }/*else{
                             var percent = data.process*100+"%";
                             $(".progress .finish").css("width",percent);
@@ -1390,6 +1460,17 @@ $(function(){
             //     active_county.length && $(".selectCounty .selectVal span").attr("values",active_county.text()).text(active_county.text());
             // }
         }
+
+        if(paper.paperData.information && paper.paperData.information.tenants){
+            var target_tenant_uids = $.map(paper.paperData.information.tenants, function(v){ return v.tenant_uid});
+            console.log(target_tenant_uids);
+            $(".tenant_range_check_list .tenant_range_item_checkbox").each(function(){
+                if(target_tenant_uids.includes($(this)[0].getAttribute("tenant_uid"))){
+                    $(this).addClass("active");
+                }
+            });
+        }
+
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){

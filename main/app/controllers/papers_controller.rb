@@ -2,7 +2,15 @@ class PapersController < ApplicationController
 
   layout "zhengjuan"
 
-  before_action :set_paper, only: [:download, :download_page, :get_saved_paper, :import_filled_score, :submit_paper, :save_analyze,:submit_analyze, :get_empty_score_file]
+  before_action :set_paper, only: [:download, 
+    :download_page, 
+    :get_saved_paper, 
+    :import_filled_score, 
+    :import_filled_result,
+    :submit_paper, 
+    :save_analyze,
+    :submit_analyze, 
+    :get_empty_score_file]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
@@ -30,11 +38,6 @@ class PapersController < ApplicationController
     result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
 
     render :json => result.to_json
-#    respond_to do |format|
-#      format.json { render json: result.to_json }
-#    end
-#    result_json = Common::Response.exchange_record_id(result.to_json)
-#    render :text=>Common::Response.format_response_json(result_json,Common::Response.get_callback_type(params))
   end
 
   def new
@@ -50,8 +53,21 @@ class PapersController < ApplicationController
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
 
+    #Version1.1，临时代码
+    # 默认是一个试卷对应一个测试，之后对改成1对多
+    @current_test = current_pap.bank_tests[0]
+    # 生成报告ID
+    if current_pap.paper_status == Common::Paper::Status::ReportGenerating
+      create_report_task = @current_test.tasks.by_task_type("create_report").first
+      create_report_job = create_report_task.job_lists.blank?? nil : create_report_task.job_lists.order({:dt_update => :desc}).first
+      @current_create_report_job_uid = create_report_job.uid
+      p ">>>>>#{@current_create_report_job_uid}"
+    else 
+      @current_create_report_job_uid = nil
+    end
     render "zhengjuan"
   end
+
   # 
   # 
   def save_paper
@@ -69,7 +85,8 @@ class PapersController < ApplicationController
       current_pap.save_pap(params)
       result = response_json(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
-      result = response_json(500, {messages: I18n.t("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
+      #current_pap.save_paper_rollback
+      result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
     end
     render :json => result
   end
@@ -80,11 +97,22 @@ class PapersController < ApplicationController
     result = response_json
     
     if !params[:pap_uid].blank?
-      current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      result_h = JSON.parse(current_pap.paper_json)
-      result_h["information"]["paper_status"] = current_pap.paper_status
-      result_h["pap_uid"] = current_pap._id.to_s
-      result = response_json(200, result_h.to_json)
+      begin
+        current_pap = Mongodb::BankPaperPap.get_pap params[:pap_uid]
+        if current_pap
+          result_h = JSON.parse(current_pap.paper_json)
+          #此处暂做保留，之后删掉
+          result_h["information"]["paper_status"] = current_pap.paper_status
+          result_h["pap_uid"] = current_pap._id.to_s
+          p ">>>>>#{current_pap.paper_status}"
+          p ">>>>>#{result_h["information"]["paper_status"]}"
+          result = response_json(200, result_h.to_json)
+        end
+      rescue Exception => ex 
+        result = response_json(500, Common::Locale::i18n("papers.messages.get_paper.fail"))
+        logger.debug(ex.message)
+        logger.debug(ex.backtrace)
+      end
     else
       result = response_json(500)
     end
@@ -106,6 +134,7 @@ class PapersController < ApplicationController
         result = response_json(200, {pap_uid: @paper._id.to_s})
         #result = response_json(200, {messages: I18n.t("papers.messages.submit_paper.success", current_pap.heading)})
       rescue Exception => ex
+        #@paper.submit_pap_rollback
         result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.message)})
       end
     else
@@ -166,25 +195,6 @@ class PapersController < ApplicationController
     render :json => result
   end
 
-  # def upload_filled_score_file
-  #   params.permit!
-
-  #   result = response_json
-
-  #   if params[:pap_uid]
-  #     current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-  #     params[:score_file_id] = current_pap.score_file_id
-  #     score_file = Common::Score.upload_filled_score params
-  #     if score_file
-  #       # analyze filled score file
-  #       str = current_pap.analyze_filled_score_file score_file
-  #       result = response_json(200, {data: str})
-  #     end
-  #   end
-
-  #   render :json => result
-  # end
-
   def get_empty_score_file
     params.permit!
 
@@ -202,18 +212,11 @@ class PapersController < ApplicationController
   #下载试卷的相关文件
   def download
     type = params[:type]
-
-    return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file filled_file usr_pwd_file}.include?(type)
-    need_deal_types = %w{revise_paper revise_answer}
-    is_xlsx = %w{empty_file filled_file usr_pwd_file}.include?(type)
-
-    file = is_xlsx ? ScoreUpload.find(@paper.score_file_id) : FileUpload.find(@paper.orig_file_id)
-    
-    file_name = @paper.download_file_name(type) + (is_xlsx ? '.xlsx' : '.doc')
-    # 旧接口注释掉
-    #file_name = @paper.paper_name(type) + (is_xlsx ? '.xlsx' : '.doc')
-
-    if need_deal_types.include?(type)
+    return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file empty_result filled_file usr_pwd_file}.include?(type)
+   
+    #修正试卷，修正答案需要进一步处理
+    # 
+    if %w{revise_paper revise_answer}.include?(type)
       head_html =<<-EOF
         <h2>#{@paper.heading}</h2>
         <h3>#{@paper.subheading}</h3>
@@ -233,18 +236,37 @@ class PapersController < ApplicationController
         end
       end
     end
+    ###
 
+    #文件对象
+    file = nil
+    if %w{filled_file usr_pwd_file empty_file}.include?(type)
+      if current_user.is_project_administrator? #项目管理员
+        file = @paper.bank_tests[0].score_uploads.by_tenant_uid(params[:tenant_uid]).first
+        p ">>>>"
+        p file
+      else #其他
+        file = ScoreUpload.find(@paper.score_file_id)
+      end
+    elsif %w{paper answer revise_paper revise_answer empty_result}.include?(type)
+      file = FileUpload.find(@paper.orig_file_id)
+    else
+      # do nothing
+    end
+
+    #文件后缀名
+    suffix = ""
+    if %w{filled_file usr_pwd_file empty_file empty_result}.include?(type)
+      suffix = ".xlsx"
+    elsif %w{paper answer revise_paper revise_answer}.include?(type)
+      suffix = ".doc"
+    else
+      # do nothing
+    end
+      
+    #文件名，文件路径
+    file_name = params[:file_name] + suffix
     file_path = file.send(type.to_sym).current_path
-
-    # file = FileUpload.find(@paper.orig_file_id)
-    # head_html =<<-EOF
-    #   <h2>#{@paper.heading}</h2>
-    #   <h3>#{@paper.subheading}</h3>
-     
-    #   <p style="text-align:center">
-    #     <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
-    #   </p>      
-    # EOF
 
     send_file file_path, filename: file_name, disposition: 'attachment'
   end
@@ -266,9 +288,10 @@ class PapersController < ApplicationController
         @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
         @paper.current_user_id = current_user.id
 
-        score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+        #score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+        score_file = Common::Score.upload_filled_score({filled_file: params[:file]})
         if score_file
-          task_name = format_report_task_name @paper.heading, Common::Task::Type[:import_score]
+          task_name = format_report_task_name @paper.heading, Common::Task::Type::ImportResult
           new_task = TaskList.new(
             name: task_name,
             pap_uid: @paper._id.to_s)
@@ -300,6 +323,51 @@ class PapersController < ApplicationController
       end
       @result = result.to_json
       logger.info("====================import score: end")
+    end
+    render layout: false
+  end
+
+  def import_filled_result
+    params.permit!
+
+    if request.post?
+      logger.info("====================import result rquest: begin")
+      result = {:status => 403, :task_uid => ""}
+
+      begin
+        raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
+        params[:test_id] =  @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
+        score_file = Common::Score.upload_filled_result(params)
+        if score_file          
+          # Job
+          ImportResultsJob.perform_later({
+            #:task_uid => target_task.uid,
+            :score_file_id => score_file.id,
+            :tenant_uid => params[:tenant_uid],
+            :pap_uid => params[:pap_uid]
+          })
+          #end
+          status = 200
+          result[:status] = status
+          current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
+          result[:task_uid] = current_task.nil?? "":current_task.uid
+        else
+          status = 500
+          result[:status] = status
+          result[:message] = I18n.t("scores.messages.error.upload_failed")
+        end
+      rescue Exception => ex
+        status = 500
+        result[:status] = status
+        result[:message] = I18n.t("scores.messages.error.upload_exception")
+        @result = result.to_json
+        logger.debug ">>>ex.message<<<"
+        logger.debug ex.message
+        logger.debug ">>>ex.backtrace<<<"
+        logger.debug ex.backtrace
+      end
+      @result = result.to_json
+      logger.info("====================import score request: end")
     end
     render layout: false
   end

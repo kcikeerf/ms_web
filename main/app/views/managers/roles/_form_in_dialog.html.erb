@@ -1,0 +1,15 @@
+<% content_for :form do %>
+	<div class="fname">
+		<label>名称:</label>
+		<%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fdesc">
+		<label>描述:</label>
+		<%= text_field_tag :desc, '', class: 'easyui-validatebox' %>
+	</div>
+<% end %>
+<script type="text/javascript">
+	function formatOper(val,row,index){  
+	  return '<a href="<%= page_info_item[:path] %>/'+row["id"]+'">查看权限</a>';  
+	} 
+</script>

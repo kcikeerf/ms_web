@@ -1,0 +1,45 @@
+
+<div style="margin:5px 0px 5px 15px;">
+  <label><%=LABEL("activerecord.attributes.area.province")%></label>
+  <select class="easyui-combobox" id="province_rid" name="province_rid" style="width:200px;">
+    <% area_list[:province].each do |item| %>
+      <option value="<%=item.rid%>"><%=item.name_cn%></option>
+    <% end %>
+  </select>
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label><%=LABEL("activerecord.attributes.area.city")%></label>
+  <select class="easyui-combobox" id="city_rid" name="city_rid" style="width:200px;" data-options="valueField:'rid',textField:'name_cn'">
+    <% area_list[:city].each do |item| %>
+      <option value="<%=item.rid%>"><%=item.name_cn%></option>
+    <% end %>
+  </select>
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label><%=LABEL("activerecord.attributes.area.district")%></label>
+  <select class="easyui-combobox" id="district_rid" name="district_rid" style="width:200px;" data-options="valueField:'rid',textField:'name_cn'">
+    <% area_list[:district].each do |item| %>
+      <option value="<%=item.rid%>"><%=item.name_cn%></option>
+    <% end %>
+  </select>
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label><%=LABEL("activerecord.models.tenant")%></label>
+  <select class="easyui-combobox" 
+  	id="tenant_uids" 
+<% if controller_name == "project_administrators" %>
+  	name="tenant_uids[]"
+  	multiple="true" 
+  	multiline="true" 
+  	style="width:200px;height:100px;"
+<% else %>
+  	name="tenant_uids"
+    style="width:200px;"
+<% end %>
+  	data-options="valueField:'tenant_uids',textField:'name_cn'">
+    <option value=""><%= LABEL("managers.messages.tenant.select")%></option>
+  </select>
+</div>

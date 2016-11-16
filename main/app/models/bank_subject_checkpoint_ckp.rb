@@ -158,7 +158,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     end
 
     def root_node(dimesion)
-    	{rid: '', pid: '', nocheck: true, dimesion: dimesion, name: I18n.t('managers.root_node'), open: true}
+    	{rid: '', pid: '', nocheck: true, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
     end
 	 
 	end
@@ -203,9 +203,9 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   	get_nodes(rid.size, rid, subject, dimesion, category).not_equal_rid(rid)
   end
 
-  def parents
-  	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion, category).not_equal_rid(rid)
-  end
+  # def parents
+  # 	get_nodes(Common::SwtkConstants::CkpStep, parent_node_rid, subject, dimesion, category).not_equal_rid(rid)
+  # end
 
   def parent
   	get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category).find_by(rid: parent_node_rid)
@@ -233,6 +233,12 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       ckp_source: Common::CheckpointCkp::CkpSource::SubjectCkp,
       nocheck: is_entity^1,
     }
+  end
+
+  # 获取所属指标体系全部指标包括自己
+  #
+  def families
+    ( subject.nil? || category.nil? )? [] : self.class.where(subject: subject, category: category)
   end
 
   private

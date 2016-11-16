@@ -30,7 +30,7 @@ class Pupil < ActiveRecord::Base
       tenant = item.location.nil?? nil : item.location.tenant
       area_h = tenant.area_pcd if tenant
       h = {
-        :tenant_uid =>  tenant.nil?? "":tenant.uid,
+        :tenant_uids =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
@@ -39,8 +39,8 @@ class Pupil < ActiveRecord::Base
       }
       h.merge!(area_h)
       h.merge!(item.attributes)
-      h["sex_label"] = I18n.t("dict.#{h["sex"]}")
-      h["grade_label"] = I18n.t("dict.#{h["grade"]}")
+      h["sex_label"] = Common::Locale::i18n("dict.#{h["sex"]}")
+      h["grade_label"] = Common::Locale::i18n("dict.#{h["grade"]}")
       h["classroom_label"] = Common::Klass::klass_label h["classroom"]
       h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
       result[index] = h
@@ -56,7 +56,7 @@ class Pupil < ActiveRecord::Base
       :name => params[:name], 
       :grade => params[:grade],
       :classroom => params[:classroom],
-      :tenant_uid => params[:tenant_uid]
+      :tenant_uid => params[:tenant_uids]
     }
     update_attributes(paramsh)
     save!
@@ -81,8 +81,8 @@ class Pupil < ActiveRecord::Base
     result = {
       :key => self.stu_number,
       :label => self.name,
-      :report_name => current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao"),
-      :report_subject => (current_paper.subject.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{current_paper.subject}")) + "&middot" + I18n.t("dict.ge_ren_bao_gao"),
+      :report_name => current_paper.heading + Common::Locale::i18n("dict.ce_shi_zhen_duan_bao_gao"),
+      :report_subject => (current_paper.subject.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{current_paper.subject}")) + "&middot" + Common::Locale::i18n("dict.ge_ren_bao_gao"),
       :data_type => "pupil",
       :report_id => pupil_report.nil?? "":pupil_report._id,
       :items => []

@@ -2,36 +2,36 @@ module KlassModule
   module Klass
     module_function
     List = {
-      :yi_ban => I18n.t("dict.yi_ban"),
-      :er_ban => I18n.t("dict.er_ban"),
-      :san_ban => I18n.t("dict.san_ban"),
-      :si_ban => I18n.t("dict.si_ban"),
-      :wu_ban => I18n.t("dict.wu_ban"),
-      :liu_ban => I18n.t("dict.liu_ban"),
-      :qi_ban => I18n.t("dict.qi_ban"),
-      :ba_ban => I18n.t("dict.ba_ban"),
-      :jiu_ban => I18n.t("dict.jiu_ban"),
-      :shi_ban => I18n.t("dict.shi_ban"),
-      :shi_yi_ban => I18n.t("dict.shi_yi_ban"),
-      :shi_er_ban => I18n.t("dict.shi_er_ban"),
-      :shi_san_ban => I18n.t("dict.shi_san_ban"),
-      :shi_si_ban => I18n.t("dict.shi_si_ban"),
-      :shi_wu_ban => I18n.t("dict.shi_wu_ban"),
-      :shi_liu_ban => I18n.t("dict.shi_liu_ban"),
-      :shi_qi_ban => I18n.t("dict.shi_qi_ban"),
-      :shi_ba_ban => I18n.t("dict.shi_ba_ban"),
-      :shi_jiu_ban => I18n.t("dict.shi_jiu_ban"),
-      :er_shi_ban => I18n.t("dict.er_shi_ban"),
-      :er_shi_yi_ban => I18n.t("dict.er_shi_yi_ban"),
-      :er_shi_er_ban => I18n.t("dict.er_shi_er_ban"),
-      :er_shi_san_ban => I18n.t("dict.er_shi_san_ban"),
-      :er_shi_si_ban => I18n.t("dict.er_shi_si_ban"),
-      :er_shi_wu_ban => I18n.t("dict.er_shi_wu_ban"),
-      :er_shi_liu_ban => I18n.t("dict.er_shi_liu_ban"),
-      :er_shi_qi_ban => I18n.t("dict.er_shi_qi_ban"),
-      :er_shi_ba_ban => I18n.t("dict.er_shi_ba_ban"),
-      :er_shi_jiu_ban => I18n.t("dict.er_shi_jiu_ban"),
-      :san_shi_ban => I18n.t("dict.san_shi_ban")
+      :yi_ban => Common::Locale::i18n("dict.yi_ban"),
+      :er_ban => Common::Locale::i18n("dict.er_ban"),
+      :san_ban => Common::Locale::i18n("dict.san_ban"),
+      :si_ban => Common::Locale::i18n("dict.si_ban"),
+      :wu_ban => Common::Locale::i18n("dict.wu_ban"),
+      :liu_ban => Common::Locale::i18n("dict.liu_ban"),
+      :qi_ban => Common::Locale::i18n("dict.qi_ban"),
+      :ba_ban => Common::Locale::i18n("dict.ba_ban"),
+      :jiu_ban => Common::Locale::i18n("dict.jiu_ban"),
+      :shi_ban => Common::Locale::i18n("dict.shi_ban"),
+      :shi_yi_ban => Common::Locale::i18n("dict.shi_yi_ban"),
+      :shi_er_ban => Common::Locale::i18n("dict.shi_er_ban"),
+      :shi_san_ban => Common::Locale::i18n("dict.shi_san_ban"),
+      :shi_si_ban => Common::Locale::i18n("dict.shi_si_ban"),
+      :shi_wu_ban => Common::Locale::i18n("dict.shi_wu_ban"),
+      :shi_liu_ban => Common::Locale::i18n("dict.shi_liu_ban"),
+      :shi_qi_ban => Common::Locale::i18n("dict.shi_qi_ban"),
+      :shi_ba_ban => Common::Locale::i18n("dict.shi_ba_ban"),
+      :shi_jiu_ban => Common::Locale::i18n("dict.shi_jiu_ban"),
+      :er_shi_ban => Common::Locale::i18n("dict.er_shi_ban"),
+      :er_shi_yi_ban => Common::Locale::i18n("dict.er_shi_yi_ban"),
+      :er_shi_er_ban => Common::Locale::i18n("dict.er_shi_er_ban"),
+      :er_shi_san_ban => Common::Locale::i18n("dict.er_shi_san_ban"),
+      :er_shi_si_ban => Common::Locale::i18n("dict.er_shi_si_ban"),
+      :er_shi_wu_ban => Common::Locale::i18n("dict.er_shi_wu_ban"),
+      :er_shi_liu_ban => Common::Locale::i18n("dict.er_shi_liu_ban"),
+      :er_shi_qi_ban => Common::Locale::i18n("dict.er_shi_qi_ban"),
+      :er_shi_ba_ban => Common::Locale::i18n("dict.er_shi_ba_ban"),
+      :er_shi_jiu_ban => Common::Locale::i18n("dict.er_shi_jiu_ban"),
+      :san_shi_ban => Common::Locale::i18n("dict.san_shi_ban")
     }
 
     Order ={
@@ -68,7 +68,7 @@ module KlassModule
     }
 
     def klass_label klassroom
-      klassroom.nil?? "":Common::Klass::List.keys.include?(klassroom.to_sym) ? I18n.t("dict.#{klassroom}") : klassroom
+      klassroom.nil?? "":Common::Klass::List.keys.include?(klassroom.to_sym) ? Common::Locale::i18n("dict.#{klassroom}") : klassroom
     end
   end
 end

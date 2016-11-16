@@ -9,25 +9,7 @@ class Managers::PupilsController < ApplicationController
   before_action :get_user, only: [:edit, :update]
 
   def index
-    @data = {name: I18n.t("dict.pupil"), path: '/managers/pupils'}
     @pupils = Pupil.get_list params
-
-    # 性别列表
-    @sex_list = Common::Locale::SexList.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
-    
-    # 年级列表
-    @grade_list = Common::Grade::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
-
-    # 班级列表
-    @class_room_list = Common::Klass::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
-
-    # tenant用地区信息
-    country_rid = Common::Area::CountryRids["zhong_guo"]
-    country = Area.where("rid = '#{country_rid}'").first
-    @province = country.children_h.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @city = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @district = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-
     respond_with({rows: @pupils, total: @pupils.total_count}) 
   end
 
@@ -106,7 +88,7 @@ class Managers::PupilsController < ApplicationController
       :province_rid,
       :city_rid,
       :district_rid, 
-      :tenant_uid, 
+      :tenant_uids, 
       :stu_number,
       :sex,
       :grade,

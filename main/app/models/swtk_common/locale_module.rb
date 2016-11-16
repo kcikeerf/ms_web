@@ -32,9 +32,8 @@ module LocaleModule
     }
 
     SexList = {
-      :wu => I18n.t("common.none"),
-    	:nan => I18n.t("dict.nan"),
-    	:n̈u => I18n.t("dict.n̈u")
+      :nan => I18n.t("dict.nan"),
+      :n̈u => I18n.t("dict.n̈u")
     }
 
     def hanzi2pinyin hanzi_str
@@ -47,8 +46,12 @@ module LocaleModule
       PinYin.abbr(shanzi_str) 
     end
 
-    def i18n label_str
-      I18n.t(label_str, default:I18n.t("dict.unknown"))
+    def i18n label_str,options={}
+      if !label_str.blank?
+        arr = label_str.scan(/(.*)(\.)$/).first
+        label_str = "common.none" if !arr.blank? && (arr[-1] == ".")
+      end
+      I18n.t(label_str, options.merge!({:default => I18n.t("common.minus")}))
     end
 
     def mysort(x,y)

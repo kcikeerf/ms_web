@@ -222,17 +222,22 @@
 <!-- 	<div class="tab-pane report-data" id="report-read-three">
 	</div> -->
 	<div class="tab-pane report-data" id="report-read-checkpoint">
+		<%= render partial: "statistics_explanation" %>
 	</div>
 <!-- 	<div class="tab-pane report-data" id="report-read-data">
 	</div> -->
 
 	<div class="tab-pane report-data" id="exam-knowledge">
+		<%= render partial: "klass_comment", locals: { dimesion: "knowledge", title: LABEL('dict.knowledge') } %>
 	</div>
 	<div class="tab-pane report-data" id="exam-skill">
+		<%= render partial: "klass_comment", locals: { dimesion: "skill", title: LABEL('dict.skill') }  %>
 	</div>
 	<div class="tab-pane report-data" id="exam-ability">
+		<%= render partial: "klass_comment", locals: { dimesion: "ability", title: LABEL('dict.ability')}  %>
 	</div>
 	<div class="tab-pane report-data" id="exam-total">
+		<%= render partial: "klass_comment", locals: { dimesion: "total", title: LABEL('reports.total') }  %>
 	</div>
 </div>
 

@@ -627,6 +627,48 @@ namespace :swtk do
     puts "done"
   end
 
+  desc "export test results"
+  task :export_test_results,[:pap_uid,:tenant_uid,:out]=> :environment do |t, args|
+
+    if args[:pap_uid].nil? || args[:out].nil?
+      puts "Command format not correct."
+      exit
+    end
+    args[:pap_uid].strip!
+
+    target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_uid]).first
+    target_scores = Mongodb::BankQizpointScore.where(pap_uid: args[:pap_uid])
+    target_scores = Mongodb::BankTestScore.where(:test_id => target_pap.bank_tests[0].id.to_s, :tenant_uid => args[:tenant_uid]) if target_scores.blank?
+
+    ckp_model = target_pap.bank_quiz_qizs[0].bank_qizpoint_qzps[0].bank_checkpoint_ckps[0].class 
+
+    begin
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+
+      wb.add_worksheet name: "Scores" do |sheet|
+        sheet.add_row(["PaperID", target_pap._id.to_s, "Paper Name", target_pap.heading])
+        sheet.add_row(["ClassRoom","PupilName","Quit Point", "Full Score", "Real Score", "Dimesion", "Level1 Ckp", "Level2 Ckp", "End Level Ckp", "Weights"])
+        target_scores.each{|score|
+          target_pupil=Pupil.where(uid: score.pup_uid).first
+          location = target_pupil.location
+          ckp_uids_arr = score.ckp_uids.split("/")
+          ckp_weights_arr = score.ckp_weights.split("/")
+          ckp_arr = ckp_uids_arr.map{|uid| ckp_model.where(uid: uid).first }
+          ckp = ckp_model
+          sheet.add_row([Common::Locale::i18n("dict.#{location.nil?? "" : location.classroom}"), target_pupil.name, score.order, score.full_score,score.real_score, I18n.t("dict.#{score.dimesion}"), ckp_arr[1].checkpoint, ckp_arr[2].checkpoint, ckp_arr[-1].checkpoint, ckp_weights_arr[-1]])
+        }
+      end
+      out_path = args[:out]
+      out_excel.serialize(out_path)
+    rescue Exception => ex
+      puts ex.message
+      puts ex.backtrace
+      puts "failed"
+    end
+    puts "done"
+  end
+
   desc "generate random paper analysis"
   task :generate_paper_analysis,[:pap_uid]=> :environment do |t, args|
     if args[:pap_uid].nil?
@@ -778,5 +820,58 @@ namespace :swtk do
       xml_str += line.chomp!
     end
     xml = Ox.parse(xml_str)
+  end
+
+  desc "create mongo indexes"
+  task create_mongo_indexes: :environment do
+    #version1.0
+    klass_version_1_0_arr = [
+      "ReportEachLevelPupilNumberResult",
+      "ReportFourSectionPupilNumberResult",
+      "ReportStandDevDiffResult",
+      "ReportTotalAvgResult",
+      "ReportQuizCommentsResult",
+      "MobileReportTotalAvgResult",
+      "MobileReportBasedOnTotalAvgResult",
+    ]
+    
+    #version1.1
+    group_types = Common::Report::Group::ListArr
+    base_result_klass_arr = []
+    base_result_klass_arr += group_types.map{|t|
+      collect_type = t.capitalize 
+      [
+        "Report#{collect_type}BaseResult",
+        "Report#{collect_type}Lv1CkpResult",
+        "Report#{collect_type}Lv2CkpResult",
+        "Report#{collect_type}LvEndCkpResult",
+        "Report#{collect_type}OrderResult",
+        "Report#{collect_type}OrderLv1CkpResult",
+        "Report#{collect_type}OrderLv2CkpResult",
+        "Report#{collect_type}OrderLvEndCkpResult"
+      ]
+    }
+
+    pupil_stat_klass_arr = []
+    pupil_stat_klass_arr += group_types[1..-1].map{|t|
+      collect_type = t.capitalize 
+      [
+        "Report#{collect_type}BeforeBasePupilStatResult",
+        "Report#{collect_type}BeforeLv1CkpPupilStatResult",
+        "Report#{collect_type}BeforeLv2CkpPupilStatResult",
+        "Report#{collect_type}BeforeLvEndCkpPupilStatResult",
+        "Report#{collect_type}BasePupilStatResult",
+        "Report#{collect_type}Lv1CkpPupilStatResult",
+        "Report#{collect_type}Lv2CkpPupilStatResult",
+        "Report#{collect_type}LvEndCkpPupilStatResult"
+      ]
+    }
+
+    #
+    klass_arr = klass_version_1_0_arr + base_result_klass_arr.flatten + pupil_stat_klass_arr.flatten
+    klass_arr.each{|klass|
+      # self.const_set(klass, Class.new)
+      "Mongodb::#{klass}".constantize.create_indexes
+    }
   end
 end

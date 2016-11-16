@@ -10,7 +10,7 @@ class Managers::RolesController < ApplicationController
     # before_action :authenticate_manager
 
 	def index
-		@data = {name: '角色', path: '/managers/roles'}
+		#@data = {name: '角色', path: '/managers/roles'}
 		@roles = Role.page(params[:page]).per(params[:rows])
 		respond_with({rows: @roles, total: @roles.total_count}) 
 	end

@@ -1,9 +1,32 @@
+# -*- coding: utf-8 -*-
+# 
+require 'fileutils'
+
 module ReportModule
   module Report
+    module_function
 
     module Thread
-      NumPerTh = 30
-      ThNum = 30
+      NumPerTh = 50
+      ThNum = 5
+      ThNumMax = 20
+    end
+
+    module WareHouse
+      module_function
+
+      ReportLocation = Rails.root.to_s + "/public/"
+      # 报告保存格式
+      # /reports/测试id／类型／租户uid／类型id
+      #
+      # /reports/测试id／tenants／租户uid／班级uid／学生uid
+      # /reports/测试id／tenants/Tenant uid／Location uid/Pupil uid
+
+      def store_report_json path, file_name, str
+        FileUtils.mkdir_p path
+        f = File.new(path+"/#{file_name}.json", "w")
+        f.write(str)
+      end
     end
 
     module Url
@@ -11,13 +34,25 @@ module ReportModule
     end
 
     module CheckPoints
+      DefaultLevel = 2
+      DefaultLevelFrom = 1
+      DefaultLevelTo = 2
+      DefaultLevelEnd = 3
       Levels = 2
     end
 
     module ScoreLevel
+      LevelNone = -1
       Level0 = 0
       Level60 = 0.6
       Level85 = 0.85
+
+      module Label
+        LevelNone = "none"
+        Level0 = "failed_level"
+        Level60 = "good_level"
+        Level85 = "excellent_level"
+      end
     end
 
     module FourSection
@@ -34,6 +69,21 @@ module ReportModule
       PersonalSkillLine = "personal_skill_line"
       PersonalAbilityRadar = "personal_ability_radar"
       PersonalAbilityLine = "personal_ability_line" 
+    end
+
+    module Group
+      ListArr = ["pupil", "klass", "grade", "project"]
+      Pupil = "pupil"
+      Klass = "klass"
+      Grade = "grade"
+      Project = "project"
+    end
+
+    module Type
+      Pupil = '000'
+      Klass = '001'
+      Grade = '002'
+      Project = '003'
     end
 
     module Format

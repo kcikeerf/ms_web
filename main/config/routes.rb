@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     resources :teachers, concerns: :destroy_all
     resources :pupils, concerns: :destroy_all
     resources :tenant_administrators, concerns: :destroy_all
+    resources :project_administrators, concerns: :destroy_all
   end
 
   mount RuCaptcha::Engine => "/rucaptcha"
@@ -161,6 +162,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :project_administrators do
+    member do
+      get 'my_home'
+      get 'my_paper'
+    end
+  end
+
   resource :papers do
     member do
       post 'paper_answer_upload'
@@ -179,6 +187,7 @@ Rails.application.routes.draw do
       get 'download_imported_score'
       get 'download_user_password_reporturl'
       match 'import_filled_score', via: [:get, :post, :patch]
+      match 'import_filled_result', via: [:get, :post, :patch]
       get 'download'
       get 'download_page'
     end 
@@ -187,6 +196,7 @@ Rails.application.routes.draw do
   resource :reports do
     member do
       post 'generate_all_reports'
+      post 'generate_reports'
       get 'class_report'
       get 'pupil_report'
       get 'get_grade_report'
@@ -195,6 +205,8 @@ Rails.application.routes.draw do
       # get 'square'
       get 'check/:codes', to: "reports#first_login_check_report"
       get 'new_square'
+      get 'square_v1_1'
+      get 'project'
       get 'grade'
       get 'klass'
       get 'pupil'
@@ -289,7 +301,6 @@ Rails.application.routes.draw do
     post 'users/passwords/user_captcha_validate'
   end
 
-
   ActiveAdmin.routes(self)
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -380,4 +391,6 @@ Rails.application.routes.draw do
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

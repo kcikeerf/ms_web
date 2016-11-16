@@ -9,19 +9,7 @@ class Managers::AnalyzersController < ApplicationController
   before_action :get_user, only: [:edit, :update]
 
   def index
-    @data = {name: I18n.t("dict.analyzer"), path: '/managers/analyzers'}
     @analyzers = Analyzer.get_list params
-
-    # 学科列表
-    @subject_list = Common::Subject::List.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}
-
-    # tenant用地区信息
-    country_rid = Common::Area::CountryRids["zhong_guo"]
-    country = Area.where("rid = '#{country_rid}'").first
-    @province = country.children_h.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @city = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-    @district = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-
     respond_with({rows: @analyzers, total: @analyzers.total_count}) 
   end
 
@@ -34,9 +22,13 @@ class Managers::AnalyzersController < ApplicationController
 
     begin
       new_user.save_user(Common::Role::Analyzer, user_params)
-#      result_flag = new_user.id.nil?? false : (new_user.analyzer.nil?? false : true)
-      status = 200
-      data = {:status => 200 }
+      if new_user.errors && new_user.errors.messages.blank?
+        status = 200
+        data = {:status => 200, :message => "200" }
+      else
+        status = 500
+        data = {:status => 500, :message => format_error(new_user) }
+      end
     rescue Exception => ex
       status = 500
       data = {:status => 500, :message => ex.message}
@@ -46,19 +38,21 @@ class Managers::AnalyzersController < ApplicationController
   end
 
   def update
-  	#render json: response_json_by_obj(@user.update_user(Common::Role::Analyzer, user_params), @user)
-
     status = 403
     data = {:status => 403 }
 
     begin
       @user.update_user(Common::Role::Analyzer, user_params)
-#      result_flag = new_user.id.nil?? false : (new_user.analyzer.nil?? false : true)
-      status = 200
-      data = {:status => 200, :message => "200" }
+      if @user.errors && @user.errors.messages.blank?
+        status = 200
+        data = {:status => 200, :message => "200" }
+      else
+        status = 500
+        data = {:status => 500, :message => format_error(@user) }
+      end
     rescue Exception => ex
       status = 500
-      data = {:status => 500, :message => ex.backtrace}
+      data = {:status => 500, :message => ex.message}
     end
 
     render common_json_response(status, data)
@@ -97,11 +91,12 @@ class Managers::AnalyzersController < ApplicationController
     params.permit(
       :user_name,
       :password,
+      :password_confirmation,
       :name,
       # :province_rid,
       # :city_rid,
       # :district_rid, 
-      :tenant_uid, 
+      :tenant_uids, 
       :subject, 
       :qq, 
       :phone,

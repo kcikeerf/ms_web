@@ -1,0 +1,94 @@
+<div style="margin:5px 0px 5px 15px;">
+  <label for="user_name"><%=LABEL("activerecord.attributes.user.name")%></label>
+  <input class="easyui-validatebox" id="user_name" name="user_name" style="width:200px;" data-options="required:true">
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label for="manager_user_form_password"><%=LABEL("activerecord.attributes.user.password")%></label>
+  <input class="easyui-validatebox" id="manager_user_form_password" name="password" type="password" style="width:200px;" data-options="required:true">
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label for="manager_user_form_password_confirmation"><%=LABEL("activerecord.attributes.user.password_confirmation")%></label>
+  <input class="easyui-validatebox" id="manager_user_form_password_confirmation" name="password_confirmation" type="password" style="width:200px;" data-options="required:true">
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label for="manager_user_form_name"><%=LABEL("activerecord.attributes.user.real_name")%></label>
+  <input class="easyui-validatebox" id="manager_user_form_name" name="name" style="width:200px;" data-options="required:true">
+</div>
+
+<!--分析员，老师-->
+<% if ["analyzers","teachers"].include?(controller_name) %>
+    <div style="margin:5px 0px 5px 15px;">
+      <label><%=LABEL("activerecord.attributes.teacher.subject")%></label>
+      <select class="easyui-combobox" id="manager_user_form_subject" name="subject" style="width:200px;">
+        <% subject_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
+<% end %>
+
+<!--老师-->
+<% if controller_name == "teachers" %>
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="manager_user_form_head_teacher"><%=LABEL("dict.head_teacher")%></label>
+      <input class="easyui-validatebox" id="manager_user_form_head_teacher" name="head_teacher" style="width:200px;" data-options="required:true">
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="subject_classrooms" >学科,班级列表:</label>
+      <textarea id="subject_classrooms" name="subject_classrooms" rows=5 cols=30 disabled=true></textarea >
+    </div>
+<% end %>
+
+<!--学生-->
+<% if controller_name == "pupils"%>
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="manager_user_form_sex"><%=LABEL("dict.sex")%></label>
+      <select class="easyui-combobox" id="manager_user_form_sex" name="sex" style="width:200px;">
+        <% sex_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="manager_user_form_stu_number"><%=LABEL("activerecord.attributes.pupil.stu_number")%></label>
+      <input class="easyui-validatebox" id="manager_user_form_stu_number" name="stu_number" style="width:200px;" data-options="required:true">
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="manager_user_form_grade"><%=LABEL("activerecord.attributes.pupil.grade")%></label>
+      <select class="easyui-combobox" id="manager_user_form_grade" name="grade" style="width:200px;">
+        <% grade_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="manager_user_form_classroom"><%=LABEL("activerecord.attributes.pupil.classroom")%></label>
+      <select class="easyui-combobox" id="manager_user_form_classroom" name="classroom" style="width:200px;">
+        <% classroom_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
+<% end %>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label for="manager_user_form_qq"><%=LABEL("activerecord.attributes.user.qq")%></label>
+  <input class="easyui-validatebox" id="manager_user_form_qq" name="qq" style="width:200px;" data-options="required:false">
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label for="manager_user_form_phone"><%=LABEL("activerecord.attributes.user.phone")%></label>
+  <input class="easyui-validatebox" id="manager_user_form_phone" name="phone" style="width:200px;" data-options="required:false">
+</div>
+
+<div style="margin:5px 0px 5px 15px;">
+  <label for="manager_user_form_email"><%=LABEL("activerecord.attributes.user.email")%></label>
+  <input class="easyui-validatebox" id="manager_user_form_email" name="email" style="width:200px;" data-options="required:false">
+</div>

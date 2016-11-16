@@ -3,16 +3,30 @@
 	<%= javascript_include_tag 'managers/subject_checkpoints', 'jquery.remotipart', 'data-turbolinks-track' => true %>
 <% end %>
 <div class="shaixuan">
+    <%=LABEL('dict.subject')%>
 	<%= select_tag :subject, options_for_select(@subject_list), include_blank: true %>
+	<%=LABEL('dict.xue_duan')%>:
 	<%= select_tag :xue_duan, options_for_select(@xue_duan_list), include_blank: true %>
 
 	<%= render 'import_form', path: import_ckp_file_managers_subject_checkpoints_path %>
 
 </div>
-<div id="wrap">
+<!--div id="wrap">
 	<span id="knowledge_tree" class="ztree" style="display: block ; width: 30%; float: left;height: 650px; margin: 5px;"></span>
 	<span id="skill_tree" class="ztree" style="display: block; width: 30%; float: left; height: 650px; margin: 5px;"></span>
 	<span id="ability_tree" class="ztree" style="display: block; width: 30%; float: left;height: 650px;margin: 5px;"></span>
+</div-->
+
+<div id="wrap" class="easyui-tabs" style="width:99%;height:550px;margin: 5px;">
+	<div title="<%=LABEL('dict.knowledge')%>" style="padding:10px">
+		<span id="knowledge_tree" class="ztree" style="margin: 5px;"></span>
+	</div>
+	<div title="<%=LABEL('dict.skill')%>" style="padding:10px">
+		<span id="skill_tree" class="ztree" style="margin: 5px;"></span>
+	</div>
+	<div title="<%=LABEL('dict.ability')%>" style="padding:10px">
+		<span id="ability_tree" class="ztree" style="margin: 5px;"></span>
+	</div>
 </div>
 
 <div id="dlg" class="easyui-dialog" title="录入表单"  style="width:600px;height:550px;padding:10px 10px" 

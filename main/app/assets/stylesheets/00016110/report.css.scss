@@ -1,0 +1,12 @@
+/*
+*= require default/application
+*/
+// Custom variables
+
+@import "default/sass/custom/_variables";
+
+@import "reports/reset";
+@import "00016110/report/report_square";
+@import "reports/report";
+//@import "common/bootstrap-submenu.min";
+@import "00016110/report/override_bootstratp_dropdown"

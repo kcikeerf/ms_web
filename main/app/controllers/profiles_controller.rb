@@ -104,8 +104,11 @@ class ProfilesController < ApplicationController
 
   private
 
+  #各角色参数限制
   def resource_params
     user = [:name, :phone, :email, :qq]
+    return params.require(:project_administrator).permit(:name, user: user) if current_user.is_project_administrator?
+    return params.require(:tenant_administrator).permit(:name, user: user) if current_user.is_tenant_administrator?
     return params.require(:analyzer).permit(:name, :subject, user: user) if current_user.is_analyzer?
     return params.require(:teacher).permit(:name, :subject, :school, user: user) if current_user.is_teacher?
     return params.require(:pupil).permit(:name, :subject, :grade, :classroom, :school, user: user) if current_user.is_pupil?
@@ -131,11 +134,11 @@ class ProfilesController < ApplicationController
     if request.post?
       email = params[:user][:email]
       email_auth_number = params[:email_auth_number]
-      if $redis.get(email) != email_auth_number
+      if $cache_redis.get(email) != email_auth_number
         current_user.errors.add(:base, I18n.t('messages.invalid_email'))
         return render :action => "#{action_name}"
       end
-      $redis.del(email)
+      $cache_redis.del(email)
     end
   end
 
@@ -165,13 +168,13 @@ class ProfilesController < ApplicationController
   		email = @user_params[:email]
   		email_auth_number = params[:email_auth_number]
   		if email.present? && email_auth_number.present?
-  			if $redis.get(email) != email_auth_number
+  			if $cache_redis.get(email) != email_auth_number
   				current_user.errors.add(:base, I18n.t('messages.invalid_email'))
          @resource = current_user.role_obj
          return render action: :init
        end
      end
-     $redis.del(email)
+     $cache_redis.del(email)
      @user_params.merge!({email_validate: true})
    end
  end

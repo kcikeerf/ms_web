@@ -27,18 +27,20 @@ class BankCheckpointCkp < ActiveRecord::Base
   scope :not_equal_rid, ->(rid) { where.not(rid: rid) }
   scope :by_node_uid, ->(uid) { where(node_uid: uid) }
   scope :is_entity, -> { where(is_entity: true) }
+  scope :by_dimesion, ->(str) { where(dimesion: str) }
 
   DEFAULT_LEVEL = [[1], [2], [3,100]]#{level1: [1], level2: [2], level3: [3,100]}
 
+  ########类方法定义：begin#######
   class << self
     # will change in the future
     # 
     # node_uid: node structure uid
     #
     def get_ckps params={}
-      result = {"knowledge" => { "label" => I18n.t("dict.knowledge"), "children"=>{}}, 
-                "skill"=>{"label"=> I18n.t("dict.skill"), "children" => {}}, 
-                "ability" => {"label" => I18n.t("dict.ability"), "children"=>{}}}
+      result = {"knowledge" => { "label" => Common::Locale::i18n("dict.knowledge"), "children"=>{}}, 
+                "skill"=>{"label"=> Common::Locale::i18n("dict.skill"), "children" => {}}, 
+                "ability" => {"label" => Common::Locale::i18n("dict.ability"), "children"=>{}}}
       cond_str = "LENGTH(rid) = ?"
       cond_str += " and node_uid = #{params["node_uid"]}" unless params["node_uid"].blank?
       arr = [self.where(cond_str, 3), self.where(cond_str, 6), self.where(cond_str, 9)]
@@ -127,30 +129,12 @@ class BankCheckpointCkp < ActiveRecord::Base
         nodes.select {|n| n.rid.length == node_level.first * Common::SwtkConstants::CkpStep}
       end
     end
-
-    # 
-    # get child nodes of pid
-    #
-    # str_pid: parent ridvi
-    # node_uid: node structure uid
-    # dimesion: 
-    #
-    # def get_child_ckps params
-    #   result = {"pid" => params["str_pid"], "nodes"=>[]}
-    #   return result if (params["node_uid"].blank? || params["dimesion"].blank?)
-    #   pid = params["str_pid"]
-    #   target_objs = self.where("node_uid = '#{params["node_uid"]}' and dimesion = '#{params["dimesion"]}'")
-    #   ckps = BankRid.get_child target_objs, pid
-    #   p ckps
-    #   result["nodes"] = constructure_ckps ckps
-    #   return result
-    # end
-
     
-    #后台读取所有指标
+    # 管理后台读取所有指标
     def get_all_ckps(node_uid, str_pid='')
       Common::CheckpointCkp.ckp_types_loop {|dimesion| get_all_ckps_by_dimesion(node_uid, dimesion, str_pid) }
     end
+
     # get all nodes include pid
     #  
     # str_pid: parent rid
@@ -214,53 +198,47 @@ class BankCheckpointCkp < ActiveRecord::Base
     end
 
     def root_node(dimesion)
-      {rid: '', pid: '', nocheck: true, dimesion: dimesion, name: I18n.t('managers.root_node'), open: true}
+      {rid: '', pid: '', nocheck: true, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
     end
 
-    # def get_all_higher_ckps params
-    #   result = {"nodes" => []} 
-    #   return result if params["node_uid"].blank?
-
-    #   current_ckp = self.where("uid = ?", params["str_uid"]).first if params["str_uid"]
-    #   targets = self.where("node_uid = ? and dimesion = ?", params["node_uid"], current_ckp.dimesion )
+    # 判断使用何种指标
+    def judge_ckp_source params
+      result = nil
+      target_subject, target_category = self.get_subject_ckp_params params
       
-    #   ckps = BankRid.get_all_higher_nodes targets,current_ckp
-    #   result["nodes"] = constructure_ckps ckps
-    #   return result
-    # end
+      subject_ckp = BankSubjectCheckpointCkp.where({
+          :subject => target_subject,
+          :category => target_category
+      }).first
+      return BankSubjectCheckpointCkp unless subject_ckp.blank?
 
-    #
-    # str_uid: current check point uid 
-    #
-    # def self.delete_ckp params
-    #   return false if params["str_uid"].blank?
-    #   find(params[:str_uid]).destroy!
-    #   # current_ckp = self.where("uid = ?", params["str_uid"]).first
-    #   # current_ckp.destroy!
-    #   return true
-    # end
+      node_ckp = BankCheckpointCkp.where({:node_uid => params[:node_uid]}).first
+      return BankCheckpointCkp unless node_ckp.blank?
+      return result
+    end
 
-    # 
-    # str_pid: parent rid
-    # node_uid: node structure uid
-    #
-  #   def get_ckp_count params
-  #     result = 0
-  # #    return nil if params["node_uid"].blank?
-  #     cond_str = ""
-  #     cond_str = "node_uid = #{params["node_uid"]}" unless params["node_uid"].blank?
-  #     target_objs = self.where(cond_str)
-  #     if params["str_pid"].blank?
-  #       result = target_objs.count
-  #     else
-  #       arr=BankRid.get_all_child target_objs,params["str_pid"]       
-  #       result=arr.count
-  #     end
+    def get_subject_ckp_params params
+      target_subject = nil
+      target_category = nil
 
-  #     return result
-  #   end
+      if params[:subject] && params[:grade]
+        target_subject = params[:subject]
+        target_category =  BankNodestructure.get_subject_category(params[:grade])
+      elsif params[:pap_uid]
+        target_pap = Mongodb::BankPaperPap.find(params[:pap_uid])
+        target_subject = target_pap.subject
+        target_category =  BankNodestructure.get_subject_category(target_pap.grade)
+      elsif params[:node_uid]
+        node = BankNodestructure.where(:uid => params[:node_uid]).first
+        target_subject = node.subject if node
+        target_category = BankNodestructure.get_subject_category(node.grade) if node
+      end
 
+      return target_subject,target_category
+    end
   end
+  ########类方法定义：end#######
+
   #
   # str_uid: current check point uid 
   # str_pid: parent rid
@@ -342,40 +320,17 @@ class BankCheckpointCkp < ActiveRecord::Base
     }
   end
 
-  # 判断使用何种指标
-  def self.judge_ckp_source params
-    result = nil
-    target_subject, target_category = self.get_subject_ckp_params params
-    
-    subject_ckp = BankSubjectCheckpointCkp.where({
-        :subject => target_subject,
-        :category => target_category
-    }).first
-    return BankSubjectCheckpointCkp unless subject_ckp.blank?
-
-    node_ckp = BankCheckpointCkp.where({:node_uid => params[:node_uid]}).first
-    return BankCheckpointCkp unless node_ckp.blank?
-    return result
+  # 获取所属指标体系全部指标包括自己
+  #
+  def families
+    node_uid.nil?? [] : self.class.where(node_uid: node_uid)
   end
-
-  def self.get_subject_ckp_params params
-    target_subject = nil
-    target_category = nil
-
-    if params[:subject] && params[:grade]
-      target_subject = params[:subject]
-      target_category =  BankNodestructure.get_subject_category(params[:grade])
-    elsif params[:pap_uid]
-      target_pap = Mongodb::BankPaperPap.find(params[:pap_uid])
-      target_subject = target_pap.subject
-      target_category =  BankNodestructure.get_subject_category(target_pap.grade)
-    elsif params[:node_uid]
-      node = BankNodestructure.where(:uid => params[:node_uid]).first
-      target_subject = node.subject if node
-      target_category = BankNodestructure.get_subject_category(node.grade) if node
-    end
-
-    return target_subject,target_category
+  
+  # 指标所属学科
+  # *教材指标属性不包含学科，通过教材获取学科信息
+  #
+  def subject
+    bank_nodestructure.nil?? nil : bank_nodestructure.subject
   end
 
   private

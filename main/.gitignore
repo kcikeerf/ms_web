@@ -5,6 +5,9 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
+.gitignore
+aliyun_sdk.log
+Gemfile.lock
 /.bundle
 
 # Ignore the default SQLite database.
@@ -13,13 +16,15 @@
 /db/seed.rb
 
 # Ignore all logfiles and tempfiles.
-/log/*.log
-/tmp
-/log/*
-/tmp/*
-/config/database.yml
-/public/uploads/*
-/uploads/*
+./log/*.log
+./tmp
+./log/*
+./tmp/*
+./config/database.yml
+./config/mongoid.yml
+./public/
+./public/uploads/*
+./uploads/*
 .DS_Store
 *.sublime-workspace
 *.sublime-project
@@ -27,3 +32,4 @@
 # Ignore files related to Passenger
 passenger.3000.pid.lock
 
+../tools/WordCleaner7ComponentMono/logs/
