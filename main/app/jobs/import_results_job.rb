@@ -10,7 +10,7 @@ require 'thwait'
 class ImportResultsJob < ActiveJob::Base
   queue_as :default
 
-  def perform(*args)
+  def self.perform_later(*args)
     begin
       logger.info ">>>>>>>Import Results Job: Begin<<<<<<<"
       params = args[0]
