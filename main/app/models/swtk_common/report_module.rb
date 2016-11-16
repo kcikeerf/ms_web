@@ -24,8 +24,7 @@ module ReportModule
 
       def store_report_json path, file_name, str
         FileUtils.mkdir_p path
-        f = File.new(path+"/#{file_name}.json", "w")
-        f.write(str)
+        File.write(path+"/#{file_name}.json", str)
       end
     end
 
