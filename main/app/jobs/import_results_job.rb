@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
 
 require 'thwait'
-# require 'location'
-# require 'bank_checkpoint_ckp'
-# require 'bank_subject_checkpoint_ckp'
-# require 'mongodb/bank_qizpoint_qzp'
-# require 'mongodb/bank_test_score'
+require 'location'
+require 'bank_checkpoint_ckp'
+require 'bank_subject_checkpoint_ckp'
+require 'mongodb/bank_qizpoint_qzp'
+require 'mongodb/bank_test_score'
 
 class ImportResultsJob < ActiveJob::Base
   queue_as :default
@@ -178,7 +178,7 @@ class ImportResultsJob < ActiveJob::Base
       th_number.times.each{|th|
         start_num = th*num_per_th
         end_num = (th+1)*num_per_th - 1 + (((th + 1) == th_number)? mod_num : 0)
-        th_arr << Thread.new {
+        th_arr << Thread.new do
           import_score_core({
             :th_index => th,
             :redis_key => redis_key,
@@ -203,7 +203,7 @@ class ImportResultsJob < ActiveJob::Base
             :pupil_sheet => pupil_sheet
 
           })
-        }
+        end
       }
       ThreadsWait.all_waits(*th_arr)
 
@@ -214,7 +214,7 @@ class ImportResultsJob < ActiveJob::Base
       score_file = Common::Score.create_usr_pwd file_h
 
       job_tracker.update(process: 1.0)
-      temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
+      #temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
       #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
@@ -234,7 +234,7 @@ class ImportResultsJob < ActiveJob::Base
     end
   end
 
-  def import_score_core args={}
+  def self.import_score_core args={}
       logger.info ">>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       begin
