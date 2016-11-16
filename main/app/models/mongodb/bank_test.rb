@@ -15,6 +15,7 @@ class Mongodb::BankTest
   field :name, type: String
   field :quiz_date, type: DateTime
   field :user_id, type: String
+  field :report_version, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

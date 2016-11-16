@@ -235,16 +235,30 @@ $(function(){
                     $(".lookPaperInfo, .createReport").show();
                     $(".paperDetails > .progress").show();
                     $(".createReport a").removeClass("active");
+                    $(".createReport a").html("报告生成中...");
                     //project administrator tenant action
-                    $(".tenant_result_list").hide();
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+                    }
                     //
-                    paper.setInterVal();
+                    //paper.setInterVal();
+ 
+                     $.each($(".progress.createReport > .progress-bar"),function(i,item){
+                        var target_task_uid = data.information.tasks.create_report;
+                        var target_job_uid = item.getAttribute("job-uid");
+                        window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                        $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].execute());
+                        $.Topic("paper_report_generating").publish();
+                    });
+
                     break;
                 case "report_completed":
                     $(".download_link").css("display","block");
                     $(".lookPaperInfo, .lookReport").show();
                     //project administrator tenant action
-                    $(".tenant_result_list").hide();
+                    if($(".tenant_result_list")){
+                        $(".tenant_result_list .score_importing").show();
+                    }
                     //
                     var pap_uid = paper.getQueryString(location.href,"pap_uid");
                         pap_uid && $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?pap_uid="+pap_uid);
@@ -307,7 +321,7 @@ $(function(){
                     school : paper.paperData.information.school
                 };
                 $.ajax({
-                    url: paper.createReport,
+                    url: paper.generateReports,
                     type: "post",
                     data: dataObj,
                     dataType: "json",

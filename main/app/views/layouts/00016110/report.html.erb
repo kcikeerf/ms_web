@@ -21,9 +21,10 @@
   //src="http://<%#= Common::SwtkConstants::CDNDomain %>/assets/<%#= Common::SwtkConstants::CDNVersion1_0 %>/report/init_new_report.js">
   </script>
   <%= javascript_include_tag '00016110/report/init_report', 'data-turbolinks-track' => true %>
+  <% init_h = report_init(@test_id) %>
   <script type="text/javascript">
     $(function () {
-      setTimeout(function(){reportPage.init("project", "/reports_warehouse/tests/<%=@test_id%>/project/<%=@test_id%>.json");}, 1000);;
+      setTimeout(function(){reportPage.init("<%= init_h[:root_group]%>", "<%= init_h[:root_url]%>");}, 1000);;
     })
   </script>
 

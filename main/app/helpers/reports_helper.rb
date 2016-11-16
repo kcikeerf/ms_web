@@ -72,4 +72,14 @@ module ReportsHelper
   # def abbrev_menu_label str
   #   ( str.size >7 )? str[0..7] + "..." : str
   # end
+  
+  # [ return ]: root_group, root_url, [ckp_level] 
+  def report_init test_id
+    if current_user.is_project_administrator?
+      return {:root_group => "project", :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json"}
+    else
+      tenant_uid = current_tenant.nil?? nil : current_tenant.uid
+      return {:root_group => "grade", :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}.json"}
+    end
+  end
 end

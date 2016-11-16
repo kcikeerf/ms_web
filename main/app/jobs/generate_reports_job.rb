@@ -10,6 +10,10 @@ class GenerateReportsJob < ActiveJob::Base
       params = args[0]
 
       if !params[:test_id].blank? && !params[:task_uid].blank? && !params[:top_group].blank?
+        target_test = Mongodb::BankTest.where(id: params[:test_id]).first
+        target_pap= target_test.bank_paper_pap
+        target_pap.update(paper_status: Common::Paper::Status::ReportGenerating)
+
         # JOB的分处理的数量
         job_tracker = JobList.new({
           :name => "generate reports",
@@ -92,38 +96,40 @@ class GenerateReportsJob < ActiveJob::Base
         job_tracker.update(process: 0.5)
 
         #pid = fork do 
-          # 组装1
+        # 组装1
+        th_arr = []
+        constructor_h.each{|k,v|
+          th_arr << Thread.new do 
+            v.iti_kumigoto_no_kihon_koutiku
+          end
+        }
+        ThreadsWait.all_waits(*th_arr)
+        job_tracker.update(process: 0.7)
+
+        # 组装2
+        th_arr = []
+        constructor_h.each{|k,v|
+          th_arr << Thread.new do 
+            v.ni_kumigoto_no_comment_koutiku
+          end
+        }
+        ThreadsWait.all_waits(*th_arr)
+        job_tracker.update(process: 0.8)
+
+        # 结束处理
+        Common::Report::Group::ListArr[0..end_index].reverse.each{|item|
           th_arr = []
-          constructor_h.each{|k,v|
-            th_arr << Thread.new do 
-              v.iti_kumigoto_no_kihon_koutiku
-            end
-          }
+          th_arr << Thread.new do 
+            constructor_h[item].owari
+          end
           ThreadsWait.all_waits(*th_arr)
-          job_tracker.update(process: 0.7)
+        }
+        job_tracker.update(process: 0.9)
 
-          # 组装2
-          th_arr = []
-          constructor_h.each{|k,v|
-            th_arr << Thread.new do 
-              v.ni_kumigoto_no_comment_koutiku
-            end
-          }
-          ThreadsWait.all_waits(*th_arr)
-          job_tracker.update(process: 0.8)
+        job_tracker.update(status: Common::Job::Status::Completed)
+        job_tracker.update(process: 1.0)
 
-          # 结束处理
-          Common::Report::Group::ListArr[0..end_index].reverse.each{|item|
-            th_arr = []
-            th_arr << Thread.new do 
-              constructor_h[item].owari
-            end
-            ThreadsWait.all_waits(*th_arr)
-          }
-          job_tracker.update(process: 0.9)
-
-          job_tracker.update(status: Common::Job::Status::Completed)
-          job_tracker.update(process: 1.0)
+        target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
         #  Signal.trap("TERM") { puts "finished!"; exit }
         #end
         #logger.info "construct process id: #{pid}"
