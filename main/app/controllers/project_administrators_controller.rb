@@ -38,7 +38,7 @@ class ProjectAdministratorsController < ApplicationController
     #查询关联测试列表
     tests = Mongodb::BankTest.by_user(current_user.id)
     #查看相关试卷id
-    pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s}
+    pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s if (t && t.bank_paper_pap) }.compact
     #初步过滤试卷范围
     @papers_filter = { 
       id: {'$in'=>pap_ids} 
