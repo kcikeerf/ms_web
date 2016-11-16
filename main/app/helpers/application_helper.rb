@@ -10,4 +10,10 @@ module ApplicationHelper
 	def error_message(resource, column)
 		raw "<small class='help-block'>#{resource.errors[column.to_sym].first}</small>" unless resource.errors[column.to_sym].blank?
 	end
+
+  #local i18n abbrev
+  def LABEL str
+    Common::Locale::i18n(str)
+  end
+
 end

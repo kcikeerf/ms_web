@@ -11,7 +11,7 @@
 <% if current_user.is_pupil? %>
 	<div class="form-group">
 		<label class="control-label"><%= I18n.t("dict.sex") %></label>
-		<%= I18n.t("dict.#{(current_user.role_obj.nil? || current_user.role_obj.sex.nil?)? 'unknown': current_user.role_obj.sex}")  %>
+		<%= LABEL("dict.#{(current_user.role_obj.nil? || current_user.role_obj.sex.nil?)? 'unknown': current_user.role_obj.sex}")  %>
 	</div>
 	<div class="form-group">
 		<label class="control-label"><%= I18n.t("dict.grade") %></label>
