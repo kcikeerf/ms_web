@@ -223,7 +223,7 @@ $(function(){
                 case "score_imported":
                     $.Topic("tenant_score_importing").destroy();
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
-                    $(".lookPaperInfo, .createReport").show();
+                    $(".lookPaperInfo, .createReport:first").show();
                     //project administrator tenant action
                     if($(".tenant_result_list")){
                         $(".tenant_result_list .score_importing").show();
@@ -233,7 +233,7 @@ $(function(){
                 case "report_generating":
                     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
                     $(".lookPaperInfo, .createReport").show();
-                    $(".paperDetails > .progress").show();
+                    $(".paperDetails > .progress.createReport").show();
                     $(".createReport a").removeClass("active");
                     $(".createReport a").html("报告生成中...");
                     //project administrator tenant action
