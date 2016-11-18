@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::MobileUserQizpointScore
   include Mongoid::Document
   include Mongoid::Timestamps
