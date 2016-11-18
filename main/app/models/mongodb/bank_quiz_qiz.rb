@@ -118,7 +118,7 @@ class Mongodb::BankQuizQiz
     params["bank_checkpoints_ckps"].each{|bcc|
       ckp = Mongodb::BankCkpQzp.new
       ckp.save_ckp_qzp qiz_point._id.to_s, bcc["uid"], bcc["ckp_source"]
-      logger.debug "Mongodb::BankCkpQzp>>>>>>>#{ckp}"
+      logger.debug "Mongodb::BankCkpQzp>>>>>>>#{ckp.attributes}"
     }
 
 
