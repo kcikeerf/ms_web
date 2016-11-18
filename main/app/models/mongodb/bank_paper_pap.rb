@@ -397,12 +397,6 @@ class Mongodb::BankPaperPap
       :paper_status => status,
       :paper_json => params.to_json || ""
     })
-
-    #update qizpoint ckps json
-    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
-    qzps.each{|qzp|
-      qzp.format_ckps_json
-    }
   end
 
   def submit_pap_rollback
@@ -459,6 +453,12 @@ class Mongodb::BankPaperPap
       :paper_json => paper_h.to_json || "",
       :paper_status => status
     })
+    
+    #update qizpoint ckps json
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps.each{|qzp|
+      qzp.format_ckps_json
+    }
   end
 
   def submit_ckp_rollback
