@@ -208,13 +208,14 @@ class ImportResultsJob < ActiveJob::Base
       ThreadsWait.all_waits(*th_arr)
 
       # create user password file
-      file_path = Rails.root.to_s + "/tmp/#{target_paper._id.to_s}_password.xlsx"
+      file_path = Rails.root.to_s + "/tmp/#{target_paper._id.to_s}_#{params[:score_file_id]}_password.xlsx"
       out_excel.serialize(file_path)
-      file_h = {:score_file_id => target_paper.score_file_id, :file_path => file_path}
+      file_h = {:score_file_id => params[:score_file_id], :file_path => file_path}
       score_file = Common::Score.create_usr_pwd file_h
 
       job_tracker.update(process: 1.0)
       temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
+      File.delete(file_path)
       #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
