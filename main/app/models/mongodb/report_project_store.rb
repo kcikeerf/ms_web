@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::ReportProjectStore
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic

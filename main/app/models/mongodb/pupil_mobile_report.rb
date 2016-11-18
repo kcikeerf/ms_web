@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::PupilMobileReport
   include Mongoid::Document
   include Mongodb::MongodbPatch

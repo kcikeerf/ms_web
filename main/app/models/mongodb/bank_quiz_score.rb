@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::BankQuizScore
   include Mongoid::Document
   include Mongoid::Timestamps
