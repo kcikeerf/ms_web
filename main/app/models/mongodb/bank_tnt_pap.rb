@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::BankTntPap
   include Mongoid::Document
   include Mongodb::MongodbPatch

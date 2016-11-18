@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::BankPaperPapPointer
   include Mongoid::Document
 

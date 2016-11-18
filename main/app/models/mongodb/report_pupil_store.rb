@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::ReportPupilStore
   include Mongoid::Document
   include Mongoid::Attributes::Dynamic
