@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
 
 require 'thwait'
-require 'location'
-require 'bank_checkpoint_ckp'
-require 'bank_subject_checkpoint_ckp'
-require 'mongodb/bank_qizpoint_qzp'
-require 'mongodb/bank_test_score'
+# require 'location'
+# require 'bank_checkpoint_ckp'
+# require 'bank_subject_checkpoint_ckp'
+# require 'mongodb/bank_qizpoint_qzp'
+# require 'mongodb/bank_test_score'
 
 class ImportResultsJob < ActiveJob::Base
   queue_as :default
