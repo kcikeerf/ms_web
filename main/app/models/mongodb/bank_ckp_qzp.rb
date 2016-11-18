@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::BankCkpQzp
   include Mongoid::Document
   validates :ckp_uid, :qzp_uid, length: {maximum: 36}

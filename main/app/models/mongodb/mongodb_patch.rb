@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 module Mongodb::MongodbPatch
   private
   def set_create_time_stamp
