@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::BankQizpointQzp
   include Mongoid::Document
 #  include Tenacity

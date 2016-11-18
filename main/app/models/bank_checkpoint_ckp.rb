@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class BankCheckpointCkp < ActiveRecord::Base
 #  include Tenacity
 #  include MongoMysqlRelations
