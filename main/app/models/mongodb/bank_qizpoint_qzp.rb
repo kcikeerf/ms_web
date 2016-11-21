@@ -3,9 +3,9 @@ class Mongodb::BankQizpointQzp
 #  include Tenacity
 #  include MongoMysqlRelations
 
-  validates :quz_uid,:pap_uid, length: {maximum: 36}
-  validates :tbs_sid,:type, length: {maximum: 50}
-  validates :answer, :desc, length: {maximum: 500}
+  # validates :quz_uid,:pap_uid, length: {maximum: 36}
+  # validates :tbs_sid,:type, length: {maximum: 50}
+  # validates :answer, :desc, length: {maximum: 500}
 
   before_save :format_score
 
