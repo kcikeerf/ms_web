@@ -1,6 +1,7 @@
 var reportPage = {
 	rootGroup: null,
 	rootUrl: null,
+	paperInfoUrl: null,
 	ckp_level: null,
 	ProjectData : null,
 	CurrentProjectId : null,
@@ -32,22 +33,39 @@ var reportPage = {
       skill: 0.4,
       ability: 0.1
     },
-	FullScore: 100,
+	FullScore: 0,
 	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 
-	init: function(root_group, root_url, ckp_level){
+	init: function(root_group, root_url, paper_info_url, ckp_level){
 		reportPage.rootGroup = root_group;
 		reportPage.rootUrl = root_url;
+		reportPage.paperInfoUrl = paper_info_url;
 		reportPage.ckp_level = typeof ckp_level !== 'undefined' ? ckp_level : 1;
-
+		
 		//
 		reportPage.bindEvent();
 		//
 
-		reportPage.baseFn.getReportAjax( root_url, { report_group: root_group }, function(data){
-			reportPage.baseFn.update_current_node(data.root_group, data.root_url);
-		},{ root_group: root_group, root_url: root_url });
+		$.ajax({
+			url: reportPage.paperInfoUrl,
+			type: "GET",
+			data: "",
+			dataType: "json",
+			success: function(data){
+				//获取试卷信息
+				reportPage.FullScore = (data && data.score)? parseInt(data.score) : 100;
+
+				//获取初始报告信息
+				reportPage.baseFn.getReportAjax( root_url, { report_group: root_group }, function(data){
+					reportPage.baseFn.update_current_node(data.root_group, data.root_url);
+				},{ root_group: root_group, root_url: root_url });
+			},
+			error: function(data){
+
+			}
+		});
+
 	},
 	bindEvent: function(){
 		$(document).on('show.bs.collapse','.panel-collapse',function(){
