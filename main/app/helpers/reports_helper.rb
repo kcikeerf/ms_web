@@ -76,10 +76,18 @@ module ReportsHelper
   # [ return ]: root_group, root_url, [ckp_level] 
   def report_init test_id
     if current_user.is_project_administrator?
-      return {:root_group => "project", :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json"}
+      return {
+        :root_group => "project", 
+        :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json",
+        :paper_info_url => "/reports_warehouse/tests/#{test_id}/paper_info.json"
+      }
     else
       tenant_uid = current_tenant.nil?? nil : current_tenant.uid
-      return {:root_group => "grade", :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}.json"}
+      return {
+        :root_group => "grade", 
+        :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}.json",
+        :paper_info_url => "/reports_warehouse/tests/#{test_id}/paper_info.json"
+      }
     end
   end
 end
