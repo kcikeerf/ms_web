@@ -113,6 +113,9 @@ class GenerateReportsJob < ActiveJob::Base
         }
         job_tracker.update(process: 0.9)
 
+        report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/#{params[:test_id]}/*"
+        Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+
         job_tracker.update(status: Common::Job::Status::Completed)
         job_tracker.update(process: 1.0)
 
