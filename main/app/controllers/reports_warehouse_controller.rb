@@ -28,7 +28,7 @@ class ReportsWarehouseController < ApplicationController
       # grade: tenant uid
       # pupil: pup uid
       #
-      if !path_arr.include?(current_group) && (!(path_arr&["nav", "ckps_qzps_mapping", "qzps_ckps_mapping", "paper_info"]).size > 0)
+      if !path_arr.include?(current_group) && !((path_arr&["nav", "ckps_qzps_mapping", "qzps_ckps_mapping", "paper_info"]).size > 0)
         render status: 404, :json => { message: Common::Locale::i18n("swtk_errors.object_not_found", :message => request.fullpath.to_s ) }.to_json
       else
         expires_in 7.days, :public => true
