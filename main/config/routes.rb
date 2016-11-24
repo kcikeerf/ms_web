@@ -213,6 +213,8 @@ Rails.application.routes.draw do
     end
   end
 
+  match "/reports_warehouse/tests/*any_path", to: "reports_warehouse#get_report_file", via: [:get]
+
   resource :monitors do
     member do
       get 'get_task_status'
