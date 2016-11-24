@@ -177,7 +177,8 @@ class ImportResultsJob < ActiveJob::Base
       th_arr = []
       th_number.times.each{|th|
         start_num = th*num_per_th
-        end_num = (th+1)*num_per_th - 1 + (((th + 1) == th_number)? mod_num : 0)
+        end_num = (th+1)*num_per_th + (((th + 1) == th_number)? mod_num : 0) #为保证读取到最后一行，最后一组不减一
+        end_num -=1 if (th+1) != th_number
         th_arr << Thread.new do
           import_score_core({
             :th_index => th,
