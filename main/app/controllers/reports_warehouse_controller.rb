@@ -3,8 +3,12 @@ class ReportsWarehouseController < ApplicationController
 
   def get_report_file
     target_file_path = "." + request.fullpath.to_s
+    p !params[:any_path].blank?
+    p target_file_path
+    p File.exist?(target_file_path)
     if !params[:any_path].blank? && File.exist?(target_file_path)
       path_arr = params[:any_path].split("/")
+      p
       current_group = nil
       if current_user.is_pupil?
         current_group = Common::Report::Group::Pupil
@@ -24,7 +28,7 @@ class ReportsWarehouseController < ApplicationController
       # grade: tenant uid
       # pupil: pup uid
       #
-      unless path_arr.include?(current_group)
+      if !path_arr.include?(current_group) && !path_arr.include?("ckps_qzps_mapping") && !path_arr.include?("qzps_ckps_mapping") && !path_arr.include?("paper_info")
         render status: 404, :json => { message: Common::Locale::i18n("swtk_errors.object_not_found", :message => request.fullpath.to_s ) }.to_json
       else
         expires_in 7.days, :public => true
