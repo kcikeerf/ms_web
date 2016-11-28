@@ -144,7 +144,7 @@ class ReportsController < ApplicationController
     #@default_report_id = grade_report._id.to_s
     #@default_report_name = current_paper.heading + I18n.t("dict.ce_shi_zhen_duan_bao_gao")
     #@default_report_type = (current_paper.subject.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{current_paper.subject}"))
-    if current_user.is_analyzer?
+    if  current_user.is_tenant_administrator? || current_user.is_analyzer?
       @scope_menus = Location.get_report_menus(Common::Role::Analyzer, params[:pap_uid], loc_h)
     elsif current_user.is_teacher?
       # 暂时将老师和分析员可查看范围一致
