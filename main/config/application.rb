@@ -42,6 +42,7 @@ module Main
     end
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
+    config.autoload_paths += Dir[Rails.root.join('lib', 'plugins', '{**}')]
 
 #    I18n.load_path += Dir[Rails.root.join('lib', 'locale', '*.{rb, yml}')]
 #    I18n.default_locale = :zh
