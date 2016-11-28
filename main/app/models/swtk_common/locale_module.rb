@@ -36,6 +36,16 @@ module LocaleModule
       :n̈u => I18n.t("dict.n̈u")
     }
 
+    def i18n label_str,options={}
+      if !label_str.blank?
+        arr = label_str.scan(/(.*)(\.)$/).first
+        label_str = "common.none" if !arr.blank? && (arr[-1] == ".")
+      else
+        label_str = nil
+      end
+      I18n.t(label_str, options.merge!({:default => I18n.t("common.minus")}))
+    end
+
     def hanzi2pinyin hanzi_str
       PinYin.backend = PinYin::Backend::Simple.new
       PinYin.of_string(hanzi_str).join("_")
