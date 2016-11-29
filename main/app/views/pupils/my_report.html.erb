@@ -37,10 +37,10 @@
 <% if ["report_completed"].include?(paper.paper_status) %>
 								    <a href="/reports/new_square?pap_uid=<%= paper._id.to_s%>" title=""><%= paper.heading%></a>
 <% else %>
-<%= paper.heading%>（<%=(I18n.t("papers.status.#{paper.paper_status}"))%>）
+<%= paper.heading%>（<%=(LABEL("papers.status.#{paper.paper_status}"))%>）
 <% end %>
 									  </td>
-									  <td><%= I18n.t("dict.#{paper.subject}") %></td>
+									  <td><%= LABEL("dict.#{paper.subject}") %></td>
 									  <td><%= paper.dt_update %></td>
                                   </tr>
                               <% end %>

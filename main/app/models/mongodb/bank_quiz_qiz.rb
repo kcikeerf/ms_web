@@ -148,7 +148,7 @@ class Mongodb::BankQuizQiz
     result[:bank_qizpoint_qzps] = qzps.map{|qzp|
       { 
         "type" => qzp.type,
-        "type_label" => I18n.t("dict.#{qzp.type}"),
+        "type_label" => Common::Locale::i18n("dict.#{qzp.type}"),
         "answer" => qzp.answer,
         "desc" => qzp.desc,
         "score" => qzp.score,

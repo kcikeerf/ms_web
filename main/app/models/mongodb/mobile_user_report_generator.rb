@@ -527,7 +527,7 @@ class Mongodb::MobileUserReportGenerator
     elsif !wx_openid.blank?
       mobile_report = Mongodb::PupilMobileReport.where(:wx_openid=> wx_openid, :pap_uid => @pap_uid ).first
       username = wx_openid 
-      sex = I18n.t("dict.unknown")
+      sex = Common::Locale::i18n("dict.unknown")
     else
       mobile_report = nil
     end
@@ -536,7 +536,7 @@ class Mongodb::MobileUserReportGenerator
     if !wx_openid.blank?
       mobile_report = Mongodb::PupilMobileReport.where(:wx_openid=> wx_openid, :pap_uid => @pap_uid ).first
       username = wx_openid 
-      sex = I18n.t("dict.unknown")
+      sex = Common::Locale::i18n("dict.unknown")
     else
       mobile_report = nil
     end
@@ -553,7 +553,7 @@ class Mongodb::MobileUserReportGenerator
         mobile_report_h = Common::Report::Format::PupilMobile.deep_dup
 
         mobile_report_h["basic"]["name"] = username
-        mobile_report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
+        mobile_report_h["basic"]["subject"] = Common::Locale::i18n("dict.#{@paper.subject}")
         mobile_report_h["basic"]["sex"] = sex
         mobile_report_h["basic"]["levelword2"] = @paper.levelword2
         mobile_report_h["basic"]["quiz_date"] = @online_test.nil?? "" : @online_test.dt_add.strftime("%Y-%m-%d %H:%M")
