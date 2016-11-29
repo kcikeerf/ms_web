@@ -1,6 +1,16 @@
 module LocaleModule
   module Locale
     module_function
+    
+    def i18n label_str,options={}
+      if !label_str.blank?
+        arr = label_str.scan(/(.*)(\.)$/).first
+        label_str = "common.none" if !arr.blank? && (arr[-1] == ".")
+      else
+        label_str = nil
+      end
+      I18n.t(label_str, options.merge!({:default => label_str.blank?? I18n.t("common.minus") : label_str}))
+    end
 
     DimesionOrder = {
       "knowledge" => "1",
@@ -32,20 +42,10 @@ module LocaleModule
     }
 
     SexList = {
-      :wu => I18n.t("common.none"),
-    	:nan => I18n.t("dict.nan"),
-    	:n̈u => I18n.t("dict.n̈u")
+      :wu => i18n("common.none"),
+    	:nan => i18n("dict.nan"),
+    	:n̈u => i18n("dict.n̈u")
     }
-
-    def i18n label_str,options={}
-      if !label_str.blank?
-        arr = label_str.scan(/(.*)(\.)$/).first
-        label_str = "common.none" if !arr.blank? && (arr[-1] == ".")
-      else
-        label_str = nil
-      end
-      I18n.t(label_str, options.merge!({:default => label_str.blank?? I18n.t("common.minus") : label_str}))
-    end
 
     def hanzi2pinyin hanzi_str
       PinYin.backend = PinYin::Backend::Simple.new
@@ -58,7 +58,7 @@ module LocaleModule
     end
 
     # def i18n label_str
-    #   I18n.t(label_str, default:I18n.t("dict.unknown"))
+    #   Common::Locale::i18n(label_str, default:Common::Locale::i18n("dict.unknown"))
     # end
 
     def mysort(x,y)

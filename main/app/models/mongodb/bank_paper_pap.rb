@@ -481,19 +481,19 @@ class Mongodb::BankPaperPap
       :alignment => { :horizontal=> :right }, 
       :format_code =>"0.00"
 
-    wb.add_worksheet(:name => I18n.t('scores.excel.score_title')) do |sheet|
+    wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.score_title')) do |sheet|
       sheet.sheet_protection.password = 'forbidden_by_k12ke'
 
       # row 1
       # location input field
       location_row_arr = [
-        I18n.t('dict.province'),
+        Common::Locale::i18n('dict.province'),
         tenant.area_pcd[:province_name_cn],
-        I18n.t('dict.city'),
+        Common::Locale::i18n('dict.city'),
         tenant.area_pcd[:city_name_cn],
-        I18n.t('dict.district'),
+        Common::Locale::i18n('dict.district'),
         tenant.area_pcd[:district_name_cn],
-        I18n.t('dict.tenant'),
+        Common::Locale::i18n('dict.tenant'),
         tenant.name_cn
       ]
 
@@ -520,20 +520,20 @@ class Mongodb::BankPaperPap
         "",
         "",
         "",
-        I18n.t('quizs.order')
+        Common::Locale::i18n('quizs.order')
       ]
 
       # row 4
       # title
       title_row_arr = [
-        I18n.t('dict.grade'),
-        I18n.t('dict.classroom'),
-        I18n.t('dict.head_teacher'),
-        I18n.t('dict.subject_teacher'),
-        I18n.t('dict.name'),
-        I18n.t('dict.pupil_number'),
-        I18n.t('dict.sex'),
-        "#{I18n.t('quizs.full_score')}(#{self.score})"
+        Common::Locale::i18n('dict.grade'),
+        Common::Locale::i18n('dict.classroom'),
+        Common::Locale::i18n('dict.head_teacher'),
+        Common::Locale::i18n('dict.subject_teacher'),
+        Common::Locale::i18n('dict.name'),
+        Common::Locale::i18n('dict.pupil_number'),
+        Common::Locale::i18n('dict.sex'),
+        "#{Common::Locale::i18n('quizs.full_score')}(#{self.score})"
       ]
 
       # row 4
@@ -566,7 +566,7 @@ class Mongodb::BankPaperPap
       #   :formula1 => "areaList!A1:#{province_cell.r}",
       #   :showDropDown => false,
       #   :showInputMessage => true,
-      #   :promptTitle => I18n.t('dict.province'),
+      #   :promptTitle => Common::Locale::i18n('dict.province'),
       #   :prompt => ""
       # })
       # sheet.add_data_validation("D1",{
@@ -574,7 +574,7 @@ class Mongodb::BankPaperPap
       #   :formula1 => "areaList!A2:#{city_cell.r}",
       #   :showDropDown => false,
       #   :showInputMessage => true,
-      #   :promptTitle => I18n.t('dict.city'),
+      #   :promptTitle => Common::Locale::i18n('dict.city'),
       #   :prompt => ""
       # })
       # sheet.add_data_validation("F1",{
@@ -582,7 +582,7 @@ class Mongodb::BankPaperPap
       #   :formula1 => "areaList!A3:#{district_last.cells[0].r}",
       #   :showDropDown => false,
       #   :showInputMessage => true,
-      #   :promptTitle => I18n.t('dict.district'),
+      #   :promptTitle => Common::Locale::i18n('dict.district'),
       #   :prompt => ""
       # })
 
@@ -607,7 +607,7 @@ class Mongodb::BankPaperPap
           :formula1 => "gradeList!A1:A#{grade_number}",
           :showDropDown => false,
           :showInputMessage => true,
-          :promptTitle => I18n.t('dict.grade'),
+          :promptTitle => Common::Locale::i18n('dict.grade'),
           :prompt => ""
         })
         sheet.add_data_validation("B#{line+5}",{
@@ -615,7 +615,7 @@ class Mongodb::BankPaperPap
           :formula1 => "classroomList!A1:A#{classroom_number}",
           :showDropDown => false,
           :showInputMessage => true,
-          :promptTitle => I18n.t('dict.classroom'),
+          :promptTitle => Common::Locale::i18n('dict.classroom'),
           :prompt => ""
         })
         sheet.add_data_validation("G#{line+5}",{
@@ -623,7 +623,7 @@ class Mongodb::BankPaperPap
           :formula1 => "sexList!A1:A3",
           :showDropDown => false,
           :showInputMessage => true,
-          :promptTitle => I18n.t('dict.sex'),
+          :promptTitle => Common::Locale::i18n('dict.sex'),
           :prompt => ""
         })
         cells= sheet.rows.last.cells[8..cols_count].map{|cell| {:key=> cell.r, :value=> title_row_arr[cell.index].to_s}}
@@ -634,12 +634,12 @@ class Mongodb::BankPaperPap
             :formula1 => '0', 
             :formula2 => cell[:value], 
             :showErrorMessage => true, 
-            :errorTitle => I18n.t("scores.messages.error.wrong_input"), 
-            :error => I18n.t("scores.messages.info.correct_score", :min => 0, :max =>cell[:value]), 
+            :errorTitle => Common::Locale::i18n("scores.messages.error.wrong_input"), 
+            :error => Common::Locale::i18n("scores.messages.info.correct_score", :min => 0, :max =>cell[:value]), 
             :errorStyle => :information, 
             :showInputMessage => true, 
-            :promptTitle => I18n.t("scores.messages.warn.score"), 
-            :prompt => I18n.t("scores.messages.info.correct_score", :min => 0, :max =>cell[:value])
+            :promptTitle => Common::Locale::i18n("scores.messages.warn.score"), 
+            :prompt => Common::Locale::i18n("scores.messages.info.correct_score", :min => 0, :max =>cell[:value])
           })
         }
         #sheet.rows.last.cells[0..7].each{|col| col.style = info_cell }
@@ -666,7 +666,7 @@ class Mongodb::BankPaperPap
 #     #filled_file = Roo::Excelx.new("/Users/freekick/Workspace/Qidian/swtk/main/uploads/score_upload/5/empty_score.xlsx")
      
 #     # read score sheet
-#     sheet = filled_file.sheet(I18n.t('scores.excel.score_title')) if filled_file
+#     sheet = filled_file.sheet(Common::Locale::i18n('scores.excel.score_title')) if filled_file
 
 #     # read title
 #     loc_row = sheet.row(1)
@@ -693,26 +693,26 @@ class Mongodb::BankPaperPap
 #     #excel for user password
 #     out_excel = Axlsx::Package.new
 #     wb = out_excel.workbook
-#     teacher_sheet = wb.add_worksheet(:name => I18n.t('scores.excel.teacher_password_title'))
-#     pupil_sheet = wb.add_worksheet(:name => I18n.t('scores.excel.pupil_password_title'))
+#     teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.teacher_password_title'))
+#     pupil_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.pupil_password_title'))
 
 #     teacher_sheet.sheet_protection.password = 'forbidden_by_qidian'
 #     pupil_sheet.sheet_protection.password = 'forbidden_by_qidian'
 
 #     teacher_title_row = [
-#         I18n.t('activerecord.attributes.user.name'),
-#         I18n.t('activerecord.attributes.user.password'),
-#         I18n.t('dict.name'),
-#         I18n.t('reports.generic_url')
+#         Common::Locale::i18n('activerecord.attributes.user.name'),
+#         Common::Locale::i18n('activerecord.attributes.user.password'),
+#         Common::Locale::i18n('dict.name'),
+#         Common::Locale::i18n('reports.generic_url')
 #     ]
 #     teacher_sheet.add_row teacher_title_row
 
 #     pupil_title_row = [
-#         I18n.t('activerecord.attributes.user.name'),
-#         I18n.t('activerecord.attributes.user.password'),
-#         I18n.t('dict.name'),
-#         I18n.t('dict.pupil_number'),
-#         I18n.t('reports.generic_url')
+#         Common::Locale::i18n('activerecord.attributes.user.name'),
+#         Common::Locale::i18n('activerecord.attributes.user.password'),
+#         Common::Locale::i18n('dict.name'),
+#         Common::Locale::i18n('dict.pupil_number'),
+#         Common::Locale::i18n('reports.generic_url')
 #     ]
 #     pupil_sheet.add_row pupil_title_row
 
@@ -890,7 +890,7 @@ class Mongodb::BankPaperPap
         :password => "",
         :name => params_h[:name],
         :report_url => "",
-        :op_guide => I18n.t('reports.op_guide_details')
+        :op_guide => Common::Locale::i18n('reports.op_guide_details')
         # :tenant_uid => tenant.uid
       },
       Common::Role::Pupil.to_sym => {
@@ -899,7 +899,7 @@ class Mongodb::BankPaperPap
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
         :report_url => Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
-        :op_guide => I18n.t('reports.op_guide_details')
+        :op_guide => Common::Locale::i18n('reports.op_guide_details')
         # :tenant_uid => tenant.uid
       }
     }
@@ -909,7 +909,7 @@ class Mongodb::BankPaperPap
     ret = User.add_user params_h[:user_name],role, params_h
     target_username = ""
     if (ret.is_a? Array) && ret.empty?
-      row_data[role.to_sym][:password] = I18n.t("scores.messages.info.old_user")
+      row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.info.old_user")
       row_data[role.to_sym][:report_url] = generate_url
       target_username = ret[0]
     elsif (ret.is_a? Array) && !ret.empty?
@@ -960,20 +960,20 @@ class Mongodb::BankPaperPap
 
   # def paper_name(type, is_heading=true)
   #   is_heading = false if type == 'usr_pwd_file'
-  #   (is_heading ? (heading + '_') : '') + I18n.t("papers.name.#{type}")
+  #   (is_heading ? (heading + '_') : '') + Common::Locale::i18n("papers.name.#{type}")
   # end
 
   def download_file_name type
     case type
     when 'usr_pwd_file'
-      year_str = quiz_date.strftime('%Y') + I18n.t('dict.nian')
+      year_str = quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian')
       grade_str = Common::Grade::List[grade.to_sym]
       subject_str = Common::Subject::List[subject.to_sym]
-      result = year_str + grade_str + subject_str + I18n.t('reports.check') + "_"
+      result = year_str + grade_str + subject_str + Common::Locale::i18n('reports.check') + "_"
     else
       result = heading + '_'
     end
-    result += I18n.t("papers.name.#{type}")
+    result += Common::Locale::i18n("papers.name.#{type}")
     result
   end
 
@@ -1004,8 +1004,8 @@ class Mongodb::BankPaperPap
 
     provinces.each do |province|
       city = []
-      # region_data.select{|r| city << {name: r["_id"]["city"], label: I18n.t('area.' + r["_id"]["city"]), area: [*r["value"]["district"]].uniq.map{|m| {name: m, label: I18n.t('area.' + m)} }} if r["_id"]["province"] == province }
-      # region << {name: province, label: I18n.t('area.' + province), city: city}
+      # region_data.select{|r| city << {name: r["_id"]["city"], label: Common::Locale::i18n('area.' + r["_id"]["city"]), area: [*r["value"]["district"]].uniq.map{|m| {name: m, label: Common::Locale::i18n('area.' + m)} }} if r["_id"]["province"] == province }
+      # region << {name: province, label: Common::Locale::i18n('area.' + province), city: city}
       region_data.select{ |r| city << {name: r["_id"]["city"], label: r["_id"]["city"], area: Array(r["value"]["district"]).uniq.map{|m| {name: m, label: m} }} if r["_id"]["province"] == province }
       region << {name: province, label: province, city: city}
    

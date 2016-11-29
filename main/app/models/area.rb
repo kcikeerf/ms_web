@@ -43,7 +43,7 @@ class Area < ActiveRecord::Base
       :uid=> "", 
       :rid=> "", 
       :name=> "all", 
-      :name_cn=> I18n.t("areas.list.all")}]
+      :name_cn=> Common::Locale::i18n("areas.list.all")}]
   end
 
   def all_tenants

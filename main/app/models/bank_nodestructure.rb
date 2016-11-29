@@ -27,19 +27,19 @@ class BankNodestructure < ActiveRecord::Base
       result = {}
       self.all.each{|bn|
         if bn.subject && !result.keys.include?(bn.subject)
-          result[bn.subject] = {"label" => I18n.t("dict.#{bn.subject}"),"items" =>{}}
+          result[bn.subject] = {"label" => Common::Locale::i18n("dict.#{bn.subject}"),"items" =>{}}
   #      else
   #        return result
         end
         keys_arr = result[bn.subject]["items"].keys
         if bn.grade && !keys_arr.include?(bn.grade)
-          result[bn.subject]["items"][bn.grade] = {"label" => I18n.t("dict.#{bn.grade}"), "items" =>{}}
+          result[bn.subject]["items"][bn.grade] = {"label" => Common::Locale::i18n("dict.#{bn.grade}"), "items" =>{}}
   #      else
   #        return result
         end
         keys_arr = result[bn.subject]["items"][bn.grade]["items"].keys
         if bn.version && bn.volume && !keys_arr.include?(bn.version+"("+bn.volume+")")
-          result[bn.subject]["items"][bn.grade]["items"][bn.version+"("+bn.volume+")"] = {"label" => I18n.t("dict.#{bn.version}") + "("+I18n.t("dict.#{bn.volume}")+")", "node_uid" => bn.uid, "items"=>{}}
+          result[bn.subject]["items"][bn.grade]["items"][bn.version+"("+bn.volume+")"] = {"label" => Common::Locale::i18n("dict.#{bn.version}") + "("+Common::Locale::i18n("dict.#{bn.volume}")+")", "node_uid" => bn.uid, "items"=>{}}
   #      else
   #        return result
         end
@@ -48,19 +48,19 @@ class BankNodestructure < ActiveRecord::Base
     end
 
     def subject_gather
-      self.all.map{|item| {label: I18n.t("dict.#{item.subject}"), name: item.subject} }.uniq
+      self.all.map{|item| {label: Common::Locale::i18n("dict.#{item.subject}"), name: item.subject} }.uniq
     end
 
     def grade_gather(subject)
-      by_subject(subject).map{ |m| {label: I18n.t("dict.#{m.grade}"), name: m.grade} }
+      by_subject(subject).map{ |m| {label: Common::Locale::i18n("dict.#{m.grade}"), name: m.grade} }
     end
 
     def version_gather(subject, grade)
-      by_subject(subject).by_grade(grade).map{ |m| { label: I18n.t('dict.' + m.version), name: m.version } }
+      by_subject(subject).by_grade(grade).map{ |m| { label: Common::Locale::i18n('dict.' + m.version), name: m.version } }
     end
 
     def unit_gather(subject, grade, version)
-      by_subject(subject).by_grade(grade).where(version: version).map{ |m| { label: I18n.t('dict.' + m.volume), name: m.volume, node_uid: m.uid } }
+      by_subject(subject).by_grade(grade).where(version: version).map{ |m| { label: Common::Locale::i18n('dict.' + m.volume), name: m.volume, node_uid: m.uid } }
     end
 
   end

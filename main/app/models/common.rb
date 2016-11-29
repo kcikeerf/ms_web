@@ -2,10 +2,10 @@
 # 
 
 module Common
+  include LocaleModule
   include CheckpointCkpModule
   include GradeModule
   include KlassModule
-  include LocaleModule
   include NodeVersionModule
   include PaperModule
   include ReportModule
@@ -64,8 +64,8 @@ module Common
 
   module Task
     Type = {
-      :create_report => I18n.t("tasks.type.create_report"),
-      :import_score => I18n.t("tasks.type.import_score")
+      :create_report => Common::Locale::i18n("tasks.type.create_report"),
+      :import_score => Common::Locale::i18n("tasks.type.import_score")
     }
 
     module Status

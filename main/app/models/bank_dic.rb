@@ -8,11 +8,11 @@ class BankDic < ActiveRecord::Base
   before_save :set_update_time_stamp
 
   def self.list_difficulty
-    result = {"difficulty" => { "label" => I18n.t("dict.difficulty"), "items" =>[]} }
+    result = {"difficulty" => { "label" => Common::Locale::i18n("dict.difficulty"), "items" =>[]} }
     dic = self.where("sid = ?", "difficulty").first
     return result if dic.nil?
     result = dic.bank_dic_items.map{|item|
-      {"label" => I18n.t("dict.#{item.sid}"), "sid" => item.sid}
+      {"label" => Common::Locale::i18n("dict.#{item.sid}"), "sid" => item.sid}
     }
     return result    
   end

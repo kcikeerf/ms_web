@@ -1,7 +1,7 @@
 <div style="width: 100%;padding-top: 10%;padding-left: 35%;">
 
     <div class="easyui-panel" 
-         title="<%= I18n.t("managers.user.login_title") %>" 
+         title="<%= LABEL("managers.user.login_title") %>" 
          style="margin: 0 100 0 auto;max-width:400px;padding:30px 60px;">
         <form id="manager_login_form" method="post" action="<%=session_path(resource_name)%>">
             <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
@@ -9,19 +9,19 @@
                 <input class="easyui-textbox" 
                        name="manager[login]" 
                        style="width:100%" 
-                       data-options="label:'<%=I18n.t("activerecord.attributes.user.name")%>',required:true">
+                       data-options="label:'<%=LABEL("activerecord.attributes.user.name")%>',required:true">
             </div>
             <div style="margin-bottom:20px">
                 <input class="easyui-textbox" 
                        name="manager[password]"
                        type="password" 
                        style="width:100%" 
-                       data-options="label:'<%=I18n.t("activerecord.attributes.user.password")%>',required:true,validType:'email'">
+                       data-options="label:'<%=LABEL("activerecord.attributes.user.password")%>',required:true,validType:'email'">
             </div>
 
         </form>
         <div style="text-align:center;padding:5px 0">
-            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px"><%= I18n.t("page.login") %></a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px"><%= LABEL("page.login") %></a>
         </div>
     </div>
 
