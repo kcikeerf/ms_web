@@ -11,14 +11,14 @@
 
 	<div id="basicinfo-edit" style="display:none;">
 		<%= simple_form_for(current_user.role_obj, url: save_info_profile_path, html: {class: 'form-horizontal basicinfo', method: :post}, remote: true) do |f| %>
-			<%= f.input :name, label: I18n.t("dict.name") %>
-			<%= f.input :tenant, label: I18n.t("dict.school") %>
+			<%= f.input :name, label: LABEL("dict.name") %>
+			<%= f.input :tenant, label: LABEL("dict.school") %>
 			<%= f.simple_fields_for :user do |u| %>
-				<%= u.input :qq, label: I18n.t("activerecord.attributes.user.qq"), required: false %>
+				<%= u.input :qq, label: LABEL("activerecord.attributes.user.qq"), required: false %>
 			<% end %>
 
 			<div class="form-group">
-				<%= f.button :submit, I18n.t("page.common.save") %>
+				<%= f.button :submit, LABEL("page.common.save") %>
 			</div>
 		<% end %>
 	</div>

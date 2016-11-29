@@ -44,9 +44,9 @@ class Teacher < ActiveRecord::Base
         :tenant_uid =>  tenant.nil?? "":tenant.uid,
         :tenant_name => tenant.nil?? "":tenant.name_cn,
         :user_name => item.user.nil?? "":item.user.name,
-        :head_teacher => head_teacher ? I18n.t("common.shi") : I18n.t("common.fou"),
+        :head_teacher => head_teacher ? Common::Locale::i18n("common.shi") : Common::Locale::i18n("common.fou"),
         :subject => item.subject,
-        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
         :subject_classrooms => item.subjects_classrooms_mapping.compact.map{|m| "#{m[:subject_cn]},#{m[:grade_cn]}#{m[:classroom_cn]}(#{m[:type]})" }.join("<br>"),
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
         :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
@@ -84,12 +84,12 @@ class Teacher < ActiveRecord::Base
       next unless loc
       {
         :subject => item.subject,
-        :subject_cn => I18n.t("dict.#{item.subject}"),
+        :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
         :grade => loc.grade,
-        :grade_cn => I18n.t("dict.#{loc.grade}"),
+        :grade_cn => Common::Locale::i18n("dict.#{loc.grade}"),
         :classroom => loc.classroom,
-        :classroom_cn => I18n.t("dict.#{loc.classroom}"),
-        :type => item.head_teacher ? I18n.t("teachers.abbrev.head_teacher") : I18n.t("teachers.abbrev.subject")
+        :classroom_cn => Common::Locale::i18n("dict.#{loc.classroom}"),
+        :type => item.head_teacher ? Common::Locale::i18n("teachers.abbrev.head_teacher") : Common::Locale::i18n("teachers.abbrev.subject")
       }
     }
   end

@@ -14,7 +14,7 @@ class Mongodb::ReportGenerator
     @district = args[:district]
     @school = args[:school]
     @pap_uid = args[:pap_uid]
-    @area = I18n.t("area.#{@province}") + I18n.t("area.#{@city}") + I18n.t("area.#{@district}")
+    @area = Common::Locale::i18n("area.#{@province}") + Common::Locale::i18n("area.#{@city}") + Common::Locale::i18n("area.#{@district}")
 #    @ckps_qzps = args[:ckps_qzps]
 
     @paper = Mongodb::BankPaperPap.where(_id: @pap_uid).first
@@ -1026,7 +1026,7 @@ class Mongodb::ReportGenerator
         # temp_h[dimesion] = convert_2_full_mark(item[:value]["average_percent".to_sym])
         # report_h["each_checkpoint_horizon"]["total"]["average_percent"][klass] = temp_h
         dimesion_order = Common::Locale::DimesionOrder[dimesion]
-        dimesion_label = I18n.t("dict.#{dimesion}")
+        dimesion_label = Common::Locale::i18n("dict.#{dimesion}")
         temp_arr = report_h["each_checkpoint_horizon"]["total"]["average_percent"] || []
         target_klass = temp_arr.assoc(klass)
         if klass && target_klass
@@ -1097,7 +1097,7 @@ class Mongodb::ReportGenerator
           # report_h["each_checkpoint_horizon"]["total"][member][klass] = temp_h
 
           dimesion_order = Common::Locale::DimesionOrder[dimesion]
-          dimesion_label = I18n.t("dict.#{dimesion}")
+          dimesion_label = Common::Locale::i18n("dict.#{dimesion}")
 
           temp_arr = report_h["each_checkpoint_horizon"]["total"][member] || []
           if member == "med_avg_diff"
@@ -1214,7 +1214,7 @@ class Mongodb::ReportGenerator
       }
 
       ["knowledge", "skill", "ability"].each{|dimesion|
-        comment_h[dimesion.to_sym][:head_title] = I18n.t("dict.#{dimesion}")
+        comment_h[dimesion.to_sym][:head_title] = Common::Locale::i18n("dict.#{dimesion}")
         lv2_dimesion_value_h[dimesion].each_with_index{|member, index|
           ###########学生最佳表现
           cond = (member["cls_average_percent"] == klass_best[dimesion])
@@ -1231,13 +1231,13 @@ class Mongodb::ReportGenerator
           cond= (member["cls_gra_avg_percent_diff"] > 0)
           if cond
             comment_h[dimesion.to_sym][:higher_than_grade_items] += lv2_dimesion_key_h[dimesion][index] + ","
-            #total_higher_than_grade_dimesion << I18n.t("dict.#{dimesion}") unless total_higher_than_grade_dimesion.include?(dimesion)
+            #total_higher_than_grade_dimesion << Common::Locale::i18n("dict.#{dimesion}") unless total_higher_than_grade_dimesion.include?(dimesion)
           end
           ###########低于年级平均水平
           cond= (member["cls_gra_avg_percent_diff"] < 0)
           if cond
             comment_h[dimesion.to_sym][:lower_than_grade_items] += lv2_dimesion_key_h[dimesion][index] + ","
-            #total_lower_than_grade_dimesion << I18n.t("dict.#{dimesion}") unless total_lower_than_grade_dimesion.include?(dimesion)
+            #total_lower_than_grade_dimesion << Common::Locale::i18n("dict.#{dimesion}") unless total_lower_than_grade_dimesion.include?(dimesion)
           end 
         }
         ###########平均值
@@ -1271,9 +1271,9 @@ class Mongodb::ReportGenerator
 
       comment_h.each{|k,v|
         if v[:klass_average_percent] == best_dimesion_max
-          best_dimesion << I18n.t("dict.#{k}") 
+          best_dimesion << Common::Locale::i18n("dict.#{k}") 
         elsif v[:klass_average_percent] == worst_dimesion_min
-          worst_dimesion << I18n.t("dict.#{k}")
+          worst_dimesion << Common::Locale::i18n("dict.#{k}")
         end
       }
 
@@ -1282,9 +1282,9 @@ class Mongodb::ReportGenerator
 
       ["knowledge", "skill", "ability"].each{|dim|
         if report_h["data_table"][dim][0][1]["value"]["cls_gra_avg_percent_diff"] > 0
-          total_higher_than_grade_dimesion << I18n.t("dict.#{dim}")
+          total_higher_than_grade_dimesion << Common::Locale::i18n("dict.#{dim}")
         else
-          total_lower_than_grade_dimesion << I18n.t("dict.#{dim}")
+          total_lower_than_grade_dimesion << Common::Locale::i18n("dict.#{dim}")
         end
       }
 
@@ -2366,14 +2366,14 @@ class Mongodb::ReportGenerator
       report_h["basic"]["subject"] = @paper.subject
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
-      report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
-      report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
+      report_h["basic"]["grade"] = Common::Locale::i18n("dict.#{item[:_id][:grade]}")
+      report_h["basic"]["term"] = @paper.term.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.term}")
       report_h["basic"]["klass_count"] = 0
-      report_h["basic"]["pupil_number"]= target_grade.nil?? I18n.t("dict.unknown") : target_grade[:value][:pupil_number].to_i
-      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
+      report_h["basic"]["pupil_number"]= target_grade.nil?? Common::Locale::i18n("dict.unknown") : target_grade[:value][:pupil_number].to_i
+      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.quiz_type}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
-      report_h["basic"]["levelword2"] = @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? Common::Locale::i18n("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
+      report_h["basic"]["levelword2"] = @paper.levelword2.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.levelword2}")
       
       #grade_report.update(:report_json => report_h.to_json)
 
@@ -2448,16 +2448,16 @@ class Mongodb::ReportGenerator
       report_h["basic"]["subject"] = @paper.subject
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
-      report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
+      report_h["basic"]["grade"] = Common::Locale::i18n("dict.#{item[:_id][:grade]}")
       report_h["basic"]["classroom"] = klass_label(item[:_id][:classroom])
-      report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
-      report_h["basic"]["pupil_number"] = target_klass.nil?? I18n.t("dict.unknown") : target_klass[:value][:pupil_number].to_i
-      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
+      report_h["basic"]["term"] = @paper.term.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.term}")
+      report_h["basic"]["pupil_number"] = target_klass.nil?? Common::Locale::i18n("dict.unknown") : target_klass[:value][:pupil_number].to_i
+      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.quiz_type}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
-      report_h["basic"]["levelword2"] = @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
-      report_h["basic"]["head_teacher"] = (target_loc.nil? || target_loc.head_teacher.nil?)? I18n.t("dict.unknown") : target_loc.head_teacher.name
-      report_h["basic"]["subject_teacher"] = (target_loc.nil? || target_loc.subject_teacher(@paper.subject).nil?)? I18n.t("dict.unknown") : target_loc.subject_teacher(@paper.subject).name
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? Common::Locale::i18n("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
+      report_h["basic"]["levelword2"] = @paper.levelword2.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.levelword2}")
+      report_h["basic"]["head_teacher"] = (target_loc.nil? || target_loc.head_teacher.nil?)? Common::Locale::i18n("dict.unknown") : target_loc.head_teacher.name
+      report_h["basic"]["subject_teacher"] = (target_loc.nil? || target_loc.subject_teacher(@paper.subject).nil?)? Common::Locale::i18n("dict.unknown") : target_loc.subject_teacher(@paper.subject).name
 
       filter = {
         '_id.pap_uid' => @pap_uid,
@@ -2520,16 +2520,16 @@ class Mongodb::ReportGenerator
       #basic information
       report_h["basic"]["area"] = @area
       report_h["basic"]["school"] = @school_label
-      report_h["basic"]["grade"] = I18n.t("dict.#{item[:_id][:grade]}")
+      report_h["basic"]["grade"] = Common::Locale::i18n("dict.#{item[:_id][:grade]}")
       report_h["basic"]["classroom"] = klass_label(item[:_id][:classroom])
-      report_h["basic"]["subject"] = I18n.t("dict.#{@paper.subject}")
-      report_h["basic"]["name"] = pupil.nil?? I18n.t("dict.unknown") : pupil.name
-      report_h["basic"]["sex"] = pupil.nil?? I18n.t("dict.unknown") : Common::Locale::i18n("dict.#{pupil.sex}")
+      report_h["basic"]["subject"] = Common::Locale::i18n("dict.#{@paper.subject}")
+      report_h["basic"]["name"] = pupil.nil?? Common::Locale::i18n("dict.unknown") : pupil.name
+      report_h["basic"]["sex"] = pupil.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{pupil.sex}")
 #      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? "" : @paper.quiz_date.strftime("%Y-%m-%d %H:%M")
-      report_h["basic"]["term"] = @paper.term.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.term}")
-      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.quiz_type}")
-      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? I18n.t("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
-      report_h["basic"]["levelword2"] =  @paper.levelword2.nil?? I18n.t("dict.unknown") : I18n.t("dict.#{@paper.levelword2}")
+      report_h["basic"]["term"] = @paper.term.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.term}")
+      report_h["basic"]["quiz_type"] = @paper.quiz_type.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.quiz_type}")
+      report_h["basic"]["quiz_date"] = @paper.quiz_date.nil?? Common::Locale::i18n("dict.unknown") : @paper.quiz_date.strftime("%Y-%m-%d")
+      report_h["basic"]["levelword2"] =  @paper.levelword2.nil?? Common::Locale::i18n("dict.unknown") : Common::Locale::i18n("dict.#{@paper.levelword2}")
 
       #pupil_report.update(:report_json => report_h.to_json)
       
@@ -2625,23 +2625,23 @@ class Mongodb::ReportGenerator
   def judge_score_level value
     if(value >= 0 &&
        value <= Common::Report::ScoreLevel::Level60)
-      return I18n.t("reports.failed_level")
+      return Common::Locale::i18n("reports.failed_level")
     elsif(value > Common::Report::ScoreLevel::Level60 &&
           value <= Common::Report::ScoreLevel::Level85)
-      return I18n.t("reports.good_level")
+      return Common::Locale::i18n("reports.good_level")
     else(value > Common::Report::ScoreLevel::Level85 &&
          value <= 1 )
-      return I18n.t("reports.excellent_level")
+      return Common::Locale::i18n("reports.excellent_level")
     end
   end
 
   def get_compare_value_label value1, value2
     if value1 < value2 
-      return I18n.t("reports.lower_than")
+      return Common::Locale::i18n("reports.lower_than")
     elsif value1 == value2
-      return I18n.t("reports.equal_to")
+      return Common::Locale::i18n("reports.equal_to")
     else
-      return I18n.t("reports.higher_than")
+      return Common::Locale::i18n("reports.higher_than")
     end
   end
 =begin

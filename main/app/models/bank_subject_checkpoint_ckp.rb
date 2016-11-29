@@ -158,7 +158,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     end
 
     def root_node(dimesion)
-    	{rid: '', pid: '', nocheck: true, dimesion: dimesion, name: I18n.t('managers.root_node'), open: true}
+    	{rid: '', pid: '', nocheck: true, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
     end
 	 
 	end
