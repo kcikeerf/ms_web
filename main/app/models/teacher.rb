@@ -47,7 +47,7 @@ class Teacher < ActiveRecord::Base
         :head_teacher => head_teacher ? I18n.t("common.shi") : I18n.t("common.fou"),
         :subject => item.subject,
         :subject_cn => I18n.t("dict.#{item.subject}"),
-        :subject_classrooms => item.subjects_classrooms_mapping.map{|m| "#{m[:subject_cn]},#{m[:grade_cn]}#{m[:classroom_cn]}(#{m[:type]})" }.join("<br>"),
+        :subject_classrooms => item.subjects_classrooms_mapping.compact.map{|m| "#{m[:subject_cn]},#{m[:grade_cn]}#{m[:classroom_cn]}(#{m[:type]})" }.join("<br>"),
         :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
         :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
         :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
