@@ -81,6 +81,7 @@ class Teacher < ActiveRecord::Base
     return result unless self.tenant
     self.class_teacher_mappings.by_tenant(self.tenant_uid).map{|item|
       loc = Location.where(:uid => item.loc_uid).first
+      next unless loc
       {
         :subject => item.subject,
         :subject_cn => I18n.t("dict.#{item.subject}"),
