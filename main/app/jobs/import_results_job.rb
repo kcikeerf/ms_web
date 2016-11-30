@@ -243,10 +243,10 @@ class ImportResultsJob < ActiveJob::Base
         #主线程读取用户信息
         teacher_username_in_sheet = []
         pupil_username_in_sheet = []
-        qzps_h = []
-        args[:hidden_row][args[:data_start_col]..(args[:total_cols]-1)].each{|item|
-          qzps_h << Mongodb::BankQizpointQzp.where(_id: item).first
-        }
+        # qzps_h = []
+        # args[:hidden_row][args[:data_start_col]..(args[:total_cols]-1)].each{|item|
+        #   qzps_h << Mongodb::BankQizpointQzp.where(_id: item).first
+        # }
 
         #######start to analyze#######      
         (args[:start_num]..args[:end_num]).each{|index|
@@ -363,8 +363,8 @@ class ImportResultsJob < ActiveJob::Base
               :real_score => row[qzp_index],
               :full_score => args[:title_row][qzp_index]
             })
-            qizpoint = qzps_h[qzp_index - args[:data_start_col]]
-            qzp_ckp_h = args[:qzps_ckps_mapping_h][qizpoint.id.to_s]
+            #qizpoint = qzps_h[qzp_index - args[:data_start_col]]
+            qzp_ckp_h = args[:qzps_ckps_mapping_h][args[:hidden_row][qzp_index]]
             qzp_ckp_h.each{|dimesion, ckps|
               col_params[:dimesion] = dimesion
               ckps.each{|ckp|
