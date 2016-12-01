@@ -75,19 +75,26 @@ module ReportsHelper
   
   # [ return ]: root_group, root_url, [ckp_level] 
   def report_init test_id
+    result = {
+      :root_group => "", 
+      :root_url => "",
+      :paper_info_url => ""      
+    }
     if current_user.is_project_administrator?
-      return {
-        :root_group => "project", 
-        :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json",
-        :paper_info_url => "/reports_warehouse/tests/#{test_id}/paper_info.json"
-      }
-    else
+      result[:root_group] = "project", 
+      result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json",
+    elsif current_user.is_tenant_administrator? || current_user.is_analyzer? || current_user.is_teacher?
       tenant_uid = current_tenant.nil?? nil : current_tenant.uid
-      return {
-        :root_group => "grade", 
-        :root_url => "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}.json",
-        :paper_info_url => "/reports_warehouse/tests/#{test_id}/paper_info.json"
-      }
+      result[:root_group] = "grade"
+      result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}.json"
+    elsif current_user.is_pupil?
+      tenant_uid = current_tenant.nil?? "" : current_tenant.uid
+      loc_uid = current_user.pupil.location.nil?? "" : current_user.pupil.location.uid
+      pup_uid = current_user.pupil.nil?? "" : current_user.pupil.uid
+      result[:root_group] = "pupil", 
+      result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}/klass/#{loc_uid}/pupil/#{pup_uid}.json"
     end
+    result[:paper_info_url] = "/reports_warehouse/tests/#{test_id}/paper_info.json"
+    return result
   end
 end
