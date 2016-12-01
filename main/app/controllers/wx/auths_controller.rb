@@ -58,11 +58,11 @@ class Wx::AuthsController < ApplicationController
             else
               target_wx_user.with_lock do
                 #超过微信帐户绑定限制
-                if target_wx_user.users.count > Common::Wx::WxBindingUserLimit
+                if (target_wx_user.users.count + 1) > Common::Wx::WxBindingUserLimit
                   status = 500
                   data = {message: Common::Locale::i18n("wx_users.messages.warn.wx_binding_limit", :limit => Common::Wx::WxBindingUserLimit)}
                 #超过题库帐户绑定限制
-                elsif target_user.wx_users.count > Common::Wx::UserBindingWxLimit
+                elsif (target_user.wx_users.count +1) > Common::Wx::UserBindingWxLimit
                   status = 500
                   data = {message: Common::Locale::i18n("wx_users.messages.warn.user_binding_limit", :limit => Common::Wx::UserBindingWxLimit)}
                 #正确绑定
