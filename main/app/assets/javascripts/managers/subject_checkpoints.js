@@ -120,6 +120,7 @@ var setting = {
 		treeNode.advice ? CKEDITOR.instances.advice.setData(treeNode.advice) : CKEDITOR.instances.advice.setData('');
 		treeNode.sort ? $('#sort').val(treeNode.sort) : $('#sort').val('');
 		treeNode.uid ? $('.ckp_uid').val(treeNode.uid) : $('.ckp_uid').val('');
+		treeNode.uid ? $('.ckp_rid').val(treeNode.rid) : $('.ckp_rid').val('');
 	  	$.get("/managers/subject_checkpoints/"+treeNode.uid+"/edit",{},function(data){
 			var len = data.data.length;
 			var arr=[];

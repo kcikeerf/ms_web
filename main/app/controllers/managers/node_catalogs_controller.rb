@@ -9,18 +9,33 @@ class Managers::NodeCatalogsController < ApplicationController
     # before_action :authenticate_manager
 
 	def index
-		@data = {name: '目录', path: "/managers/node_structures/#{@node_structure.id}/node_catalogs"}
+    arr = [
+      @node_structure.version_cn,
+      @node_structure.subject_cn,
+      @node_structure.grade_cn,
+      @node_structure.term_cn,
+    ]
+		@data = {name: "#{arr.join("_")}的目录", path: "/managers/node_structures/#{@node_structure.id}/node_catalogs"}
 		@catalogs = @node_structure.bank_node_catalogs.page(params[:page]).per(params[:row])
+    @catalogs.each_with_index{|item, index|
+      rid = item.rid.nil?? "":item.rid
+      re =Regexp.new(".{#{Common::SwtkConstants::CkpStep}}")
+      rid_arr = rid.scan(re)
+      section_arr = rid_arr#.map{|item| item.gsub!(/(^0*)|(0*$)/,'')}
+      attr_h = item.attributes
+      attr_h["section"] = section_arr.join(".")
+      @catalogs[index] = attr_h#OpenStruct.new(attr_h)
+    }
 		respond_with({rows: @catalogs, total: @catalogs.total_count})
 	end
 
 	def create
-		@node_structure.bank_node_catalogs.build(catalog_params[:node_structrue])
-		render json: response_json_by_obj(@node_structure.save, @node_structure)
+    @catalog = BankNodeCatalog.new
+		render json: response_json_by_obj(@catalog.update_catalog(catalog_params), @catalog)
 	end
 
 	def update
-    render json: response_json_by_obj(@catalog.update(node: params[:node]), @catalog)
+    render json: response_json_by_obj(@catalog.update_catalog(catalog_params), @catalog)
 	end
 
 	def destroy_all
@@ -45,6 +60,6 @@ class Managers::NodeCatalogsController < ApplicationController
 	end
 
 	def catalog_params
-		params.permit(:node_structure_id, node_structrue: [:node])
+		params.permit(:node_structure_id, :former_rid, :later_rid, :node)
 	end
 end

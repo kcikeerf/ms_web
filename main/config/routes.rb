@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     resources :teachers, concerns: :destroy_all
     resources :pupils, concerns: :destroy_all
     resources :tenant_administrators, concerns: :destroy_all
+    resources :node_catalogs, concerns: :destroy_all
   end
 
   mount RuCaptcha::Engine => "/rucaptcha"
