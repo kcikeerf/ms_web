@@ -1,39 +1,49 @@
 
-<th data-options="field:'uid',align:'center', width:'10%'">ID</th>
-<th data-options="field:'grade',align:'center', width:'15%'">年级</th>
-<th data-options="field:'subject',align:'center', width:'15%'">科目</th>
-<th data-options="field:'volume',align:'center', width:'15%'">学期</th>
-<th data-options="field:'version',align:'center', width:'15%'">教材</th>
-<th data-options="field:'ID',width:'25%',align:'center',formatter:formatOper">操作</th>
+<!-- <th data-options="field:'uid',align:'center', width:'10%'">ID</th> -->
+<th data-options="field:'version_cn',align:'center', width:'15%'">教材</th>
+<th data-options="field:'subject_cn',align:'center', width:'15%'">科目</th>
+<th data-options="field:'xue_duan_cn',align:'center', width:'15%'">学段</th>
+<th data-options="field:'grade_cn',align:'center', width:'15%'">年级</th>
+<th data-options="field:'term_cn',align:'center', width:'15%'">学期</th>
 
-<% content_for :content do %>
-	<div id="checkpoint_dialog"></div>
-<% end %>
+<th data-options="field:'operations',width:'25%',align:'center',formatter:formatOper">操作</th>
+
+<%# content_for :content do %>
+<!-- 	<div id="checkpoint_dialog"></div>
+ --><%# end %>
 		
 <% content_for :form do %>
-
-	<div class="fgrade">
-		<label>年级:</label>
-		<%= text_field_tag :grade, '', class: 'easyui-validatebox', required: 'true' %>
+	<div class="fversion">
+		<label>教材:</label>
+		<%= text_field_tag :version_cn, '', class: 'easyui-validatebox', required: 'true' %>
 	</div>
 
 	<div class="fsubject">
 		<label>科目:</label>
-		<%= text_field_tag :subject, '', class: 'easyui-validatebox', required: 'true' %>
+		<%= text_field_tag :subject_cn, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+
+	<div class="fgrade">
+		<label>学段:</label>
+		<%= text_field_tag :xue_duan_cn, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+
+	<div class="fgrade">
+		<label>年级:</label>
+		<%= text_field_tag :grade_cn, '', class: 'easyui-validatebox', required: 'true' %>
 	</div>
 
 	<div class="fvolume">
 		<label>学期:</label>
-		<%= text_field_tag :volume, '', class: 'easyui-validatebox', required: 'true' %>
+		<%= text_field_tag :term_cn, '', class: 'easyui-validatebox', required: 'true' %>
 	</div>
 
-	<div class="fversion">
-		<label>教材:</label>
-		<%= text_field_tag :version, '', class: 'easyui-validatebox', required: 'true' %>
-	</div>
 <% end %>
 <script type="text/javascript">
 	function formatOper(val,row,index){
-		return "<a href='<%= @data[:path] %>/"+row["uid"]+"/node_catalogs'>查看添加目录</a> <a href='#' onclick=set_ckp_dialog('node_structure_uid=" + row['uid'] + "&subject="+ row['subject'] +"')>指标体系</a>"
+		// return "<a href='<%= @data[:path] %>/"+row["uid"]+"/node_catalogs'>查看添加目录</a> <a href='#' onclick=set_ckp_dialog('node_structure_uid=" + row['uid'] + "&subject="+ row['subject'] +"')>指标体系</a>"
+		var click_func = 'addTab(window.parent.$("#tabs"),"教材目录管理", "<%= @data[:path] %>\/'+row["uid"]+'\/node_catalogs")';
+		var link_str = "<a href='#'' onclick='" + click_func + "'>查看目录</a>";
+		return link_str;
 	} 
 </script>

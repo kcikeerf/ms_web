@@ -15,7 +15,7 @@ class BankNodestructure < ActiveRecord::Base
 
   accepts_nested_attributes_for :bank_checkpoint_ckps, :bank_node_catalogs, :bank_nodestructure_subject_ckps
 
-  validates :grade, :subject, :version, :volume, presence: true
+  validates :grade, :subject, :version, :xue_duan, :term, presence: true
 
   scope :by_subject, ->(subject) { where(subject: subject) }
 
@@ -82,6 +82,11 @@ class BankNodestructure < ActiveRecord::Base
     return result   
   end
 
+  def update_node params
+    self.update(node_params(params))
+    self.save!
+  end
+
   def add_ckps(ckps)
     transaction do
       bank_nodestructure_subject_ckps.destroy_all
@@ -92,4 +97,20 @@ class BankNodestructure < ActiveRecord::Base
     end
   end
 
+  private
+
+    def node_params params
+      {
+        version: Common::Locale::hanzi2pinyin(params[:version_cn]),
+        subject: Common::Locale::hanzi2pinyin(params[:subject_cn]),
+        xue_duan: Common::Locale::hanzi2pinyin(params[:xue_duan_cn]),
+        grade: Common::Locale::hanzi2pinyin(params[:grade_cn]),
+        term: Common::Locale::hanzi2pinyin(params[:term_cn]),
+        version_cn: params[:version_cn],
+        subject_cn: params[:subject_cn],
+        xue_duan_cn: params[:xue_duan_cn],
+        grade_cn: params[:grade_cn],
+        term_cn: params[:term_cn]
+      }
+    end 
 end

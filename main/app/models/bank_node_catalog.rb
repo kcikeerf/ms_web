@@ -14,6 +14,22 @@ class BankNodeCatalog < ActiveRecord::Base
 
   validates :node, presence: true
 
+  scope :by_node, ->(uid){ where(node_uid: uid) if uid.present? }
+
+  def update_catalog params
+    self.update(catalog_params(params))
+    self.save!
+  end
+
+  def catalog_params params
+    catalogs = self.class.by_node(params[:node_structure_id])
+    {
+      :node_uid => params[:node_structure_id], 
+      :node => params[:node],
+      :rid => BankRid.get_next_rid(catalogs, params[:former_rid], params[:later_rid])
+    }
+  end
+
   def add_ckps(ckps)
     transaction do 
       bank_node_catalog_subject_ckps.destroy_all

@@ -15,7 +15,7 @@ class Managers::NodeStructuresController < ApplicationController
 
   def create
     @node_structure = BankNodestructure.new(node_structure_params)
-    render json: response_json_by_obj(@node_structure.save, @node_structure)
+    render json: response_json_by_obj(@node_structure.update_node(node_structure_params), @node_structure)
   end
 
   def show
@@ -24,7 +24,7 @@ class Managers::NodeStructuresController < ApplicationController
   end
 
   def update    
-    render json: response_json_by_obj(@node_structure.update(node_structure_params), @node_structure)
+    render json: response_json_by_obj(@node_structure.update_node(node_structure_params), @node_structure)
   end
 
   def destroy_all
@@ -44,7 +44,7 @@ class Managers::NodeStructuresController < ApplicationController
   end
 
   def node_structure_params
-    params.permit(:grade, :subject, :version, :volume)
+    params.permit(:version_cn, :xue_duan_cn, :grade_cn, :subject_cn, :term_cn)
   end
 
 
