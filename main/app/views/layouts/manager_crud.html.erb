@@ -18,7 +18,8 @@
 	</div>  
 	<!-- singleSelect:true, 当行选择-->
 	<table id='dg' class="easyui-datagrid" title="<%= @data[:name] %>列表" style="width:98%;height:550px"
-		data-options="		
+		data-options="
+		singleSelect:true,	
 		pagination:true,
 		nowrap: false,
 		url:'<%= @data[:path] %>.json',
@@ -26,7 +27,7 @@
 		toolbar: '#tb'">
 		<thead>
 			<tr>
-				<th field="ck" checkbox="true" width='5%'></th>
+<!-- 				<th field="ck" checkbox="false" width='5%'></th> -->
 				<%= yield %>
 			</tr>
 
