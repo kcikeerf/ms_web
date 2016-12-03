@@ -34,7 +34,7 @@ class Manager < ActiveRecord::Base
       {
         id: 2, icon: 'icon-sys', name: '资源管理',
         menus: [
-          {id: 201, name: Common::Locale::i18n("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
+          #{id: 201, name: Common::Locale::i18n("managers.menus.jiao_cai_guan_li"), icon: '', url: '/managers/node_structures'},
           #{id: 202, name: Common::Locale::i18n("managers.menus.mu_lu_guan_li"), icon: '', url: '/managers/node_catalogs'},
           # {id: 22, name: Common::Locale::i18n("managers.menus.zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/checkpoints'},
           {id: 203, name: Common::Locale::i18n("managers.menus.ke_mu_zhi_biao_ti_xi_guan_li"), icon: '', url: '/managers/subject_checkpoints'}
