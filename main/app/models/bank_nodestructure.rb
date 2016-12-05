@@ -100,17 +100,18 @@ class BankNodestructure < ActiveRecord::Base
   private
 
     def node_params params
+      xue_duan = BankNodestructure.get_subject_category(params[:grade])
       {
         version: Common::Locale::hanzi2pinyin(params[:version_cn]),
-        subject: Common::Locale::hanzi2pinyin(params[:subject_cn]),
-        xue_duan: Common::Locale::hanzi2pinyin(params[:xue_duan_cn]),
-        grade: Common::Locale::hanzi2pinyin(params[:grade_cn]),
-        term: Common::Locale::hanzi2pinyin(params[:term_cn]),
+        subject: params[:subject],
+        xue_duan: xue_duan,
+        grade: params[:grade],
+        term: params[:term],
         version_cn: params[:version_cn],
-        subject_cn: params[:subject_cn],
-        xue_duan_cn: params[:xue_duan_cn],
-        grade_cn: params[:grade_cn],
-        term_cn: params[:term_cn]
+        subject_cn: Common::Subject::List[params[:subject].to_sym],
+        xue_duan_cn: Common::Grade::XueDuanList[xue_duan.to_sym],
+        grade_cn: Common::Grade::List[params[:grade].to_sym],
+        term_cn: Common::Term::List[params[:term].to_sym]
       }
     end 
 end
