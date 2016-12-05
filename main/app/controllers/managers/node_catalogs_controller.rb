@@ -17,16 +17,18 @@ class Managers::NodeCatalogsController < ApplicationController
     ]
     @data = {name: "#{arr.join("_")}的目录", path: "/managers/node_structures/#{@node_structure.id}/node_catalogs"}
     @catalogs = @node_structure.bank_node_catalogs.page(params[:page]).per(params[:row])
-    @catalogs.each_with_index{|item, index|
-      rid = item.rid.nil?? "":item.rid
-      re =Regexp.new(".{#{Common::SwtkConstants::CkpStep}}")
-      rid_arr = rid.scan(re)
-      section_arr = rid_arr#.map{|item| item.gsub!(/(^0*)|(0*$)/,'')}
-      attr_h = item.attributes
-      attr_h["section"] = section_arr.join(".")
-      @catalogs[index] = attr_h#OpenStruct.new(attr_h)
-    }
-    respond_with({rows: @catalogs, total: @catalogs.total_count})
+    # @catalogs.each_with_index{|item, index|
+    #   rid = item.rid.nil?? "":item.rid
+    #   re =Regexp.new(".{#{Common::SwtkConstants::CkpStep}}")
+    #   rid_arr = rid.scan(re)
+    #   section_arr = rid_arr#.map{|item| item.gsub!(/(^0*)|(0*$)/,'')}
+    #   attr_h = item.attributes
+    #   attr_h["section"] = section_arr.join(".")
+    #   @catalogs[index] = attr_h#OpenStruct.new(attr_h)
+    # }
+    total_count = @catalogs.total_count
+    @catalogs = @catalogs.sort{|a,b| Common::CheckpointCkp.compare_rid_plus(a["rid"], b["rid"]) }
+    respond_with({rows: @catalogs, total: total_count})
   end
 
   def create

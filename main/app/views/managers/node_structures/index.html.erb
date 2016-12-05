@@ -43,7 +43,8 @@
 	function formatOper(val,row,index){
 		// return "<a href='<%= @data[:path] %>/"+row["uid"]+"/node_catalogs'>查看添加目录</a> <a href='#' onclick=set_ckp_dialog('node_structure_uid=" + row['uid'] + "&subject="+ row['subject'] +"')>指标体系</a>"
 		var click_func = 'addTab(window.parent.$("#tabs"),"教材目录管理", "<%= @data[:path] %>\/'+row["uid"]+'\/node_catalogs")';
-		var link_str = "<a href='#'' onclick='" + click_func + "'>查看目录</a>";
+		var link_str = "<a href='#'' onclick='" + click_func + "'>查看目录</a>&nbsp;";
+		link_str += "<a href='#'' onclick='" + "#" + "'>查看教材指标</a>";
 		return link_str;
 	} 
 </script>

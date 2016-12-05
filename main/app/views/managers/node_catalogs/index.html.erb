@@ -1,10 +1,10 @@
 <th data-options="field:'uid',align:'center', width:'20%'">ID</th>
-<th data-options="field:'section',align:'left', width:'20%'">章节</th>
+<th data-options="field:'rid',align:'left', width:'20%'">章节</th>
 <th data-options="field:'node',align:'center', width:'20%'">名称</th>
 <!-- <th data-options="field:'dt_add',align:'center', width:'25%'">创建时间</th>
 <th data-options="field:'dt_update',align:'center', width:'25%'">更新时间</th> -->
 <th data-options="field:'ID',width:'15%',align:'center',formatter:formatOper">操作</th>
-<th data-options="field:'rid',align:'center', width:'auto', hidden: true">rid</th>
+<!-- <th data-options="field:'rid',align:'center', width:'auto', hidden: true">rid</th> -->
 
 <!-- <div id='resource_add' style='display: none;'>
 		<div class='fnode'>
@@ -31,12 +31,12 @@
 <% content_for :form do %>
 	<div class="fsection_rid">
 		<label>前一章节:</label>
-		<%= select_tag :former_rid, options_for_select(@catalogs.map{|a| [a["section"],a["rid"]]}) %>
+		<%= select_tag :former_rid, options_for_select(@catalogs.map{|a| [a["rid"],a["rid"]]}) %>
 	</div>
 
 	<div class="fsection_rid">
 		<label>后一章节:</label>
-		<%= select_tag :later_rid, options_for_select(@catalogs.map{|a| [a["section"],a["rid"]]}) %>
+		<%= select_tag :later_rid, options_for_select(@catalogs.map{|a| [a["rid"],a["rid"]]}) %>
 	</div>
 
 	<div class="fnode">
