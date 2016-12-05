@@ -44,7 +44,7 @@ class Managers::NodeStructuresController < ApplicationController
   end
 
   def node_structure_params
-    params.permit(:version_cn, :xue_duan_cn, :grade_cn, :subject_cn, :term_cn)
+    params.permit(:version_cn, :grade, :subject, :term)
   end
 
 

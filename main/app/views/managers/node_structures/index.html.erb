@@ -1,6 +1,6 @@
 
 <th data-options="field:'uid',align:'center', width:'20%'">ID</th>
-<th data-options="field:'version_cn',align:'center', width:'20%'">教材</th>
+<th data-options="field:'version_cn',align:'center', width:'20%'">教材简称</th>
 <th data-options="field:'subject_cn',align:'center', width:'5%'">科目</th>
 <th data-options="field:'xue_duan_cn',align:'center', width:'5%'">学段</th>
 <th data-options="field:'grade_cn',align:'center', width:'5%'">年级</th>
@@ -13,30 +13,37 @@
  --><%# end %>
 		
 <% content_for :form do %>
-	<div class="fversion">
-		<label>教材:</label>
-		<%= text_field_tag :version_cn, '', class: 'easyui-validatebox', required: 'true' %>
+	<div style="margin:5px 0px 5px 15px;">
+	  <label for="textbook_version_cn">教材简称</label>
+	  <input class="easyui-validatebox" id="textbook_version_cn" name="version_cn" style="width:200px;" data-options="required:true">
 	</div>
 
-	<div class="fsubject">
-		<label>科目:</label>
-		<%= text_field_tag :subject_cn, '', class: 'easyui-validatebox', required: 'true' %>
-	</div>
+    <div style="margin:5px 0px 5px 15px;">
+      <label><%=LABEL("activerecord.attributes.teacher.subject")%></label>
+      <select class="easyui-combobox" id="textbook_subject" name="subject" style="width:200px;" data-options="required:true">
+        <% subject_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
 
-	<div class="fgrade">
-		<label>学段:</label>
-		<%= text_field_tag :xue_duan_cn, '', class: 'easyui-validatebox', required: 'true' %>
-	</div>
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="textbook_grade"><%=LABEL("activerecord.attributes.pupil.grade")%></label>
+      <select class="easyui-combobox" id="textbook_grade" name="grade" style="width:200px;"  data-options="required:true">
+        <% grade_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
 
-	<div class="fgrade">
-		<label>年级:</label>
-		<%= text_field_tag :grade_cn, '', class: 'easyui-validatebox', required: 'true' %>
-	</div>
-
-	<div class="fvolume">
-		<label>学期:</label>
-		<%= text_field_tag :term_cn, '', class: 'easyui-validatebox', required: 'true' %>
-	</div>
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="textbook_term">学期</label>
+      <select class="easyui-combobox" id="textbook_term" name="term" style="width:200px;"  data-options="required:true">
+        <% term_list.each do |k,v| %>
+          <option value="<%=k%>"><%=v%></option>
+        <% end %>
+      </select>
+    </div>
 
 <% end %>
 <script type="text/javascript">
