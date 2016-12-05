@@ -84,10 +84,10 @@ class BankRid < ActiveRecord::Base
       child_rids = child_rids.blank?? [""] : child_rids 
       #unless child_rids.blank?
         #next_rid = self.where("rid > ?", max_child_rid.slice(pid_len, Common::SwtkConstants::CkpStep)).limit(1)
-
+      p ">>>>#{child_rids}"
       rid_exclude_range_cond_str = "rid not in (?)"
       if from_child_rid
-        rid_exclude_range_cond_str += " and rid > '#{from_child_rid}'"
+        rid_exclude_range_cond_str += " and rid > '{from_child_rid}'"
       end
 
       next_rid = where(rid_exclude_range_cond_str, child_rids).limit(1)
@@ -103,8 +103,14 @@ class BankRid < ActiveRecord::Base
       arid = arid || ""
       brid = brid || ""
       
-      arid, brid = brid, arid if (Common::CheckpointCkp::compare_rid(arid, brid) == 1)
+      cmp_result = Common::CheckpointCkp::compare_rid_plus(arid, brid)
       arid_parent = arid.slice(0, arid.length - Common::SwtkConstants::CkpStep)
+      if (cmp_result == 1)
+        arid, brid = brid, arid
+      elsif (cmp_result == 0)
+        arid_parent = arid
+        arid = nil
+      end
       get_new_rid obj, arid_parent, arid
     end
 
