@@ -31,12 +31,12 @@
 <% content_for :form do %>
 	<div class="fsection_rid">
 		<label>前一章节:</label>
-		<%= select_tag :former_rid, options_for_select(@catalogs.map{|a| [a["rid"],a["rid"]]}) %>
+		<%= select_tag :former_rid, options_for_select(@catalogs.clone.unshift({"rid" => ""}).map{|a| [a["rid"],a["rid"]]}) %>
 	</div>
 
 	<div class="fsection_rid">
 		<label>后一章节:</label>
-		<%= select_tag :later_rid, options_for_select(@catalogs.map{|a| [a["rid"],a["rid"]]}) %>
+		<%= select_tag :later_rid, options_for_select(@catalogs.clone.unshift({"rid" => ""}).map{|a| [a["rid"],a["rid"]]}) %>
 	</div>
 
 	<div class="fnode">
