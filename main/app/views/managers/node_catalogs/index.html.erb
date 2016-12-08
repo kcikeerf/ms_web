@@ -47,7 +47,10 @@
 <% end %>
 <script type="text/javascript">
 	function formatOper(val,row,index){
-		return "<a href='#' onclick=set_ckp_dialog('node_structure_uid=" + $('#subject').val() + "&node_catalog_uid="+ row['uid'] +"')>查看目录指标</a>"  
+   		var click_checkpoint_func = 'addTab(window.parent.$("#tabs"),"教材指标管理", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
+   		// var click_show_checkpoints_func = 
+		var link_str = "<a href='#'' onclick='" + click_checkpoint_func + "'>目录指标管理</a>";
+		return link_str;
 	} 
 	// $(document).ready(function(){
 	// 	var $html_content = $('#resource_add > div:first').clone().attr('id','');

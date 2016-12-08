@@ -319,7 +319,7 @@ class Mongodb::BankPaperPap
           if ckp.is_a? BankCheckpointCkp
             lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
           elsif ckp.is_a? BankSubjectCheckpointCkp
-            xue_duan = BankNodestructure.get_subject_category(self.grade)
+            xue_duan = Common::Grade.judge_xue_duan(self.grade)
             lv_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
           end
           temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []
@@ -725,7 +725,7 @@ class Mongodb::BankPaperPap
 #       grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
 #       cells = {
 #         :grade => grade_pinyin,
-#         :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
+#         :xue_duan => Common::Grade.judge_xue_duan(grade_pinyin),
 #         :classroom => Common::Locale.hanzi2pinyin(row[1]),
 #         :head_teacher => row[2],
 #         :teacher => row[3],

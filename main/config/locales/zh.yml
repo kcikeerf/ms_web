@@ -471,6 +471,8 @@ zh:
       jiao_cai_guan_li: "教材管理"
       mu_lu_guan_li: "目录管理"
       zhi_biao_ti_xi_guan_li: "指标体系管理"
+      jiao_cai_ji_mu_lu_guan_li: "教材及目录管理"
+      jiao_cai_ji_mu_lu_zhi_biao_ti_xi_guan_li: "教材及目录指标体系管理"
       ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
@@ -482,7 +484,8 @@ zh:
       bank_ckp_cube: "测评点立体交叉表"
       bank_dic: "字典表"
       bank_dic_item: "字典条目表"
-      bank_nodestructure: "课本结构树形表"
+      bank_nodestructure: "教材"
+      bank_node_catalog: "目录"
       bank_papertag_ptg: "试卷标签"
       bank_quiztag_qtg: "试题标签"
       comment: "评论"

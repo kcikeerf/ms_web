@@ -10,7 +10,7 @@ class Managers::SubjectCheckpointsController < ApplicationController
     # 学科列表
     @subject_list = Common::Subject::List.map{|k,v| [v,k.to_s]}
     # 学段列表
-    @xue_duan_list = Common::Grade::XueDuanList.map{|k,v| [v,k.to_s]}
+    @xue_duan_list = Common::Grade::XueDuan::List.map{|k,v| [v,k.to_s]}
   end
 
   def create
