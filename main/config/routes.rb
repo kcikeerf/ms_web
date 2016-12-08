@@ -23,7 +23,6 @@ Rails.application.routes.draw do
         get '/:uid/edit',action: :edit, as: 'edit'
         post '/:id/move_node', action: :move_node, as: 'move_node'
         post 'import_ckp_file'
-        get 'tree'
       end
     end
 
