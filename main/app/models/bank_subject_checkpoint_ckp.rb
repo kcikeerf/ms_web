@@ -5,8 +5,10 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 	include TimePatch
 	include InitUid
 
-	has_many :bank_nodestructure_subject_ckps, foreign_key: 'subject_ckp_uid'
-	has_many :bank_node_catalog_subject_ckps, foreign_key: 'subject_ckp_uid'
+  has_many :bank_nodestructure_subject_ckps, foreign_key: 'subject_ckp_uid', dependent: :destroy
+  has_many :bank_nodestructures, through: :bank_nodestructure_subject_ckps
+  has_many :bank_nodestructure_subject_ckps, foreign_key: 'subject_ckp_uid', dependent: :destroy
+  has_many :bank_node_catalogs, through: :bank_nodestructure_subject_ckps
 
 	scope :not_equal_rid, ->(rid) { where.not(rid: rid) }
 	scope :by_subject, ->(subject) { where(subject: subject) }
