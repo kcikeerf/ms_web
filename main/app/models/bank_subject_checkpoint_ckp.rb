@@ -159,7 +159,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
     def root_node(dimesion, options={})
       nocheck = options[:disable_no_check].nil?? is_entity^1 : options[:disable_no_check]
-    	{rid: '', pid: '', nocheck: nocheck, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
+    	# {rid: '', pid: '', nocheck: nocheck, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
+      {rid: '', pid: '', nocheck: nocheck, dimesion: dimesion, name: Common::Locale::i18n("dict.#{dimesion}") + Common::Locale::i18n('managers.root_node'), open: true}
     end
 	 
 	end
