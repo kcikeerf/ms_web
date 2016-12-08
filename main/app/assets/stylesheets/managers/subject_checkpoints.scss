@@ -1,3 +1,10 @@
-// Place all the styles related to the managers/subject_checkpoints controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+/*
+*= require ztree/css/demo
+*= require ztree/css/zTreeStyle/zTreeStyle.css
+*= require_self
+*/
+.ztree li span.button::before {
+	color:#333;
+}
+
+form#file_upload {padding-top: 10px;}

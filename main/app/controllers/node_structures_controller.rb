@@ -1,5 +1,7 @@
 class NodeStructuresController < ApplicationController
 
+  before_action :set_node_structure, only: [:catalog_list]
+
   def get_subjects
     subject_nodes = BankNodestructure.subject_gather
     render json: subject_nodes.to_json
@@ -22,26 +24,36 @@ class NodeStructuresController < ApplicationController
   	render json: unit_nodes.to_json
   end
 
-  def get_catalogs_and_tree_data
-    node = BankNodestructure.find(params[:node_uid])
-    ckp_data = BankCheckpointCkp.get_all_ckps(node.id)
-    ckp_data[:catalogs] = node.bank_node_catalogs
-    render json: ckp_data.to_json
+  def list
+    result = BankNodestructure.list
+    render :json => result.to_json
   end
 
-  #获取教材或者目录指标(type为catalog时读取单个目录指标)
-  def get_ckp_data_by_volume_catalog
-    is_catalog = params[:type] == 'catalog'
-    model = is_catalog ? BankNodeCatalog : BankNodestructure
-
-    node = model.find_by(uid: params[:node_uid])
-    return render json: {knowledge: [], skill: [], ability: []} unless node
-
-    ckps = node.bank_subject_checkpoint_ckps
-
-    ckps_hash = BankSubjectCheckpointCkp.ckps_group(ckps)
-    render json: ckps_hash.to_json
+  def catalog_list
+    result = @node_structure.catalog_ztree_list
+    render :json => result.to_json
   end
+
+  # def get_catalogs_and_tree_data
+  #   node = BankNodestructure.find(params[:node_uid])
+  #   ckp_data = BankCheckpointCkp.get_all_ckps(node.id)
+  #   ckp_data[:catalogs] = node.bank_node_catalogs
+  #   render json: ckp_data.to_json
+  # end
+
+  # #获取教材或者目录指标(type为catalog时读取单个目录指标)
+  # def get_ckp_data_by_volume_catalog
+  #   is_catalog = params[:type] == 'catalog'
+  #   model = is_catalog ? BankNodeCatalog : BankNodestructure
+
+  #   node = model.find_by(uid: params[:node_uid])
+  #   return render json: {knowledge: [], skill: [], ability: []} unless node
+
+  #   ckps = node.bank_subject_checkpoint_ckps
+
+  #   ckps_hash = BankSubjectCheckpointCkp.ckps_group(ckps)
+  #   render json: ckps_hash.to_json
+  # end
 
   #不确定是否延用
   # def get_ckp_data
@@ -67,5 +79,9 @@ class NodeStructuresController < ApplicationController
   #   nodes[:nodes] << root_node
   #   nodes
   # end
+  private
 
+    def set_node_structure
+      @node_structure = BankNodestructure.where(uid: params[:id]).first
+    end
 end

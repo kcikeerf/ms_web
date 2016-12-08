@@ -1,7 +1,6 @@
 /*
-*= require ztree/font-awesome-4.5.0/css/font-awesome.min.css
 *= require ztree/css/demo
-*= require ztree/css/awesomeStyle/awesome.css
+*= require ztree/css/zTreeStyle/zTreeStyle.css
 *= require_self
 */
 .ztree li span.button::before {
