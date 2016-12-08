@@ -42,6 +42,13 @@ function InitLeftMenu() {
     $(".easyui-accordion").accordion();
   }
 
+  function reopen(tab_container, subtitle, url){
+    if(tab_container.tabs('exists',subtitle)){
+      tab_container.tabs('close', subtitle);
+    }
+    addTab(tab_container,subtitle,url);
+  }
+
   function addTab(tab_container,subtitle,url){
     if(!tab_container.tabs('exists',subtitle)){
       tab_container.tabs('add',{
