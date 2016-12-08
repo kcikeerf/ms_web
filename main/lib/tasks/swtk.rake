@@ -779,4 +779,83 @@ namespace :swtk do
     end
     xml = Ox.parse(xml_str)
   end
+
+  # 教材指标
+  desc "export subject checkpoint template"
+  task :export_subejct_checkpoint_for_node, [:node_uid,:out] => :environment do |t, args|
+    if args[:node_uid].nil? || args[:out].nil?
+      puts "Command format not correct."
+      exit 
+    end
+
+    # 获取教材
+    node = BankNodestructure.where(uid: args[:node_uid]).first
+    if node
+      node_catalogs = node.bank_node_catalogs.sort{|a,b| Common::CheckpointCkp.compare_rid_plus(a.rid, b.rid) }
+
+      catalog_arr = []
+      hidden_arr = []
+
+      #输出内容
+      begin
+        out_excel = Axlsx::Package.new
+        wb = out_excel.workbook
+
+        wb.add_worksheet name: "章节表" do |sheet|
+          sheet.add_row(["Catalog ID", "Catalog Name"])
+          sheet.add_row(["id, don't change", "tree"])
+          node_catalogs.each{|node|
+            ancestors = BankRid.get_all_higher_nodes BankNodeCatalog.where(node_uid: args[:node_uid]),node
+            path_arr = ancestors.map(&:node)
+            path_arr.reverse!
+            path_arr.push(node.node)
+            catalog_arr.push(node.node)
+            hidden_arr.push(node.uid)
+            sheet.add_row([node.uid, path_arr.join(" > ")])
+          }
+        end
+
+        empty_cols = node_catalogs.map{|item| "" }
+
+        wb.add_worksheet name: "知识点章节对应表" do |sheet|
+          sheet.add_row(["Knowledge ID","级知识点"].concat(catalog_arr))
+          sheet.add_row(["id", "级知识点"].concat(hidden_arr))
+          
+          ckps = BankSubjectCheckpointCkp.where(subject: node.subject, category: node.xue_duan, dimesion: "knowledge")
+
+          ckps.each_with_index{|ckp, index|
+            next unless ckp
+            ckp_ancestors = BankRid.get_all_higher_nodes ckps, ckp
+            ckp_path_arr = ckp_ancestors.map{|a| a.checkpoint }
+            ckp_path_arr.push(ckp.checkpoint)
+            ckp_path = ckp_path_arr.join(" >> ")
+            row_arr = [ckp.uid, ckp_path].concat(empty_cols)
+            sheet.add_row(row_arr)
+            cells= sheet.rows.last.cells[2..row_arr.count].map{|cell| {:key=> cell.r }}
+            cells.each{|cell|
+              sheet.add_data_validation(cell[:key],{
+                :type => :list,
+                :formula1 => "y",
+                :showDropDown => false,
+                :showInputMessage => true,
+                :promptTitle => "章节表",
+                :prompt => ""
+              })
+            }
+
+          }
+        end
+        out_path = args[:out]
+        out_excel.serialize(out_path)
+      rescue Exception => ex
+        puts ex.message
+        puts ex.backtrace
+        puts "failed"
+      end
+      puts "done"
+    else
+      puts "教材不存在！"
+    end
+  end
+
 end

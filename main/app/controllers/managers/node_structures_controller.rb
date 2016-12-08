@@ -1,4 +1,5 @@
 class Managers::NodeStructuresController < ApplicationController
+  
   layout 'manager_crud'
 
   respond_to :json, :html

@@ -23,6 +23,7 @@ Rails.application.routes.draw do
         get '/:uid/edit',action: :edit, as: 'edit'
         post '/:id/move_node', action: :move_node, as: 'move_node'
         post 'import_ckp_file'
+        get 'tree'
       end
     end
 
@@ -42,8 +43,11 @@ Rails.application.routes.draw do
 
     resources :node_structures, concerns: :destroy_all do 
       post 'add_ckps', on: :collection
+      get "catalog_tree", on: :collection
       resources :node_catalogs, concerns: :destroy_all do 
         post 'add_ckps', on: :collection
+      end
+      resources :checkpoints, concerns: :destroy_all do
       end
     end
     
@@ -84,11 +88,9 @@ Rails.application.routes.draw do
       get 'get_grades'
       get 'get_versions'
       get 'get_units'
-      get 'get_catalogs_and_tree_data'
-      get 'get_ckp_data' 
-      # get 'get_tree_data_by_subject' 
-      get 'get_ckp_data_by_volume_catalog'
-   end
+      get 'list'
+      get 'catalog_list'
+    end
   end
 
   resource :quizs do
@@ -122,7 +124,13 @@ Rails.application.routes.draw do
       get 'get_tree_data_by_subject'
     end
   end
-  
+
+  resources :subject_checkpoints do 
+    collection do 
+      get 'ztree_data_list'
+    end
+  end 
+
   resources :score_reports do 
     collection do 
       get 'simple'

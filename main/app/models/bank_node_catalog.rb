@@ -39,4 +39,14 @@ class BankNodeCatalog < ActiveRecord::Base
       bank_node_catalog_subject_ckps.create(ckp_arr)
     end
   end
+
+  def ztree_node_hash
+    {
+      uid: self.uid,
+      rid: self.rid,
+      pid: self.rid.slice(0, ((rid.size - 3 < 0) ? 0 :(rid.size - 3))),
+      name: self.node,
+      check: 0
+    }
+  end
 end

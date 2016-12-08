@@ -81,7 +81,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     # str_pid: parent rid
     # node_uid: node structure uid
     # dimesion
-    def get_all_ckps_by_dimesion(subject, xue_duan, dimesion, str_pid='')
+    def get_all_ckps_by_dimesion(subject, xue_duan, dimesion, str_pid='', options={})
       result = {pid: str_pid, nodes: []}
       return result if (subject.blank? || dimesion.blank?)
       
@@ -91,8 +91,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 	      ckps = ckp ? ckp.children : []
 	    end
       # ckps = BankRid.get_all_child target_objs, pid
-      result[:nodes] = constructure_ckps ckps
-      result[:nodes].unshift(root_node(dimesion))
+      result[:nodes] = constructure_ckps(ckps, options)
+      result[:nodes].unshift(root_node(dimesion, options))
       return result
     end
 
@@ -157,8 +157,9 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       end
     end
 
-    def root_node(dimesion)
-    	{rid: '', pid: '', nocheck: true, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
+    def root_node(dimesion, options={})
+      nocheck = options[:disable_no_check].nil?? is_entity^1 : options[:disable_no_check]
+    	{rid: '', pid: '', nocheck: nocheck, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
     end
 	 
 	end
@@ -215,7 +216,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   	rid.slice(0, rid.size - Common::SwtkConstants::CkpStep)
   end
 
-  def organization_hash
+  def organization_hash options={}
+    nocheck = options[:disable_no_check].nil?? is_entity^1 : options[:disable_no_check]
     { 
       id: rid, 
       uid: uid,
@@ -231,7 +233,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       desc: desc,
       sort: sort,
       ckp_source: Common::CheckpointCkp::CkpSource::SubjectCkp,
-      nocheck: is_entity^1,
+      nocheck: nocheck
     }
   end
 
@@ -250,9 +252,9 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   	children.destroy_all
   end
 
- 	def self.constructure_ckps ckps
-  	# ckps.map{|item| item.organization_hash}
-    ckps.map(&:organization_hash)
+ 	def self.constructure_ckps ckps, options={}
+  	ckps.map{|item| item.organization_hash(options)}
+    # ckps.map(&:organization_hash)
   end
 
   

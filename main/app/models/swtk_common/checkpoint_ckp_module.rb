@@ -73,11 +73,11 @@ module CheckpointCkpModule
       Dimesion::Ability.to_sym => 0.1
     }
 
-    module SubjectCkpCategory
-      XiaoXue = "xiao_xue"
-      ChuZhong = "chu_zhong"
-      GaoZhong = "gao_zhong"
-    end
+    # module SubjectCkpCategory
+    #   XiaoXue = "xiao_xue"
+    #   ChuZhong = "chu_zhong"
+    #   GaoZhong = "gao_zhong"
+    # end
 
     def ckp_types_loop(&block)
       nodes = {}
