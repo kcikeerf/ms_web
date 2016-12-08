@@ -49,9 +49,9 @@
 <script type="text/javascript">
 	function formatOper(val,row,index){
 		// return "<a href='<%= @data[:path] %>/"+row["uid"]+"/node_catalogs'>查看添加目录</a> <a href='#' onclick=set_ckp_dialog('node_structure_uid=" + row['uid'] + "&subject="+ row['subject'] +"')>指标体系</a>"
-		var click_catalog_func = 'addTab(window.parent.$("#tabs"),"教材目录管理", "<%= @data[:path] %>\/'+row["uid"]+'\/node_catalogs")';
-    var click_checkpoint_func = 'addTab(window.parent.$("#tabs"),"教材指标管理", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
-    var click_show_checkpoints_func = 'addTab(window.parent.$("#tabs"),"查看教材指标", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
+		var click_catalog_func = 'reopen(window.parent.$("#tabs"),"教材目录管理", "<%= @data[:path] %>\/'+row["uid"]+'\/node_catalogs")';
+    var click_checkpoint_func = 'reopen(window.parent.$("#tabs"),"教材指标管理", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
+    var click_show_checkpoints_func = 'reopen(window.parent.$("#tabs"),"查看教材指标", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
 		var link_str = "<a href='#'' onclick='" + click_catalog_func + "'>教材目录管理</a>&nbsp;";
 		link_str += "<a href='#'' onclick='" + click_checkpoint_func + "'>教材指标管理</a>&nbsp;";
     link_str += "<a href='#'' onclick='" + click_show_checkpoints_func + "'>查看教材指标</a>";
