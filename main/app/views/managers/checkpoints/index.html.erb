@@ -2,7 +2,7 @@
 	<%= stylesheet_link_tag 'managers/checkpoints', 
 		media: 'all', 
 		'data-turbolinks-track' => true %>
-	<%= javascript_include_tag 'managers/node_subject_checkpoints', 'managers/node_structure_catalog', 'managers/selected_nodes_tree',
+	<%= javascript_include_tag 'managers/node_subject_checkpoints', 'managers/node_structure_catalog', 'managers/selected_nodes_tree', 'managers/node_catalog_checkpoint_combination',
 		'data-turbolinks-track' => true %>
 <% end %>
 <div class="easyui-layout" data-options="fit:true">
@@ -22,93 +22,7 @@
 		<%= render '/managers/checkpoints/combination_action' %>
 	</div>
 </div>
-<script type="text/javascript">
-	//初始化教材目录
-	var manager_textbook_catalog = new textbook_catalog(
-			null, 
-			"managers_node_structures_list",
-			"<%=raw (params[:node_structure_id].blank?? "":params[:node_structure_id])%>", 
-			"managers_node_structure_catalogs_ztree", 
-			null, 
-			{
-    			node_checked: function(data){ 
-    				var obj = new selected_nodes_tree("#managers_selected_catalogs_tree", data);
-    				obj.init();
-    			}
-    		}
-    	);
-	manager_textbook_catalog.init();
-	
-	var callback_for_selected_catalogs_h = {
-		func: function(){
-			//清空已选择目录
-			var selected_catalog = new selected_nodes_tree("#managers_selected_catalogs_tree", []);
-			selected_catalog.init();
-		}
-	}
-	manager_textbook_catalog.textbook.after_change.push(callback_for_selected_catalogs_h);
-
-
-	//更新教材后的指标相关的对象
-	var callback_for_checkpoints_h = {
-		func: function(){
-			//初始化知识树
-			var knowledge_tree = new subject_checkpoint(
-					"#managers_subejct_ckp_knowledge_tree", 
-					manager_textbook_catalog.textbook.checked_item.subject, 
-					manager_textbook_catalog.textbook.checked_item.xue_duan, 
-					"knowledge", 
-					null,
-					{
-		    			node_checked: function(data){
-		    				var obj = new selected_nodes_tree("#managers_selected_subejct_ckp_knowledge_tree", data);
-		    				obj.init();
-		    			}
-		    		}
-				);
-			knowledge_tree.init();
-			//清空已选择知识树
-			var selected_knowledge_tree = new selected_nodes_tree("#managers_selected_subejct_ckp_knowledge_tree", []);
-			selected_knowledge_tree.init();
-
-			//初始化技能树
-			var skill_tree = new subject_checkpoint(
-					"#managers_subejct_ckp_skill_tree", 
-					manager_textbook_catalog.textbook.checked_item.subject, 
-					manager_textbook_catalog.textbook.checked_item.xue_duan, 
-					"skill", 
-					null,
-					{
-		    			node_checked: function(data){
-		    				var obj = new selected_nodes_tree("#managers_selected_subejct_ckp_skill_tree", data);
-		    				obj.init();
-		    			}
-		    		}
-				);
-			skill_tree.init();
-			//清空已选择技能树
-			var selected_skill_tree = new selected_nodes_tree("#managers_selected_subejct_ckp_knowledge_tree", []);
-			selected_skill_tree.init();
-
-			//初始化能力树
-			var ability_tree = new subject_checkpoint(
-					"#managers_subejct_ckp_ability_tree", 
-					manager_textbook_catalog.textbook.checked_item.subject, 
-					manager_textbook_catalog.textbook.checked_item.xue_duan, 
-					"ability", 
-					null,
-					{
-		    			node_checked: function(data){
-		    				var obj = new selected_nodes_tree("#managers_selected_subejct_ckp_ability_tree", data);
-		    				obj.init();
-		    			}
-		    		}
-				);
-			ability_tree.init();
-			//清空已选择能力树
-			var selected_ability_tree = new selected_nodes_tree("#managers_selected_subejct_ckp_ability_tree", []);
-			selected_ability_tree.init();
-		}
-	};
-	manager_textbook_catalog.textbook.after_change.push(callback_for_checkpoints_h);
+<script type="text/javascript">	
+	var obj = new node_catalog_checkpoint_combination("<%=raw (params[:node_structure_id].blank?? "":params[:node_structure_id])%>");
+    obj.init();
 </script>

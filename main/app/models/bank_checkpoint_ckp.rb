@@ -66,6 +66,20 @@ class BankCheckpointCkp < ActiveRecord::Base
         }
       }
       return result
+
+      # 绑定教材，目录，指标
+      # data = {
+      #   node_uid: xxx,
+      #   catalogs: [
+      #     {}
+      #   ],
+      #   checkpoints: [
+      #     {}
+      #   ]
+      # }
+      def combine_node_catalogs_subject_checkpoints data
+
+      end
     end
 
     def get_web_ckps(node_uid, level_config=[[1], [2], [3], [4], [5,100]])
