@@ -3,8 +3,9 @@
 //= require_self
 
 function subject_checkpoint(tree_selector, subject, xue_duan, dimesion, checked_ckp_uids, callback_obj){
+	var self = this;
 	//初始参数
-	this.tree_selector = typeof subject !== 'undefined' ? tree_selector : "";
+	this.tree_selector = typeof tree_selector !== 'undefined' ? tree_selector : "";
 	if(this.tree_selector){
 		this.tree = $(tree_selector)
 	}
@@ -17,8 +18,11 @@ function subject_checkpoint(tree_selector, subject, xue_duan, dimesion, checked_
 	//当节点被选择的时候
 	this.node_checked = function(event, treeId, treeNode){
 		tree_obj = $.fn.zTree.getZTreeObj(treeId);
-		this.checked_nodes = tree_obj.getCheckedNodes();
-		callback_obj.node_checked(this.checked_nodes);
+		self.checked_nodes = tree_obj.getCheckedNodes();
+		for(var i in self.checked_nodes){
+			self.checked_nodes[i].open=true;
+		}
+		callback_obj.node_checked(self.checked_nodes);
 	};
 
 	this.setting = {
@@ -32,7 +36,8 @@ function subject_checkpoint(tree_selector, subject, xue_duan, dimesion, checked_
 			enable: true,
 			chkStyle: 'checkbox',
 			chkboxType: { "Y": "p", "N": "ps" },
-			radioType: "level"
+			radioType: "level",
+			autoCheckTrigger: true
 		},
 		data: {
 			simpleData: {
@@ -86,6 +91,24 @@ function subject_checkpoint(tree_selector, subject, xue_duan, dimesion, checked_
 
 	this.construct_tree = function(ins, data){
 		$.fn.zTree.init(ins.tree, ins.setting, data.nodes);
+	},
+
+	this.ztree_obj = function(){
+		var tree_id = tree_selector.split("#")[1];
+		return $.fn.zTree.getZTreeObj(tree_id);
+	},
+
+	this.check_nodes = function(nodes,flag){
+		var checked_nodes = this.ztree_obj().getCheckedNodes();
+		for(var i in checked_nodes){
+			this.ztree_obj().checkNode(checked_nodes[i],false);
+		}
+		for(var i in nodes){
+			var node = nodes[i];
+			var target_node = this.ztree_obj().getNodeByParam("uid", node.uid, null);
+			this.ztree_obj().checkNode(target_node, flag, true);
+			//this.ztree_obj().expandNode(target_node, true, false, false);
+		}
 	},
 
 	this.init = function(){

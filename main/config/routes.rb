@@ -24,6 +24,7 @@ Rails.application.routes.draw do
         # post '/:id/move_node', action: :move_node, as: 'move_node'
         # post 'import_ckp_file'
         post 'combine_node_catalogs_subject_checkpoints'
+        post 'list'
       end
     end
 
@@ -42,12 +43,18 @@ Rails.application.routes.draw do
     end
 
     resources :node_structures, concerns: :destroy_all do 
-      post 'add_ckps', on: :collection
       get "catalog_tree", on: :collection
       resources :node_catalogs, concerns: :destroy_all do 
-        post 'add_ckps', on: :collection
+        resources :checkpoints, concerns: :destroy_all do
+          collection do
+            get "tree"
+          end
+        end
       end
       resources :checkpoints, concerns: :destroy_all do
+        collection do
+          get "tree"
+        end
       end
     end
     

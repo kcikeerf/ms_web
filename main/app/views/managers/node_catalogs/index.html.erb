@@ -1,32 +1,7 @@
 <th data-options="field:'uid',align:'center', width:'20%'">ID</th>
 <th data-options="field:'rid',align:'left', width:'20%'">章节</th>
-<th data-options="field:'node',align:'center', width:'20%'">名称</th>
-<!-- <th data-options="field:'dt_add',align:'center', width:'25%'">创建时间</th>
-<th data-options="field:'dt_update',align:'center', width:'25%'">更新时间</th> -->
-<th data-options="field:'ID',width:'15%',align:'center',formatter:formatOper">操作</th>
-<!-- <th data-options="field:'rid',align:'center', width:'auto', hidden: true">rid</th> -->
-
-<!-- <div id='resource_add' style='display: none;'>
-		<div class='fnode'>
-			<label>名称:</label>
-			<input type="text" name="node_structrue[][node]" class="easyui-validatebox" required="required"> -->
-<!-- 			<span class="l-btn-left l-btn-icon-left del" style='display: none;'><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span> -->
-<!-- 		</div>
- -->
-<!-- 		<span class="l-btn-left l-btn-icon-left add_catalog" id="add_catalog"><span class="l-btn-text">增加</span><span class="l-btn-icon icon-add">&nbsp;</span></span> -->
-<!-- </div> -->
-
-<!-- <div id='resource_edit' style='display: none;'>
-	<div class='fnode'>
-		<label>名称:</label>
-		<input type="text" name="node" class="easyui-validatebox" required="required">
-	</div>
-</div> -->
-
-<%# content_for :content do %>
-	<%#= hidden_field_tag :subject, @node_structure.id %>
-<!-- 	<div id="checkpoint_dialog"></div> -->
-<%# end %>
+<th data-options="field:'node',align:'left', width:'20%'">名称</th>
+<th data-options="field:'ID',width:'40%',align:'center',formatter:formatOper">操作</th>
 
 <% content_for :form do %>
 	<div class="fsection_rid">
@@ -47,22 +22,10 @@
 <% end %>
 <script type="text/javascript">
 	function formatOper(val,row,index){
-   		var click_checkpoint_func = 'addTab(window.parent.$("#tabs"),"教材指标管理", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
-   		// var click_show_checkpoints_func = 
-		var link_str = "<a href='#'' onclick='" + click_checkpoint_func + "'>目录指标管理</a>";
+   		var click_checkpoint_func = 'reopen(window.parent.$("#tabs"),"教材及目录指标体系管理", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints")';
+   		var click_show_checkpoints_func = 'reopen(window.parent.$("#tabs"),"查看目录指标", "<%= @data[:path] %>\/'+row["uid"]+'\/checkpoints/tree")';
+		var link_str = "<a href='#'' onclick='" + click_checkpoint_func + "'>目录指标管理</a>&nbsp;";
+		link_str += "<a href='#'' onclick='" + click_show_checkpoints_func + "'>查看目录指标</a>";
 		return link_str;
 	} 
-	// $(document).ready(function(){
-	// 	var $html_content = $('#resource_add > div:first').clone().attr('id','');
-	// 	$html_content.find('.del').show();
-	// 	$(document).on('click', '#add_catalog', function(){
-	// 		var insert_content = $html_content.clone().insertBefore(this);
-	// 		$.parser.parse(insert_content);
-	// 	});
-
-	// 	$(document).on('click', '.del', function(){
-	// 		$(this).parent('div').remove();
-	// 	});
-
-	// })
 </script>
