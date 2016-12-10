@@ -3,7 +3,10 @@
 //= require managers/selected_nodes_tree
 //= require_self
 
-function node_catalog_checkpoint_combination(node_uid){
+function node_catalog_checkpoint_combination(node_uid,catalog_uids){
+	this.node_uid = typeof node_uid !== 'undefined' ? node_uid : "";
+	this.catalog_uids = typeof catalog_uids !== 'undefined' ? catalog_uids : [];
+
 	//对象变量
 	var self = this;
 	this.selected_catalog_tree = null;
@@ -44,9 +47,9 @@ function node_catalog_checkpoint_combination(node_uid){
 	this.manager_textbook_catalog = new textbook_catalog(
 			null, 
 			"managers_node_structures_list",
-			node_uid,
+			this.node_uid,
 			"managers_node_structure_catalogs_ztree", 
-			null, 
+			catalog_uids,
 			//回调函数
 			[
 				//更新选择树

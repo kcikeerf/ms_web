@@ -43,12 +43,12 @@ function selected_nodes_tree(tree_selector, tree_nodes){
 
 	this.construct_tree = function(){
 		$.fn.zTree.init(this.tree, this.setting, this.tree_nodes);
-	},
+	};
 
 	this.ztree_obj = function(){
 		var tree_id = tree_selector.split("#")[1];
 		return $.fn.zTree.getZTreeObj(tree_id);
-	},
+	};
 
     this.get_checked_nodes = function(){
     	var result = [];
@@ -66,7 +66,7 @@ function selected_nodes_tree(tree_selector, tree_nodes){
 			}
 		}
 		return result;
-    },
+    };
 
 	this.get_last_nodes = function(){
 		var result = [];
@@ -92,7 +92,7 @@ function selected_nodes_tree(tree_selector, tree_nodes){
 			}
 		}
 		return result;
-	},
+	};
 
 	this.init = function(){
 		this.construct_tree();

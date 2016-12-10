@@ -87,16 +87,16 @@ function subject_checkpoint(tree_selector, subject, xue_duan, dimesion, checked_
 			return false;
 		}
 		this.ajax("GET", this.api.subject_checkpoints_list, params, this.construct_tree);
-	},
+	};
 
 	this.construct_tree = function(ins, data){
 		$.fn.zTree.init(ins.tree, ins.setting, data.nodes);
-	},
+	};
 
 	this.ztree_obj = function(){
 		var tree_id = tree_selector.split("#")[1];
 		return $.fn.zTree.getZTreeObj(tree_id);
-	},
+	};
 
 	this.check_nodes = function(nodes,flag){
 		var checked_nodes = this.ztree_obj().getCheckedNodes();
@@ -109,7 +109,7 @@ function subject_checkpoint(tree_selector, subject, xue_duan, dimesion, checked_
 			this.ztree_obj().checkNode(target_node, flag, true);
 			//this.ztree_obj().expandNode(target_node, true, false, false);
 		}
-	},
+	};
 
 	this.init = function(){
 		this.get_list();
