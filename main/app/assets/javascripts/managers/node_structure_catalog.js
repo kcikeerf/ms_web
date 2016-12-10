@@ -79,7 +79,7 @@ function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_a
 	if(this.tree_id){
 		this.tree = $("#" + this.tree_id);
 	}
-	this.checked_uids = typeof catalog_checked_uids !== 'undefined' ? catalog_checked_uids : null;
+	this.checked_uids = typeof catalog_checked_uids !== 'undefined' ? catalog_checked_uids : [];
 	this.callback_arr = typeof callback_arr !== 'undefined' ? callback_arr : [];
 	this.tree_data = [];
 	this.checked_nodes = [];
@@ -108,7 +108,8 @@ function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_a
 			enable: true,
 			chkStyle: 'checkbox',
 			chkboxType: { "Y": "p", "N": "ps" },
-			radioType: "level"
+			radioType: "level",
+			autoCheckTrigger: true
 		},
 		data: {
 			simpleData: {
@@ -143,6 +144,9 @@ function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_a
 			}
 		});
 	};
+	this.ztree_obj = function(){
+		return $.fn.zTree.getZTreeObj(this.tree_id);
+	};
 	//读取目录列表
 	this.get_list = function(){
 		var params = ""
@@ -154,6 +158,14 @@ function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_a
 	//构建目录树
 	this.construct_tree = function(ins, data){
 		$.fn.zTree.init(ins.tree, ins.setting, data);
+		console.log()
+		for(var i in self.checked_uids){
+			console.log(self.checked_uids[i]);
+			var target_node = self.ztree_obj().getNodeByParam("uid", self.checked_uids[i], null);
+			console.log(target_node);
+			self.ztree_obj().checkNode(target_node, true, true);
+			//this.ztree_obj().expandNode(target_node, true, false, false);
+		}
 	};
 
 }

@@ -29,6 +29,9 @@
 	</div>
 </div>
 <script type="text/javascript">	
-	var obj = new node_catalog_checkpoint_combination("<%=raw (params[:node_structure_id].blank?? "":params[:node_structure_id])%>");
+	var obj = new node_catalog_checkpoint_combination(
+			"<%=raw (params[:node_structure_id].blank?? "":params[:node_structure_id])%>", 
+			["<%=raw (params[:node_catalog_id].blank?? "":params[:node_catalog_id])%>"]
+		);
     obj.init();
 </script>
