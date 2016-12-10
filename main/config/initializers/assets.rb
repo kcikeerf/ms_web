@@ -28,7 +28,13 @@ Rails.application.config.assets.precompile += ['managers/mains.css', 'managers/m
 
 Rails.application.config.assets.precompile += ['managers/subject_checkpoints.css.scss', 'managers/subject_checkpoints.js', 'managers/checkpoints.css', 'managers/checkpoints.js']
 
-Rails.application.config.assets.precompile += ['managers/selected_nodes_tree.js', 'managers/node_subject_checkpoints.js', 'managers/node_structure_catalog.js', 'managers/node_catalog_checkpoint_combination.js']
+Rails.application.config.assets.precompile += [
+	'managers/selected_nodes_tree.js', 
+	'managers/node_subject_checkpoints.js', 
+	'managers/node_structure_catalog.js', 
+	'managers/node_catalog_checkpoint_combination.js',
+	'managers/node_catalog_checkpoint_display.js'
+]
 
 Rails.application.config.assets.precompile += ['jquery.remotipart.js']
 

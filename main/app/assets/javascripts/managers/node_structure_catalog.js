@@ -72,14 +72,15 @@ function textbook(textbook_form_id, textbook_select_list_id, textbook_checked_ui
 	};
 }
 
-function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_obj){
+function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_arr){
+	var self = this;
 	this.textbook_uid = typeof textbook_uid !== 'undefined' ? textbook_uid : null;
 	this.tree_id = typeof catalog_tree_id !== 'undefined' ? catalog_tree_id : null;
 	if(this.tree_id){
 		this.tree = $("#" + this.tree_id);
 	}
 	this.checked_uids = typeof catalog_checked_uids !== 'undefined' ? catalog_checked_uids : null;
-	this.callback_obj = typeof callback_obj !== 'undefined' ? callback_obj : {};
+	this.callback_arr = typeof callback_arr !== 'undefined' ? callback_arr : [];
 	this.tree_data = [];
 	this.checked_nodes = [];
 
@@ -90,8 +91,10 @@ function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_o
 	//当节点被选择的时候
 	this.node_checked = function(event, treeId, treeNode){
 		tree_obj = $.fn.zTree.getZTreeObj(treeId);
-		this.checked_nodes = tree_obj.getCheckedNodes();
-		callback_obj.node_checked(this.checked_nodes);
+		self.checked_nodes = tree_obj.getCheckedNodes();
+		for( var item in self.callback_arr ){
+			self.callback_arr[item].func(treeNode, self.checked_nodes);
+		};		
 	};
 
 	this.setting = {
@@ -155,12 +158,12 @@ function catalog(textbook_uid, catalog_tree_id, catalog_checked_uids, callback_o
 
 }
 
-function textbook_catalog(textbook_form_id, textbook_select_list_id, textbook_checked_uid,catalog_tree_id, catalog_checked_uids, callback_obj){ // 教材过滤组件begin
+function textbook_catalog(textbook_form_id, textbook_select_list_id, textbook_checked_uid,catalog_tree_id, catalog_checked_uids, callback_arr){ // 教材过滤组件begin
 	var self = this;
 	self.textbook = new textbook(textbook_form_id, textbook_select_list_id, textbook_checked_uid);
 	var callback_h = {
 		func: function(){
-			self.catalog = new catalog(self.textbook.checked_uid, catalog_tree_id, catalog_checked_uids, callback_obj);
+			self.catalog = new catalog(self.textbook.checked_uid, catalog_tree_id, catalog_checked_uids, callback_arr);
 			self.catalog.get_list();
 		}
 	};
