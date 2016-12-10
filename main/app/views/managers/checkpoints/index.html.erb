@@ -14,7 +14,13 @@
 	<div data-options="region:'center',split:true" 
 		 title="教材对应的学科知识指标"
 	     style="width: 50%;padding:10px">
-	    <%= render '/managers/checkpoints/tree' %>
+	    <%= render partial: '/managers/checkpoints/tree', 
+					locals: {
+						knowledge_tree_id: "managers_subejct_ckp_knowledge_tree",
+						skill_tree_id: "managers_subejct_ckp_skill_tree",
+						ability_tree_id: "managers_subejct_ckp_ability_tree"
+					} 
+	    %>
 	</div>
 	<div data-options="region:'south',split:true" 
          title="当前已选择目录及指标"

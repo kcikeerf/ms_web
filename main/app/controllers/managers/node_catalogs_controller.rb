@@ -1,4 +1,5 @@
 class Managers::NodeCatalogsController < ApplicationController
+  
   layout 'manager_crud'
 
   respond_to :json, :html
@@ -47,22 +48,17 @@ class Managers::NodeCatalogsController < ApplicationController
     respond_with(@node_structure, @catalog)
   end
 
-  def add_ckps
-    ckps = @catalog.add_ckps(params[:subject_checkpoint_ckp_uids])
-    render json: response_json_by_obj(@catalog.errors.empty?, @catalog)
-  end
-
   private
 
-  def set_node_structure
-    @node_structure = BankNodestructure.find(params[:node_structure_id])
-  end
+    def set_node_structure
+      @node_structure = BankNodestructure.find(params[:node_structure_id])
+    end
 
-  def set_catalog
-    @catalog = BankNodeCatalog.find(params[:id])
-  end
+    def set_catalog
+      @catalog = BankNodeCatalog.find(params[:id])
+    end
 
-  def catalog_params
-    params.permit(:node_structure_id, :former_rid, :later_rid, :node, :page, :rows)
-  end
+    def catalog_params
+      params.permit(:node_structure_id, :former_rid, :later_rid, :node, :page, :rows)
+    end
 end

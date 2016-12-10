@@ -30,15 +30,15 @@ class BankNodeCatalog < ActiveRecord::Base
     }
   end
 
-  def add_ckps(ckps)
-    transaction do 
-      bank_node_catalog_subject_ckps.destroy_all
-      ckp_arr = [].tap do |arr|
-        ckps.each {|ckp| arr << {subject_ckp_uid: ckp} }
-      end
-      bank_node_catalog_subject_ckps.create(ckp_arr)
-    end
-  end
+  # def add_ckps(ckps)
+  #   transaction do 
+  #     bank_node_catalog_subject_ckps.destroy_all
+  #     ckp_arr = [].tap do |arr|
+  #       ckps.each {|ckp| arr << {subject_ckp_uid: ckp} }
+  #     end
+  #     bank_node_catalog_subject_ckps.create(ckp_arr)
+  #   end
+  # end
 
   def ztree_node_hash
     {
@@ -48,5 +48,13 @@ class BankNodeCatalog < ActiveRecord::Base
       name: self.node,
       check: 0
     }
+  end
+
+  def replace_subject_checkpoints ckp_uids
+    # 清除目录旧的绑定指标
+    self.bank_node_catalog_subject_ckps.destroy_all
+    # 绑定目录新的绑定指标
+    self.bank_subject_checkpoint_ckp_ids = ckp_uids
+    self.save!
   end
 end
