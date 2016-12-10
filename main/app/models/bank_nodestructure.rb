@@ -66,7 +66,7 @@ class BankNodestructure < ActiveRecord::Base
     def list
       arr = self.all.order({:version => :asc, :subject=> :asc, :grade => :asc, :term => :asc})
       arr.map{|item|
-        item.attributes
+        {uid: item.uid, name: [item.version_cn,item.subject_cn,item.grade_cn,item.term_cn].join("/")}
       }
     end
   end
