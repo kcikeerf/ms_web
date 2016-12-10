@@ -1,6 +1,6 @@
 class Managers::NodeStructuresController < ApplicationController
   
-  layout 'manager_crud'
+  layout 'manager_crud', only: [:index]
 
   respond_to :json, :html
   
@@ -33,20 +33,14 @@ class Managers::NodeStructuresController < ApplicationController
     respond_with(@node_structure)
   end
 
-  def add_ckps
-    ckps = @node_structure.add_ckps(params[:subject_checkpoint_ckp_uids])
-    render json: response_json_by_obj(@node_structure.errors.empty?, @node_structure)
-  end
-
   private
 
-  def set_node_structure
-    @node_structure = BankNodestructure.find(params[:id])
-  end
+    def set_node_structure
+      @node_structure = BankNodestructure.find(params[:id])
+    end
 
-  def node_structure_params
-    params.permit(:version_cn, :grade, :subject, :term)
-  end
-
+    def node_structure_params
+      params.permit(:version_cn, :grade, :subject, :term)
+    end
 
 end
