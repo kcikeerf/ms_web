@@ -12,6 +12,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
 	scope :not_equal_rid, ->(rid) { where.not(rid: rid) }
 	scope :by_subject, ->(subject) { where(subject: subject) }
+  scope :by_dimesion, ->(dimesion) { where(dimesion: dimesion) }
 	scope :is_entity, -> { where(is_entity: true) }
 
 	class << self
@@ -160,11 +161,15 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     end
 
     def root_node(dimesion, options={})
-      nocheck = options[:disable_no_check].nil?? is_entity^1 : options[:disable_no_check]
+      nocheck = options[:disable_no_check].nil?? 1 : options[:disable_no_check]
     	# {rid: '', pid: '', nocheck: nocheck, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
       {rid: '', pid: '', nocheck: nocheck, dimesion: dimesion, name: Common::Locale::i18n("dict.#{dimesion}") + Common::Locale::i18n('managers.root_node'), open: true}
     end
-	 
+
+    def constructure_ckps ckps, options={}
+      ckps.map{|item| item.organization_hash(options)}
+      # ckps.map(&:organization_hash)
+    end
 	end
 
 	#
@@ -220,7 +225,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   end
 
   def organization_hash options={}
-    nocheck = options[:disable_no_check].nil?? is_entity^1 : options[:disable_no_check]
+    nocheck_flag = options[:disable_no_check].nil?? is_entity^1 : options[:disable_no_check]
     { 
       id: rid, 
       uid: uid,
@@ -236,7 +241,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       desc: desc,
       sort: sort,
       ckp_source: Common::CheckpointCkp::CkpSource::SubjectCkp,
-      nocheck: nocheck
+      nocheck: nocheck_flag,
+      chkDisabled: false
     }
   end
 
@@ -254,11 +260,5 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   	return false if children_nodes.blank?
   	children.destroy_all
   end
-
- 	def self.constructure_ckps ckps, options={}
-  	ckps.map{|item| item.organization_hash(options)}
-    # ckps.map(&:organization_hash)
-  end
-
   
 end

@@ -5,7 +5,6 @@ class BankNodestructure < ActiveRecord::Base
   include TimePatch
   include InitUid
 
-  has_many :bank_tbc_ckps, foreign_key: "tbs_uid"
   has_many :bank_checkpoint_ckps, foreign_key: "node_uid"#, through: :bank_tbc_ckps
 
   #教材目录 1:n 
@@ -72,15 +71,15 @@ class BankNodestructure < ActiveRecord::Base
     end
   end
 
-  def add_ckps(ckps)
-    transaction do
-      bank_nodestructure_subject_ckps.destroy_all
-      ckp_arr = [].tap do |arr|
-        ckps.each {|ckp| arr << {subject_ckp_uid: ckp} }
-      end
-      bank_nodestructure_subject_ckps.create(ckp_arr)
-    end
-  end
+  # def add_ckps(ckps)
+  #   transaction do
+  #     bank_nodestructure_subject_ckps.destroy_all
+  #     ckp_arr = [].tap do |arr|
+  #       ckps.each {|ckp| arr << {subject_ckp_uid: ckp} }
+  #     end
+  #     bank_nodestructure_subject_ckps.create(ckp_arr)
+  #   end
+  # end
 
   def catalog_ztree_list
     self.bank_node_catalogs.map{|item|
@@ -97,6 +96,14 @@ class BankNodestructure < ActiveRecord::Base
 
   def update_node params
     self.update(node_params(params))
+    self.save!
+  end
+
+  def replace_subject_checkpoints
+    # 清除教材旧的绑定指标
+    self.bank_nodestructure_subject_ckps.destroy_all
+    # 绑定教材的所有目录的当前指标
+    self.bank_subject_checkpoint_ckp_ids = self.bank_node_catalogs.map{|item| item.bank_subject_checkpoint_ckp_ids }.flatten.uniq
     self.save!
   end
 

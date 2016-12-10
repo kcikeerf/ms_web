@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class BankCheckpointCkp < ActiveRecord::Base
 #  include Tenacity
 #  include MongoMysqlRelations
@@ -66,20 +68,6 @@ class BankCheckpointCkp < ActiveRecord::Base
         }
       }
       return result
-
-      # 绑定教材，目录，指标
-      # data = {
-      #   node_uid: xxx,
-      #   catalogs: [
-      #     {}
-      #   ],
-      #   checkpoints: [
-      #     {}
-      #   ]
-      # }
-      def combine_node_catalogs_subject_checkpoints data
-
-      end
     end
 
     def get_web_ckps(node_uid, level_config=[[1], [2], [3], [4], [5,100]])
@@ -141,30 +129,12 @@ class BankCheckpointCkp < ActiveRecord::Base
         nodes.select {|n| n.rid.length == node_level.first * Common::SwtkConstants::CkpStep}
       end
     end
-
-    # 
-    # get child nodes of pid
-    #
-    # str_pid: parent ridvi
-    # node_uid: node structure uid
-    # dimesion: 
-    #
-    # def get_child_ckps params
-    #   result = {"pid" => params["str_pid"], "nodes"=>[]}
-    #   return result if (params["node_uid"].blank? || params["dimesion"].blank?)
-    #   pid = params["str_pid"]
-    #   target_objs = self.where("node_uid = '#{params["node_uid"]}' and dimesion = '#{params["dimesion"]}'")
-    #   ckps = BankRid.get_child target_objs, pid
-    #   p ckps
-    #   result["nodes"] = constructure_ckps ckps
-    #   return result
-    # end
-
     
     #后台读取所有指标
     def get_all_ckps(node_uid, str_pid='')
       Common::CheckpointCkp.ckp_types_loop {|dimesion| get_all_ckps_by_dimesion(node_uid, dimesion, str_pid) }
     end
+
     # get all nodes include pid
     #  
     # str_pid: parent rid
@@ -231,50 +201,109 @@ class BankCheckpointCkp < ActiveRecord::Base
       {rid: '', pid: '', nocheck: true, dimesion: dimesion, name: Common::Locale::i18n('managers.root_node'), open: true}
     end
 
-    # def get_all_higher_ckps params
-    #   result = {"nodes" => []} 
-    #   return result if params["node_uid"].blank?
+    # 绑定教材，目录，指标
+    # data = {
+    #   node_uid: xxx,
+    #   catalogs: [
+    #     {}
+    #   ],
+    #   checkpoints: [
+    #     {}
+    #   ]
+    # }
+    def combine_node_catalogs_subject_checkpoints data
+      # 更新目录指标
+      catalog_uids = data[:catalogs].blank?? []:data[:catalogs].values.map{|item| item[:uid]}
+      target_subject_ckp_uids = data[:checkpoints].blank?? []:data[:checkpoints].values.map{|item| item.values}.flatten.map{|item| item[:uid] if item[:uid]}.compact
+      # 若教材和目录任一缺失不做更新
+      return false if catalog_uids.blank?
+      target_node = BankNodestructure.where(:uid => data[:node_uid]).first
+      return false unless target_node
 
-    #   current_ckp = self.where("uid = ?", params["str_uid"]).first if params["str_uid"]
-    #   targets = self.where("node_uid = ? and dimesion = ?", params["node_uid"], current_ckp.dimesion )
-      
-    #   ckps = BankRid.get_all_higher_nodes targets,current_ckp
-    #   result["nodes"] = constructure_ckps ckps
-    #   return result
-    # end
+      # 存储更新前状态
+      old_catalogs_subject_ckp_uids = []
 
+      begin
+        catalog_uids.each{|uid|
+          target_catalog = BankNodeCatalog.where(:uid => uid).first
+          next unless target_catalog
+          # 记忆目录更新前状态
+          old_catalogs_subject_ckp_uids.push({
+            "#{uid}" => target_catalog.bank_subject_checkpoint_ckp_ids || [],
+          })
+          logger.debug(target_subject_ckp_uids);
+          # 置换目录指标
+          target_catalog.replace_subject_checkpoints target_subject_ckp_uids
+        }
+
+        # 置换教材指标
+        target_node.replace_subject_checkpoints
+      rescue Exception => ex
+        logger.debug "#{__method__.to_s()}>>>rollback begin."
+        logger.debug "#{__method__.to_s()}>>>#{ex.message}"
+        logger.debug "#{__method__.to_s()}>>>#{ex.backtrace}"
+        # 开始目录回退操作
+        old_catalogs_subject_ckp_uids.each{|item|
+          catalog_uid =item.keys[0]
+          ckp_uids = item.values[0]
+          target_catalog = BankNodeCatalog.where(:uid => catalog_uid).first
+          next unless target_catalog
+          target_catalog.replace_subject_checkpoints ckp_uids
+        }
+        # 开始教材回退操作
+        target_node = BankNodestructure.where(:uid => data[:node_uid]).first
+        target_node.replace_subject_checkpoints
+        logger.debug "#{__method__.to_s()}>>>rollback completed!"
+      end
+    end
+
+    # 获取教材／目录的指标
+    # node_structure_id: 教材uid
+    # node_catalog_id: 目录id
+    # [Return]: zTree格式用
     #
-    # str_uid: current check point uid 
+    def node_catalog_checkpoints params
+      #return [] if params[:node_structure_id].blank?# || params[:node_catalog_id].blank?
+      result = {}
+      dimesion_arr = [:knowledge, :skill, :ability]
+      dimesion_arr.each{|dim|
+        result[dim]={:nodes=>[]}
+        result[dim][:nodes].push(BankSubjectCheckpointCkp.root_node(dim))
+      }
+      if params[:node_catalog_id]
+        target_catalog = BankNodeCatalog.where(:uid => params[:node_catalog_id]).first
+        dimesion_arr.each{|dim|
+          result[dim][:nodes] += BankSubjectCheckpointCkp.constructure_ckps(target_catalog.bank_subject_checkpoint_ckps.by_dimesion(dim))
+        }
+      else
+        target_node = BankNodestructure.where(:uid => params[:node_structure_id]).first
+        dimesion_arr.each{|dim|
+          result[dim][:nodes] += BankSubjectCheckpointCkp.constructure_ckps(target_node.bank_subject_checkpoint_ckps.by_dimesion(dim))
+        }
+      end
+      return result
+    end
+
+    # 获取指定目录的指标
+    # node_catalog_ids: 目录的ids
     #
-    # def self.delete_ckp params
-    #   return false if params["str_uid"].blank?
-    #   find(params[:str_uid]).destroy!
-    #   # current_ckp = self.where("uid = ?", params["str_uid"]).first
-    #   # current_ckp.destroy!
-    #   return true
-    # end
-
-    # 
-    # str_pid: parent rid
-    # node_uid: node structure uid
-    #
-  #   def get_ckp_count params
-  #     result = 0
-  # #    return nil if params["node_uid"].blank?
-  #     cond_str = ""
-  #     cond_str = "node_uid = #{params["node_uid"]}" unless params["node_uid"].blank?
-  #     target_objs = self.where(cond_str)
-  #     if params["str_pid"].blank?
-  #       result = target_objs.count
-  #     else
-  #       arr=BankRid.get_all_child target_objs,params["str_pid"]       
-  #       result=arr.count
-  #     end
-
-  #     return result
-  #   end
-
-  end
+    def catalogs_checkpoints params
+      result = {:knowledge => [], :skill => [], :ability => []}
+      ckp_uids = []
+      if params[:node_catalog_ids]
+        target_catalogs =  BankNodeCatalog.where(:uid => params[:node_catalog_ids])
+        target_catalogs.each{|target_catalog|
+          target_catalog.bank_subject_checkpoint_ckps.each{|ckp|
+            result[ckp.dimesion.to_sym].push(
+              ckp.organization_hash
+            ) unless ckp_uids.include?(ckp.uid)
+            ckp_uids.push(ckp.uid)
+          }
+        }
+      end
+      return result
+    end
+  end # class methods end
   #
   # str_uid: current check point uid 
   # str_pid: parent rid
