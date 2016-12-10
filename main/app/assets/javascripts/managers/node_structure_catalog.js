@@ -26,7 +26,7 @@ function textbook(textbook_form_id, textbook_select_list_id, textbook_checked_ui
 		this.select_list.combobox({
 			onChange: function(){
 				self.checked_uid = self.select_list.combobox("getValue");
-				checked_index = self.select_list.combobox("getData").findIndex(x => x.uid == self.checked_uid);
+				checked_index = self.select_list.combobox("getData").findIndex(function(x){ return x.uid == self.checked_uid });
 				self.checked_item = self.select_list.combobox("getData")[checked_index];
 				//获取教材目录
 				for( var item in self.after_change ){
