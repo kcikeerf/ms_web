@@ -1,0 +1,25 @@
+<div>
+	<span style="width: auto; display: inline-block;text-align: center;vertical-align: top;margin-top:5px;">
+		<a href="#" class="easyui-linkbutton c1 managers_catalog_checkpoint_combination_button" style="width:auto; ">关联已选择目录及指标</a>
+	</span>
+</div>
+<div style="text-align: left;">
+	<!--已选择目录-->
+	<span style="width: 49%; display: inline-block;text-align: center; vertical-align: top;margin-top:5px;">
+		<div class="easyui-tabs node_structure_ckp" style="width:90%;height:auto !important;height:100%;margin: 5px;">
+			<div title="<%=LABEL('activerecord.models.bank_node_catalog')%>" style="padding:10px">
+				<span id="managers_selected_catalogs_tree" class="ztree" style="margin: 5px;"></span>
+			</div>
+		</div>
+	</span>
+	<!--已选择指标-->
+	<span style="width: 49%; display: inline-block;text-align: center;  vertical-align: top;margin-top:5px;">
+	    <%= render partial: '/managers/checkpoints/tree', 
+					locals: {
+						knowledge_tree_id: "managers_selected_subejct_ckp_knowledge_tree",
+						skill_tree_id: "managers_selected_subejct_ckp_skill_tree",
+						ability_tree_id: "managers_selected_subejct_ckp_ability_tree"
+					} 
+	    %>
+	</span>
+</div>

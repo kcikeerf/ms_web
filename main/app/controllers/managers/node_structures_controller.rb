@@ -1,5 +1,6 @@
 class Managers::NodeStructuresController < ApplicationController
-  layout 'manager_crud'
+  
+  layout 'manager_crud', only: [:index]
 
   respond_to :json, :html
   
@@ -8,14 +9,13 @@ class Managers::NodeStructuresController < ApplicationController
   # before_action :authenticate_manager
 
   def index
-    @data = {name: '教材', path: '/managers/node_structures'}
     @node_structures = BankNodestructure.page(params[:page]).per(params[:rows])
     respond_with({rows: @node_structures, total: @node_structures.total_count}) 
   end
 
   def create
     @node_structure = BankNodestructure.new(node_structure_params)
-    render json: response_json_by_obj(@node_structure.save, @node_structure)
+    render json: response_json_by_obj(@node_structure.update_node(node_structure_params), @node_structure)
   end
 
   def show
@@ -24,7 +24,7 @@ class Managers::NodeStructuresController < ApplicationController
   end
 
   def update    
-    render json: response_json_by_obj(@node_structure.update(node_structure_params), @node_structure)
+    render json: response_json_by_obj(@node_structure.update_node(node_structure_params), @node_structure)
   end
 
   def destroy_all
@@ -32,20 +32,14 @@ class Managers::NodeStructuresController < ApplicationController
     respond_with(@node_structure)
   end
 
-  def add_ckps
-    ckps = @node_structure.add_ckps(params[:subject_checkpoint_ckp_uids])
-    render json: response_json_by_obj(@node_structure.errors.empty?, @node_structure)
-  end
-
   private
 
-  def set_node_structure
-    @node_structure = BankNodestructure.find(params[:id])
-  end
+    def set_node_structure
+      @node_structure = BankNodestructure.find(params[:id])
+    end
 
-  def node_structure_params
-    params.permit(:grade, :subject, :version, :volume)
-  end
-
+    def node_structure_params
+      params.permit(:version_cn, :grade, :subject, :term)
+    end
 
 end

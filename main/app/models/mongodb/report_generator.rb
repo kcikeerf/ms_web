@@ -1,0 +1,3 @@
+class Mongodb::ReportGenerator
+
+end

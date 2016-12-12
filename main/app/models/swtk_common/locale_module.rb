@@ -42,8 +42,9 @@ module LocaleModule
     }
 
     SexList = {
-      :nan => i18n("dict.nan"),
-      :n̈u => i18n("dict.n̈u")
+      :wu => i18n("common.none"),
+    	:nan => i18n("dict.nan"),
+    	:n̈u => i18n("dict.n̈u")
     }
 
     def hanzi2pinyin hanzi_str

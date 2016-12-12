@@ -27,4 +27,4 @@
 # Ignore files related to Passenger
 passenger.3000.pid.lock
 main/reports_warehouse/
-tools
+tools/

@@ -63,7 +63,6 @@ class Analyzer < ActiveRecord::Base
       :subject => params[:subject],
       :tenant_uid => params[:tenant_uids]
     }
-    p "params>>>>#{paramsh}"
     update_attributes(paramsh)
     save!
   end

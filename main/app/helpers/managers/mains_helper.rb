@@ -25,6 +25,19 @@ module Managers::MainsHelper
     when "tenant_administrators"
       title = I18n.t("activerecord.models.tenant_administrator")
       path = "/managers/tenant_administrators"
+    when "node_structures"
+      title = I18n.t("activerecord.models.bank_nodestructure")
+      path = "/managers/node_structures"
+    when "node_catalogs"
+      nd = BankNodestructure.where(uid: params[:node_structure_id]).first
+      arr = [
+        nd.version_cn,
+        nd.subject_cn,
+        nd.grade_cn,
+        nd.term_cn,
+      ]
+      title = "#{I18n.t('activerecord.models.bank_node_catalog')}(#{arr.join('/')})"
+      path = "/managers/node_structures/#{params[:node_structure_id]}/node_catalogs"
     else
       title = I18n.t("dict.unknown")
       path = "/managers/"
