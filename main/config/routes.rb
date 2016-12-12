@@ -408,6 +408,13 @@ Rails.application.routes.draw do
   #end
   #######################################
 
+  #######################################
+  ### Swtk API
+  constraints do
+    mount Reports::API => "/"
+  end
+  #######################################
+
   # match '*path', to: 'welcomes#error_404', via: :all
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'

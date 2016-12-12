@@ -1,0 +1,157 @@
+#定义active record表及属性的中文标示
+zh:  
+  activerecord:
+    models:
+      area: "地区"
+      bank_checkpoint_ckp: "测评点表"
+      bank_ckp_comment: "测评点评价模版表"
+      bank_ckp_cube: "测评点立体交叉表"
+      bank_dic: "字典表"
+      bank_dic_item: "字典条目表"
+      bank_nodestructure: "教材"
+      bank_node_catalog: "目录"
+      bank_papertag_ptg: "试卷标签"
+      bank_quiztag_qtg: "试题标签"
+      bank_test: "测试"
+      comment: "评论"
+      role: "角色"
+      user: "用户"
+      analyzer: "分析员"
+      pupil: "学生"
+      teacher: "教师"
+      tenant: "Tenant"
+      tenant_administrator: "Tenant管理员"
+      project_administrator: "项目管理员"
+      permission: "权限"
+
+    attributes:
+      default:
+        name: "名称"
+        status: "状态"
+      area:
+        province: "省"
+        city: "市"
+        district: "区"
+      bank_checkpoint_ckp:
+        uid: "ID"
+        dimesion: "测评方面"
+        rid: "分组级别"
+        checkpoint: "测评点"
+        is_entity: "实体测评点"
+        desc: "测评内容"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_ckp_comment:
+        uid: "ID"
+        ckp_uid: "实体测评点"
+        ban_uid: "测评点_ID"
+        target: "考察对象"
+        template: "评价模板"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_ckp_cube:
+        nid: "ID"
+        ckp_uid_k: "知识点测评点"
+        ckp_uid_s: "技能测评点"
+        ckp_uid_a: "能力测评点"
+        crosstype: "交叉类型（0-10）" 
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_dic:
+        sid: "ID"
+        caption: "字典显示字"
+        desc: "描述"
+        bank_dic_item: "字典条目表"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_dic_item:
+        sid: "ID"
+        bank_dic: "字典表"
+        caption: "条目显示字"
+        desc: "描述"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_nodestructure:
+        uid: "ID"
+        subject: "学科"
+        version: "版本"
+        grade: "年级"
+        rid: "节点序号"
+        node: "单元／章节"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_node_catalogs:
+         node: '名称'
+      bank_node_catalog:
+        node: '名称'
+      bank_papertag_ptg:
+        sid: "ID"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      bank_quiztag_qtg:
+        sid: "ID"
+        dt_add: "生成时间"
+        dt_update: "更新时间"
+      role:
+        name: "名字"
+        desc: "描述"
+        permissions: "权限"
+        created_at: "生成时间"
+        updated_at: "更新时间"
+      user:
+        name: "用户名"
+        real_name: "姓名"
+        email: "邮箱"
+        phone: "手机号"
+        qq: "QQ号"
+        wechat: "微信号"
+        password: "密码"
+        password_confirmation: "密码确认"
+        role: "角色" 
+        current_sign_in_at: "当前登录时间" 
+        last_sign_in_at: "最后登录时间"
+        sign_in_count: "登录次数"
+        created_at: "生成时间"
+        updated_at: "更新时间"
+      analyzer:
+        name: "姓名"
+        subject: "学科"
+      teacher:
+        name: "姓名"
+        subject: "学科"
+        school: "学校"
+      pupil:
+        name: "姓名"
+        grade: "年级"
+        classroom: "班级"
+        school: "学校"
+        stu_number: "学号"
+      tenant:
+
+      tenant_administrator:
+        name: "姓名"
+      porject_administrator:
+
+    errors:
+      messages:        
+        inclusion: "不包含于列表中"
+        exclusion: "是保留关键字"
+        invalid: "是无效的"
+        confirmation: "与确认值不匹配"
+        accepted: "必须是可被接受的"
+        empty: "不能留空"
+        blank: "不能为空字符"
+        too_long: "过长（最长为 %{count} 个字符）"
+        too_short: "过短（最短为 %{count} 个字符）"
+        wrong_length: "长度非法（必须为 %{count} 个字符）"
+        taken: "已经被使用"
+        not_a_number: "不是数字"
+        not_an_integer: "必须是整数"
+        greater_than: "必须大于 %{count}"
+        greater_than_or_equal_to: "必须大于或等于 %{count}"
+        equal_to: "必须等于 %{count}"
+        less_than: "必须小于 %{count}"
+        less_than_or_equal_to: "必须小于或等于 %{count}"
+        odd: "必须为单数"
+        even: "必须为双数"
+        record_invalid: "校验失败: %{errors}"

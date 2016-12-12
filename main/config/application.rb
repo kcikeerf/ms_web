@@ -35,18 +35,22 @@ module Main
     config.i18n.default_locale = :zh
     # config/application.rb
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '*.{rb,yml}')]
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '{**}', '*.{rb,yml}')]
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
 
     config.generators do |g|
       g.orm :active_record
     end
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
+
+    # Plugin
     config.autoload_paths += Dir[Rails.root.join('lib', 'plugins', '{**}')]
+    
+    # API
+    config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'api', '**', '*')]
 
-#    I18n.load_path += Dir[Rails.root.join('lib', 'locale', '*.{rb, yml}')]
-#    I18n.default_locale = :zh
-
+    # 
     config.assets.compile = true
 
     # The default matcher for compiling files includes application.js, application.css and all non-JS/CSS files
