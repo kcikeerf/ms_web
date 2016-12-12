@@ -1,43 +1,31 @@
-<th data-options="field:'uid',align:'center', width:'10%'">ID</th>
-<th data-options="field:'node',align:'center', width:'20%'">名称</th>
-<th data-options="field:'dt_add',align:'center', width:'25%'">创建时间</th>
-<th data-options="field:'dt_update',align:'center', width:'25%'">更新时间</th>
-<th data-options="field:'ID',width:'15%',align:'center',formatter:formatOper">操作</th>
-<div id='resource_add' style='display: none;'>
-		<div class='fnode'>
-			<label>名称:</label>
-			<input type="text" name="node_structrue[][node]" class="easyui-validatebox" required="required">
-			<span class="l-btn-left l-btn-icon-left del" style='display: none;'><span class="l-btn-text">删除</span><span class="l-btn-icon icon-remove">&nbsp;</span></span>
-		</div>
+<th data-options="field:'uid',align:'center', width:'20%'">ID</th>
+<th data-options="field:'rid',align:'left', width:'20%'">章节</th>
+<th data-options="field:'node',align:'left', width:'20%'">名称</th>
+<th data-options="field:'ID',width:'40%',align:'center',formatter:formatOper">操作</th>
 
-		<span class="l-btn-left l-btn-icon-left add_catalog" id="add_catalog"><span class="l-btn-text">增加</span><span class="l-btn-icon icon-add">&nbsp;</span></span>
+<% content_for :form do %>
+	<div class="fsection_rid">
+		<label>前一章节:</label>
+		<%= select_tag :former_rid, options_for_select(@catalogs_options.clone.unshift({"rid" => ""}).map{|a| [a["rid"],a["rid"]]}) %>
 	</div>
 
-	<div id='resource_edit' style='display: none;'>
-		<div class='fnode'>
-			<label>名称:</label>
-			<input type="text" name="node" class="easyui-validatebox" required="required">
-		</div>
+	<div class="fsection_rid">
+		<label>后一章节:</label>
+		<%= select_tag :later_rid, options_for_select(@catalogs_options.clone.unshift({"rid" => ""}).map{|a| [a["rid"],a["rid"]]}) %>
 	</div>
-<% content_for :content do %>
-	<%= hidden_field_tag :subject, @node_structure.id %>
-	<div id="checkpoint_dialog"></div>
+
+	<div class="fnode">
+		<label>名称:</label>
+		<%= text_field_tag :node, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+
 <% end %>
 <script type="text/javascript">
 	function formatOper(val,row,index){
-		return "<a href='#' onclick=set_ckp_dialog('node_structure_uid=" + $('#subject').val() + "&node_catalog_uid="+ row['uid'] +"')>指标体系</a>"  
+   		var click_checkpoint_func = 'reopen(window.parent.$("#tabs"),"教材及目录指标体系管理", "<%= page_info_item[:path] %>\/'+row["uid"]+'\/checkpoints")';
+   		var click_show_checkpoints_func = 'reopen(window.parent.$("#tabs"),"查看目录指标", "<%= page_info_item[:path] %>\/'+row["uid"]+'\/checkpoints/tree")';
+		var link_str = "<a href='#'' onclick='" + click_checkpoint_func + "'>目录指标管理</a>&nbsp;";
+		link_str += "<a href='#'' onclick='" + click_show_checkpoints_func + "'>查看目录指标</a>";
+		return link_str;
 	} 
-	$(document).ready(function(){
-		var $html_content = $('#resource_add > div:first').clone().attr('id','');
-		$html_content.find('.del').show();
-		$(document).on('click', '#add_catalog', function(){
-			var insert_content = $html_content.clone().insertBefore(this);
-			$.parser.parse(insert_content);
-		});
-
-		$(document).on('click', '.del', function(){
-			$(this).parent('div').remove();
-		});
-
-	})
 </script>

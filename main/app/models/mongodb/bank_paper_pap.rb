@@ -140,7 +140,6 @@ class Mongodb::BankPaperPap
           return result;
         }
       }
-
       arr = Mongodb::BankPaperPap.where(filter).map_reduce(map, reduce).out(inline: true).to_a
       arr.each{|a| result[a["_id"]["paper_status"]] = a["value"]["count"].to_i if a["_id"]["paper_status"].is_a? String}
       result
@@ -397,12 +396,6 @@ class Mongodb::BankPaperPap
       :paper_status => status,
       :paper_json => params.to_json || ""
     })
-
-    #update qizpoint ckps json
-    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
-    qzps.each{|qzp|
-      qzp.format_ckps_json
-    }
   end
 
   def submit_pap_rollback
@@ -459,6 +452,12 @@ class Mongodb::BankPaperPap
       :paper_json => paper_h.to_json || "",
       :paper_status => status
     })
+    
+    #update qizpoint ckps json
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps.each{|qzp|
+      qzp.format_ckps_json
+    }
   end
 
   def submit_ckp_rollback
@@ -959,20 +958,6 @@ class Mongodb::BankPaperPap
   def generate_url
     return Common::SwtkConstants::MyDomain 
   end
-
-  # def download_file_name type
-  #   case type
-  #   when 'usr_pwd_file'
-  #     year_str = quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian')
-  #     grade_str = Common::Grade::List[grade.to_sym]
-  #     subject_str = Common::Subject::List[subject.to_sym]
-  #     result = year_str + grade_str + subject_str + Common::Locale::i18n('reports.check') + "_"
-  #   else
-  #     result = heading + '_'
-  #   end
-  #   result += Common::Locale::i18n("papers.name.#{type}")
-  #   result
-  # end
 
   def is_completed?
     paper_status == Common::Paper::Status::ReportCompleted

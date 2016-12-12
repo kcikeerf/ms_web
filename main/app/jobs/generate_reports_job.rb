@@ -28,103 +28,93 @@ class GenerateReportsJob < ActiveJob::Base
           ckps_qzps_mapping = Common::ReportPlus::data_ckps_qzps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
           ckps_qzps_mapping
         }
+        job_tracker.update(process: 0.05)
 
         _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, ["tests", params[:test_id], "qzps_ckps_mapping"]){
           qzps_ckps_mapping = Common::ReportPlus::data_qzps_ckps_mapping(params[:test_id], Common::Report::CheckPoints::DefaultLevel)
           qzps_ckps_mapping
         }
-
-        generator_h = {
-          "pupil" => Mongodb::ReportPupilGenerator.new({:group_type => "pupil"}.merge(params))
-        }
-        constructor_h = {
-          "pupil" => Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))
-        }
-
-        end_index = Common::Report::Group::ListArr.find_index(params[:top_group].downcase)
-        Common::Report::Group::ListArr[1..end_index].each{|group|
-          generator_h[group] = Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
-          constructor_h[group] = Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
-        }
-
-        # 清除旧记录
-        th_arr = []
-        generator_h.each{|k,v|
-          th_arr << Thread.new do 
-            v.clear_old_data
-          end
-        }
-        ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.1)
 
-        # 计算1
-        th_arr = []
-        th_arr << Thread.new do 
-          generator_h[:pupil].cal_round_1
-        end
-        ThreadsWait.all_waits(*th_arr)
-        job_tracker.update(process: 0.15)
+        # generator_h = {
+        #   "pupil" => Mongodb::ReportPupilGenerator.new({:group_type => "pupil"}.merge(params))
+        # }
+        # constructor_h = {
+        #   "pupil" => Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))
+        # }
 
+        genreator_arr = [Mongodb::ReportPupilGenerator.new({:group_type => "pupil"}.merge(params))]
+        constructor_arr = [Mongodb::ReportConstructor.new({:group_type=>"pupil"}.merge(params))]
 
-        th_arr = []
-        generator_h.each{|k,v|
-          th_arr << Thread.new do 
-            v.cal_round_1
-          end if k != :pupil
+        end_index = Common::Report::Group::ListArr.find_index(params[:top_group].downcase)
+        # Common::Report::Group::ListArr[0..end_index].each{|group|
+        #   generator_h[group] = Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
+        #   constructor_h[group] = Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
+        # }
+        Common::Report::Group::ListArr[1..end_index].each{|group|
+          genreator_arr << Mongodb::ReportGroupGenerator.new({:group_type => group}.merge(params))
+          constructor_arr << Mongodb::ReportConstructor.new({:group_type => group}.merge(params))
         }
-        ThreadsWait.all_waits(*th_arr)
+
+
+        # 清除旧记录
+        # th_arr = []
+        genreator_arr.each{|item|
+          # th_arr << Thread.new do 
+            item.clear_old_data
+          # end
+        }
+        # ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.2)
 
-        # 计算1.5
-        th_arr = []
-        generator_h.each{|k,v|
-          th_arr << Thread.new do 
-            v.cal_round_1_5
-          end if k != :pupil
+        # 计算1
+        # th_arr = []
+        # th_arr << Thread.new do 
+        #   generator_h[:pupil].cal_round_1
+        # end
+        # ThreadsWait.all_waits(*th_arr)
+        # job_tracker.update(process: 0.15)
+
+
+        # th_arr = []
+        genreator_arr.each{|item|
+          item.cal_round_1
         }
-        ThreadsWait.all_waits(*th_arr)
-        job_tracker.update(process: 0.35)
+        job_tracker.update(process: 0.3)
+
+        # 计算1.5
+        genreator_arr[1..-1].each{|item|
+          item.cal_round_1_5
+        }
+        job_tracker.update(process: 0.4)
 
         # 计算2
-        th_arr = []
-        generator_h.each{|k,v|
-          th_arr << Thread.new do 
-            v.cal_round_2
-          end if k != :pupil
+        genreator_arr[1..-1].each{|item|
+          item.cal_round_2
         }
-        ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.5)
 
         #pid = fork do 
         # 组装1
-        th_arr = []
-        constructor_h.each{|k,v|
-          th_arr << Thread.new do 
-            v.iti_kumigoto_no_kihon_koutiku
-          end
+        constructor_arr.each{|item|
+          item.iti_kumigoto_no_kihon_koutiku
         }
-        ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.7)
 
         # 组装2
-        th_arr = []
-        constructor_h.each{|k,v|
-          th_arr << Thread.new do 
-            v.ni_kumigoto_no_comment_koutiku
-          end
+        constructor_arr.each{|item|
+          item.ni_kumigoto_no_comment_koutiku
         }
-        ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.8)
 
         # 结束处理
-        Common::Report::Group::ListArr[0..end_index].reverse.each{|item|
-          th_arr = []
-          th_arr << Thread.new do 
-            constructor_h[item].owari
-          end
-          ThreadsWait.all_waits(*th_arr)
+        constructor_arr.each{|item|
+          item.owari
         }
         job_tracker.update(process: 0.9)
+
+        report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/#{params[:test_id]}/*"
+        Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
 
         job_tracker.update(status: Common::Job::Status::Completed)
         job_tracker.update(process: 1.0)

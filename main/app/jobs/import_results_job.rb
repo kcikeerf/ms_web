@@ -10,7 +10,7 @@ require 'thwait'
 class ImportResultsJob < ActiveJob::Base
   queue_as :default
 
-  def perform(*args)
+  def self.perform_later(*args)
     begin
       logger.info ">>>>>>>Import Results Job: Begin<<<<<<<"
       params = args[0]
@@ -177,8 +177,9 @@ class ImportResultsJob < ActiveJob::Base
       th_arr = []
       th_number.times.each{|th|
         start_num = th*num_per_th
-        end_num = (th+1)*num_per_th - 1 + (((th + 1) == th_number)? mod_num : 0)
-        th_arr << Thread.new {
+        end_num = (th+1)*num_per_th + (((th + 1) == th_number)? mod_num : 0) #为保证读取到最后一行，最后一组不减一
+        end_num -=1 if (th+1) != th_number
+        th_arr << Thread.new do
           import_score_core({
             :th_index => th,
             :redis_key => redis_key,
@@ -203,18 +204,19 @@ class ImportResultsJob < ActiveJob::Base
             :pupil_sheet => pupil_sheet
 
           })
-        }
+        end
       }
       ThreadsWait.all_waits(*th_arr)
 
       # create user password file
-      file_path = Rails.root.to_s + "/tmp/#{target_paper._id.to_s}_password.xlsx"
+      file_path = Rails.root.to_s + "/tmp/#{target_paper._id.to_s}_#{params[:score_file_id]}_password.xlsx"
       out_excel.serialize(file_path)
-      file_h = {:score_file_id => target_paper.score_file_id, :file_path => file_path}
+      file_h = {:score_file_id => params[:score_file_id], :file_path => file_path}
       score_file = Common::Score.create_usr_pwd file_h
 
       job_tracker.update(process: 1.0)
       temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
+      File.delete(file_path)
       #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
@@ -234,17 +236,17 @@ class ImportResultsJob < ActiveJob::Base
     end
   end
 
-  def import_score_core args={}
+  def self.import_score_core args={}
       logger.info ">>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       begin
         #主线程读取用户信息
         teacher_username_in_sheet = []
         pupil_username_in_sheet = []
-        qzps_h = []
-        args[:hidden_row][args[:data_start_col]..(args[:total_cols]-1)].each{|item|
-          qzps_h << Mongodb::BankQizpointQzp.where(_id: item).first
-        }
+        # qzps_h = []
+        # args[:hidden_row][args[:data_start_col]..(args[:total_cols]-1)].each{|item|
+        #   qzps_h << Mongodb::BankQizpointQzp.where(_id: item).first
+        # }
 
         #######start to analyze#######      
         (args[:start_num]..args[:end_num]).each{|index|
@@ -361,8 +363,8 @@ class ImportResultsJob < ActiveJob::Base
               :real_score => row[qzp_index],
               :full_score => args[:title_row][qzp_index]
             })
-            qizpoint = qzps_h[qzp_index]
-            qzp_ckp_h = args[:qzps_ckps_mapping_h][qizpoint.id.to_s]
+            #qizpoint = qzps_h[qzp_index - args[:data_start_col]]
+            qzp_ckp_h = args[:qzps_ckps_mapping_h][args[:hidden_row][qzp_index]]
             qzp_ckp_h.each{|dimesion, ckps|
               col_params[:dimesion] = dimesion
               ckps.each{|ckp|

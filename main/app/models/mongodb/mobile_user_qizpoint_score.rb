@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Mongodb::MobileUserQizpointScore
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -35,7 +37,7 @@ class Mongodb::MobileUserQizpointScore
 
   def self.save_score params
     target_pap = Mongodb::BankPaperPap.find(params[:pap_uid])
-    xue_duan = BankNodestructure.get_subject_category(target_pap.grade)
+    xue_duan = Common::Grade.judge_xue_duan(target_pap.grade)
   	#qzp_arr = params[:bank_quiz_qizs].map{|qiz| qiz[:bank_qizpoint_qzps]}.flatten
     qzp_arr = params[:bank_quiz_qizs].values.map{|qiz| qiz[:bank_qizpoint_qzps].values}.flatten    
     qzp_arr.each{|qzp|

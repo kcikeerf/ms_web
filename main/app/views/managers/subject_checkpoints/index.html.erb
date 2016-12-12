@@ -1,5 +1,5 @@
 <% content_for :head do %>
-	<%= stylesheet_link_tag 'managers/checkpoints', media: 'all', 'data-turbolinks-track' => true %>
+	<%= stylesheet_link_tag 'managers/subject_checkpoints', media: 'all', 'data-turbolinks-track' => true %>
 	<%= javascript_include_tag 'managers/subject_checkpoints', 'jquery.remotipart', 'data-turbolinks-track' => true %>
 <% end %>
 <div class="shaixuan">
@@ -33,6 +33,14 @@
 	data-options="iconCls:'icon-save',resizable:true,modal:false,closed:true,buttons:'#dlg-buttons'">
 	<form id="fm" method="post">
 		<div class="fcheckpoint">
+			<label>ID：</label>
+			<input name="id" type="text" class="ckp_uid" class="easyui-validatebox" disabled=true >
+		</div>
+		<div class="fcheckpoint">
+			<label>RID：</label>
+			<input name="rid" type="text" class="ckp_rid" class="easyui-validatebox" disabled=true >
+		</div>
+		<div class="fcheckpoint">
 			<label>名称：</label>
 			<input name="checkpoint" type="text" class="checkpoint" class="easyui-validatebox" required='required' >
 		</div>
@@ -55,6 +63,7 @@
 			<input type="text" name="sort" id="sort"/>
 		</div> -->
 		<input type="hidden" name="id" class="ckp_uid"/>
+		<input type="hidden" name="rid" class="ckp_rid"/>
 		<input type="hidden" name="dimesion" class="dimesion"/>
 		<input type="hidden" name="subject" class="subject"/>
 		<input type="hidden" name="str_pid" class="str_pid"/>

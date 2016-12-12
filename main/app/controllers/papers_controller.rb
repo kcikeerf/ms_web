@@ -34,8 +34,8 @@ class PapersController < ApplicationController
       :answer => params[:answer_path]
     })
     result[:orig_file_id] = f_uploaded.id
-    result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
-    result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    result[:paper_html] = Common::PaperFile::get_doc_file_content_as_html(f_uploaded.paper.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
+    result[:answer_html] = Common::PaperFile::get_doc_file_content_as_html(f_uploaded.answer.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
 
     render :json => result.to_json
   end
@@ -61,7 +61,6 @@ class PapersController < ApplicationController
       create_report_task = @current_test.tasks.by_task_type("create_report").first
       create_report_job = create_report_task.job_lists.blank?? nil : create_report_task.job_lists.order({:dt_update => :desc}).first
       @current_create_report_job_uid = create_report_job.uid
-      p ">>>>>#{@current_create_report_job_uid}"
     else 
       @current_create_report_job_uid = nil
     end
@@ -104,8 +103,6 @@ class PapersController < ApplicationController
           #此处暂做保留，之后删掉
           result_h["information"]["paper_status"] = current_pap.paper_status
           result_h["pap_uid"] = current_pap._id.to_s
-          p ">>>>>#{current_pap.paper_status}"
-          p ">>>>>#{result_h["information"]["paper_status"]}"
           result = response_json(200, result_h.to_json)
         end
       rescue Exception => ex 
@@ -340,13 +337,14 @@ class PapersController < ApplicationController
         score_file = Common::Score.upload_filled_result(params)
         if score_file          
           # Job
-          ImportResultsJob.perform_later({
-            #:task_uid => target_task.uid,
-            :score_file_id => score_file.id,
-            :tenant_uid => params[:tenant_uid],
-            :pap_uid => params[:pap_uid]
-          })
-          #end
+          Thread.new do
+            ImportResultsJob.perform_later({
+              #:task_uid => target_task.uid,
+              :score_file_id => score_file.id,
+              :tenant_uid => params[:tenant_uid],
+              :pap_uid => params[:pap_uid]
+            })
+          end
           status = 200
           result[:status] = status
           current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first

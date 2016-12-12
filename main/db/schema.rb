@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103081456) do
+ActiveRecord::Schema.define(version: 20161202071639) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(version: 20161103081456) do
     t.string   "node_uid",  limit: 36
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "rid",       limit: 255
   end
 
   create_table "bank_nodestructure_subject_ckps", force: :cascade do |t|
@@ -152,14 +153,20 @@ ActiveRecord::Schema.define(version: 20161103081456) do
   end
 
   create_table "bank_nodestructures", id: false, force: :cascade do |t|
-    t.string   "uid",       limit: 36
-    t.string   "subject",   limit: 50
-    t.string   "version",   limit: 50
-    t.string   "grade",     limit: 50
-    t.string   "volume",    limit: 50
-    t.string   "rid",       limit: 128
+    t.string   "uid",         limit: 36
+    t.string   "subject",     limit: 50
+    t.string   "version",     limit: 50
+    t.string   "grade",       limit: 50
+    t.string   "rid",         limit: 128
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "grade_cn",    limit: 255
+    t.string   "subject_cn",  limit: 255
+    t.string   "term",        limit: 255
+    t.string   "term_cn",     limit: 255
+    t.string   "version_cn",  limit: 255
+    t.string   "xue_duan",    limit: 255
+    t.string   "xue_duan_cn", limit: 255
   end
 
   create_table "bank_papertag_ptgs", id: false, force: :cascade do |t|
@@ -386,12 +393,13 @@ ActiveRecord::Schema.define(version: 20161103081456) do
 
   create_table "task_lists", primary_key: "uid", force: :cascade do |t|
     t.string   "name",       limit: 255
+    t.string   "task_type",  limit: 255
+    t.string   "ana_uid",    limit: 255
     t.string   "pap_uid",    limit: 255
     t.string   "status",     limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
     t.string   "user_id",    limit: 255
-    t.string   "task_type",  limit: 255
     t.boolean  "monitoring", limit: 1
   end
 

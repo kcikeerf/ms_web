@@ -138,7 +138,7 @@ class Location < ActiveRecord::Base
              :items => []
            } #有报告的学生才会出现
          }
-        result[:items] << klass_h
+        result[:items] << klass_h unless klass_h[:items].blank?
       }
     end
     return result

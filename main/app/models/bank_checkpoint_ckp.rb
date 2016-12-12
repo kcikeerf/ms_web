@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class BankCheckpointCkp < ActiveRecord::Base
 #  include Tenacity
 #  include MongoMysqlRelations
@@ -204,7 +206,7 @@ class BankCheckpointCkp < ActiveRecord::Base
     # 判断使用何种指标
     def judge_ckp_source params
       result = nil
-      target_subject, target_category = self.get_subject_ckp_params params
+      target_subject, target_category = get_subject_ckp_params params
       
       subject_ckp = BankSubjectCheckpointCkp.where({
           :subject => target_subject,
@@ -223,18 +225,121 @@ class BankCheckpointCkp < ActiveRecord::Base
 
       if params[:subject] && params[:grade]
         target_subject = params[:subject]
-        target_category =  BankNodestructure.get_subject_category(params[:grade])
+        target_category =  Common::Grade.judge_xue_duan(params[:grade])
       elsif params[:pap_uid]
         target_pap = Mongodb::BankPaperPap.find(params[:pap_uid])
         target_subject = target_pap.subject
-        target_category =  BankNodestructure.get_subject_category(target_pap.grade)
+        target_category =  Common::Grade.judge_xue_duan(target_pap.grade)
       elsif params[:node_uid]
         node = BankNodestructure.where(:uid => params[:node_uid]).first
         target_subject = node.subject if node
-        target_category = BankNodestructure.get_subject_category(node.grade) if node
+        target_category = Common::Grade.judge_xue_duan(node.grade) if node
       end
 
       return target_subject,target_category
+    end
+
+    # 绑定教材，目录，指标
+    # data = {
+    #   node_uid: xxx,
+    #   catalogs: [
+    #     {}
+    #   ],
+    #   checkpoints: [
+    #     {}
+    #   ]
+    # }
+    def combine_node_catalogs_subject_checkpoints data
+      # 更新目录指标
+      catalog_uids = data[:catalogs].blank?? []:data[:catalogs].values.map{|item| item[:uid]}
+      target_subject_ckp_uids = data[:checkpoints].blank?? []:data[:checkpoints].values.map{|item| item.values}.flatten.map{|item| item[:uid] if item[:uid]}.compact
+      # 若教材和目录任一缺失不做更新
+      return false if catalog_uids.blank?
+      target_node = BankNodestructure.where(:uid => data[:node_uid]).first
+      return false unless target_node
+
+      # 存储更新前状态
+      old_catalogs_subject_ckp_uids = []
+
+      begin
+        catalog_uids.each{|uid|
+          target_catalog = BankNodeCatalog.where(:uid => uid).first
+          next unless target_catalog
+          # 记忆目录更新前状态
+          old_catalogs_subject_ckp_uids.push({
+            "#{uid}" => target_catalog.bank_subject_checkpoint_ckp_ids || [],
+          })
+          logger.debug(target_subject_ckp_uids);
+          # 置换目录指标
+          target_catalog.replace_subject_checkpoints target_subject_ckp_uids
+        }
+
+        # 置换教材指标
+        target_node.replace_subject_checkpoints
+      rescue Exception => ex
+        logger.debug "#{__method__.to_s()}>>>rollback begin."
+        logger.debug "#{__method__.to_s()}>>>#{ex.message}"
+        logger.debug "#{__method__.to_s()}>>>#{ex.backtrace}"
+        # 开始目录回退操作
+        old_catalogs_subject_ckp_uids.each{|item|
+          catalog_uid =item.keys[0]
+          ckp_uids = item.values[0]
+          target_catalog = BankNodeCatalog.where(:uid => catalog_uid).first
+          next unless target_catalog
+          target_catalog.replace_subject_checkpoints ckp_uids
+        }
+        # 开始教材回退操作
+        target_node = BankNodestructure.where(:uid => data[:node_uid]).first
+        target_node.replace_subject_checkpoints
+        logger.debug "#{__method__.to_s()}>>>rollback completed!"
+      end
+    end
+
+    # 获取教材／目录的指标
+    # node_structure_id: 教材uid
+    # node_catalog_id: 目录id
+    # [Return]: zTree格式用
+    #
+    def node_catalog_checkpoints params
+      #return [] if params[:node_structure_id].blank?# || params[:node_catalog_id].blank?
+      result = {}
+      dimesion_arr = [:knowledge, :skill, :ability]
+      dimesion_arr.each{|dim|
+        result[dim]={:nodes=>[]}
+        result[dim][:nodes].push(BankSubjectCheckpointCkp.root_node(dim))
+      }
+      if params[:node_catalog_id]
+        target_catalog = BankNodeCatalog.where(:uid => params[:node_catalog_id]).first
+        dimesion_arr.each{|dim|
+          result[dim][:nodes] += BankSubjectCheckpointCkp.constructure_ckps(target_catalog.bank_subject_checkpoint_ckps.by_dimesion(dim))
+        }
+      else
+        target_node = BankNodestructure.where(:uid => params[:node_structure_id]).first
+        dimesion_arr.each{|dim|
+          result[dim][:nodes] += BankSubjectCheckpointCkp.constructure_ckps(target_node.bank_subject_checkpoint_ckps.by_dimesion(dim))
+        }
+      end
+      return result
+    end
+
+    # 获取指定目录的指标
+    # node_catalog_ids: 目录的ids
+    #
+    def catalogs_checkpoints params
+      result = {:knowledge => [], :skill => [], :ability => []}
+      ckp_uids = []
+      if params[:node_catalog_ids]
+        target_catalogs =  BankNodeCatalog.where(:uid => params[:node_catalog_ids])
+        target_catalogs.each{|target_catalog|
+          target_catalog.bank_subject_checkpoint_ckps.each{|ckp|
+            result[ckp.dimesion.to_sym].push(
+              ckp.organization_hash
+            ) unless ckp_uids.include?(ckp.uid)
+            ckp_uids.push(ckp.uid)
+          }
+        }
+      end
+      return result
     end
   end
   ########类方法定义：end#######

@@ -73,11 +73,11 @@ module CheckpointCkpModule
       Dimesion::Ability.to_sym => 0.1
     }
 
-    module SubjectCkpCategory
-      XiaoXue = "xiao_xue"
-      ChuZhong = "chu_zhong"
-      GaoZhong = "gao_zhong"
-    end
+    # module SubjectCkpCategory
+    #   XiaoXue = "xiao_xue"
+    #   ChuZhong = "chu_zhong"
+    #   GaoZhong = "gao_zhong"
+    # end
 
     def ckp_types_loop(key_str=nil,&block)
       nodes = {}
@@ -89,18 +89,62 @@ module CheckpointCkpModule
       nodes
     end
 
-    def dimesions_loop(key_str=nil,&block)
-      nodes = {}
-      key_arr = TYPE.clone
-      key_arr.push(key_str) unless key_str.blank?
-      key_arr.each do |t|
-        nodes[t] = proc.call(t)
-      end
-      nodes
+    def compare_rid(x,y)
+      return compare_rid_stand(x, y) {|r,b,c|
+        if r == 0
+          (b.length > c.length)? 1:-1
+        else
+          r
+        end
+      }
     end
 
-    def compare_rid(x,y)
-      return Common::compare_eng_num_str(x, y)
+    def compare_rid_plus(x,y)
+      return compare_rid_stand(x, y) {|r,b,c|
+        if r == 0
+          if b.length > c.length 
+            1
+          elsif b.length < c.length 
+            -1
+          else
+            0
+          end
+        else
+          r
+        end
+      }
     end
+
+    def compare_rid_stand(x,y,&block)
+      result = 0
+      x = x || ""
+      y = y || ""
+      length = (x.length < y.length) ? x.length : y.length
+
+      0.upto(length-1) do |i|
+        if x[i] == y[i]
+          next
+        else
+          if x[i] =~ /[0-9a-z]/
+            if y[i] =~ /[0-9a-z]/
+              result = x[i] <=> y[i]
+              break
+            else
+              result = 1
+              break
+            end
+          elsif y[i] =~ /[0-9a-z]/
+            result = -1
+            break
+          else
+            result = x[i] <=> y[i]
+            break
+          end
+        end
+      end
+      result = yield(result, x, y) if block_given?
+      return result
+    end
+
   end
 end

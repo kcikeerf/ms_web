@@ -1,61 +1,30 @@
-class Managers::CheckpointsController < ApplicationController
-  layout false, except: [:index]
-  layout 'manager', only: [:index]
+# -*- coding: UTF-8 -*-
 
-  before_action :set_checkpoint, only: [:edit, :update, :destroy, :move_node]
-  # skip_before_action :authenticate_person!
-  # before_action :authenticate_manager
+class Managers::CheckpointsController < ApplicationController
+  layout false
+  layout 'manager', only: [:index, :tree]
   
   def index
-    @subjects = deal_label('dict.', BankNodestructure.pluck(:subject).uniq)
   end
 
-  def create
-    checkpoint =  BankCheckpointCkp.save_ckp(checkpoint_params)
-    
-    render json: response_json(200, checkpoint)
+  def tree
+  	params.permit!
+    @target_catalog = BankNodeCatalog.where(:uid => params[:node_catalog_id]).first
+    @target_node = BankNodestructure.where(:uid => params[:node_structure_id]).first
+  	@tree_nodes = BankCheckpointCkp.node_catalog_checkpoints params
   end
 
-  def edit    
-    cats = @checkpoint.bank_ckp_cats
-    render json: response_json(200, cats)
+  def list
+    params.permit!
+    result = BankCheckpointCkp.catalogs_checkpoints params
+    render :json => result.to_json
   end
 
-  def update
-    checkpoint =  @checkpoint.update_ckp(checkpoint_params)
-    render json: response_json(200, checkpoint)
-  end
+  def combine_node_catalogs_subject_checkpoints
+    params.permit!#(:node_uid, :catalogs, :checkpoints)
 
-  def destroy
-    @checkpoint.destroy if @checkpoint
-    render json: response_json(200)
-  end
-
-  def move_node
-    checkpoint = @checkpoint.move_node(params[:str_pid])
-    status, message = checkpoint ? 200 : 500, checkpoint ? '' : {message: '不能把本节点拖拽到此节点'}
-    render json: response_json(checkpoint ? 200 : 500, message)
-  end
-
-  # 指标文件导入
-  def import_ckp_file
-    file, node_uid, dimesion = params[:file], params[:node_uid], params[:dimesion]
-    file_content = IO.readlines(file.path).join('').gsub(/\n|\s+/, '')
-    ckp_hash = JSON.parse(file_content) rescue nil
-    @is_ok = ckp_hash && ckp_hash["data"]
-    if @is_ok
-      BankCheckpointCkp.generate_ckp(node_uid, dimesion, ckp_hash["data"])
-    end
-    File.delete(file.path)
-  end
-
-  private
-
-  def set_checkpoint
-    @checkpoint = BankCheckpointCkp.find(params[:uid])
-  end
-
-  def checkpoint_params
-    params.permit(:uid, :node_uid, :str_pid, :dimesion, :checkpoint, :sort, :desc, :advice, :str_uid, :is_entity, cats: [:cat_uid])
+    BankCheckpointCkp.combine_node_catalogs_subject_checkpoints params
+    target_node = BankNodestructure.where(:uid => params[:node_uid]).first
+    render :json => target_node.bank_nodestructure_subject_ckps.to_json
   end
 end

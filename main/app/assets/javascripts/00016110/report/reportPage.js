@@ -1,6 +1,7 @@
 var reportPage = {
 	rootGroup: null,
 	rootUrl: null,
+	paperInfoUrl: null,
 	ckp_level: null,
 	ProjectData : null,
 	CurrentProjectId : null,
@@ -32,22 +33,39 @@ var reportPage = {
       skill: 0.4,
       ability: 0.1
     },
-	FullScore: 100,
+	FullScore: 0,
 	defaultColor: "#51b8c1",
 	chartColor : ['#a2f6e6','#6cc2bd','#15a892','#88c2f8','#6789ce','#254f9e','#eccef9','#bf9ae0','#8d6095'],
 
-	init: function(root_group, root_url, ckp_level){
+	init: function(root_group, root_url, paper_info_url, ckp_level){
 		reportPage.rootGroup = root_group;
 		reportPage.rootUrl = root_url;
+		reportPage.paperInfoUrl = paper_info_url;
 		reportPage.ckp_level = typeof ckp_level !== 'undefined' ? ckp_level : 1;
-
+		
 		//
 		reportPage.bindEvent();
 		//
 
-		reportPage.baseFn.getReportAjax( root_url, { report_group: root_group }, function(data){
-			reportPage.baseFn.update_current_node(data.root_group, data.root_url);
-		},{ root_group: root_group, root_url: root_url });
+		$.ajax({
+			url: reportPage.paperInfoUrl,
+			type: "GET",
+			data: "",
+			dataType: "json",
+			success: function(data){
+				//获取试卷信息
+				reportPage.FullScore = (data && data.score)? parseInt(data.score) : 100;
+
+				//获取初始报告信息
+				reportPage.baseFn.getReportAjax( root_url, { report_group: root_group }, function(data){
+					reportPage.baseFn.update_current_node(data.root_group, data.root_url);
+				},{ root_group: root_group, root_url: root_url });
+			},
+			error: function(data){
+
+			}
+		});
+
 	},
 	bindEvent: function(){
 		$(document).on('show.bs.collapse','.panel-collapse',function(){
@@ -474,7 +492,7 @@ var reportPage = {
 				var processed_value = arr[i][value_key];
 				var regex_matched = value_key.match(/.*percent$/);
 				if( regex_matched ){
-					processed_value = reportPage.baseFn.formatTimesValue(processed_value);
+					processed_value = reportPage.baseFn.formatHundredValue(processed_value);
 				} else {
 					processed_value = reportPage.baseFn.formatValue(processed_value);
 				}
@@ -583,7 +601,7 @@ var reportPage = {
 				var html_str = '<tr><td>' 
 					+ qzp.qzp_order 
 					+ '</td><td>' 
-					+ reportPage.baseFn.formatTimesValue(qzp.value.weights_score_average_percent) 
+					+ reportPage.baseFn.formatHundredValue(qzp.value.weights_score_average_percent) 
 					+ '</td><td>' 
 					+ qzp.ckps.knowledge[0].checkpoint 
 					+'</td></tr>';
@@ -664,13 +682,21 @@ var reportPage = {
 		}, 
 		//调整数据显示
 		//按试卷满分倍增得分率（默认100），保留两位小数
-		formatTimesValue: function(value){
+		formatValueAccordingPaper: function(value){
 			if(value != null){
 				return (value*reportPage.FullScore).toFixed(2);
 			} else {
 				return 0.00;
 			}
 		},
+		//按试卷满分倍增得分率（默认100），保留两位小数
+		formatHundredValue: function(value){
+			if(value != null){
+				return (value*100).toFixed(2);
+			} else {
+				return 0.00;
+			}
+		},		
 		//保留两位小数
 		formatValue: function(value){
 			if(value != null){
@@ -1838,16 +1864,16 @@ var reportPage = {
 			for(var i=0; i < data_arr.length; i++){
 				excellent_arr.push({
 					name: '(得分率 ≥ 85)',
-                    value: reportPage.baseFn.formatTimesValue(data_arr[i].excellent_percent),
+                    value: reportPage.baseFn.formatHundredValue(data_arr[i].excellent_percent),
                     yAxisIndex:1
 				});
 				good_arr.push({
                     name:'(60 ≤ 得分率 < 85)',
-                    value: reportPage.baseFn.formatTimesValue(data_arr[i].good_percent)
+                    value: reportPage.baseFn.formatHundredValue(data_arr[i].good_percent)
 				});
 				failed_arr.push({
                     name:'(得分率 < 60)',
-                    value: reportPage.baseFn.formatTimesValue(data_arr[i].failed_percent)
+                    value: reportPage.baseFn.formatHundredValue(data_arr[i].failed_percent)
 				});
 			}
 			return { excenllent: excellent_arr, good : good_arr, failed: failed_arr };
@@ -1868,11 +1894,11 @@ var reportPage = {
 			//班级平均分值
 			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatValue(klassBase.total_real_weights_score*dimesionRatio) + '</td>');
 			//班级平均得分率
-			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(klassBase.weights_score_average_percent) + '</td>');
+			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(klassBase.weights_score_average_percent) + '</td>');
 			//班级中位数得分率
-			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(klassBase.klass_median_percent) + '</td>');
+			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(klassBase.klass_median_percent) + '</td>');
 			//年级平均得分率
-			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(gradeBase.weights_score_average_percent) + '</td>');
+			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(gradeBase.weights_score_average_percent) + '</td>');
 			//班级与年级平均得分率差值
 			baseArr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassBase.weights_score_average_percent, gradeBase.weights_score_average_percent));
 			//班级与年级中位数平均得分率差值
@@ -1892,11 +1918,11 @@ var reportPage = {
 				//班级平均分值
 				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatValue(klassLv1Arr[i].total_real_weights_score*dimesionRatio) + '</td>');
 				//班级平均得分率
-				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(klassLv1Arr[i].weights_score_average_percent) + '</td>');
+				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(klassLv1Arr[i].weights_score_average_percent) + '</td>');
 				//班级中位数得分率
-				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(klassLv1Arr[i].klass_median_percent) + '</td>');
+				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(klassLv1Arr[i].klass_median_percent) + '</td>');
 				//年级平均得分率
-				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(gradeLv1Arr[i].weights_score_average_percent) + '</td>');
+				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(gradeLv1Arr[i].weights_score_average_percent) + '</td>');
 				//班级与年级平均得分率差值
 				lv1Arr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassLv1Arr[i].weights_score_average_percent, gradeLv1Arr[i].weights_score_average_percent));
 				//班级与年级中位数平均得分率差值
@@ -1918,11 +1944,11 @@ var reportPage = {
 					//班级平均分值
 					lv2Arr.push('<td>' + reportPage.baseFn.formatValue(klassLv2Arr[ii].total_real_weights_score*dimesionRatio) + '</td>');
 					//班级平均得分率
-					lv2Arr.push('<td>' + reportPage.baseFn.formatTimesValue(klassLv2Arr[ii].weights_score_average_percent) + '</td>');
+					lv2Arr.push('<td>' + reportPage.baseFn.formatHundredValue(klassLv2Arr[ii].weights_score_average_percent) + '</td>');
 					//班级中位数得分率
-					lv2Arr.push('<td>' + reportPage.baseFn.formatTimesValue(klassLv2Arr[ii].klass_median_percent) + '</td>');
+					lv2Arr.push('<td>' + reportPage.baseFn.formatHundredValue(klassLv2Arr[ii].klass_median_percent) + '</td>');
 					//年级平均得分率
-					lv2Arr.push('<td>' + reportPage.baseFn.formatTimesValue(gradeLv2Arr[ii].weights_score_average_percent) + '</td>');
+					lv2Arr.push('<td>' + reportPage.baseFn.formatHundredValue(gradeLv2Arr[ii].weights_score_average_percent) + '</td>');
 					//班级与年级平均得分率差值
 					lv2Arr.push(reportPage.Pupil.checkDataTableCol("", klassLv2Arr[ii].weights_score_average_percent, gradeLv2Arr[ii].weights_score_average_percent));
 					//班级与年级中位数平均得分率差值
@@ -1966,11 +1992,11 @@ var reportPage = {
 					}
 				}
 				//班级平均得分率
-				var self_weights_score_average_percent = reportPage.baseFn.formatTimesValue(reportPage.KlassData.comment["version1.0"][dimesion].self_weights_score_average_percent);
+				var self_weights_score_average_percent = reportPage.baseFn.formatHundredValue(reportPage.KlassData.comment["version1.0"][dimesion].self_weights_score_average_percent);
 				var self_weights_score_average_percent_level = reportPage.KlassData.comment["version1.0"][dimesion].self_weights_score_average_percent_level;
 
 				//与年级比较
-				var grade_weights_score_average_percent = reportPage.baseFn.formatTimesValue(reportPage.GradeData.comment["version1.0"][dimesion].self_weights_score_average_percent);
+				var grade_weights_score_average_percent = reportPage.baseFn.formatHundredValue(reportPage.GradeData.comment["version1.0"][dimesion].self_weights_score_average_percent);
 				var compare_with_grade_weights_score_average_percent = reportPage.baseFn.get_compare_level_label(self_weights_score_average_percent, grade_weights_score_average_percent);
 			} else {
 				//班级
@@ -2006,7 +2032,7 @@ var reportPage = {
 
 				var compare_with_grade_weights_score_average_percent = reportPage.baseFn.get_compare_level_label(self_weights_score_average_percent, grade_weights_score_average_percent);
 				//班级平均得分率转换
-				self_weights_score_average_percent = reportPage.baseFn.formatTimesValue(self_weights_score_average_percent);
+				self_weights_score_average_percent = reportPage.baseFn.formatHundredValue(self_weights_score_average_percent);
 			}
 			//班级最好
 			$(".klass_diagnosis." + dimesion + " .self_best").html(self_best.join(", &nbsp;"));
@@ -2041,7 +2067,7 @@ var reportPage = {
 				}
 
 				//班级部分
-				$(".klass_diagnosis." + dimesion + " .self_" +level+ "_pupil_number_percent").html(reportPage.baseFn.formatTimesValue(self_pupil_number_percent));
+				$(".klass_diagnosis." + dimesion + " .self_" +level+ "_pupil_number_percent").html(reportPage.baseFn.formatHundredValue(self_pupil_number_percent));
 				//与年级比较
 				$(".klass_diagnosis." + dimesion + " .compare_with_grade_" +level+ "_pupil_number_percent").html(compare_with_grade_pupil_number_percent);
 			}
@@ -2054,7 +2080,7 @@ var reportPage = {
 			reportPage.baseFn.construct_bread_crumbs(null, "pupil", null);
 			//基本信息
 			var pupilNavStr =
-			'<b>分数</b>：<span>' + reportPage.baseFn.formatTimesValue(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +
+			'<b>分数</b>：<span>' + reportPage.baseFn.formatValueAccordingPaper(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +
 			'&nbsp;|</span>&nbsp;&nbsp;' +
 			'<b>名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.grade_rank + 
 			'&nbsp;|</span>&nbsp;&nbsp;' +
@@ -2150,9 +2176,9 @@ var reportPage = {
 			//指标名;
 			baseArr.push('<td class="one-level">' + "总计" + '</td>');
 			//个人得分率
-			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(pupilBase.weights_score_average_percent) + '</td>');
+			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(pupilBase.weights_score_average_percent) + '</td>');
 			//年级得分率
-			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(gradeBase.weights_score_average_percent) + '</td>');
+			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(gradeBase.weights_score_average_percent) + '</td>');
 			//得分率差值
 			baseArr.push(reportPage.Pupil.checkDataTableCol("one-level-content", pupilBase.weights_score_average_percent, gradeBase.weights_score_average_percent));
 			//个人得分
@@ -2167,9 +2193,9 @@ var reportPage = {
 				//指标名;
 				lv1Arr.push('<td class="one-level">' + pupilLv1Arr[i].checkpoint + '</td>');
 				//个人得分率
-				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(pupilLv1Arr[i].weights_score_average_percent) + '</td>');
+				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(pupilLv1Arr[i].weights_score_average_percent) + '</td>');
 				//年级得分率
-				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatTimesValue(gradeLv1Arr[i].weights_score_average_percent) + '</td>');
+				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatHundredValue(gradeLv1Arr[i].weights_score_average_percent) + '</td>');
 				//得分率差值
 				lv1Arr.push(reportPage.Pupil.checkDataTableCol("one-level-content", pupilLv1Arr[i].weights_score_average_percent, gradeLv1Arr[i].weights_score_average_percent));
 				//个人得分
@@ -2187,9 +2213,9 @@ var reportPage = {
 					//指标名;
 					lv2Arr.push('<td>' + pupilLv2Arr[ii].checkpoint + '</td>');
 					//个人得分率
-					lv2Arr.push('<td>' + reportPage.baseFn.formatTimesValue(pupilLv2Arr[ii].weights_score_average_percent) + '</td>');
+					lv2Arr.push('<td>' + reportPage.baseFn.formatHundredValue(pupilLv2Arr[ii].weights_score_average_percent) + '</td>');
 					//年级得分率
-					lv2Arr.push('<td>' + reportPage.baseFn.formatTimesValue(gradeLv2Arr[ii].weights_score_average_percent) + '</td>');
+					lv2Arr.push('<td>' + reportPage.baseFn.formatHundredValue(gradeLv2Arr[ii].weights_score_average_percent) + '</td>');
 					//得分率差值
 					lv2Arr.push(reportPage.Pupil.checkDataTableCol("", pupilLv2Arr[ii].weights_score_average_percent, gradeLv2Arr[ii].weights_score_average_percent));
 					//个人得分
@@ -2214,11 +2240,11 @@ var reportPage = {
 			diff_ratio = diff/hikaku_value;
 
 			if(diff_ratio < 0 && diff_ratio > -0.3){
-				result += '<td class="' + col_class + ' wrong">' + reportPage.baseFn.formatTimesValue(diff) + '</td>';
+				result += '<td class="' + col_class + ' wrong">' + reportPage.baseFn.formatHundredValue(diff) + '</td>';
 			}else if(diff_ratio < -0.3){
-				result += '<td class="' + col_class + ' more-wrong">' + reportPage.baseFn.formatTimesValue(diff) + '</td>';
+				result += '<td class="' + col_class + ' more-wrong">' + reportPage.baseFn.formatHundredValue(diff) + '</td>';
 			}else{
-				result += '<td class="' + col_class + '">' + reportPage.baseFn.formatTimesValue(diff) + '</td>';
+				result += '<td class="' + col_class + '">' + reportPage.baseFn.formatHundredValue(diff) + '</td>';
 			};
 			return result;
 		},

@@ -1,0 +1,10 @@
+/*
+*= require ztree/css/demo
+*= require ztree/css/zTreeStyle/zTreeStyle.css
+*= require_self
+*/
+.ztree li span.button::before {
+	color:#333;
+}
+
+form#file_upload {padding-top: 10px;}

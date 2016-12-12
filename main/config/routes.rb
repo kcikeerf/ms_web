@@ -19,10 +19,12 @@ Rails.application.routes.draw do
     
     resources :checkpoints, :except => [:edit, :destroy] do      
       collection do
-        delete '/:uid', action: :destroy, as: 'destroy'
-        get '/:uid/edit',action: :edit, as: 'edit'
-        post '/:id/move_node', action: :move_node, as: 'move_node'
-        post 'import_ckp_file'
+        # delete '/:uid', action: :destroy, as: 'destroy'
+        # get '/:uid/edit',action: :edit, as: 'edit'
+        # post '/:id/move_node', action: :move_node, as: 'move_node'
+        # post 'import_ckp_file'
+        post 'combine_node_catalogs_subject_checkpoints'
+        post 'list'
       end
     end
 
@@ -41,9 +43,18 @@ Rails.application.routes.draw do
     end
 
     resources :node_structures, concerns: :destroy_all do 
-      post 'add_ckps', on: :collection
+      get "catalog_tree", on: :collection
       resources :node_catalogs, concerns: :destroy_all do 
-        post 'add_ckps', on: :collection
+        resources :checkpoints, concerns: :destroy_all do
+          collection do
+            get "tree"
+          end
+        end
+      end
+      resources :checkpoints, concerns: :destroy_all do
+        collection do
+          get "tree"
+        end
       end
     end
     
@@ -69,6 +80,7 @@ Rails.application.routes.draw do
     resources :pupils, concerns: :destroy_all
     resources :tenant_administrators, concerns: :destroy_all
     resources :project_administrators, concerns: :destroy_all
+    resources :node_catalogs, concerns: :destroy_all
   end
 
   mount RuCaptcha::Engine => "/rucaptcha"
@@ -84,11 +96,9 @@ Rails.application.routes.draw do
       get 'get_grades'
       get 'get_versions'
       get 'get_units'
-      get 'get_catalogs_and_tree_data'
-      get 'get_ckp_data' 
-      # get 'get_tree_data_by_subject' 
-      get 'get_ckp_data_by_volume_catalog'
-   end
+      get 'list'
+      get 'catalog_list'
+    end
   end
 
   resource :quizs do
@@ -122,7 +132,13 @@ Rails.application.routes.draw do
       get 'get_tree_data_by_subject'
     end
   end
-  
+
+  resources :subject_checkpoints do 
+    collection do 
+      get 'ztree_data_list'
+    end
+  end 
+
   resources :score_reports do 
     collection do 
       get 'simple'
@@ -212,6 +228,8 @@ Rails.application.routes.draw do
       get 'pupil'
     end
   end
+
+  match "/reports_warehouse/tests/*any_path", to: "reports_warehouse#get_report_file", via: [:get]
 
   resource :monitors do
     member do

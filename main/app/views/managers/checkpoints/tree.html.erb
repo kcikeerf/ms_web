@@ -1,0 +1,31 @@
+<% content_for :head do %>
+	<%= stylesheet_link_tag 'managers/checkpoints', 
+		media: 'all', 
+		'data-turbolinks-track' => true %>
+	<%= javascript_include_tag 'managers/selected_nodes_tree','managers/node_catalog_checkpoint_display',
+		'data-turbolinks-track' => true %>
+<% end %>
+<div style="margin: 20px 0px 0px 20px;">
+<b style="font-size: 20px;">教材:</b>
+<%= @target_node.nil?? "": @target_node.version_cn%>/<%=@target_node.subject_cn%>/<%=@target_node.grade_cn%>/<%=@target_node.term_cn %>
+<br>
+<b style="font-size: 20px;">目录:</b>
+<%= @target_catalog.nil?? "": @target_catalog.node %>
+</div>
+<%= render partial: '/managers/checkpoints/tree', 
+			locals: {
+				knowledge_tree_id: "managers_subejct_ckp_knowledge_tree",
+				skill_tree_id: "managers_subejct_ckp_skill_tree",
+				ability_tree_id: "managers_subejct_ckp_ability_tree"
+			} 
+%>
+<script type="text/javascript">
+    var tree_selectors = {
+		knowledge: "#managers_subejct_ckp_knowledge_tree",
+		skill: "#managers_subejct_ckp_skill_tree",
+		ability: "#managers_subejct_ckp_ability_tree"
+    };
+    var tree_data = <%=raw @tree_nodes.to_json %>;
+	var obj = new node_catalog_checkpoints_display(tree_selectors, tree_data);
+    obj.init();
+</script>

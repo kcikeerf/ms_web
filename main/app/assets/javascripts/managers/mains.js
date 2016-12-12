@@ -30,7 +30,7 @@ function InitLeftMenu() {
     $('.easyui-accordion li a').click(function(){
       var tabTitle = $(this).text();
       var url = $(this).attr("ref");
-      addTab(tabTitle,url);
+      addTab($('#tabs'), tabTitle,url);
       $('.easyui-accordion li div').removeClass("selected");
       $(this).parent().addClass("selected");
     }).hover(function(){
@@ -42,9 +42,16 @@ function InitLeftMenu() {
     $(".easyui-accordion").accordion();
   }
 
-  function addTab(subtitle,url){
-    if(!$('#tabs').tabs('exists',subtitle)){
-      $('#tabs').tabs('add',{
+  function reopen(tab_container, subtitle, url){
+    if(tab_container.tabs('exists',subtitle)){
+      tab_container.tabs('close', subtitle);
+    }
+    addTab(tab_container,subtitle,url);
+  }
+
+  function addTab(tab_container,subtitle,url){
+    if(!tab_container.tabs('exists',subtitle)){
+      tab_container.tabs('add',{
         title:subtitle,
         content:createFrame(url),
         closable:true,
@@ -52,7 +59,7 @@ function InitLeftMenu() {
         height:$('#mainPanle').height()-26
       });
     }else{
-      $('#tabs').tabs('select',subtitle);
+      tab_container.tabs('select',subtitle);
       $('#mm-tabupdate').click();
     }
     tabClose();
@@ -155,29 +162,29 @@ function newObj(title, url){
   $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
   $.parser.parse($("#fm"));
   $('#manager_method').val('post');
-  var $resource_add = $("#resource_add"); //没懂啥用先保留
-  if($resource_add.length){//没懂啥用先保留
-    // $resource_add.show();
-    // $("#resource_edit").hide();
-    var $html = $resource_add.clone();
-    $html.find('div:first').attr('id', 'first')
-    $html.attr('id', '').show();
-    $("#other").html($html);
-    $.parser.parse($("#fm"));
-  }//没懂啥用先保留
+  // var $resource_add = $("#resource_add"); //没懂啥用先保留
+  // if($resource_add.length){//没懂啥用先保留
+  //   // $resource_add.show();
+  //   // $("#resource_edit").hide();
+  //   var $html = $resource_add.clone();
+  //   $html.find('div:first').attr('id', 'first')
+  //   $html.attr('id', '').show();
+  //   $("#other").html($html);
+  //   $.parser.parse($("#fm"));
+  // }//没懂啥用先保留
 }
 
 //编辑
 function editObj(url){
   var row = $('#dg').datagrid('getSelected');
   if (row){
-    var $resource_edit = $("#resource_edit");//没懂啥用先保留
-    if($resource_edit.length){//没懂啥用先保留
-      var $html = $resource_edit.clone();
-      $html.show();
-      $("#other").html($html);
-      $.parser.parse($("#fm"));
-    }//没懂啥用先保留
+    // var $resource_edit = $("#resource_edit");//没懂啥用先保留
+    // if($resource_edit.length){//没懂啥用先保留
+    //   var $html = $resource_edit.clone();
+    //   $html.show();
+    //   $("#other").html($html);
+    //   $.parser.parse($("#fm"));
+    // }//没懂啥用先保留
     $('#dlg').dialog('open').dialog('setTitle','编辑');
     $('#fm').form('clear').attr('action', url);
     $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;

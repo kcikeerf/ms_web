@@ -127,11 +127,11 @@
 			<p class="error"></p>
 		</div>
 
-<% if !@current_test && @current_test.report_version.blank? %>	
+<% if !@current_test || @current_test.report_version.blank? %>	
 		<div class="lookReport">
 			<a href="/reports/new_square" class="active">在线查看报告</a>
 		</div>
-<% else #if  @current_test.report_version == "1.1" %>
+<% elsif  @current_test.report_version == "1.1" %>
 		<div class="lookReport">
 			<a href="/reports/square_v1_1" class="active">在线查看报告</a>
 		</div>
@@ -457,7 +457,7 @@
 					</ol>
 				</li>
 			</ul>
-			<a class="detection" href="javascript:;">检测</a>
+			// <a class="detection" href="javascript:;">检测</a>
 		</div>
 		<div class="attribute">
 			<div class="paperModify">
@@ -610,7 +610,7 @@
 			<p class="sideTitle">题目列表</p>
 			<ul class="topNav">
 			</ul>
-			<a class="detection" href="javascript:;">检测</a>
+			// <a class="detection" href="javascript:;">检测</a>
 		</div>
 		<div class="attribute">
 			<div class="paperModify">

@@ -15,7 +15,7 @@ module ReportModule
     module WareHouse
       module_function
 
-      ReportLocation = Rails.root.to_s + "/public/"
+      ReportLocation = Rails.root.to_s + "/"
       # 报告保存格式
       # /reports/测试id／类型／租户uid／类型id
       #
@@ -24,8 +24,7 @@ module ReportModule
 
       def store_report_json path, file_name, str
         FileUtils.mkdir_p path
-        f = File.new(path+"/#{file_name}.json", "w")
-        f.write(str)
+        File.write(path+"/#{file_name}.json", str)
       end
     end
 
