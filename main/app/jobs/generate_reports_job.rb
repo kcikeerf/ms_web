@@ -12,7 +12,7 @@ class GenerateReportsJob < ActiveJob::Base
       if !params[:test_id].blank? && !params[:task_uid].blank? && !params[:top_group].blank?
         target_test = Mongodb::BankTest.where(id: params[:test_id]).first
         target_pap= target_test.bank_paper_pap
-        target_pap.update(paper_status: Common::Paper::Status::ReportGenerating)
+        # target_pap.update(paper_status: Common::Paper::Status::ReportGenerating)
 
         # JOB的分处理的数量
         job_tracker = JobList.new({
@@ -119,7 +119,7 @@ class GenerateReportsJob < ActiveJob::Base
         job_tracker.update(status: Common::Job::Status::Completed)
         job_tracker.update(process: 1.0)
 
-        target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
+        #target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
         #  Signal.trap("TERM") { puts "finished!"; exit }
         #end
         #logger.info "construct process id: #{pid}"

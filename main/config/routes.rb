@@ -193,7 +193,7 @@ Rails.application.routes.draw do
       get 'get_saved_paper'
       post 'submit_paper'
       post 'save_analyze'
-      get 'get_saved_analyze'
+      # get 'get_saved_analyze'
       post 'submit_analyze'
       post 'generate_all_reports'
       get 'get_empty_score_file'

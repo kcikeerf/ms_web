@@ -1,8 +1,4 @@
 <% if current_user.is_project_administrator?%>
-<!-- 	<div class="<%=label_klass%>">
-			<label class="item_label"><%#=LABEL("page.paper.test_range")%>&nbsp;:</label>
-	</div>  -->
-
 	<div class="hint"><%=LABEL("page.paper.test_range")%></div>
 	<div class="table-responsive">
 	<table class="table">
@@ -74,15 +70,14 @@
 								style="font-size: 14px;">
 							用户名、密码、报告链接汇总表下载</a>
 						</div>
-					<% else %>
+					<% elsif [Common::Test::Status::Analyzed].include?(t[:tenant_status]) %>
 						<div style="float: left;">
-						<button type="button" 
-								class="btn btn-default btn-xs" 
-								geturl="/papers/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
-								href="javascript:;"
-								>
-								导入成绩表
-								</button>
+							<button type="button" 
+									class="btn btn-default btn-xs" 
+									geturl="/papers/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
+									href="javascript:;">
+							导入成绩表
+							</button>
 						</div>
 						<div style="float: left; width: 20px;display: block;">&nbsp;
 						</div>

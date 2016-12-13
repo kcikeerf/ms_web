@@ -38,6 +38,13 @@ class ImportResultsJob < ActiveJob::Base
       raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "result sheet")) unless result_sheet
 
       paper_qzps = target_paper.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten
+
+      # 获取Task信息，创建JOB
+      target_task = target_paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
+      raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "task uid: #{target_task.uid}")) unless target_task
+      job_tracker = JobList.where(uid: params[:job_uid]).first
+      raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "job uid: #{params[:job_uid]}")) unless job_tracker
+
       ###
       # version 1.1
       # 为了兼容旧代码
@@ -60,39 +67,25 @@ class ImportResultsJob < ActiveJob::Base
       logger.info "tenant id: #{params[:tenant_uid]}"
       logger.info "score file id: #{params[:score_file_id]}"
 
-       # p ">>>初始化<<<"
-       # p "paper id: #{params[:pap_uid]}"
-       # p "test id: #{target_paper.bank_tests[0].id.to_s}"
-       # p "tenant id: #{params[:tenant_uid]}"
-       # p "score file id: #{params[:score_file_id]}"
-
-      # 获取Task信息，创建JOB
-      target_task = target_paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
+      # 更新Task, Job的信息
       target_task.touch(:dt_update)
-      logger.info "task uid: #{target_task.uid}"
-      
       # JOB的分处理的数量
       phase_total = 15
-      job_tracker = JobList.new({
-        :name => "ImportResultJob",
-        :task_uid => target_task.uid,
+      job_tracker.update({
         :status => Common::Job::Status::InQueue,
         :process => 1/phase_total.to_f
       })
-
-      job_tracker.save!
-      logger.info "job uid: #{job_tracker.uid}"
 
       #为了记录处理的进度
       redis_key = Common::SwtkRedis::Prefix::ImportResult + job_tracker.uid
       redis_ns = Common::SwtkRedis::Ns::Sidekiq
       Common::SwtkRedis::set_key(redis_ns,redis_key, 0)
 
-      temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first
-      temp.update({
-        :tenant_status => Common::Test::Status::ScoreImporting,
-        :job_uid => job_tracker.uid
-      })
+      # temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first
+      # temp.update({
+      #   :tenant_status => Common::Test::Status::ScoreImporting,
+      #   :job_uid => job_tracker.uid
+      # })
 
       #delete old scores
       old_scores = Mongodb::BankTestScore.where({
@@ -100,7 +93,7 @@ class ImportResultsJob < ActiveJob::Base
         :test_id => target_paper.bank_tests[0].id.to_s,
         :tenant_uid => params[:tenant_uid]})
       old_scores.destroy_all unless old_scores.blank?
-      target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
+      #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
 
       ###
       logger.info ">>> 读取excel title <<<"
@@ -215,8 +208,9 @@ class ImportResultsJob < ActiveJob::Base
       score_file = Common::Score.create_usr_pwd file_h
 
       job_tracker.update(process: 1.0)
-      temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
-      File.delete(file_path)
+      #target_paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImported, params[:job_uid])
+      # temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
+      # File.delete(file_path)
       #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
@@ -257,7 +251,7 @@ class ImportResultsJob < ActiveJob::Base
           klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[1]
           cells = {
             :grade => grade_pinyin,
-            :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
+            :xue_duan => Common::Grade.judge_xue_duan(grade_pinyin),
             :classroom => klass_value,
             :head_teacher => row[2],
             :teacher => row[3],

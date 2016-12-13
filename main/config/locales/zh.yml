@@ -202,9 +202,18 @@ zh:
   tests:
     status:
       not_started: "未测试"
+      none: "无"
+      new: "新添试卷"
+      editting: "正在修订"
+      editted: "修订完成"
+      analyzing: "正在解析"
+      analyzed: "解析完成"
       no_score: "成绩未导入"
       score_importing: "成绩导入中"
       score_imported: "成绩已导入"
+      report_generating: "报告生成中"
+      report_completed: "报告生成完毕" 
+
   swtk_errors:
     parameter_invalid_error: "参数无效！"
     object_not_found: "对象未找到或不存在(详细：%{message})"

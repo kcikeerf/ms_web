@@ -234,7 +234,7 @@ class ImportResultJob < ActiveJob::Base
           klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[1]
           cells = {
             :grade => grade_pinyin,
-            :xue_duan => BankNodestructure.get_subject_category(grade_pinyin),
+            :xue_duan => Common::Grade.judge_xue_duan(grade_pinyin),
             :classroom => klass_value,
             :head_teacher => row[2],
             :teacher => row[3],
