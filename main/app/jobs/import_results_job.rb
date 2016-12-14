@@ -208,9 +208,9 @@ class ImportResultsJob < ActiveJob::Base
       score_file = Common::Score.create_usr_pwd file_h
 
       job_tracker.update(process: 1.0)
-      #target_paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImported, params[:job_uid])
+      target_paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImported, params[:job_uid])
       # temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
-      # File.delete(file_path)
+      File.delete(file_path)
       #多JOB并存的时候试卷状态判断，在取试卷的时候
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImported)
     rescue Exception => ex
