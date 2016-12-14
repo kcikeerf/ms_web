@@ -85,7 +85,8 @@ class Mongodb::BankTest
       }
       target_pap.update(:paper_json => paper_h.to_json)
     rescue Exception => ex
-
+      p ex.message
+      p ex.backtrace
     end
   end
 end

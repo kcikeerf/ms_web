@@ -64,6 +64,7 @@ class GenerateReportsJob < ActiveJob::Base
             item.clear_old_data
           # end
         }
+
         # ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.2)
 
@@ -101,11 +102,11 @@ class GenerateReportsJob < ActiveJob::Base
         }
         job_tracker.update(process: 0.7)
 
-        # 组装2
-        constructor_arr.each{|item|
-          item.ni_kumigoto_no_comment_koutiku
-        }
-        job_tracker.update(process: 0.8)
+        # # 组装2
+        # constructor_arr.each{|item|
+        #   item.ni_kumigoto_no_comment_koutiku
+        # }
+        # job_tracker.update(process: 0.8)
 
         # 结束处理
         constructor_arr.each{|item|
@@ -119,7 +120,7 @@ class GenerateReportsJob < ActiveJob::Base
         job_tracker.update(status: Common::Job::Status::Completed)
         job_tracker.update(process: 1.0)
 
-        #target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
+        target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
         #  Signal.trap("TERM") { puts "finished!"; exit }
         #end
         #logger.info "construct process id: #{pid}"

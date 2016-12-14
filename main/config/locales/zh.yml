@@ -146,12 +146,12 @@ zh:
     equal_to: "等"
     higher_than: "高"
     failed_level: "不及格"
-    good_level: "中等"
+    good_level: "良好"
     excellent_level: "优秀"
     correct_ratio:
-      failed_title: "答对率 < 0.6的题目"
-      good_title: "0.6 ≤ 答对率 < 0.85的题目"
-      excellent_title: "答对率 ≥ 0.85的题目"
+      failed_title: "答对率 < 60%的题目"
+      good_title: "60% ≤ 答对率 < 85%的题目"
+      excellent_title: "答对率 ≥ 85%的题目"
     messages:
       common:
         info:
