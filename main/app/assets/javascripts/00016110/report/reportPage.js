@@ -1067,7 +1067,7 @@ var reportPage = {
 			if(dimesion!="total"){
 				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
 			} else {
-				var ckpArr = ["knowledge","skill","ability"];
+				var ckpArr = ["知识","技能","能力"];
 			} 
 			var classNameArr = $.map(reportPage.CurrentBreadCrumbChildren,function(value, index){return value[1].label});
 			var colorArr = [] ;
@@ -1228,10 +1228,11 @@ var reportPage = {
 						values = reportPage.baseFn.get_key_values(data, "diff_degree")[1];
 						break;
 					case "median_percent":
-						values = reportPage.baseFn.get_key_values(data, "median_percent")[1];
+						values = reportPage.baseFn.get_key_values(data, "grade_median_percent")[1];
 						break;
 					case "med_avg_diff":
-						values = reportPage.baseFn.get_keys_diff_values(data, data, "median_percent", "weights_score_average_percent")[1];
+						values = reportPage.baseFn.get_keys_diff_values(data, data, "grade_median_percent", "weights_score_average_percent")[1];
+						values = $.map(values, function(value, index){ return reportPage.baseFn.formatValue(value); });
 						break;
 					case "excellent_pupil_percent":
 						values = reportPage.baseFn.get_key_values(data, "excellent_percent")[1];
