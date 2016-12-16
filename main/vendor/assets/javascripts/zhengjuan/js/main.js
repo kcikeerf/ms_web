@@ -245,14 +245,16 @@ $(function(){
                     }
                     //
                     //paper.setInterVal();
- 
+                    var monitoring_all_tenants = new MonitorMultipleUpdaters();
                      $.each($(".progress.createReport > .progress-bar"),function(i,item){
                         var target_task_uid = data.information.tasks.create_report;
                         var target_job_uid = item.getAttribute("job-uid");
                         window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                        monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
                         $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].run());
                         $.Topic("paper_report_generating").publish();
                     });
+                    monitoring_all_tenants.run();
 
                     break;
                 case "report_completed":
@@ -331,9 +333,11 @@ $(function(){
                     dataType: "json",
                     success: function(data){
                         if(data && data.task_uid){
-                            $(".paperDetails > .progress").show();
-                            paper.paperData.task_uid = data.task_uid;
-                            paper.setInterVal();
+                            location.reload();
+                            // console.log( $(".paperDetails > .progress"));
+                            // $(".paperDetails > .progress").show();
+                            // paper.paperData.task_uid = data.task_uid;
+                            // paper.setInterVal();
                         }
                     },
                     error: function(){
