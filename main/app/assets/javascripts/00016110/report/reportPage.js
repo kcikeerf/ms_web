@@ -2129,7 +2129,9 @@ var reportPage = {
 			var pupilNavStr =
 			'<b>分数</b>：<span>' + reportPage.baseFn.formatValueAccordingPaper(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +
 			'&nbsp;|</span>&nbsp;&nbsp;' +
-			'<b>名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.grade_rank + 
+			'<b>年级名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.grade_rank + 
+			'&nbsp;|</span>&nbsp;&nbsp;' +
+			'<b>班级名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.klass_rank + 
 			'&nbsp;|</span>&nbsp;&nbsp;' +
 			'<b>性别</b>：<span>' + reportPage.PupilData.basic.sex +
 			'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' + reportPage.PupilData.basic.term + 
