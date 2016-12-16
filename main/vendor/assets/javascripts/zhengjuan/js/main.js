@@ -206,13 +206,16 @@ $(function(){
                     if($(".tenant_result_list")){
                         $(".tenant_result_list .score_importing").show();
 
+                        var monitoring_all_tenants = new MonitorMultipleUpdaters();
                         $.each($(".tenant_result_list .score_importing .progress-bar"),function(i,item){
                             var target_task_uid = data.information.tasks.import_result;
                             var target_job_uid = item.getAttribute("job-uid");
                             window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
-                            $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].execute());
+                            monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
+                            $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].run());
                             $.Topic("tenant_score_importing").publish();
                         });
+                        monitoring_all_tenants.run();
                         
                     }
                     else{
@@ -247,12 +250,13 @@ $(function(){
                         var target_task_uid = data.information.tasks.create_report;
                         var target_job_uid = item.getAttribute("job-uid");
                         window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
-                        $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].execute());
+                        $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].run());
                         $.Topic("paper_report_generating").publish();
                     });
 
                     break;
                 case "report_completed":
+                    $.Topic("paper_report_generating").destroy();
                     $(".download_link").css("display","block");
                     $(".lookPaperInfo, .lookReport").show();
                     //project administrator tenant action
@@ -1463,7 +1467,6 @@ $(function(){
 
         if(paper.paperData.information && paper.paperData.information.tenants){
             var target_tenant_uids = $.map(paper.paperData.information.tenants, function(v){ return v.tenant_uid});
-            console.log(target_tenant_uids);
             $(".tenant_range_check_list .tenant_range_item_checkbox").each(function(){
                 if(target_tenant_uids.includes($(this)[0].getAttribute("tenant_uid"))){
                     $(this).addClass("active");

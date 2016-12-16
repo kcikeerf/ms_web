@@ -193,7 +193,7 @@ Rails.application.routes.draw do
       get 'get_saved_paper'
       post 'submit_paper'
       post 'save_analyze'
-      get 'get_saved_analyze'
+      # get 'get_saved_analyze'
       post 'submit_analyze'
       post 'generate_all_reports'
       get 'get_empty_score_file'
@@ -406,6 +406,13 @@ Rails.application.routes.draw do
       match 'submit_quiz_score', to: "papers#submit_quiz_score",via: [:post, :options]
     end
   #end
+  #######################################
+
+  #######################################
+  ### Swtk API
+  constraints do
+    mount Reports::API => "/"
+  end
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all

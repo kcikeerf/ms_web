@@ -420,6 +420,50 @@ var reportPage = {
 			}
 			return index_arr;
 		},
+		find_all_max_min_keys_in_arr: function(keys, values, max_flag, value_range_flag){
+			var result = [];
+			var max_flag = typeof max_flag !== 'undefined' ? max_flag : true;
+			var value_range_flag = typeof value_range_flag !== 'undefined' ? value_range_flag : true;
+
+			var target_value = null;
+			var target_flag = true;
+			if(max_flag){
+				target_value = Math.max.apply(null, values);
+				if(value_range_flag){
+					target_flag = (target_value > 0);
+				}
+			} else {
+				target_value = Math.min.apply(null, values);
+				if(value_range_flag){
+					target_flag = (target_value < 0);
+				}
+			}
+			if( target_flag ){
+				var ckp_index_arr = reportPage.baseFn.find_all_indexes_of_a_value_in_arr(values, target_value);
+				for(var i in ckp_index_arr){
+					var ckp_index = ckp_index_arr[i];
+					result.push(keys[ckp_index]);
+				}
+			}
+			return result;
+		},
+		find_all_pos_neg_keys_in_arr: function(keys, values, value_flag){
+			var result = [];
+			var value_flag = typeof value_flag !== 'undefined' ? value_flag : true;
+
+			for(var i in values){
+				var target_index = null;
+				if(value_flag && values[i] > 0){
+					target_index = i;
+				} else if(!value_flag && values[i] < 0){
+					target_index = i;
+				}
+				if(target_index){
+					result.push(keys[target_index]);
+				}
+			}
+			return result;
+		},
 		getValue: function(obj) {
 			if(obj){
 				return $.map(obj, function(value, index) {
@@ -1023,7 +1067,7 @@ var reportPage = {
 			if(dimesion!="total"){
 				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
 			} else {
-				var ckpArr = ["knowledge","skill","ability"];
+				var ckpArr = ["知识","技能","能力"];
 			} 
 			var classNameArr = $.map(reportPage.CurrentBreadCrumbChildren,function(value, index){return value[1].label});
 			var colorArr = [] ;
@@ -1184,10 +1228,11 @@ var reportPage = {
 						values = reportPage.baseFn.get_key_values(data, "diff_degree")[1];
 						break;
 					case "median_percent":
-						values = reportPage.baseFn.get_key_values(data, "median_percent")[1];
+						values = reportPage.baseFn.get_key_values(data, "grade_median_percent")[1];
 						break;
 					case "med_avg_diff":
-						values = reportPage.baseFn.get_keys_diff_values(data, data, "median_percent", "weights_score_average_percent")[1];
+						values = reportPage.baseFn.get_keys_diff_values(data, data, "grade_median_percent", "weights_score_average_percent")[1];
+						values = $.map(values, function(value, index){ return reportPage.baseFn.formatValue(value); });
 						break;
 					case "excellent_pupil_percent":
 						values = reportPage.baseFn.get_key_values(data, "excellent_percent")[1];
@@ -1682,10 +1727,11 @@ var reportPage = {
 						values = reportPage.baseFn.get_key_values(data, "diff_degree")[1];
 						break;
 					case "median_percent":
-						values = reportPage.baseFn.get_key_values(data, "median_percent")[1];
+						values = reportPage.baseFn.get_key_values(data, "klass_median_percent")[1];
 						break;
 					case "med_avg_diff":
-						values = reportPage.baseFn.get_keys_diff_values(data, data, "median_percent", "weights_score_average_percent")[1];
+						values = reportPage.baseFn.get_keys_diff_values(data, data, "klass_median_percent", "weights_score_average_percent")[1];
+						values = $.map(values, function(value, index){ return reportPage.baseFn.formatValue(value); });
 						break;
 					case "excellent_pupil_percent":
 						values = reportPage.baseFn.get_key_values(data, "excellent_percent")[1];
@@ -1776,7 +1822,7 @@ var reportPage = {
 
 				//答对率
 				else if($dataId == 'class-answerCase'){
-					var table_list = reportPage.baseFn.getQizpointCorrectRaioTable(reportPage.ProjectData);
+					var table_list = reportPage.baseFn.getQizpointCorrectRaioTable(reportPage.KlassData);
 					$('#excellent_answerCase_table').html(table_list.excellent);
 					$('#good_answerCase_table').html(table_list.good);
 					$('#failed_answerCase_table').html(table_list.failed);
@@ -1902,7 +1948,7 @@ var reportPage = {
 			//班级与年级平均得分率差值
 			baseArr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassBase.weights_score_average_percent, gradeBase.weights_score_average_percent));
 			//班级与年级中位数平均得分率差值
-			baseArr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassBase.klass_median_percent, gradeBase.grade_median_percent));
+			baseArr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassBase.klass_median_percent, gradeBase.weights_score_average_percent));
 			//分化程度
 			baseArr.push('<td class="one-level">' + reportPage.baseFn.formatValue(klassBase.diff_degree) + '</td>');
 			//满分值
@@ -1926,7 +1972,7 @@ var reportPage = {
 				//班级与年级平均得分率差值
 				lv1Arr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassLv1Arr[i].weights_score_average_percent, gradeLv1Arr[i].weights_score_average_percent));
 				//班级与年级中位数平均得分率差值
-				lv1Arr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassLv1Arr[i].klass_median_percent, gradeLv1Arr[i].grade_median_percent));
+				lv1Arr.push(reportPage.Pupil.checkDataTableCol("one-level-content", klassLv1Arr[i].klass_median_percent, gradeLv1Arr[i].weights_score_average_percent));
 				//分化程度
 				lv1Arr.push('<td class="one-level">' + reportPage.baseFn.formatValue(klassLv1Arr[i].diff_degree) + '</td>');
 				//满分值
@@ -1952,7 +1998,7 @@ var reportPage = {
 					//班级与年级平均得分率差值
 					lv2Arr.push(reportPage.Pupil.checkDataTableCol("", klassLv2Arr[ii].weights_score_average_percent, gradeLv2Arr[ii].weights_score_average_percent));
 					//班级与年级中位数平均得分率差值
-					lv2Arr.push(reportPage.Pupil.checkDataTableCol("", klassLv2Arr[ii].klass_median_percent, gradeLv2Arr[ii].grade_median_percent));
+					lv2Arr.push(reportPage.Pupil.checkDataTableCol("", klassLv2Arr[ii].klass_median_percent, gradeLv2Arr[ii].weights_score_average_percent));
 					//分化程度
 					lv2Arr.push('<td>' + reportPage.baseFn.formatValue(klassLv2Arr[ii].diff_degree) + '</td>');
 					//满分值
@@ -1968,72 +2014,65 @@ var reportPage = {
 			//指标分数状况
 			if( dimesion != "total" ) {
 				//班级
-				var self_best = $.map(reportPage.KlassData.comment["version1.0"][dimesion].self_best,function(v,i){ return v.checkpoint});
-				var self_worst = $.map(reportPage.KlassData.comment["version1.0"][dimesion].self_worst,function(v,i){ return v.checkpoint});
-				//与年级比较
-				var diff_with_grade_ckp_keys = reportPage.baseFn.get_keys_diff_values(reportPage.KlassData.data[dimesion].lv_n, reportPage.GradeData.data[dimesion].lv_n, "weights_score_average_percent", "weights_score_average_percent", 2, false)[0];
-				var diff_with_grade_ckp_values = reportPage.baseFn.get_keys_diff_values(reportPage.KlassData.data[dimesion].lv_n, reportPage.GradeData.data[dimesion].lv_n, "weights_score_average_percent", "weights_score_average_percent",2, false)[1];
-				var max_value = Math.max.apply(null, diff_with_grade_ckp_values);
-				var compare_with_grade_best = [];
-				if( max_value > 0 ){ //优势指标
-					var ckp_index_arr = reportPage.baseFn.find_all_indexes_of_a_value_in_arr(diff_with_grade_ckp_values, max_value);
-					for(var index in ckp_index_arr){
-						var ckp_index = ckp_index_arr[index];
-						compare_with_grade_best.push(diff_with_grade_ckp_keys[ckp_index]);
-					}
-				}
-				var min_value = Math.min.apply(null, diff_with_grade_ckp_values);
-				var compare_with_grade_worst = [];
-				if( min_value < 0 ){ //劣势指标
-					ckp_index_arr = reportPage.baseFn.find_all_indexes_of_a_value_in_arr(diff_with_grade_ckp_values, min_value);
-					for(var index in ckp_index_arr){
-						ckp_index = ckp_index_arr[index];
-						compare_with_grade_worst.push(diff_with_grade_ckp_keys[ckp_index]);
-					}
-				}
-				//班级平均得分率
-				var self_weights_score_average_percent = reportPage.baseFn.formatHundredValue(reportPage.KlassData.comment["version1.0"][dimesion].self_weights_score_average_percent);
-				var self_weights_score_average_percent_level = reportPage.KlassData.comment["version1.0"][dimesion].self_weights_score_average_percent_level;
+				var self_ckps_values = reportPage.baseFn.get_key_values(reportPage.KlassData.data[dimesion].lv_n, "weights_score_average_percent" ,2, false);				
+				var self_best = reportPage.baseFn.find_all_max_min_keys_in_arr(self_ckps_values[0], self_ckps_values[1], true, false);
+				var self_worst = reportPage.baseFn.find_all_max_min_keys_in_arr(self_ckps_values[0], self_ckps_values[1], false, false);
 
 				//与年级比较
-				var grade_weights_score_average_percent = reportPage.baseFn.formatHundredValue(reportPage.GradeData.comment["version1.0"][dimesion].self_weights_score_average_percent);
+				var diff_with_grade_ckps_values = reportPage.baseFn.get_keys_diff_values(reportPage.KlassData.data[dimesion].lv_n, reportPage.GradeData.data[dimesion].lv_n, "weights_score_average_percent", "weights_score_average_percent",2, false);
+				var compare_with_grade_best = reportPage.baseFn.find_all_pos_neg_keys_in_arr(diff_with_grade_ckps_values[0], diff_with_grade_ckps_values[1]);
+				var compare_with_grade_worst = reportPage.baseFn.find_all_pos_neg_keys_in_arr(diff_with_grade_ckps_values[0], diff_with_grade_ckps_values[1], false);
+
+				//班级平均得分率
+				var self_weights_score_average_percent = reportPage.baseFn.formatHundredValue(reportPage.KlassData.data[dimesion].base.weights_score_average_percent);
+				var self_weights_score_average_percent_level = reportPage.baseFn.get_score_level_label(reportPage.KlassData.data[dimesion].base.weights_score_average_percent);
+
+				//与年级比较
+				var grade_weights_score_average_percent = reportPage.baseFn.formatHundredValue(reportPage.GradeData.data[dimesion].base.weights_score_average_percent);
 				var compare_with_grade_weights_score_average_percent = reportPage.baseFn.get_compare_level_label(self_weights_score_average_percent, grade_weights_score_average_percent);
 			} else {
 				//班级
-				var klass_data_comment = reportPage.KlassData.comment["version1.0"];
-				var self_best = reportPage.baseFn.get_dimesion_label_max_or_min(reportPage.baseFn.construct_dimesions_value_arr(klass_data_comment,"self_weights_score_average_percent"));
-				var self_worst = reportPage.baseFn.get_dimesion_label_max_or_min(reportPage.baseFn.construct_dimesions_value_arr(klass_data_comment,"self_weights_score_average_percent"), false);
+				var dimesion_keys = ["知识", "技能", "能力"];
+				var klass_base_values = [
+					reportPage.KlassData.data.knowledge.base.weights_score_average_percent,
+					reportPage.KlassData.data.skill.base.weights_score_average_percent,
+					reportPage.KlassData.data.ability.base.weights_score_average_percent
+				];
+				var self_best = reportPage.baseFn.find_all_max_min_keys_in_arr(dimesion_keys, klass_base_values);
+				var self_worst = reportPage.baseFn.find_all_max_min_keys_in_arr(dimesion_keys, klass_base_values, false, false);
 
 				//与年级比较
-				//var diff_with_grade_ckp_keys_obj = {}; 
-				var diff_with_grade_ckp_max_values_obj = {};
-				var diff_with_grade_ckp_min_values_obj = {}; 
+				var compare_with_grade_best = [];
+				var compare_with_grade_worst = []; 
 				var dimesion_arr = ["knowledge", "skill", "ability"];
 				for (var i in dimesion_arr) {
 					var dim = dimesion_arr[i];
-					//diff_with_grade_ckp_keys_obj[dim] = reportPage.baseFn.get_keys_diff_values(reportPage.KlassData.data[dim].lv_n, reportPage.GradeData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent", 2, false)[0];
-					var diff_value = reportPage.KlassData.data[dim].base["weights_score_average_percent"] - reportPage.GradeData.data[dim].base["weights_score_average_percent"];
-					diff_with_grade_ckp_max_values_obj[dim] = (diff_value > 0)? diff_value : null;
-					diff_with_grade_ckp_min_values_obj[dim] = (diff_value < 0)? diff_value : null;
+					var diff_value = reportPage.KlassData.data[dim].base.weights_score_average_percent - reportPage.GradeData.data[dim].base.weights_score_average_percent;
+					if(diff_value > 0){
+						compare_with_grade_best.push(dimesion_keys[i]);
+					} else if(diff_value < 0){
+						compare_with_grade_worst.push(dimesion_keys[i]);
+					} else {
+						//do nothing
+					}
 				}
-				var compare_with_grade_best = reportPage.baseFn.get_dimesion_label_max_or_min([diff_with_grade_ckp_max_values_obj.knowledge, diff_with_grade_ckp_max_values_obj.skill, diff_with_grade_ckp_max_values_obj.ability]);
-				var compare_with_grade_worst = reportPage.baseFn.get_dimesion_label_max_or_min([diff_with_grade_ckp_min_values_obj.knowledge, diff_with_grade_ckp_min_values_obj.skill, diff_with_grade_ckp_min_values_obj.ability], false);
 
 				//班级平均得分率
-				var self_weights_score_average_percent = reportPage.KlassData.data.knowledge.base["weights_score_average_percent"]*reportPage.DimesionRatio.knowledge +
-					reportPage.KlassData.data.skill.base["weights_score_average_percent"]*reportPage.DimesionRatio.skill +
-					reportPage.KlassData.data.ability.base["weights_score_average_percent"]*reportPage.DimesionRatio.ability;
+				var self_weights_score_average_percent = reportPage.KlassData.data.knowledge.base.weights_score_average_percent * reportPage.DimesionRatio.knowledge +
+					reportPage.KlassData.data.skill.base.weights_score_average_percent * reportPage.DimesionRatio.skill +
+					reportPage.KlassData.data.ability.base.weights_score_average_percent * reportPage.DimesionRatio.ability;
 				var self_weights_score_average_percent_level = reportPage.baseFn.get_score_level_label(self_weights_score_average_percent);
 				
 				//与年级比较
-				var grade_weights_score_average_percent = reportPage.GradeData.data.knowledge.base["weights_score_average_percent"]*reportPage.DimesionRatio.knowledge +
-					reportPage.GradeData.data.skill.base["weights_score_average_percent"]*reportPage.DimesionRatio.skill +
-					reportPage.GradeData.data.ability.base["weights_score_average_percent"]*reportPage.DimesionRatio.ability;
-
+				var grade_weights_score_average_percent = reportPage.GradeData.data.knowledge.base.weights_score_average_percent * reportPage.DimesionRatio.knowledge +
+					reportPage.GradeData.data.skill.base.weights_score_average_percent * reportPage.DimesionRatio.skill +
+					reportPage.GradeData.data.ability.base.weights_score_average_percent * reportPage.DimesionRatio.ability;
 				var compare_with_grade_weights_score_average_percent = reportPage.baseFn.get_compare_level_label(self_weights_score_average_percent, grade_weights_score_average_percent);
+
 				//班级平均得分率转换
 				self_weights_score_average_percent = reportPage.baseFn.formatHundredValue(self_weights_score_average_percent);
 			}
+
 			//班级最好
 			$(".klass_diagnosis." + dimesion + " .self_best").html(self_best.join(", &nbsp;"));
 			//班级最差
@@ -2054,22 +2093,30 @@ var reportPage = {
 				var level = result_level_arr[j];
 				if(dimesion!="total"){
 					// 班级部分
-					var self_pupil_number_percent = reportPage.KlassData.comment["version1.0"][dimesion]["self_"+level+"_pupil_number_percent"];
-					var grade_pupil_number_percent = reportPage.GradeData.comment["version1.0"][dimesion]["self_"+level+"_pupil_number_percent"];
+					var self_pupil_number_percent = reportPage.KlassData.data[dimesion].base[level+"_percent"];
+					var grade_pupil_number_percent = reportPage.GradeData.data[dimesion].base[level+"_percent"];
 					//与年级比较
 					compare_with_grade_pupil_number_percent = reportPage.baseFn.get_compare_level_label(self_pupil_number_percent, grade_pupil_number_percent);
 				} else {
-					// 班级部分
-					var self_pupil_number_percent = reportPage.baseFn.construct_dimesions_value_arr(reportPage.KlassData.comment["version1.0"],"self_"+level+"_pupil_number_percent").reduce(function(a, b){ return a+b;})/3;
-					var grade_pupil_number_percent = reportPage.baseFn.construct_dimesions_value_arr(reportPage.GradeData.comment["version1.0"],"self_"+level+"_pupil_number_percent").reduce(function(a, b){ return a+b;})/3;
-					//与年级比较
-					compare_with_grade_pupil_number_percent = reportPage.baseFn.get_compare_level_label(self_pupil_number_percent, grade_pupil_number_percent);
+					//暂时不实现
+					// // 班级部分
+					// var self_pupil_number_percent = reportPage.baseFn.construct_dimesions_value_arr(reportPage.KlassData.comment["version1.0"],"self_"+level+"_pupil_number_percent").reduce(function(a, b){ return a+b;})/3;
+					// var grade_pupil_number_percent = reportPage.baseFn.construct_dimesions_value_arr(reportPage.GradeData.comment["version1.0"],"self_"+level+"_pupil_number_percent").reduce(function(a, b){ return a+b;})/3;
+					// //与年级比较
+					// compare_with_grade_pupil_number_percent = reportPage.baseFn.get_compare_level_label(self_pupil_number_percent, grade_pupil_number_percent);
+					var self_pupil_number_percent = null;
+					var compare_with_grade_pupil_number_percent = null;
+				}
+	
+				//班级部分
+				if(self_pupil_number_percent){
+					$(".klass_diagnosis." + dimesion + " .self_" +level+ "_pupil_number_percent").html(reportPage.baseFn.formatHundredValue(self_pupil_number_percent));
 				}
 
-				//班级部分
-				$(".klass_diagnosis." + dimesion + " .self_" +level+ "_pupil_number_percent").html(reportPage.baseFn.formatHundredValue(self_pupil_number_percent));
 				//与年级比较
-				$(".klass_diagnosis." + dimesion + " .compare_with_grade_" +level+ "_pupil_number_percent").html(compare_with_grade_pupil_number_percent);
+				if(compare_with_grade_pupil_number_percent){
+					$(".klass_diagnosis." + dimesion + " .compare_with_grade_" +level+ "_pupil_number_percent").html(compare_with_grade_pupil_number_percent);
+				}
 			}
 		}
 	},
@@ -2082,7 +2129,9 @@ var reportPage = {
 			var pupilNavStr =
 			'<b>分数</b>：<span>' + reportPage.baseFn.formatValueAccordingPaper(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +
 			'&nbsp;|</span>&nbsp;&nbsp;' +
-			'<b>名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.grade_rank + 
+			'<b>年级名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.grade_rank + 
+			'&nbsp;|</span>&nbsp;&nbsp;' +
+			'<b>班级名次</b>：<span>' + reportPage.PupilData.data.knowledge.base.klass_rank + 
 			'&nbsp;|</span>&nbsp;&nbsp;' +
 			'<b>性别</b>：<span>' + reportPage.PupilData.basic.sex +
 			'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' + reportPage.PupilData.basic.term + 
@@ -2255,37 +2304,19 @@ var reportPage = {
 				var dim = dimesion_arr[i];
 
 				// 个人部分
-				$(".pupil_diagnosis ." + dim + "_self_best").html($.map(reportPage.PupilData.comment["version1.0"][dim].self_best,function(v,i){ return v.checkpoint}).join(", &nbsp;"));
+				var self_ckps_values = reportPage.baseFn.get_key_values(reportPage.PupilData.data[dim].lv_n, "weights_score_average_percent" ,2, false);				
+				var ckps = reportPage.baseFn.find_all_max_min_keys_in_arr(self_ckps_values[0], self_ckps_values[1]);
+				$(".pupil_diagnosis ." + dim + "_self_best").html(ckps.join(", &nbsp;"));
 
 				// 与班级比较部分
-				var diff_with_klass_ckp_keys = reportPage.baseFn.get_keys_diff_values(reportPage.PupilData.data[dim].lv_n, reportPage.KlassData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent", 2, false)[0];
-				var diff_with_klass_ckp_values = reportPage.baseFn.get_keys_diff_values(reportPage.PupilData.data[dim].lv_n, reportPage.KlassData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent",2, false)[1];
-				
-				var max_value = Math.min.apply(null, diff_with_klass_ckp_values);
-				if( max_value > 0 ){
-					var ckp_index_arr = reportPage.baseFn.find_all_indexes_of_a_value_in_arr(diff_with_klass_ckp_values, max_value);
-					var target_ckps = [];
-					for(var index in ckp_index_arr){
-						var ckp_index = ckp_index_arr[index];
-						target_ckps.push(diff_with_klass_ckp_keys[ckp_index]);
-						$(".pupil_diagnosis ." + dim + "_klass_in_group_best").html(target_ckps.join(", &nbsp;"));
-					}
-				}
+				var diff_with_klass_ckps_values = reportPage.baseFn.get_keys_diff_values(reportPage.PupilData.data[dim].lv_n, reportPage.KlassData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent", 2, false);
+				ckps = reportPage.baseFn.find_all_max_min_keys_in_arr(diff_with_klass_ckps_values[0], diff_with_klass_ckps_values[1]);
+				$(".pupil_diagnosis ." + dim + "_klass_in_group_best").html(ckps.join(", &nbsp;"));
 
 				// 与年级比较部分
-				var diff_with_grade_ckp_keys = reportPage.baseFn.get_keys_diff_values(reportPage.PupilData.data[dim].lv_n, reportPage.GradeData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent", 2, false)[0];
-				var diff_with_grade_ckp_values = reportPage.baseFn.get_keys_diff_values(reportPage.PupilData.data[dim].lv_n, reportPage.GradeData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent",2, false)[1];
-				
-				var min_value = Math.min.apply(null, diff_with_grade_ckp_values);
-				if( min_value < 0 ){
-					var ckp_index_arr = reportPage.baseFn.find_all_indexes_of_a_value_in_arr(diff_with_grade_ckp_values, min_value);
-					var target_ckps = [];
-					for(var index in ckp_index_arr){
-						var ckp_index = ckp_index_arr[index];
-						target_ckps.push(diff_with_grade_ckp_keys[ckp_index]);
-						$(".pupil_diagnosis ." + dim + "_grade_in_group_worst").html(target_ckps.join(", &nbsp;"));
-					}
-				}
+				var diff_with_grade_ckps_values = reportPage.baseFn.get_keys_diff_values(reportPage.PupilData.data[dim].lv_n, reportPage.GradeData.data[dim].lv_n, "weights_score_average_percent", "weights_score_average_percent",2, false);
+				ckps = reportPage.baseFn.find_all_max_min_keys_in_arr(diff_with_grade_ckps_values[0], diff_with_grade_ckps_values[1],false);
+				$(".pupil_diagnosis ." + dim + "_grade_in_group_worst").html(ckps.join(", &nbsp;"));
 			}
 		}//constructDiagnosisSuggestion
 	}

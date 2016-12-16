@@ -81,7 +81,7 @@ module ReportsHelper
       :paper_info_url => ""      
     }
     if current_user.is_project_administrator?
-      result[:root_group] = "project", 
+      result[:root_group] = "project"
       result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json"
     elsif current_user.is_tenant_administrator? || current_user.is_analyzer? || current_user.is_teacher?
       tenant_uid = current_tenant.nil?? nil : current_tenant.uid

@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class PapersController < ApplicationController
 
   layout "zhengjuan"
@@ -158,19 +160,19 @@ class PapersController < ApplicationController
     render :json => result  
   end
 
-  def get_saved_analyze
-    params.permit!
+  # def get_saved_analyze
+  #   params.permit!
 
-    result = response_json
+  #   result = response_json
  
-    if params[:pap_uid]
-      #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      result = response_json(200, @paper.analyze_json.to_json)
-    else
-      result = response_json(500)
-    end
-    render :json => result
-  end
+  #   if params[:pap_uid]
+  #     #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+  #     result = response_json(200, @paper.analyze_json.to_json)
+  #   else
+  #     result = response_json(500)
+  #   end
+  #   render :json => result
+  # end
 
   def submit_analyze
     params.permit!
@@ -335,16 +337,30 @@ class PapersController < ApplicationController
         raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
         params[:test_id] =  @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
         score_file = Common::Score.upload_filled_result(params)
-        if score_file          
-          # Job
+        if score_file
+          # 状态更新( task, job, paper, test tenants )
+          target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
+          job_tracker = JobList.new({
+            :name => "ImportResultJob",
+            :task_uid => target_task.uid,
+            :status => Common::Job::Status::NotInQueue,
+            :process => 0
+          })
+          job_tracker.save!
+          @paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
+          @paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImporting, {:job_uid =>job_tracker.uid} )
+
+          # backend job
           Thread.new do
             ImportResultsJob.perform_later({
               #:task_uid => target_task.uid,
               :score_file_id => score_file.id,
               :tenant_uid => params[:tenant_uid],
-              :pap_uid => params[:pap_uid]
+              :pap_uid => params[:pap_uid],
+              :job_uid => job_tracker.uid 
             })
           end
+
           status = 200
           result[:status] = status
           current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first

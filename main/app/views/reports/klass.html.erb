@@ -228,16 +228,16 @@
 	</div> -->
 
 	<div class="tab-pane report-data" id="exam-knowledge">
-		<%= render partial: "klass_comment", locals: { dimesion: "knowledge", title: LABEL('dict.knowledge') } %>
+		<%= render partial: "klass_comment", locals: { dimesion: "knowledge", title: LABEL('dict.knowledge'), hidden_pupil_number_ratio: false } %>
 	</div>
 	<div class="tab-pane report-data" id="exam-skill">
-		<%= render partial: "klass_comment", locals: { dimesion: "skill", title: LABEL('dict.skill') }  %>
+		<%= render partial: "klass_comment", locals: { dimesion: "skill", title: LABEL('dict.skill'), hidden_pupil_number_ratio: false }  %>
 	</div>
 	<div class="tab-pane report-data" id="exam-ability">
-		<%= render partial: "klass_comment", locals: { dimesion: "ability", title: LABEL('dict.ability')}  %>
+		<%= render partial: "klass_comment", locals: { dimesion: "ability", title: LABEL('dict.ability'), hidden_pupil_number_ratio: false}  %>
 	</div>
 	<div class="tab-pane report-data" id="exam-total">
-		<%= render partial: "klass_comment", locals: { dimesion: "total", title: LABEL('reports.total') }  %>
+		<%= render partial: "klass_comment", locals: { dimesion: "total", title: LABEL('reports.total'), hidden_pupil_number_ratio: true }  %>
 	</div>
 </div>
 

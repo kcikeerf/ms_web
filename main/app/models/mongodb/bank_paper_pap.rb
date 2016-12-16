@@ -443,7 +443,7 @@ class Mongodb::BankPaperPap
     #测试各Tenant的状态更新
     paper_h = update_test_tenants_status(
       paper_h,
-      Common::Test::Status::NoScore,
+      Common::Test::Status::Analyzed,
       self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
     )
 
@@ -582,7 +582,7 @@ class Mongodb::BankPaperPap
   #         if ckp.is_a? BankCheckpointCkp
   #           lv_ckp = BankCheckpointCkp.where("node_uid = '#{self.node_uid}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
   #         elsif ckp.is_a? BankSubjectCheckpointCkp
-  #           xue_duan = BankNodestructure.get_subject_category(self.grade)
+  #           xue_duan = Common::Grade.judge_xue_duan(self.grade)
   #           lv_ckp = BankSubjectCheckpointCkp.where("category = '#{xue_duan}' and rid = '#{ckp.rid.slice(0, Common::SwtkConstants::CkpStep*lv)}'").first
   #         end
   #         temp_arr = result[ckp.dimesion.to_sym]["level#{lv}".to_sym][lv_ckp.checkpoint.to_sym] || []

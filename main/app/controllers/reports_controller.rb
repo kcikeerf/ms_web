@@ -53,6 +53,7 @@ class ReportsController < ApplicationController
         target_task.touch(:dt_update)
 
         @paper.bank_tests[0].update(:report_version => "1.1")
+        @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
 
         test_id = @paper.bank_tests[0].id
 

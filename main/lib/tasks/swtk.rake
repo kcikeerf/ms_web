@@ -347,7 +347,7 @@ namespace :swtk do
 
     ckp_model = BankCheckpointCkp.judge_ckp_source({:pap_uid => args[:pap_uid]})
     target_subject = target_pap.subject
-    target_category =  BankNodestructure.get_subject_category(target_pap.grade)
+    target_category =  Common::Grade.judge_xue_duan(target_pap.grade)
 
     ckp_objs = ckp_model.where(subject: target_subject, category: target_category)
     if target_pap
@@ -687,7 +687,7 @@ namespace :swtk do
             ckp = BankSubjectCheckpointCkp.where({
                :dimesion => dimesion,
                :subject => target_pap.subject,
-               :category => BankNodestructure.get_subject_category(target_pap.grade),
+               :category => Common::Grade.judge_xue_duan(target_pap.grade),
                :is_entity => true}).sample
             ckp_qzp = Mongodb::BankCkpQzp.new
             ckp_qzp.save_ckp_qzp  qzp["id"], ckp.uid.to_s, "BankSubjectCheckpointCkp"
@@ -953,4 +953,58 @@ namespace :swtk do
     end
   end
 
+  namespace :v1_1 do
+    desc "export original paper score"
+    task :export_original_paper_score,[:test_id,:out]=> :environment do |t, args|
+
+      if args[:test_id].nil? || args[:out].nil?
+        puts "Command format not correct."
+        exit
+      end
+
+      target_test = Mongodb::BankTest.where(id: args[:test_id]).first
+      target_pap = target_test.bank_paper_pap
+      target_scores = Mongodb::BankTestScore.where(test_id: args[:test_id])
+      begin
+        out_excel = Axlsx::Package.new
+        wb = out_excel.workbook
+
+        wb.add_worksheet name: "Scores" do |sheet|
+          sheet.add_row(["PaperID", target_pap._id.to_s, "Paper Name", target_pap.heading])
+          sheet.add_row(["Tenant","ClassRoom","PupilName","Quiz Point", "Full Score", "Real Score", "Dimesion", "Level1 Ckp", "Level2 Ckp", "End Level Ckp", "Weights"])
+          target_scores.each{|item|
+            tenant = Tenant.where(uid: item.tenant_uid).first
+            location = Location.where(uid: item.loc_uid).first
+            pupil = Pupil.where(uid: item.pup_uid).first
+            ckp_uids = item.ckp_uids.split("/")
+            ckp_weights = item.ckp_weights.split("/")
+            lv1_ckp = BankSubjectCheckpointCkp.where(uid: ckp_uids[1]).first
+            lv2_ckp = BankSubjectCheckpointCkp.where(uid: ckp_uids[2]).first
+            lv_end_ckp = BankSubjectCheckpointCkp.where(uid: ckp_uids[-1]).first
+
+            sheet.add_row([
+              tenant.name_cn,
+              I18n.t("dict.#{location.classroom}"), 
+              pupil.name, 
+              item.order, 
+              item.full_score,
+              item.real_score, 
+              I18n.t("dict.#{item.dimesion}"), 
+              lv1_ckp.checkpoint, 
+              lv2_ckp.checkpoint, 
+              lv_end_ckp.checkpoint,
+              ckp_weights[-1]
+              ])
+          }
+        end
+        out_path = args[:out]
+        out_excel.serialize(out_path)
+      rescue Exception => ex
+        puts ex.message
+        puts ex.backtrace
+        puts "failed"
+      end
+      puts "done"
+    end
+  end
 end

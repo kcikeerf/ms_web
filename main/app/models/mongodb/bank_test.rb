@@ -61,4 +61,32 @@ class Mongodb::BankTest
   def score_uploads
     ScoreUpload.where(test_id: id.to_s)
   end
+
+  def update_test_tenants_status tenant_uids, status_str, options={}
+    begin
+      #测试各Tenant的状态更新
+      bank_test_tenant_links.each{|t|
+        if tenant_uids.include?(t[:tenant_uid])
+          t.update({
+            :tenant_status => status_str,
+            :job_uid => options[:job_uid]
+          }) 
+        end
+      }
+   
+      # 试卷的json中，插入测试tenant信息，未来考虑丢掉
+      target_pap = self.bank_paper_pap
+      paper_h = JSON.parse(target_pap.paper_json)
+      paper_h["information"]["tenants"].each_with_index{|item, index|
+        if tenant_uids.include?(item["tenant_uid"])
+          paper_h["information"]["tenants"][index]["tenant_status"] = status_str
+          paper_h["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
+        end
+      }
+      target_pap.update(:paper_json => paper_h.to_json)
+    rescue Exception => ex
+      p ex.message
+      p ex.backtrace
+    end
+  end
 end

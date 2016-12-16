@@ -12,7 +12,7 @@ class GenerateReportsJob < ActiveJob::Base
       if !params[:test_id].blank? && !params[:task_uid].blank? && !params[:top_group].blank?
         target_test = Mongodb::BankTest.where(id: params[:test_id]).first
         target_pap= target_test.bank_paper_pap
-        target_pap.update(paper_status: Common::Paper::Status::ReportGenerating)
+        # target_pap.update(paper_status: Common::Paper::Status::ReportGenerating)
 
         # JOB的分处理的数量
         job_tracker = JobList.new({
@@ -64,6 +64,7 @@ class GenerateReportsJob < ActiveJob::Base
             item.clear_old_data
           # end
         }
+
         # ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.2)
 
@@ -101,11 +102,11 @@ class GenerateReportsJob < ActiveJob::Base
         }
         job_tracker.update(process: 0.7)
 
-        # 组装2
-        constructor_arr.each{|item|
-          item.ni_kumigoto_no_comment_koutiku
-        }
-        job_tracker.update(process: 0.8)
+        # # 组装2
+        # constructor_arr.each{|item|
+        #   item.ni_kumigoto_no_comment_koutiku
+        # }
+        # job_tracker.update(process: 0.8)
 
         # 结束处理
         constructor_arr.each{|item|

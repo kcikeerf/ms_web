@@ -33,7 +33,8 @@
 本班的平均得分率是<mark><i class="self_weights_score_average_percent"></i></mark>，
 在本次考试中，达到了<mark><i class="self_weights_score_average_percent_level"></i></mark>水平。
 与年级平均水平相比，<mark><i class="compare_with_grade_weights_score_average_percent_level"></i></mark>于年级平均水平。
-						</li>						
+						</li>
+<% unless hidden_pupil_number_ratio %>												
 						<li>
 本班的得分率 ≥ 85的人数比例是<mark><i class="self_excellent_pupil_number_percent"></i></mark>>, 
 表明在本次考试中，知识得分率在 85 以上的学生人数占本班全部考试人数的<mark><i class="self_excellent_pupil_number_percent"></i></mark>，
@@ -49,6 +50,7 @@
 表明在本次考试中，知识得分率在60以下的学生人数占本班全部考试人数的<mark><i class="self_failed_pupil_number_percent"></i></mark>，
 与年级相比，<mark><i class="compare_with_grade_failed_pupil_number_percent"></i></mark>于年级的比例。
 						</li>
+<% end %>
 					</ul>
 				</dd>
 			</dl>

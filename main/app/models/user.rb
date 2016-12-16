@@ -243,6 +243,10 @@ class User < ActiveRecord::Base
     tenant
   end
 
+  def bank_tests
+    Mongodb::BankTest.where(user_id: self.id).to_a
+  end
+
   private
 
   def self.find_user(login, conditions)
