@@ -51,7 +51,7 @@ module Reports
                 :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
                 :score => target_pap.score,
                 :report_version => "00016110",
-                :report_url => Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, wx_current_user)
+                :report_url => "/api/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, wx_current_user)
               }
             end
           }
