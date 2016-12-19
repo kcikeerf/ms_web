@@ -412,6 +412,7 @@ Rails.application.routes.draw do
   ### Swtk API
   constraints do
     mount Reports::API => "/"
+    mount ReportsWarehouse::API => "/"
   end
   #######################################
 

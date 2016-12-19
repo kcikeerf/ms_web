@@ -11,7 +11,7 @@ module Reports
     resource :reports do
       before do
         wx_set_api_header
-        wx_authenticate!
+        #wx_authenticate!
       end
 
       #
@@ -20,6 +20,7 @@ module Reports
 
       end
       post :list do
+        p request.url
         if wx_current_user.is_pupil?
           target_papers = wx_current_user.role_obj.papers
         end
