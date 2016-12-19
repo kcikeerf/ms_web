@@ -11,7 +11,7 @@ module Reports
     resource :reports do
       before do
         wx_set_api_header
-        wx_authenticate!
+        #wx_authenticate!
       end
 
       #
@@ -20,6 +20,7 @@ module Reports
 
       end
       post :list do
+        p request.url
         if wx_current_user.is_pupil?
           target_papers = wx_current_user.role_obj.papers
         end
@@ -50,7 +51,7 @@ module Reports
                 :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
                 :score => target_pap.score,
                 :report_version => "00016110",
-                :report_url => Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, wx_current_user)
+                :report_url => "/api/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, wx_current_user)
               }
             end
           }

@@ -2,9 +2,9 @@
 
 module ApiHelper
   def wx_set_api_header
-    headers['Access-Control-Allow-Origin'] = 'wx.k12ke.com'
-    headers['Access-Control-Request-Method'] = 'GET, POST, PUT, OPTIONS, HEAD'
-    headers['Access-Control-Allow-Headers'] = 'x-requested-with,Content-Type, Authorization'    
+    header 'Access-Control-Allow-Origin','*'
+    header 'Access-Control-Request-Method', 'GET, POST, PUT, OPTIONS, HEAD'
+    header 'Access-Control-Allow-Headers', 'x-requested-with,Content-Type, Authorization'    
   end
 
   def wx_authenticate!
