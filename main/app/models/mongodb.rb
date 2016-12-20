@@ -49,6 +49,17 @@ module Mongodb
       ]
     }
 
+    online_test_types = Common::OnlineTest::GroupArr
+
+    online_test_klass_arr = online_test_types.map{|t|
+      collect_type = t.capitalize 
+      [
+        "OnlineTestReport#{collect_type}BaseResult",
+        "OnlineTestReport#{collect_type}Lv1CkpResult",
+        "OnlineTestReport#{collect_type}Lv2CkpResult",
+        "OnlineTestReport#{collect_type}LvEndCkpResult"
+      ]
+    }
     #
     klass_arr = klass_version_1_0_arr + base_result_klass_arr.flatten + pupil_stat_klass_arr.flatten
     klass_arr.each{|klass|

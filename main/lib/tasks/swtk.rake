@@ -1006,5 +1006,19 @@ namespace :swtk do
       end
       puts "done"
     end
+
+    desc 'Print compiled grape routes'
+    task :api_routes => :environment do
+      api_arr =[
+        PaperOnlineTest::API,
+        Reports::API,
+        ReportsWarehouse::API
+      ]
+      api_arr.each do |api|
+        api.routes.each do |route|
+          puts route.path
+        end
+      end
+    end    
   end
 end

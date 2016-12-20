@@ -49,7 +49,7 @@ class ReportsController < ApplicationController
       begin
         # Task info
         target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
-        task_uid = target_task.nil?? "" :target_task.uid
+        task_uid = target_task.nil?? "" :target_task.uid        
         target_task.touch(:dt_update)
 
         @paper.bank_tests[0].update(:report_version => "1.1")
