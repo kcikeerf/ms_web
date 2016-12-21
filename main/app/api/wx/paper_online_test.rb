@@ -108,7 +108,7 @@ module PaperOnlineTest
       desc '上传测试成绩 post /api/wx/v1.1/online_tests/submit'
       params do
         requires :wx_openid, type: String, allow_blank: false
-        requires :pap_uid, type: Array, allow_blank: false
+        requires :pap_uid, type: String, allow_blank: false
         requires :bank_quiz_qizs, type: Array, allow_blank: false
         #optional :online_test_id, type: String, allow_blank: true
       end

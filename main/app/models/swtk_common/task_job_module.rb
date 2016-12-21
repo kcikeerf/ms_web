@@ -5,7 +5,7 @@ module TaskJobModule
     module Type
       CreateReport = "create_report"
       ImportResult = "import_result"
-      SubmittingOnlineTestResults = "submitting_online_test_results"
+      SubmittingOnlineTestResult = "submitting_online_test_results"
     end
 
     module Status
@@ -28,7 +28,7 @@ module TaskJobModule
       GenerateGroupReports = "generate_group_reports"
       ConstructReports = "construct_reports"
       Monitoring = "monitoring"
-      SubmittingOnlineTestResults = "submitting_online_test_results"
+      SubmittingOnlineTestResult = "submitting_online_test_results"
     end
 
     module Status

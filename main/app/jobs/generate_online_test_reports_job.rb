@@ -8,6 +8,11 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
       logger.info "#{args}"
       params = args[0]
 
+      target_task = TaskList.where(uid: params[:task_uid]).first
+      target_task.touch(:dt_update)
+      job_tracker = target_task.job_lists.order(dt_update: :desc).first
+      job_tracker.update(process: 0.05)
+
       ###########
       # 上传成绩, Begin
       target_paper = Mongodb::BankPaperPap.where(id: params[:pap_uid]).first
@@ -35,6 +40,7 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
         :pap_uid => params[:pap_uid]
       }
       Mongodb::BankTestScore.where(score_filter).destroy_all
+      job_tracker.update(process: 0.1)
 
       # version 1.1
       # 为了兼容旧代码及数据
@@ -49,9 +55,11 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
       target_paper_qzps.each{|qzp|
         qzps_ckps_mapping_h[qzp.id.to_s] = JSON.parse(qzp.ckps_json)
       }
+      job_tracker.update(process: 0.15)
 
-      result_qzps = params[:bank_quiz_qizs].values.map{|qiz| qiz[:bank_qizpoint_qzps].values}.flatten
-      result_qzps.each{|item|
+      # 保存各得分点成绩
+      result_qzps = params[:results].map{|quiz| quiz[:bank_qizpoint_qzps] }.flatten
+      result_qzps.each_with_index{|qzp, index|
         qizpoint = Mongodb::BankQizpointQzp.where(id: qzp[:id]).first
         next unless qizpoint
 
@@ -80,14 +88,30 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
           :real_score => test_score,
           :full_score => qizpoint.score
         }
-        bank_test_score = Mongodb::BankTestScore.new(score_params)
-        bank_test_score.save!
+        # 得分点的知识，技能，能力的指标的相应信息
+        qzp_ckp_h = qzps_ckps_mapping_h[qzp[:id]]
+        qzp_ckp_h.each{|dimesion, ckps|
+          score_params[:dimesion] = dimesion
+          ckps.each{|ckp|
+            score_params[:ckp_uids] = ckp.keys[0]
+            score_params[:ckp_order] = ckp.values[0]["rid"]
+            score_params[:ckp_weights] = ckp.values[0]["weights"]
+            bank_test_score = Mongodb::BankTestScore.new(score_params)
+            bank_test_score.save!
+          }
+        }
+        job_tracker.update(process: 0.15 + index.to_f/result_qzps.size)
       }
       # 上传成绩, End
       ###########
 
       ###########
       # 报告生成, Begin
+
+      # 1）新增个人数据计算
+      # 2) 组装个人数据
+      # 3) 叠加至整体
+      # 
 
       # 报告生成, End
       ###########
