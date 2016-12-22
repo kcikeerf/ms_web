@@ -116,8 +116,8 @@ module PaperOnlineTest
         # 查找测试
         target_test_user_link = get_online_test_user_link
         if target_test_user_link && 
-           [ Common::OnlineTest::Status::ScoreImporting, 
-             Common::OnlineTest::Status::report_generating 
+           [ Common::OnrineTest::Status::ScoreImporting, 
+             Common::OnrineTest::Status::report_generating 
            ].include?(target_test_user_link.target_test_status)
           error!(message_json("e43002"), 403)
         else

@@ -24,7 +24,7 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
       if target_paper.online_tests.blank?
         target_online_test = Mongodb::OnlineTest.new({
           :name => target_paper.heading,
-          :wx_user_id => params[:wx_user_id],
+          # :wx_user_id => params[:wx_user_id],
           :report_version => "1.1",
           :bank_paper_pap_id => target_paper.id
         })
@@ -107,12 +107,34 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
 
       ###########
       # 报告生成, Begin
+      online_test_individual_report_generator = Mongodb::OnlineTestIndividualGenerator.new({
+          :online_test_id => target_online_test.id.to_s, 
+          :wx_user_id => params[:wx_user_id]
+        })
+      online_test_total_report_generator = Mongodb::OnlineTestGroupGenerator.new({
+          :online_test_id => target_online_test.id.to_s
+        })
+      online_test_individual_report_constructor = Mongodb::OnlineTestReportConstructor.new({
+          :online_test_id => target_online_test.id.to_s, 
+          :group_type=>Common::OnrineTest::Group::Individual
+        })
+      online_test_total_report_constructor = Mongodb::OnlineTestReportConstructor.new({
+          :online_test_id => target_online_test.id.to_s, 
+          :group_type=>Common::OnrineTest::Group::Individual
+        })
+      # 计算
+      online_test_individual_report_generator.clear_old_data
+      online_test_individual_report_generator.cal_round_1
+      online_test_total_report_generator.clear_old_data
+      online_test_total_report_generator.cal_round_1
+      online_test_total_report_generator.cal_round_1_5
 
-      # 1）新增个人数据计算
-      # 2) 组装个人数据
-      # 3) 叠加至整体
-      # 
-
+      # 组装
+      online_test_individual_report_constructor.online_test_iti_koutiku
+      online_test_individual_report_constructor.owari
+      online_test_total_report_constructor.online_test_iti_koutiku
+      online_test_total_report_constructor.owari
+      
       # 报告生成, End
       ###########
   	}

@@ -12,9 +12,14 @@ class Mongodb::OnlineTestGroupGenerator
     logger.info("参数:\n#{args}")
 
     # 测试范围
-    @range_filter = { :online_test_id => args[:online_test_id] }
+    @range_filter = { '_id.online_test_id' => args[:online_test_id] }
     # 指标层级
-    @ckp_level = args[:ckp_level].blank?? Common::Report::CheckPoints::DefaultLevel : args[:ckp_level].to_i 
+    @ckp_level = args[:ckp_level].blank?? Common::Report::CheckPoints::DefaultLevel : args[:ckp_level].to_i
+    @collect_type = "total"
+    @base_keys = %Q{
+      online_test_id: this._id.online_test_id,
+      dimesion: this._id.dimesion,
+    }
 
     logger.debug(">>>initialize: end<<<")
   end
@@ -29,14 +34,14 @@ class Mongodb::OnlineTestGroupGenerator
     }
 
     target_collections = [
-        "OnlineTestReportTotalBaseResult",
-        "OnlineTestReportTotalLv1CkpResult",
-        "OnlineTestReportTotalLv2CkpResult",
-        "OnlineTestReportTotalLvEndCkpResult",
-        "OnlineTestReportTotalOrderResult",
-        "OnlineTestReportTotalOrderLv1CkpResult",
-        "OnlineTestReportTotalOrderLv2CkpResult",
-        "OnlineTestReportTotalOrderLvEndCkpResult"
+        "Mongodb::OnlineTestReportTotalBaseResult",
+        "Mongodb::OnlineTestReportTotalLv1CkpResult",
+        "Mongodb::OnlineTestReportTotalLv2CkpResult",
+        "Mongodb::OnlineTestReportTotalLvEndCkpResult",
+        "Mongodb::OnlineTestReportTotalOrderResult",
+        "Mongodb::OnlineTestReportTotalOrderLv1CkpResult",
+        "Mongodb::OnlineTestReportTotalOrderLv2CkpResult",
+        "Mongodb::OnlineTestReportTotalOrderLvEndCkpResult"
     ]
 
     target_collections.each{|collection|
@@ -135,7 +140,7 @@ class Mongodb::OnlineTestGroupGenerator
       }
     end
 
-    Common::ReportPlus::online_tesuto_zyunban_no_syori keys_groups
+    Common::ReportPlus::online_test_keisan_iti_go_zyunban_no_syori keys_groups, @range_filter, @collect_type
   end
 
 end

@@ -35,14 +35,14 @@ class Mongodb::OnlineTestIndividualGenerator
     }
 
     target_collections = [
-        "OnlineTestReportIndividualBaseResult",
-        "OnlineTestReportIndividualLv1CkpResult",
-        "OnlineTestReportIndividualLv2CkpResult",
-        "OnlineTestReportIndividualLvEndCkpResult",
-        "OnlineTestReportIndividualOrderResult",
-        "OnlineTestReportIndividualOrderLv1CkpResult",
-        "OnlineTestReportIndividualOrderLv2CkpResult",
-        "OnlineTestReportIndividualOrderLvEndCkpResult"
+        "Mongodb::OnlineTestReportIndividualBaseResult",
+        "Mongodb::OnlineTestReportIndividualLv1CkpResult",
+        "Mongodb::OnlineTestReportIndividualLv2CkpResult",
+        "Mongodb::OnlineTestReportIndividualLvEndCkpResult",
+        "Mongodb::OnlineTestReportIndividualOrderResult",
+        "Mongodb::OnlineTestReportIndividualOrderLv1CkpResult",
+        "Mongodb::OnlineTestReportIndividualOrderLv2CkpResult",
+        "Mongodb::OnlineTestReportIndividualOrderLvEndCkpResult"
     ]
 
     target_collections.each{|collection|

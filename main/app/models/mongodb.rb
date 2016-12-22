@@ -49,7 +49,7 @@ module Mongodb
       ]
     }
 
-    online_test_types = Common::OnlineTest::GroupArr
+    online_test_types = Common::OnrineTest::Group::List
 
     online_test_klass_arr = online_test_types.map{|t|
       collect_type = t.capitalize 

@@ -16,7 +16,7 @@ module TestModule
     end
   end
 
-  module OnlineTest
+  module OnrineTest
     module Status
       None = "none"
       Created = "created"
@@ -27,6 +27,10 @@ module TestModule
       ReportCompleted = "report_completed"
     end
 
-    GroupArr = ["individual", "total"]
+    module Group
+      List = ["individual", "total"]
+      Individual = "individual"
+      Total = "total"
+    end
   end
 end
