@@ -12,7 +12,7 @@ class Mongodb::OnlineTest
   field :name, type: String
   field :quiz_date, type: DateTime
   field :user_id, type: String
-  field :wx_user_id, type: String
+  # field :wx_user_id, type: String
   field :report_version, type: String
 
   field :dt_add, type: DateTime
