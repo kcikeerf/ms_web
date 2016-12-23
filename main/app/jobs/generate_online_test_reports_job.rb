@@ -33,6 +33,18 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
       target_online_test = target_paper.online_tests[0]
       raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "online test object")) unless target_online_test
 
+      target_wx_user = WxUser.where(uid: params[:wx_user_id]).first
+      raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "wx user")) unless target_wx_user
+
+      target_wx_user_test_ids = target_wx_user.online_tests.map{|item| item.id.to_s }
+      unless target_wx_user_test_ids.include?(target_online_test.id.to_s)
+        test_user_link = Mongodb::OnlineTestUserLink.new({
+          :online_test_id => target_online_test.id.to_s,
+          :wx_user_id => params[:wx_user_id]
+        })
+        test_user_link.save!
+      end
+
       # 删除同一测试, 同一测试者的旧成绩
       score_filter = {
         :online_test_id=> target_online_test.id.to_s,

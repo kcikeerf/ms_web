@@ -67,21 +67,20 @@ module PaperOnlineTest
       end
       get :list do
         result = []
-        target_test_user_links = Mongodb::OnlineTestUserLink.where({
-          wx_user_id: current_wx_user.id
-        })
+        target_test_user_links = Mongodb::OnlineTestUserLink.by_wx_user(current_wx_user.id)
         target_test_user_links.each{|item|
           online_test = Mongodb::OnlineTest.where(id: item.online_test_id).first
           next unless online_test
           target_pap = online_test.bank_paper_pap
           next unless target_pap
           target_pap_h = JSON.parse(target_pap.paper_json)
-          {
+          result << {
             :online_test_id => item.online_test_id,
             :last_update => item.dt_update.strftime('%Y-%m-%d'),
             :paper_information => target_pap_h["information"]
           }
         }
+        result
       end
 
       ###########

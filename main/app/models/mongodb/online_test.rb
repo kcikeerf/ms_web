@@ -20,4 +20,9 @@ class Mongodb::OnlineTest
 
   index({_id: 1}, {background: true})
 
+  def wx_users
+    links = Mongodb::OnlineTestUserLink.by_online_test(self.id)
+    wx_user_ids = links.map(&:wx_user_id)
+    WxUser.where(uid: wx_user_ids)
+  end
 end
