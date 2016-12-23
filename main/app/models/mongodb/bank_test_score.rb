@@ -11,12 +11,20 @@ class Mongodb::BankTestScore
 
   before_save :format_float
 
+  # 正常测试
   field :area_uid, type: String
   field :area_rid, type: String
   field :tenant_uid, type: String
   field :loc_uid, type: String
   field :test_id, type: String
   field :pup_uid, type: String
+
+  #######
+  # wx在线测试
+  field :online_test_id, type: String
+  field :wx_user_id, type: String  
+  #######
+
   field :pap_uid, type: String
   field :qzp_uid, type: String
   field :order, type: String

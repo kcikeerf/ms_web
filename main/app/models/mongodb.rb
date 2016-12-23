@@ -49,8 +49,38 @@ module Mongodb
       ]
     }
 
+    online_test_types = Common::OnrineTest::Group::List
+
+    online_test_klass_arr = online_test_types.map{|t|
+      collect_type = t.capitalize 
+      [
+        "OnlineTestReport#{collect_type}BaseResult",
+        "OnlineTestReport#{collect_type}Lv1CkpResult",
+        "OnlineTestReport#{collect_type}Lv2CkpResult",
+        "OnlineTestReport#{collect_type}LvEndCkpResult",
+        "OnlineTestReport#{collect_type}OrderResult",
+        "OnlineTestReport#{collect_type}OrderLv1CkpResult",
+        "OnlineTestReport#{collect_type}OrderLv2CkpResult",
+        "OnlineTestReport#{collect_type}OrderLvEndCkpResult"
+      ]
+    }
+
+    online_test_pupil_stat_klass_arr = [
+        "OnlineTestReportTotalBeforeBasePupilStatResult",
+        "OnlineTestReportTotalBeforeLv1CkpPupilStatResult",
+        "OnlineTestReportTotalBeforeLv2CkpPupilStatResult",
+        "OnlineTestReportTotalBeforeLvEndCkpPupilStatResult"
+    ]
+
     #
-    klass_arr = klass_version_1_0_arr + base_result_klass_arr.flatten + pupil_stat_klass_arr.flatten
+    klass_arr = [
+      klass_version_1_0_arr,
+      base_result_klass_arr, 
+      pupil_stat_klass_arr,
+      online_test_klass_arr,
+      online_test_pupil_stat_klass_arr
+      ].flatten
+    
     klass_arr.each{|klass|
       self.const_set(klass, Class.new)
       "Mongodb::#{klass}".constantize.class_eval do

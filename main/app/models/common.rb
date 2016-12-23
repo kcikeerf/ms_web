@@ -51,6 +51,7 @@ module Common
   end
 
   def valid_json?(str)
+    return false if str.blank?
     begin
       JSON.parse(str)
       return true
