@@ -9,9 +9,9 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
       params = args[0]
 
       target_task = TaskList.where(uid: params[:task_uid]).first
-      target_task.touch(:dt_update)
+      target_task.update({:status => Common::Task::Status::Active})
       job_tracker = target_task.job_lists.order(dt_update: :desc).first
-      job_tracker.update(process: 0.05)
+      job_tracker.update({:process => 0.05, :status=>Common::Job::Status::Processing})
 
       ###########
       # 上传成绩, Begin
@@ -112,7 +112,7 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
             bank_test_score.save!
           }
         }
-        job_tracker.update(process: 0.15 + index.to_f/result_qzps.size)
+        job_tracker.update(process: 0.15 + 0.35*index.to_f/result_qzps.size)
       }
       # 上传成绩, End
       ###########
@@ -134,18 +134,23 @@ class GenerateOnlineTestReportsJob < ActiveJob::Base
           :online_test_id => target_online_test.id.to_s, 
           :group_type=>Common::OnrineTest::Group::Individual
         })
+      job_tracker.update(process: 0.6)
+
       # 计算
       online_test_individual_report_generator.clear_old_data
       online_test_individual_report_generator.cal_round_1
       online_test_total_report_generator.clear_old_data
       online_test_total_report_generator.cal_round_1
       online_test_total_report_generator.cal_round_1_5
+      job_tracker.update(process: 0.8)
 
       # 组装
       online_test_individual_report_constructor.online_test_iti_koutiku
       online_test_individual_report_constructor.owari
       online_test_total_report_constructor.online_test_iti_koutiku
       online_test_total_report_constructor.owari
+      target_task.update({:status => Common::Task::Status::Completed})
+      job_tracker.update({:process => 1, :status => Common::Job::Status::Completed})
       
       # 报告生成, End
       ###########

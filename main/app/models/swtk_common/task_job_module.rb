@@ -11,7 +11,7 @@ module TaskJobModule
     module Status
       InActive = "in_active"
       Active = "active"
-      Complete = "completed"
+      Completed = "completed"
     end
   end
 
