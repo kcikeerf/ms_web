@@ -414,6 +414,7 @@ Rails.application.routes.draw do
     mount PaperOnlineTest::API => "/"
     mount Reports::API => "/"
     mount ReportsWarehouse::API => "/"
+    mount Monitoring::API => "/"
   end
   #######################################
 

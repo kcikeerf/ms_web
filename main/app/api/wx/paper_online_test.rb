@@ -27,7 +27,7 @@ module PaperOnlineTest
         requires :term, type: String, allow_blank: false
         requires :subject, type: String, allow_blank: false
       end
-      get :sample do
+      post :sample do
         params_h ={
           :can_online_test => nil,
           :grade => params[:grade],
@@ -65,7 +65,7 @@ module PaperOnlineTest
       params do
         requires :wx_openid, type: String, allow_blank: false
       end
-      get :list do
+      post :list do
         result = []
         target_test_user_links = Mongodb::OnlineTestUserLink.by_wx_user(current_wx_user.id)
         target_test_user_links.each{|item|
@@ -85,22 +85,22 @@ module PaperOnlineTest
 
       ###########
 
-      desc '获取测试状态 get /api/wx/v1.1/online_tests/check_status'
-      params do
-        requires :online_test_id, type: String, allow_blank: false
-      end
-      post :check_status do
-        # 查找测试
-        target_test_user_link = get_online_test_user_link
-        error!(message_json("e40004"), 404) unless target_test_user_link
+      # desc '获取测试状态 get /api/wx/v1.1/online_tests/check_status'
+      # params do
+      #   requires :online_test_id, type: String, allow_blank: false
+      # end
+      # post :check_status do
+      #   # 查找测试
+      #   target_test_user_link = get_online_test_user_link
+      #   error!(message_json("e40004"), 404) unless target_test_user_link
 
-        # 返回结果      
-        status 200
-        {
-          task_uid: target_test_user_link.task_uid,
-          online_test_status: target_test_user_link.online_test_status
-        }
-      end
+      #   # 返回结果      
+      #   status 200
+      #   {
+      #     task_uid: target_test_user_link.task_uid,
+      #     online_test_status: target_test_user_link.online_test_status
+      #   }
+      # end
 
       ########### 
 
