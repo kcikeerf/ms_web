@@ -10,6 +10,17 @@ class Mongodb::BankPaperPap
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
 
+  has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
+  has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
+  has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz"
+  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
+  has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
+  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
+  has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
+  has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
+  has_many :bank_tests, class_name: "Mongodb::BankTest"
+  has_many :online_tests, class_name: "Mongodb::OnlineTest"
+
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
@@ -65,6 +76,10 @@ class Mongodb::BankPaperPap
   # field :analyze_json, type: String
   field :paper_status, type: String
 
+  #是否可用于测试／在线测试
+  field :can_test, type: Boolean, default: false
+  field :can_online_test, type: Boolean, default: false
+
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
@@ -75,16 +90,6 @@ class Mongodb::BankPaperPap
   index({subject: 1}, {background: true})
   index({paper_status: 1}, {background: true})
   index({dt_update:-1},{background: true})
-
-  has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
-  has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
-  has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz"
-  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
-  has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
-  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
-  has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
-  has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
-  has_many :bank_tests, class_name: "Mongodb::BankTest"
 
   ########类方法定义：begin#######
   class << self

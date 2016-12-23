@@ -22,4 +22,10 @@ class WxUser < ActiveRecord::Base
       }
     }
   end
+
+  def online_tests
+    links = Mongodb::OnlineTestUserLink.by_wx_user(self.id)
+    online_test_ids = links.map(&:online_test_id)
+    Mongodb::OnlineTest.where(id: online_test_ids).to_a
+  end
 end
