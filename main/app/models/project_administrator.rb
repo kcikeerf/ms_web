@@ -62,4 +62,8 @@ class ProjectAdministrator < ActiveRecord::Base
     update_attributes(paramsh)
     save!
   end
+
+  def papers
+    Mongodb::BankPaperPap.by_user(self.user.id)
+  end
 end

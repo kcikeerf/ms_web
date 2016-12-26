@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class Analyzer < ActiveRecord::Base
   self.primary_key = "uid"
 
@@ -72,5 +74,9 @@ class Analyzer < ActiveRecord::Base
       self.user.destroy! if self.user
       self.destroy! if self
     end
+  end
+
+  def papers
+    Mongodb::BankPaperPap.by_user(self.user.id)
   end
 end

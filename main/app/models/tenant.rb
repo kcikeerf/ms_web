@@ -67,7 +67,7 @@ class Tenant < ActiveRecord::Base
   end
 
   def papers
-    Mongodb::BankPaperPap.where(:tenant_uid => rid).to_a
+    Mongodb::BankPaperPap.where(:tenant_uid => self.uid).to_a
   end
 
   def area
