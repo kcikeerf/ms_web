@@ -13,6 +13,53 @@ class Tenant < ActiveRecord::Base
   has_many :project_administrators, through: :project_administrator_tenant_links
   has_many :project_administrator_tenant_links, foreign_key: "tenant_uid"
 
+  ########类方法定义：begin#######
+  class << self
+    def tenant_type_list
+       Common::Tenant::TypeList.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}.sort{|a,b| Common::Locale.mysort(Common::Locale::TenantTypeOrder[a.key],Common::Locale::TenantTypeOrder[b.key]) }
+    end
+
+    def get_list params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      result.each_with_index{|item, index|
+        h = item.area_pcd
+        h.merge!(item.attributes)
+        h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
+        result[index] = h
+      }
+      return result
+    end
+
+    # def self.get_tenant_uid params
+    #   return params[:tenant_uid] if params[:tenant_uid]
+    #   return nil if params[:school_number].blank? && params[:school].blank?
+    #   paramsh = {
+    #     :number => params[:school_number] || "", 
+    #     :name => params[:school] || ""
+    #   }
+    #   targetTenant = Tenant.where(paramsh).first
+    #   return targetTenant.nil?? nil : targetTenant.uid
+    # end
+
+    def get_tenant_numbers
+      return Tenant.all.map{|t| t.number}.uniq.compact
+    end
+
+    def generate_tenant_number
+      result = ""
+
+      existedTntNumbers = self.get_tenant_numbers
+      while existedTntNumbers.include?(result) || result.blank?
+        # arr = [*'1'..'9'] + [*'A'..'Z'] + [*'a'..'z']
+        Common::Tenant::NumberLength.times{ result << Common::Tenant::NumberRandArr.sample}
+      end
+      return result
+    end
+  end
+  ########类方法定义：end#######
+
   def save_tenant params
     tntNumber = self.class.generate_tenant_number
     areaUid,areaRid = Area.get_area_uid_rid params
@@ -107,47 +154,31 @@ class Tenant < ActiveRecord::Base
     result
   end
 
-  def self.tenant_type_list
-     Common::Tenant::TypeList.map{|k,v| OpenStruct.new({:key=>k, :value=>v})}.sort{|a,b| Common::Locale.mysort(Common::Locale::TenantTypeOrder[a.key],Common::Locale::TenantTypeOrder[b.key]) }
-  end
-
-  def self.get_list params
-    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
-    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
-    result.each_with_index{|item, index|
-      h = item.area_pcd
-      h.merge!(item.attributes)
-      h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
-      result[index] = h
+  def grades_klasses
+    result = []
+    sorted_locations = locations.map.sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.grade.nil?? "":a.grade.to_sym],Common::Grade::Order[b.grade.nil?? "":b.grade.to_sym]) }
+    grade = nil
+    sorted_locations.each{|item|
+      if grade && grade[:name] == item.grade
+        grade = grade
+      else
+        grade = {
+          :name => item.grade,
+          :name_cn => Common::Grade::List[item.grade.to_sym],
+          :items => []
+        }
+        result << grade
+      end
+      grade[:items] << {
+        :uid => item.uid,
+        :name => item.classroom,
+        :name_cn => Common::Grade::List[item.classroom.to_sym]
+      }
     }
-    return result
-  end
-
-  # def self.get_tenant_uid params
-  #   return params[:tenant_uid] if params[:tenant_uid]
-  #   return nil if params[:school_number].blank? && params[:school].blank?
-  #   paramsh = {
-  #     :number => params[:school_number] || "", 
-  #     :name => params[:school] || ""
-  #   }
-  #   targetTenant = Tenant.where(paramsh).first
-  #   return targetTenant.nil?? nil : targetTenant.uid
-  # end
-
-  def self.get_tenant_numbers
-    return Tenant.all.map{|t| t.number}.uniq.compact
-  end
-
-  def self.generate_tenant_number
-    result = ""
-
-    existedTntNumbers = self.get_tenant_numbers
-    while existedTntNumbers.include?(result) || result.blank?
-      # arr = [*'1'..'9'] + [*'A'..'Z'] + [*'a'..'z']
-      Common::Tenant::NumberLength.times{ result << Common::Tenant::NumberRandArr.sample}
-    end
-    return result
+    result.map{|item|
+      item[:items] = item[:items].map.sort{|a,b| Common::Locale.mysort(Common::Klass::Order[a[:name].nil?? "":a[:name]],Common::Klass::Order[b[:name].nil?? "":b[:name]]) }
+      item
+    }
   end
 
 end

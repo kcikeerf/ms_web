@@ -415,6 +415,7 @@ Rails.application.routes.draw do
     mount Reports::API => "/"
     mount ReportsWarehouse::API => "/"
     mount Monitoring::API => "/"
+    mount Tenants::API => "/"
   end
   #######################################
 
