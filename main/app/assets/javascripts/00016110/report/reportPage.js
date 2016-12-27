@@ -275,14 +275,19 @@ var reportPage = {
 		construct_bread_crumbs: function(next_group, current_group, current_report_url) {
 			// 学生的情况，只更新名字
 			if(current_group == "pupil"){
-				reportPage.BreadCrumbObj["end"].html_str = '<li>'+reportPage.BreadCrumbObj["pupil"].list[reportPage.BreadCrumbObj["pupil"].selected][1].label;+'</li>'
+				if(reportPage.BreadCrumbObj["pupil"].list.length > 0){
+					reportPage.BreadCrumbObj["end"].html_str = '<li>'+reportPage.BreadCrumbObj["pupil"].list[reportPage.BreadCrumbObj["pupil"].selected][1].label;+'</li>';
+				} else {
+					reportPage.BreadCrumbObj["end"].html_str = '<li>'+reportPage.PupilData.basic.name+'</li>';
+				}
+
 				reportPage.baseFn.update_bread_crumbs();
 				return true;
 			}
 
 			// 清空下级菜单
 			var current_group_index = reportPage.GroupRoute.findIndex(function(item){ return item == next_group });
-			var family_groups = reportPage.GroupRoute.slice(current_group_index, reportPage.GroupRoute.length);
+			// var family_groups = reportPage.GroupRoute.slice(current_group_index, reportPage.GroupRoute.length);
 			var children_groups = reportPage.GroupRoute.slice(current_group_index+1, reportPage.GroupRoute.length);
 			for (var index in children_groups){
 				reportPage.BreadCrumbObj[children_groups[index]].html_str = "";
@@ -309,7 +314,11 @@ var reportPage = {
 						//current_crumb_report_url = reportPage.CurrentKlassUrl;					
 						break;
 					case "grade":
-						current_crumb_label = reportPage.BreadCrumbObj["grade"].list[reportPage.BreadCrumbObj["grade"].selected][1].label;
+					    if(reportPage.BreadCrumbObj["grade"].list.length > 0){
+							current_crumb_label = reportPage.BreadCrumbObj["grade"].list[reportPage.BreadCrumbObj["grade"].selected][1].label;
+						} else {
+							current_crumb_label = reportPage.GradeData.basic.grade;
+						}
 						//current_crumb_report_url = reportPage.CurrentGradeUrl;						
 						break;
 					case "project":
@@ -948,9 +957,9 @@ var reportPage = {
 						Alllines : {
 							grade_average_percent: reportPage.baseFn.get_key_values(reportPage.ProjectData.data[dim].lv_n, "weights_score_average_percent")[1],
 							grade_diff_degree: reportPage.baseFn.get_key_values(reportPage.ProjectData.data[dim].lv_n, "diff_degree")[1],
-							grade_median_percent: reportPage.baseFn.get_key_values(reportPage.ProjectData.data[dim].lv_n, "grade_median_percent")[1]
+							grade_median_percent: reportPage.baseFn.get_key_values(reportPage.ProjectData.data[dim].lv_n, "project_median_percent")[1]
 						},
-						med_avg_diff : reportPage.baseFn.getBarDiff(reportPage.baseFn.get_keys_diff_values(reportPage.ProjectData.data[dim].lv_n, reportPage.ProjectData.data[dim].lv_n, "grade_median_percent", "weights_score_average_percent")[1])
+						med_avg_diff : reportPage.baseFn.getBarDiff(reportPage.baseFn.get_keys_diff_values(reportPage.ProjectData.data[dim].lv_n, reportPage.ProjectData.data[dim].lv_n, "project_median_percent", "weights_score_average_percent")[1])
 					}
 				};
 				result["disperse"][dim] = reportPage.Grade.handleDisperse(reportPage.ProjectData.data[dim].lv_n);
@@ -1090,7 +1099,7 @@ var reportPage = {
 			return result;
 		},
 		constructCheckpointClassSeries : function(value_type, dimesion, ckpArr, classNameArr){
-			var class_data_arr = reportPage.Project.get_class_data_arr(value_type, dimesion);
+			var class_data_arr = reportPage.Project.get_grade_data_arr(value_type, dimesion);
 
 			var ckp_class_value_arr = [];
 			var series = [];
@@ -1160,7 +1169,7 @@ var reportPage = {
       
 		handleNormTable : function(value_type, dimesion){
 
-			var class_data_arr = reportPage.Project.get_class_data_arr(value_type, dimesion);
+			var class_data_arr = reportPage.Project.get_grade_data_arr(value_type, dimesion);
 			if(dimesion != "total"){
 				var ckpArr = reportPage.baseFn.get_key_values(reportPage.CurrentBreadCrumbChildren[0].resp.data[dimesion].lv_n, "weights_score_average_percent", null, false)[0];
 			} else {
@@ -1196,7 +1205,7 @@ var reportPage = {
 			return allStr = '<tr>'+thStr+'</tr>' + allStr;
 		},
 
-		get_class_data_arr: function(value_type, dimesion){
+		get_grade_data_arr: function(value_type, dimesion){
 			var values = [];
 			var class_data_arr = [];
 			for( var index in reportPage.CurrentBreadCrumbChildren){
@@ -2124,7 +2133,7 @@ var reportPage = {
 	Pupil: {
 		createReport : function(){
 			//面包屑　
-			reportPage.baseFn.construct_bread_crumbs(null, "pupil", null);
+			reportPage.baseFn.construct_bread_crumbs(null, "pupil", reportPage.CurrentPupilUrl);
 			//基本信息
 			var pupilNavStr =
 			'<b>分数</b>：<span>' + reportPage.baseFn.formatValueAccordingPaper(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +

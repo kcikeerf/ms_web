@@ -7,7 +7,7 @@ var echartOption = {
         myChart.setOption(option);
         return myChart;
     },
-    getOption: {
+    getOption: {        
         Grade: {
             // 三维诊断概要图
             setGradeDiagnoseLeft: function (data) {
@@ -24,15 +24,15 @@ var echartOption = {
                         right: 10,
                         data: [
                             {
-                                name: '年级中位数得分率',
+                                name: '中位数得分率',
                                 icon: 'rect'
                             },
                             {
-                                name: '年级平均得分率',
+                                name: '平均得分率',
                                 icon: 'rect'
                             },
                             {
-                                name: '年级分化度',
+                                name: '分化度',
                                 icon: 'rect'
                             }
                         ],
@@ -78,19 +78,19 @@ var echartOption = {
                         },
                     }],
                     series: [{
-                        name: '年级中位数得分率',
+                        name: '中位数得分率',
                         type: 'bar',
                         barMaxWidth: 10,
                         data: data.yaxis.Alllines.grade_median_percent,
                         z: 1,
                     }, {
-                        name: '年级平均得分率',
+                        name: '平均得分率',
                         type: 'bar',
                         barMaxWidth: 10,
                         data: data.yaxis.Alllines.grade_average_percent,
                         z: 2
                     }, {
-                        name: '年级分化度',
+                        name: '分化度',
                         type: 'bar',
                         barMaxWidth: 10,
                         data: data.yaxis.Alllines.grade_diff_degree,
