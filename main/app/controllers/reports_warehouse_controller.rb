@@ -100,7 +100,6 @@ class ReportsWarehouseController < ApplicationController
           group_id = group_index_in_path.nil?? nil : path_arr[group_index_in_path + 1]
           group_index_in_path.nil?? true : (path_h[group][:value].include?(group_id) && path_h[group][:allowed_file_regx].map{|item| item.match(path_arr[-1]+".json").blank? }.include?(false) )
         }
-        p kaku_group_check_flags
 
         # group_id = path_arr[group_index_in_path + 1]
         # if group_ids.compact.include?(group_id)
