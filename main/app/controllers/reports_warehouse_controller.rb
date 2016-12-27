@@ -36,7 +36,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Pupil][:value] = [current_user.role_obj.uid]
           path_h[Common::Report::Group::Klass][:value] = [current_user.role_obj.location.uid]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
-          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s}
+          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
         # 教师
@@ -50,7 +50,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Klass][:value] = current_user.role_obj.locations.map{|item| item.uid}
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
-          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s}
+          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
         # 分析员
@@ -63,7 +63,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re] 
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
           path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
-          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s}
+          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
         # 租户管理员
@@ -76,7 +76,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
           path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
-          path_h[Common::Report::Group::Project][:value] = current_user.tenant.papers.map{|item| item.bank_tests[0].id.to_s} 
+          path_h[Common::Report::Group::Project][:value] = current_user.tenant.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re] 
         # 项目管理员
         elsif current_user.is_project_administrator?
@@ -87,7 +87,7 @@ class ReportsWarehouseController < ApplicationController
 
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
-          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s}
+          path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re] 
         end
       end
@@ -100,6 +100,7 @@ class ReportsWarehouseController < ApplicationController
           group_id = group_index_in_path.nil?? nil : path_arr[group_index_in_path + 1]
           group_index_in_path.nil?? true : (path_h[group][:value].include?(group_id) && path_h[group][:allowed_file_regx].map{|item| item.match(path_arr[-1]+".json").blank? }.include?(false) )
         }
+        p kaku_group_check_flags
 
         # group_id = path_arr[group_index_in_path + 1]
         # if group_ids.compact.include?(group_id)
