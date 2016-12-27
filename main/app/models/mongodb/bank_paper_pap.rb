@@ -12,7 +12,7 @@ class Mongodb::BankPaperPap
 
   has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
   has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
-  has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz"
+  has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz", dependent: :delete 
   has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
   has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
