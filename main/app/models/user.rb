@@ -285,7 +285,7 @@ class User < ActiveRecord::Base
       result = self.role_obj.locations({:tenant_uid => target_tenants.map(&:uid)})
     # 学生在当前所属租户的所属班级
     elsif self.is_pupil?
-      result = [self.location]
+      result = [self.role_obj.location]
     # 其它返回空记录
     else
       # do nothing
