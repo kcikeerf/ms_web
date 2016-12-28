@@ -18,7 +18,8 @@ class WxUser < ActiveRecord::Base
       {
         :id => u.id,
         :user_name => u.name,
-        :name => u.role_obj.nil?? "-":u.role_obj.name
+        :name => u.role_obj.nil?? "-":u.role_obj.name,
+        :role => u.role.name
       }
     }
   end

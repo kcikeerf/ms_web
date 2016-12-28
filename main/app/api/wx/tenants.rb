@@ -22,20 +22,19 @@ module Tenants
         optional :grade, type: String, allow_blank: true
       end
       post :grade_klass_list do
-        result = {}
+        result = []
   
-        if current_user.is_project_administrator?
-          target_tenants = current_user.role_obj.tenants
-        else
-          target_tenants = [current_user.tenant]
-        end
+        # 获取当前用户的租户对象及班级范围
+        target_tenants = current_user.accessable_tenants
+        accessable_loc_uids = current_user.accessable_locations.map(&:uid)
 
+        # 返回年级班级信息
         target_tenants.map{|tnt|
-          result = [{
-              "name" => tnt.name,
-              "name_cn" => tnt.name_cn,
-              "grades_klasses" => tnt.grades_klasses
-          }]
+          result << {
+            "name" => tnt.name,
+            "name_cn" => tnt.name_cn,
+            "grades_klasses" => tnt.grades_klasses({:grade => params[:grade], :loc_uids => accessable_loc_uids} )
+          }
         }
         result
 
@@ -45,25 +44,35 @@ module Tenants
 
       desc '获取当前用户的班级的学生列表 post /api/wx/v1.1/tenants/klass_pupil_list' # grade_class_list begin
       params do
-        optional :klass_uids, type: String, allow_blank: false
+        optional :klass_uids, type: Array, allow_blank: false
       end
       post :klass_pupil_list do
-        # result = {}
+        result = []
   
-        # if current_user.is_project_administrator?
-        #   target_tenants = current_user.role_obj.tenants
-        # else
-        #   target_tenants = [current_user.tenant]
-        # end
+        # 获取当前用户的班级可访问范围
+        accessable_loc_uids = current_user.accessable_locations.map(&:uid)
+        target_loc_uids = accessable_loc_uids&params[:klass_uids]
 
-        # target_tenants.map{|tnt|
-        #   result = [{
-        #       "name" => tnt.name,
-        #       "name_cn" => tnt.name_cn,
-        #       "grades_klasses" => tnt.grades_klasses
-        #   }]
-        # }
-        # result
+        target_loc_uids.map{|loc_uid|
+          target_location = Location.where(uid: loc_uid).first
+          next unless target_location
+          result << {
+            "name" => target_location.classroom,
+            "name_cn" => Common::Klass::List[target_location.classroom.to_sym],
+            "pupils" => target_location.pupils.sort{|a,b| 
+                a.stu_number <=> b.stu_number 
+              }.map{|item| 
+                {
+                  "user_name" => item.user.name,
+                  "name" => item.name,
+                  "pup_uid" => item.uid,
+                  "stu_number" => item.stu_number
+                }
+              }
+          }
+        }
+
+        result
 
       end # grade_class_list end
 

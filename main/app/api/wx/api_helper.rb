@@ -30,8 +30,6 @@ module ApiHelper
     tenant = nil
     if current_user.is_project_administrator?
       tenant = nil
-    elsif current_user.is_pupil?
-      tenant = current_user.role_obj.location.tenant
     else
       tenant = current_user.role_obj.tenant
     end

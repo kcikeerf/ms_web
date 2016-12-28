@@ -31,6 +31,7 @@ class User < ActiveRecord::Base
     self.errors.add(:phone, '已存在') if phone.presence && self.class.where.not(id: id).find_by(phone: phone)    
   end
 
+  ########类方法定义：begin#######
   class << self
     def generate_rand_password
       result = "" 
@@ -97,7 +98,22 @@ class User < ActiveRecord::Base
         else 'name'
       end
     end
+
+    def find_user(login, conditions)
+      user = 
+        case judge_type(login)
+        when 'mobile'
+          where("phone = ? and phone_validate = ?", login, true)
+        when 'email'
+          where("lower(email) = ? and email_validate = ?", login.downcase, true)
+        else
+          where("lower(name) = ?", login.downcase)
+        end
+
+      user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+    end
   end
+  ########类方法定义：end#######
 
   def save_user(role_name, params)
     #transaction do 
@@ -234,52 +250,70 @@ class User < ActiveRecord::Base
   end
 
   def tenant
-    tenant = nil
+    result = nil
     if is_pupil?
-      tenant = role_obj.location.tenant if role_obj && role_obj.location
+      result = role_obj.location.tenant if role_obj && role_obj.location
     else
-      tenant = role_obj.tenant if role_obj
+      result = role_obj.tenant if role_obj
     end
-    tenant
+    result
   end
 
   def bank_tests
     Mongodb::BankTest.where(user_id: self.id).to_a
   end
 
+  def accessable_tenants
+    result = []
+    if self.is_project_administrator?
+      result = self.role_obj.tenants
+    else
+      result = [self.tenant]
+    end
+    result
+  end
+
+  def accessable_locations
+    result = []
+    target_tenants = self.accessable_tenants
+    
+    # 租户管理员全部班级
+    if self.is_tenant_administrator?
+      result = target_tenants.map{|item| item.locations}.flatten
+    # 老师在当前所属租户担当教学的班级
+    elsif self.is_teacher?
+      result = self.role_obj.locations({:tenant_uid => target_tenants.map(&:uid)})
+    # 学生在当前所属租户的所属班级
+    elsif self.is_pupil?
+      result = [target_user.location]
+    # 其它返回空记录
+    else
+      # do nothing
+    end
+    result
+  end
+
+  ########私有方法: begin#######
   private
 
-  def self.find_user(login, conditions)
-    user = 
-      case judge_type(login)
-      when 'mobile'
-        where("phone = ? and phone_validate = ?", login, true)
-      when 'email'
-        where("lower(email) = ? and email_validate = ?", login.downcase, true)
-      else
-        where("lower(name) = ?", login.downcase)
-      end
-
-    user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
-  end
-
-  def password_required?
-    !persisted? || !password.nil? || !password_confirmation.nil?
-  end
-
-  # Email is not required
-  def email_required?
-    false
-  end
-
-  def set_role
-    self.role_id = Role.get_role_id(role_name)
-  end
-
-  def check_existed?
-    if self.class.find_user(email.presence || phone, {})
-      self.errors.add(:base, I18.t("activerecord.errors.messages.exited_user"))
-      raise SwtkErrors::UserExistedError.new(I18.t("activerecord.errors.messages.exited_user"))
+    def password_required?
+      !persisted? || !password.nil? || !password_confirmation.nil?
     end
-  end  
+
+    # Email is not required
+    def email_required?
+      false
+    end
+
+    def set_role
+      self.role_id = Role.get_role_id(role_name)
+    end
+
+    def check_existed?
+      if self.class.find_user(email.presence || phone, {})
+        self.errors.add(:base, I18.t("activerecord.errors.messages.exited_user"))
+        raise SwtkErrors::UserExistedError.new(I18.t("activerecord.errors.messages.exited_user"))
+      end
+    end
+  ########私有方法: end#######
 end

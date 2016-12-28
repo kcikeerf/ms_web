@@ -12,41 +12,54 @@ class Pupil < ActiveRecord::Base
   belongs_to :location, foreign_key: "loc_uid"
   belongs_to :user, foreign_key: "user_id"
 
+  ########类方法定义：begin#######
+  class << self
+    def get_list params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      result.each_with_index{|item, index|
+        area_h = {
+          :province_rid => "",
+          :city_rid => "",
+          :district_rid => ""
+        }
+        tenant = item.location.nil?? nil : item.location.tenant
+        area_h = tenant.area_pcd if tenant
+        h = {
+          :tenant_uids =>  tenant.nil?? "":tenant.uid,
+          :tenant_name => tenant.nil?? "":tenant.name_cn,
+          :user_name => item.user.nil?? "":item.user.name,
+          :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
+          :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
+          :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
+        }
+        h.merge!(area_h)
+        h.merge!(item.attributes)
+        h["sex_label"] = Common::Locale::i18n("dict.#{h["sex"]}")
+        h["grade_label"] = Common::Locale::i18n("dict.#{h["grade"]}")
+        h["classroom_label"] = Common::Klass::klass_label h["classroom"]
+        h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
+        result[index] = h
+      }
+      return result
+    end
+
+    def save_info(options)
+      # options[:sex] = Common::Locale.hanzi2pinyin(options[:sex]) if options.keys.include?("sex")
+      options = options.extract!(:user_id, :name, :loc_uid, :sex, :stu_number, :grade, :classroom, :tenant_uid)
+      create(options)
+    end
+
+  end
+  ########类方法定义：end#######
+
   def papers
     pap_uids = Mongodb::BankPupPap.where(pup_uid: self.uid).map{|item| item.pap_uid}
     Mongodb::BankPaperPap.where(:_id.in =>pap_uids).order({dt_update: :desc})
   end
 
-  def self.get_list params
-    params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
-    params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
-    result.each_with_index{|item, index|
-      area_h = {
-        :province_rid => "",
-        :city_rid => "",
-        :district_rid => ""
-      }
-      tenant = item.location.nil?? nil : item.location.tenant
-      area_h = tenant.area_pcd if tenant
-      h = {
-        :tenant_uids =>  tenant.nil?? "":tenant.uid,
-        :tenant_name => tenant.nil?? "":tenant.name_cn,
-        :user_name => item.user.nil?? "":item.user.name,
-        :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
-        :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
-        :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
-      }
-      h.merge!(area_h)
-      h.merge!(item.attributes)
-      h["sex_label"] = Common::Locale::i18n("dict.#{h["sex"]}")
-      h["grade_label"] = Common::Locale::i18n("dict.#{h["grade"]}")
-      h["classroom_label"] = Common::Klass::klass_label h["classroom"]
-      h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M")
-      result[index] = h
-    }
-    return result
-  end
+
 
   def save_obj params
     paramsh = {
@@ -67,12 +80,6 @@ class Pupil < ActiveRecord::Base
       self.user.destroy! if self.user
       self.destroy! if self
     end
-  end
-
-  def self.save_info(options)
-    # options[:sex] = Common::Locale.hanzi2pinyin(options[:sex]) if options.keys.include?("sex")
-  	options = options.extract!(:user_id, :name, :loc_uid, :sex, :stu_number, :grade, :classroom, :tenant_uid)
-  	create(options)
   end
 
   def report_menu pap_uid

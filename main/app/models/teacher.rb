@@ -60,11 +60,14 @@ class Teacher < ActiveRecord::Base
     return result
   end
 
-  def locations
+  def locations options={}
     result = []
     return result unless self.tenant
-    self.class_teacher_mappings.by_tenant(self.tenant.uid).map{|item|
-      Location.where(:uid => item.loc_uid).first
+    target_tenant_uid = options[:tenant_uid].blank?? self.tenant.uid : options[:tenant_uid]
+    self.class_teacher_mappings.by_tenant(target_tenant_uid).map{|item|
+      cond_h = {:uid => item.loc_uid}
+      cond_h.merge!({:grade => options[:grade]}) unless options[:grade].blank?
+      Location.where(cond_h).first
     }.compact
   end
 

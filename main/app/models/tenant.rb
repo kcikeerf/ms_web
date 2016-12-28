@@ -154,11 +154,14 @@ class Tenant < ActiveRecord::Base
     result
   end
 
-  def grades_klasses
+  # 获取租户的年级班级列表
+  #
+  def grades_klasses options={}
     result = []
-    sorted_locations = locations.map.sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.grade.nil?? "":a.grade.to_sym],Common::Grade::Order[b.grade.nil?? "":b.grade.to_sym]) }
+    target_locations = options[:grade].blank?? locations : locations.by_grade(options[:grade])
     grade = nil
-    sorted_locations.each{|item|
+    target_locations.each{|item|
+      next unless (!options[:loc_uids].blank? && options[:loc_uids].include?(item.uid))
       if grade && grade[:name] == item.grade
         grade = grade
       else
@@ -172,11 +175,18 @@ class Tenant < ActiveRecord::Base
       grade[:items] << {
         :uid => item.uid,
         :name => item.classroom,
-        :name_cn => Common::Grade::List[item.classroom.to_sym]
+        :name_cn => Common::Klass::List[item.classroom.to_sym]
       }
     }
+
+    # 排序年级
+    result = result.sort{|a,b|
+      Common::Locale.mysort(Common::Grade::Order[a.grade.nil?? "":a.grade.to_sym],Common::Grade::Order[b.grade.nil?? "":b.grade.to_sym])
+    }
+
+    # 排序各年级班级
     result.map{|item|
-      item[:items] = item[:items].map.sort{|a,b| Common::Locale.mysort(Common::Klass::Order[a[:name].nil?? "":a[:name]],Common::Klass::Order[b[:name].nil?? "":b[:name]]) }
+      item[:items] = item[:items].sort{|a,b| Common::Locale.mysort(Common::Klass::Order[a[:name].nil?? "":a[:name]],Common::Klass::Order[b[:name].nil?? "":b[:name]]) }
       item
     }
   end

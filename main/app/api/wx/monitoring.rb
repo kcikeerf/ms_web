@@ -15,7 +15,7 @@ module Monitoring
     resource :monitorings do #monitorings begin
 
       before do
-        # set_api_header
+        set_api_header
         # authenticate!
       end
 
