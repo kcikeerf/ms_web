@@ -215,8 +215,9 @@ $(function(){
                             $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].run());
                             $.Topic("tenant_score_importing").publish();
                         });
-                        monitoring_all_tenants.run();
-                        
+                        if($(".tenant_result_list .score_importing .progress-bar")){
+                            monitoring_all_tenants.run(); 
+                        }
                     }
                     else{
                         $(".paperDetails > .progress").show();
