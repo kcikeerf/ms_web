@@ -421,6 +421,6 @@ Rails.application.routes.draw do
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all
-  require 'sidekiq/web'
-  mount Sidekiq::Web => '/sidekiq'
+  #require 'sidekiq/web'
+  #mount Sidekiq::Web => '/sidekiq'
 end
