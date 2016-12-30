@@ -53,6 +53,7 @@ module SwtkRedisModule
 
     def del_keys ns,str
       arr = find_keys ns,str
+      return [] if arr.blank?
       current_redis(ns).del(*arr)
     end
 
