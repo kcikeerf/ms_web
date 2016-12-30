@@ -1,4 +1,4 @@
-:concurrency: 8
+:concurrency: 10
 :pidfile: ./tmp/pids/sidekiq.pid
 :logfile: ./log/sidekiq.log
 
@@ -13,8 +13,8 @@
     - [monitoring, 1]
 
 development:
-  :concurrency: 8
+  :concurrency: 10
 staging:
-  :concurrency: 30
+  :concurrency: 10
 production:
-  :concurrency: 100
+  :concurrency: 20
