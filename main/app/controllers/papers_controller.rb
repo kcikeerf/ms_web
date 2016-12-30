@@ -351,7 +351,7 @@ class PapersController < ApplicationController
           @paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImporting, {:job_uid =>job_tracker.uid} )
 
           # backend job
-          Thread.new do
+          #Thread.new do
             ImportResultsJob.perform_later({
               #:task_uid => target_task.uid,
               :score_file_id => score_file.id,
@@ -359,7 +359,7 @@ class PapersController < ApplicationController
               :pap_uid => params[:pap_uid],
               :job_uid => job_tracker.uid 
             })
-          end
+          #end
 
           status = 200
           result[:status] = status

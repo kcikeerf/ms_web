@@ -9,9 +9,13 @@ require 'thwait'
 
 class ImportResultsJob < ActiveJob::Base
   queue_as :default
+  
+  #########类方法定义：begin#######
+  #class << self
 
-  def self.perform_later(*args)
+  def perform(*args)
     begin
+      p "started!"
       logger.info ">>>>>>>Import Results Job: Begin<<<<<<<"
       params = args[0]
 
@@ -219,8 +223,10 @@ class ImportResultsJob < ActiveJob::Base
       logger.info ">>>Excepion<<<"
       logger.info "[message]"
       logger.warn ex.message
+      # p ex.message
       logger.info "[backtrace]"
       logger.warn ex.backtrace
+      # p ex.backtrace
     ensure
       # p "导入结束: #{Time.now.strftime('%s')}"
        # p "tenant id: #{params[:tenant_uid]}"
@@ -230,7 +236,7 @@ class ImportResultsJob < ActiveJob::Base
     end
   end
 
-  def self.import_score_core args={}
+  def import_score_core args={}
       logger.info ">>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: [from, to]=>[#{args[:start_num]},#{args[:end_num]}] <<<"
       begin
@@ -381,8 +387,13 @@ class ImportResultsJob < ActiveJob::Base
       rescue Exception => ex
         logger.info ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.message})<<<"
         logger.debug ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.backtrace})<<<"
+        # p ex.message
+        # p ex.backtrace
       ensure
         logger.info ">>>thread index #{args[:th_index]}: end<<<"
       end
   end
+  #end
+  #########类方法定义：end#######
+
 end
