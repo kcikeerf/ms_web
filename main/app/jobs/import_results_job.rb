@@ -92,7 +92,7 @@ class ImportResultsJob < ActiveJob::Base
       # })
 
       #delete old scores
-      old_scores = Mongodb::BankTestScore.destroy_all({
+      old_scores = Mongodb::BankTestScore.delete_all({
         :pap_uid => params[:pap_uid], 
         :test_id => target_paper.bank_tests[0].id.to_s,
         :tenant_uid => params[:tenant_uid]})
