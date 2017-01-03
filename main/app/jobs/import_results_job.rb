@@ -92,11 +92,11 @@ class ImportResultsJob < ActiveJob::Base
       # })
 
       #delete old scores
-      old_scores = Mongodb::BankTestScore.where({
+      old_scores = Mongodb::BankTestScore.destroy_all({
         :pap_uid => params[:pap_uid], 
         :test_id => target_paper.bank_tests[0].id.to_s,
         :tenant_uid => params[:tenant_uid]})
-      old_scores.destroy_all unless old_scores.blank?
+      # old_scores.destroy_all unless old_scores.blank?
       #target_paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
 
       ###
@@ -251,6 +251,7 @@ class ImportResultsJob < ActiveJob::Base
         #######start to analyze#######      
         (args[:start_num]..args[:end_num]).each{|index|
           next if index < args[:data_start_row]
+          row_qzps_arr = []
           row = args[:result_sheet].row(index)
           grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
           klass_pinyin = Common::Locale.hanzi2pinyin(row[1])
@@ -371,11 +372,13 @@ class ImportResultsJob < ActiveJob::Base
                 col_params[:ckp_uids] = ckp.keys[0]
                 col_params[:ckp_order] = ckp.values[0]["rid"]
                 col_params[:ckp_weights] = ckp.values[0]["weights"]
-                test_score = Mongodb::BankTestScore.new(col_params)
-                test_score.save!
+                row_qzps_arr << col_params
+                # test_score = Mongodb::BankTestScore.new(col_params)
+                # test_score.save!
               }
             }
           }
+          Mongodb::BankTestScore.create!(row_qzps_arr)
 
           Common::SwtkRedis::incr_key(args[:redis_ns], args[:redis_key])
           # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
