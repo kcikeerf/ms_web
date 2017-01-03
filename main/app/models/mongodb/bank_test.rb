@@ -23,6 +23,7 @@ class Mongodb::BankTest
   field :dt_update, type: DateTime
 
   index({_id: 1}, {background: true})
+  index({bank_paper_pap_id: 1}, {background: true})
   
   def tenants
     tenant_uids = bank_test_tenant_links.map(&:tenant_uid)
