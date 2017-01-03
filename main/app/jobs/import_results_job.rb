@@ -378,7 +378,8 @@ class ImportResultsJob < ActiveJob::Base
               }
             }
           }
-          Mongodb::BankTestScore.create!(row_qzps_arr)
+          #Mongodb::BankTestScore.create!(row_qzps_arr)
+          Mongodb::BankTestScore.collection.insert_many(row_qzps_arr)
 
           Common::SwtkRedis::incr_key(args[:redis_ns], args[:redis_key])
           # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
