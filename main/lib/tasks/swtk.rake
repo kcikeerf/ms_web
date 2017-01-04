@@ -827,7 +827,7 @@ namespace :swtk do
     #
     klass_arr = Mongoid.models
     klass_arr.each{|klass|
-      klass.create_indexes
+      klass.create_indexes()
     }
   end
 
