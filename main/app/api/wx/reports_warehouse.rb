@@ -20,8 +20,7 @@ module ReportsWarehouse
 
       end
       post '*any_path' do
-        target_file_path = "." + request.fullpath.to_s
-        target_file_path = "." + request.fullpath.to_s.split("/api/wx/v1.1")[1]
+        target_file_path = request.fullpath.to_s.split("/api/wx/v1.1")[1]
 
         if !params[:any_path].blank? && File.exist?(target_file_path)
           path_arr = params[:any_path].split("/")
