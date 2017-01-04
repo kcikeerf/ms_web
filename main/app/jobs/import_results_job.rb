@@ -15,7 +15,6 @@ class ImportResultsJob < ActiveJob::Base
 
   def perform(*args)
     begin
-      p "started!"
       logger.info ">>>>>>>Import Results Job: Begin<<<<<<<"
       params = args[0]
 
@@ -223,10 +222,10 @@ class ImportResultsJob < ActiveJob::Base
       logger.info ">>>Excepion<<<"
       logger.info "[message]"
       logger.warn ex.message
-      # p ex.message
+      p ex.message
       logger.info "[backtrace]"
       logger.warn ex.backtrace
-      # p ex.backtrace
+      p ex.backtrace
     ensure
       # p "导入结束: #{Time.now.strftime('%s')}"
        # p "tenant id: #{params[:tenant_uid]}"
@@ -372,7 +371,7 @@ class ImportResultsJob < ActiveJob::Base
                 col_params[:ckp_uids] = ckp.keys[0]
                 col_params[:ckp_order] = ckp.values[0]["rid"]
                 col_params[:ckp_weights] = ckp.values[0]["weights"]
-                row_qzps_arr << col_params
+                row_qzps_arr << col_params.clone
                 # test_score = Mongodb::BankTestScore.new(col_params)
                 # test_score.save!
               }
@@ -391,8 +390,8 @@ class ImportResultsJob < ActiveJob::Base
       rescue Exception => ex
         logger.info ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.message})<<<"
         logger.debug ">>>thread index #{args[:th_index]}: Excepion Message (#{ex.backtrace})<<<"
-        # p ex.message
-        # p ex.backtrace
+        p ex.message
+        p ex.backtrace
       ensure
         logger.info ">>>thread index #{args[:th_index]}: end<<<"
       end
