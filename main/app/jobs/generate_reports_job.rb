@@ -5,9 +5,11 @@ class GenerateReportsJob < ActiveJob::Base
   queue_as :generate_reports
 
   def self.perform_later(*args)
+    # logger = Sidekiq::Logging.logger
     Common::method_template_with_rescue(__method__.to_s()) {
       logger.info "#{args}"
-      params = args[0]
+      params = {}
+      args[0].each{|k,v| params[k.to_sym] = v}
 
       if !params[:test_id].blank? && !params[:task_uid].blank? && !params[:top_group].blank?
         target_test = Mongodb::BankTest.where(id: params[:test_id]).first
@@ -59,12 +61,15 @@ class GenerateReportsJob < ActiveJob::Base
 
         # 清除旧记录
         # th_arr = []
-        genreator_arr.each{|item|
-          # th_arr << Thread.new do 
-            item.clear_old_data
-          # end
+        Common::process_sync_template(__method__.to_s()) {|pids|
+          genreator_arr.each{|item|
+            # th_arr << Thread.new do
+            pids << Process.fork do
+              item.clear_old_data
+            end
+            # end
+          }
         }
-
         # ThreadsWait.all_waits(*th_arr)
         job_tracker.update(process: 0.2)
 
@@ -78,27 +83,47 @@ class GenerateReportsJob < ActiveJob::Base
 
 
         # th_arr = []
-        genreator_arr.each{|item|
-          item.cal_round_1
+        genreator_arr[0].cal_round_1
+        Common::process_sync_template(__method__.to_s()) {|pids|
+          genreator_arr[1..-1].each{|item|
+            pids << Process.fork do
+              item.cal_round_1
+            end
+          }
         }
         job_tracker.update(process: 0.3)
 
         # 计算1.5
-        genreator_arr[1..-1].each{|item|
-          item.cal_round_1_5
+        Common::process_sync_template(__method__.to_s()) {|pids|
+          pids << Process.fork do
+          genreator_arr[1..-1].each{|item|
+            
+              item.cal_round_1_5
+            
+          }
+          end
         }
         job_tracker.update(process: 0.4)
 
         # 计算2
-        genreator_arr[1..-1].each{|item|
-          item.cal_round_2
+        Common::process_sync_template(__method__.to_s()) {|pids|
+          genreator_arr[1..-1].each{|item|
+            pids << Process.fork do
+              item.cal_round_2
+            end
+          }
         }
         job_tracker.update(process: 0.5)
 
         #pid = fork do 
         # 组装1
-        constructor_arr.each{|item|
-          item.iti_kumigoto_no_kihon_koutiku
+        Common::process_sync_template(__method__.to_s()) {|pids|
+          constructor_arr.each{|item|
+            pids << Process.fork do
+              item.iti_kumigoto_no_kihon_koutiku
+              item.owari
+            end
+          }
         }
         job_tracker.update(process: 0.7)
 
@@ -109,9 +134,13 @@ class GenerateReportsJob < ActiveJob::Base
         # job_tracker.update(process: 0.8)
 
         # 结束处理
-        constructor_arr.each{|item|
-          item.owari
-        }
+        # Common::process_sync_template(__method__.to_s()) {|pids|
+        #  pids << Process.fork do
+          # constructor_arr.each{|item|
+          #   item.owari
+          # }
+        #  end
+        #}
         job_tracker.update(process: 0.9)
 
         report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/#{params[:test_id]}/*"

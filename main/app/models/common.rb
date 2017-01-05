@@ -50,6 +50,14 @@ module Common
     logger.debug(">>>>>>#{from_where}: end<<<<<<<")
   end
 
+  def process_sync_template(from_where, &block)
+    logger.debug(">>>>>>#{from_where}: begin<<<<<<<")
+    pids = []
+    yield(pids)
+    pids.each{|pid| Process.waitpid(pid)}
+    logger.debug(">>>>>>#{from_where}: end<<<<<<<")
+  end
+
   def valid_json?(str)
     return false if str.blank?
     begin
