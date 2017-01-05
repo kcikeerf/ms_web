@@ -14,6 +14,7 @@ class ImportResultsJob < ActiveJob::Base
   #class << self
 
   def perform(*args)
+    logger = Sidekiq::Logging.logger
     Common::process_sync_template(__method__.to_s()) {|pids|
       pids << fork do # fork new process, begin
         begin
