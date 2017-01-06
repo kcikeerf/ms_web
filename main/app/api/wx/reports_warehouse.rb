@@ -55,7 +55,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Pupil][:value] = [current_user.role_obj.uid]
               path_h[Common::Report::Group::Klass][:value] = [current_user.role_obj.location.uid]
               path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
-              target_papers = current_user.role_obj.papers
+              target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 教师
@@ -69,7 +69,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Klass][:value] = current_user.role_obj.locations.map{|item| item.uid}
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
-              target_papers = current_user.role_obj.papers
+              target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 分析员
@@ -82,7 +82,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re] 
               path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
-              target_papers = current_user.role_obj.papers
+              target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 租户管理员
@@ -95,7 +95,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
-              target_papers = current_user.tenant.papers
+              target_papers = Mongodb::BankPaperPap.by_tenant(current_user.tenant.uid)
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re] 
             # 项目管理员
             elsif current_user.is_project_administrator?
@@ -106,7 +106,7 @@ module ReportsWarehouse
 
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
-              target_papers = current_user.role_obj.papers
+              target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re] 
             end
           end
