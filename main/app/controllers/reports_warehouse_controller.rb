@@ -36,7 +36,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Pupil][:value] = [current_user.role_obj.uid]
           path_h[Common::Report::Group::Klass][:value] = [current_user.role_obj.location.uid]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
-          target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
+          target_papers = current_user.role_obj.papers
           # path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
@@ -51,7 +51,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Klass][:value] = current_user.role_obj.locations.map{|item| item.uid}
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
-          target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
+          target_papers = current_user.role_obj.papers
           # path_h[Common::Report::Group::Project][:value] =  current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
@@ -65,7 +65,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re] 
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
           path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
-          target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
+          target_papers = current_user.role_obj.papers
           # path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
@@ -79,7 +79,7 @@ class ReportsWarehouseController < ApplicationController
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
           path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
-          target_papers = Mongodb::BankPaperPap.by_tenant(current_user.tenant.uid)
+          target_papers = current_user.tenant.papers
           # path_h[Common::Report::Group::Project][:value] = current_user.tenant.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re] 
         # 项目管理员
@@ -91,7 +91,7 @@ class ReportsWarehouseController < ApplicationController
 
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
-          target_papers = Mongodb::BankPaperPap.by_user(current_user.id)
+          target_papers = current_user.role_obj.papers
           # path_h[Common::Report::Group::Project][:value] = current_user.role_obj.papers.map{|item| item.bank_tests[0].id.to_s if item.bank_tests[0]}.compact
           path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re] 
         end
