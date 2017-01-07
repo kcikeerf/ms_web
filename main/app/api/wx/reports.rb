@@ -11,13 +11,13 @@ module Reports
     resource :reports do
       before do
         set_api_header
-        #authenticate!
+        authenticate!
       end
 
       #
       desc ''
       params do
-
+        use :authenticate
       end
       post :list do
         if current_user.is_pupil?

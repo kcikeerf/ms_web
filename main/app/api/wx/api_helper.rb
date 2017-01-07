@@ -16,7 +16,7 @@ module ApiHelper
     result = nil
 
     target_user = User.where(name: params[:user_name]).first
-    return target_user
+    # return target_user
     target_wx_user = WxUser.where(:wx_openid => params[:wx_openid]).first
     if target_wx_user && target_user
       if target_wx_user.binded_user? target_user.name

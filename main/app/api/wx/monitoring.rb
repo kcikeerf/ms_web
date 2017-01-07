@@ -10,13 +10,13 @@ module Monitoring
     helpers SharedParamsHelper
 
     params do
-      #use :authenticate
+      use :authenticate
     end
     resource :monitorings do #monitorings begin
 
       before do
         set_api_header
-        # authenticate!
+        authenticate!
       end
 
       ###########

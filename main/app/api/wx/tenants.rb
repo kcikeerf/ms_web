@@ -12,13 +12,14 @@ module Tenants
       
       before do
         set_api_header
-        #authenticate!
+        authenticate!
       end
 
       ###########
       
       desc '获取当前用户所在租户的年级班级列表 post /api/wx/v1.1/tenants/grade_klass_list' # grade_class_list begin
       params do
+        use :authenticate
         optional :grade, type: String, allow_blank: true
       end
       post :grade_klass_list do
@@ -44,6 +45,7 @@ module Tenants
 
       desc '获取当前用户的班级的学生列表 post /api/wx/v1.1/tenants/klass_pupil_list' # grade_class_list begin
       params do
+        use :authenticate
         optional :klass_uids, type: Array, allow_blank: false
       end
       post :klass_pupil_list do

@@ -10,13 +10,13 @@ module PaperOnlineTest
     helpers SharedParamsHelper
 
     params do
-      #use :authenticate
+      use :authenticate
     end
     resource :online_tests do
 
       before do
         set_api_header
-        # authenticate!
+        authenticate!
       end
 
       ###########

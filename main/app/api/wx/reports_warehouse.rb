@@ -11,13 +11,13 @@ module ReportsWarehouse
     resource :reports_warehouse do
       before do
         set_api_header
-        #authenticate!
+        authenticate!
       end
 
       #
       desc ''
       params do
-
+        use :authenticate
       end
       post '*any_path' do
         target_file_path = request.fullpath.to_s.split("/api/wx/v1.1")[1]
