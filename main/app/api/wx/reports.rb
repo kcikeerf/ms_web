@@ -21,8 +21,12 @@ module Reports
         use :authenticate
       end
       post :list do
-        if current_user.is_pupil?
+        if current_user.is_pupil? || current_user.is_teacher? || current_user.is_analyzer? || current_user.is_project_administrator?
           target_papers = current_user.role_obj.papers
+        elsif current_user.is_tenant_administrator?
+          target_papers = current_user.tenant.papers
+        else
+          target_papers = nil
         end
         unless target_papers.blank?
           target_papers.map{|target_pap|
