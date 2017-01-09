@@ -184,7 +184,8 @@ zh:
         score: "请注意:"
       error:
         wrong_input: "错误的输入"
-        unknown: "用户未生成，发生未知错误"
+        unknown: "发生未知错误"
+        add_user_failed: "生成用户异常！"
         upload_failed: "文件上传失败！"
         upload_exception: "文件上传中发生异常错误！"
   tasks:

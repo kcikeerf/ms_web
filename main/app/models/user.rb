@@ -62,7 +62,7 @@ class User < ActiveRecord::Base
             return []
           end
           user = new(name: name, password: password, password_confirmation: password, role_name: role_name, initial_password: password)
-          return false unless user.save
+          user.save!
 
           #确定地区
 
@@ -70,8 +70,8 @@ class User < ActiveRecord::Base
           return [user.name, password]
         end
       rescue Exception => ex
-        p "ex.message::#{ex.message}"
-        p "ex.backtrace::#{ex.backtrace}"
+        logger.debug ex.message
+        logger.debug ex.backtrace
         return false
       end
     end
@@ -174,8 +174,8 @@ class User < ActiveRecord::Base
 
     role_obj.save_obj(params) if role_obj
     rescue Exception => ex
-      p ex.messages
-      p ex.backtrace
+      logger.debug ex.messages
+      logger.debug ex.backtrace
     end
   end
 

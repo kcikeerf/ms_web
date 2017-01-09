@@ -915,7 +915,7 @@ class Mongodb::BankPaperPap
         :password => "",
         :name => params_h[:name],
         :stu_number => params_h[:stu_number],
-        :report_url => Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
+        :report_url => "",#Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
         :op_guide => Common::Locale::i18n('reports.op_guide_details'),
         :tenant_uid => params_h[:tenant_uid]
       }
@@ -935,9 +935,10 @@ class Mongodb::BankPaperPap
       row_data[role.to_sym][:report_url] = generate_url
       target_username = ret[0]
     else
-      row_data[role.to_sym][:password] = generate_url
+      row_data[role.to_sym][:password] = Common::Locale::i18n("wx_scores.messages.error.add_user_failed"）
     end
-    associate_user_and_pap role, target_username
+    
+    associate_user_and_pap role, target_username if (ret.is_a? Array)
     return row_data[role.to_sym].values
   end
 
