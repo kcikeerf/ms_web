@@ -35,6 +35,7 @@ module Tenants
           result << {
             "name" => tnt.name,
             "name_cn" => tnt.name_cn,
+            "tenant_uid" => tnt.uid,
             "grades_klasses" => tnt.grades_klasses({:grade => params[:grade], :loc_uids => accessable_loc_uids} )
           }
         }

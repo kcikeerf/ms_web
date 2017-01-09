@@ -173,7 +173,7 @@ class Tenant < ActiveRecord::Base
         result << grade
       end
       grade[:items] << {
-        :uid => item.uid,
+        :location_uid => item.uid,
         :name => item.classroom,
         :name_cn => Common::Klass::List[item.classroom.to_sym]
       }
