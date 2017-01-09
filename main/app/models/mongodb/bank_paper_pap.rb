@@ -228,11 +228,12 @@ class Mongodb::BankPaperPap
       pap_test = Mongodb::BankTest.new({
         :name => self._id.to_s + "_" +Common::Locale.i18n("activerecord.models.bank_test"),
         :user_id => current_user_id,
-        :quiz_date => Time.now
+        :quiz_date => Time.now,
+        :bank_paper_pap_id => self.id.to_s
       })
       pap_test.save!
-      self.bank_tests = [pap_test]
-      save!
+      # self.bank_tests = [pap_test]
+      # save!
     else
       self.bank_tests[0].bank_test_tenant_links.destroy_all
     end
