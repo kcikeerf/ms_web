@@ -935,7 +935,7 @@ class Mongodb::BankPaperPap
       row_data[role.to_sym][:report_url] = generate_url
       target_username = ret[0]
     else
-      row_data[role.to_sym][:password] = Common::Locale::i18n("wx_scores.messages.error.add_user_failed"）
+      row_data[role.to_sym][:password] = Common::Locale::i18n("wx_scores.messages.error.add_user_failed")
     end
     
     associate_user_and_pap role, target_username if (ret.is_a? Array)
