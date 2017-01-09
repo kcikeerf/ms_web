@@ -189,7 +189,7 @@ $(function(){
                     $(".lookPaperInfo").show().find(".lookPaper_sanwei").hide();
                     $(".paper_about").show().find(".load_list").hide();
                     //project administrator tenant action
-                    $(".tenant_result_list").hide();
+                    //$(".tenant_result_list").hide();
                     //
                     $(".link_paper").css("display","block");
                     break;
