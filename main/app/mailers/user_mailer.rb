@@ -6,7 +6,7 @@ class UserMailer < ApplicationMailer
 
 		$cache_redis.set(email, @auth_number, ex: 30.minutes)
 		
-    mail(to: email, subject: '知引网验证邮件')
+    mail(to: email, subject: '甄学网验证邮件')
 	end
 
 	def forgot_password(email)
@@ -14,6 +14,6 @@ class UserMailer < ApplicationMailer
 
 		$cache_redis.set("password_#{email}", @auth_number, ex: 30.minutes)
 		
-    mail(to: email, subject: '知引网忘记密码邮件')
+    mail(to: email, subject: '甄学网忘记密码邮件')
 	end
 end
