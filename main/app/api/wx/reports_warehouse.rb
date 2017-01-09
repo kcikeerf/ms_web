@@ -7,6 +7,7 @@ module ReportsWarehouse
     prefix "api/wx".to_sym
 
     helpers ApiHelper
+    helpers SharedParamsHelper
 
     resource :reports_warehouse do
       before do

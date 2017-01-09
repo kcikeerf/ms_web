@@ -7,6 +7,7 @@ module Tenants
     prefix "api/wx".to_sym
 
     helpers ApiHelper
+    helpers SharedParamsHelper
 
     resource :tenants do
       

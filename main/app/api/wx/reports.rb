@@ -7,6 +7,7 @@ module Reports
     prefix "api/wx".to_sym
 
     helpers ApiHelper
+    helpers SharedParamsHelper
 
     resource :reports do
       before do
