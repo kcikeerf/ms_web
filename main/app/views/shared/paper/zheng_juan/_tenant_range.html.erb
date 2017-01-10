@@ -1,4 +1,8 @@
 <% if true || current_user.is_project_administrator?%>
+  <% target_tenants = current_user.role_obj.tenants %>
+<% else %>
+  <% target_tenants = [current_user.role_obj.tenant].compact %>
+<% end %>
 	<div class="hint"><%=LABEL("page.paper.test_range")%></div>
 	<div class="table-responsive">
 	<table class="table">
@@ -13,8 +17,8 @@
 		
 <% if edittable %>
 		<tbody class="tenant_range_check_list">
- 	<% unless current_user.role_obj.tenants.blank? %>
-		<% current_user.role_obj.tenants.each_with_index do |t,index| %>
+ 	<% unless target_tenants.blank? %>
+		<% target_tenants.each_with_index do |t,index| %>
 				<tr>
 					<td><%=index+1%></td>
 					<td>
@@ -32,7 +36,7 @@
 		</tbody>
 <% else %>
 		<tbody class="tenant_range_display_list">
-    <% unless (current_user.role_obj.tenants.blank? && @current_test && @current_test.tenants.blank?) %>
+    <% unless (target_tenants.blank? && @current_test && @current_test.tenants.blank?) %>
 		<% @current_test.tenant_list.each_with_index do |t,index| %>
  			<tr class="tenant_result_list">
 				<td><%=index+1%></td>
@@ -90,4 +94,3 @@
 <% end %>
 	</table>
 	</div>
-<% end %>
