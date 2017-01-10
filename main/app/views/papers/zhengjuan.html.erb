@@ -91,7 +91,7 @@
 		<div class="hint">相关文件</div>
 		<a href="javascript:;" geturl="/papers/download_page?type=original_paper_answer" class="download_link link_paper">原始试题、答案下载</a>
 		<a href="javascript:;" geturl="/papers/download_page?type=modified_paper_answer_emptyscore" class="download_link link_form">已修订的试卷、答案、录入表（空）下载</a>
-<% unless true && current_user.is_project_administrator? %>	
+<% unless true || current_user.is_project_administrator? %>	
 		<a href="javascript:;" 
 			geturl="/papers/download_page?type=imported_score" 
 			class="download_link link_grade">
@@ -113,7 +113,7 @@
 			</div>
 			<div class="about_right">
 				<a class="edit_sanwei" href="javascript:;">三维解析试卷</a>
-<% unless true && current_user.is_project_administrator? %>	
+<% unless true || current_user.is_project_administrator? %>	
 				<a class="load_list" geturl="/papers/import_filled_result?tenant_uid=<%= current_user.tenant.uid %>" href="javascript:;">导入成绩表</a>
 <% end %>
 			</div>
