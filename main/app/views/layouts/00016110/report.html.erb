@@ -3,11 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title><%= @page_title ? "#{@page_title}-#{t('page.site_name')}" : t('page.site_name') %></title>
-<!--     <link rel="stylesheet" type="text/css" href="http://<%#= Common::SwtkConstants::CDNDomain %>/assets/<%#= Common::SwtkConstants::CDNVersion1_0 %>/report/new_report.css">
- -->    
-    <%= stylesheet_link_tag '00016110/report', media: 'all', 'data-turbolinks-track' => true %>
-    <%#= javascript_include_tag 'init_new_report', 'data-turbolinks-track' => true %>
-    <%#= favicon_link_tag '/common/zy_logo.png' %>
+    <link rel="stylesheet" type="text/css" href="http://<%= Common::SwtkConstants::CDNDomain %>/assets/<%= Common::SwtkConstants::CDNVersion1_1 %>/report/report.css">   
     <%= yield(:header) %>
     <%= csrf_meta_tags %>
   </head>
@@ -17,10 +13,8 @@
     <%#= render 'common/footer' %>
     <%= render 'shared/common_dialog' %>
   </body>
-  <script>
-  //src="http://<%#= Common::SwtkConstants::CDNDomain %>/assets/<%#= Common::SwtkConstants::CDNVersion1_0 %>/report/init_new_report.js">
-  </script>
-  <%= javascript_include_tag '00016110/report/init_report', 'data-turbolinks-track' => true %>
+  <script src="http://<%= Common::SwtkConstants::CDNDomain %>/assets/<%= Common::SwtkConstants::CDNVersion1_1 %>/report/init_report.js">
+  </script>  
   <% report_init_h = report_init(@test_id) %>
   <script type="text/javascript">
     $(function () {

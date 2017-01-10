@@ -9,5 +9,6 @@ module SwtkConstantsModule
     MyDomain = "www.k12ke.com"
     CDNDomain = "cdn.k12ke.com"
     CDNVersion1_0 = "000016090"
+    CDNVersion1_1 = "00016110"
   end
 end
