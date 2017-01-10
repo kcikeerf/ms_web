@@ -4,6 +4,7 @@ Rails.application.routes.draw do
                                       passwords: 'managers/passwords'}, 
                         path_names: { sign_in: 'login', 
                                       sign_out: 'logout' }
+  devise_for :users, :skip =>[:sessions,:registrations,:passwords]
 
   namespace :managers do
     root 'mains#index'
