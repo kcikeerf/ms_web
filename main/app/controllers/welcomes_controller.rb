@@ -6,7 +6,7 @@ class WelcomesController < ApplicationController
 	def contact_us; end
 
 	def error_404
-		render 'errors/404', status: 404,  layout: 'error'
+		render 'errors/error_404', status: 404,  layout: 'error'
 	end
 	
 end

@@ -175,7 +175,7 @@ class ReportsController < ApplicationController
     unless params_h.blank?
       redirect_to new_square_reports_path(:pap_uid=> params_h["pap_uid"])
     else
-      render 'errors/403', status: 403,  layout: 'error'
+      render 'errors/error_403', status: 403,  layout: 'error'
     end
 
   end

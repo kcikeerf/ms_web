@@ -70,7 +70,7 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    render 'errors/403', status: 403,  layout: 'error'
+    render 'errors/error_403', status: 403,  layout: 'error'
   end
   
   #use in controller
@@ -100,7 +100,7 @@ class ApplicationController < ActionController::Base
     end
 
     unless flag
-      render 'errors/403', status: 403,  layout: 'error'
+      render 'errors/error_403', status: 403,  layout: 'error'
     end
   end
     
