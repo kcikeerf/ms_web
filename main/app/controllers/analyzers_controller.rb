@@ -49,7 +49,7 @@ class AnalyzersController < ApplicationController
       .by_district(district)
       .page(params[:page])
       .per(10)
-    
+    render layout: "new_user" 
   end
 
   def my_log

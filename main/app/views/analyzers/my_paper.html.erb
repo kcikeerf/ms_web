@@ -1,77 +1,13 @@
-<% @page_title = t('page.user_left_menu.my_home') %>
-<section>
-	<div class="container clearfix">
-		<!-- Nav tabs -->
-		<%= render 'shared/user/left_menu' %>
-		<!-- Tab panes -->
-		<div class="tab-content">
-			<div role="tabpanel" id="test">
+<% content_for :work_field do %>
+	<div class="tab-content">
+		<div role="tabpanel" id="test">
+			<div class="panel">
+				<!-- 标题区 -->
+				<%= render partial: 'shared/paper/paper_list_title' %>
 
-				<div class="panel">
-
-					<!-- 我的试卷 -->
-					<h1 class="panel-heading clearfix">
-						<div class="col-lg-4 input-group pull-right">
-							<%= text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: '请输入试卷名称搜索' %>
-							<span class="input-group-btn" id='keyword_filter'>
-								<button class="btn btn-default" type="button"><i class="fa fa-search search"></i></button>
-							</span>
-						</div>
-						我的试卷
-					</h1>
-					<div class="panel-body">
-						<div class="matches">
-							<form action="" id="data_filter" class="form-inline">
-								<div class="form-group">
-									<%= select_tag :grade, options_for_select(@grades, params[:grade]), include_blank: '全部年级', class: 'form-control' %>
-								</div>
-								<div class="form-group">
-									<%= select_tag :subject, options_for_select(@subjects, params[:subject]), include_blank: '全部科目', class: 'form-control' %>								
-								</div>
-								<div class="form-group">
-									<%= select_tag :paper_status, options_for_select(@status, params[:paper_status]), include_blank: '全部状态', class: 'form-control' %>								
-								</div>
-								<div class="form-group area_position">
-									<%= hidden_field_tag 'region', params[:region] %>
-									<div class="area-section">
-										<button class="area-text form-control" id="area-text">
-											<%= @region.presence || '地区选择器' %>
-										</button>
-										<div class="section-box">
-											<p class="top-btn-list" id="top-btn-list">
-												<a class="province-btn active" href="##" >请选择</a>
-												<a class="city-btn none" href="##">请选择</a>
-												<a class="area-btn none" href="##">请选择</a>
-											</p>
-											<div class="section-page" id="section-page">
-												<ul class="province-box">
-												</ul>
-												<ul class="city-box none">
-												</ul>
-												<ul class="area-box none">
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div>
-							</form>
-						</div>
-						<%= render 'paper_data' %>
-					</div>
-				</div>
+				<!--列表区-->
+				<%= render partial: 'shared/paper/paper_list' %>
 			</div>
 		</div>
 	</div>
-</section>
-<script type="text/javascript">
-	$(document).ready(function(){
-		$.get('/analyzers/region','',function(data){
-			setAreaSelect(data);
-			$('.area-section').hover(function(){
-				$('.section-box').show();
-			},function(){
-				$('.section-box').hide();
-			});
-		});
-	})
-</script>
+<% end %>
