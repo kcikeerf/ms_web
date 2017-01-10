@@ -1,88 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :managers, controllers: {sessions: 'managers/sessions', 
-                                      registrations: 'managers/registrations', 
-                                      passwords: 'managers/passwords'}, 
-                        path_names: { sign_in: 'login', 
-                                      sign_out: 'logout' }
-
-  namespace :managers do
-    root 'mains#index'
-
-
-    concern :destroy_all do
-      delete 'destroy_all', on: :collection
-    end  
-
-    resources :mains do    
-      get 'navigation'
-    end
-    
-    resources :checkpoints, :except => [:edit, :destroy] do      
-      collection do
-        # delete '/:uid', action: :destroy, as: 'destroy'
-        # get '/:uid/edit',action: :edit, as: 'edit'
-        # post '/:id/move_node', action: :move_node, as: 'move_node'
-        # post 'import_ckp_file'
-        post 'combine_node_catalogs_subject_checkpoints'
-        post 'list'
-      end
-    end
-
-    resources :subject_checkpoints, concerns: :destroy_all do    
-      collection do   
-        post '/:id/move_node', action: :move_node, as: 'move_node'
-        get 'list'
-        get 'get_subject_volume_ckps'
-        get 'get_volume_catalog_ckps'
-        post 'import_ckp_file'
-      end
-    end
-
-    resources :roles, concerns: :destroy_all do
-      resources :role_permissions, concerns: :destroy_all 
-    end
-
-    resources :node_structures, concerns: :destroy_all do 
-      get "catalog_tree", on: :collection
-      resources :node_catalogs, concerns: :destroy_all do 
-        resources :checkpoints, concerns: :destroy_all do
-          collection do
-            get "tree"
-          end
-        end
-      end
-      resources :checkpoints, concerns: :destroy_all do
-        collection do
-          get "tree"
-        end
-      end
-    end
-    
-    resources :permissions, concerns: :destroy_all
- 
-    resources :tenants, concerns: :destroy_all do
-      collection do
-        #delete 'destroy_all', :to => "tenants#destroy_all"
-      end
-    end
-
-    resources :areas do
-      collection do
-        get 'get_province'
-        get 'get_city'
-        get 'get_district'
-        get 'get_tenants'
-      end
-    end
-
-    resources :analyzers, concerns: :destroy_all
-    resources :teachers, concerns: :destroy_all
-    resources :pupils, concerns: :destroy_all
-    resources :tenant_administrators, concerns: :destroy_all
-    resources :project_administrators, concerns: :destroy_all
-    resources :node_catalogs, concerns: :destroy_all
-  end
-
   mount RuCaptcha::Engine => "/rucaptcha"
   root 'welcomes#index'
   get '/about_us', to: 'welcomes#about_us'
@@ -237,45 +153,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # resource :grade_reports do
-  #   member do
-  #     get 'index'
-  #   end
-  # end
-
-  # resource :class_reports do
-  #   member do
-  #     get 'index'
-  #   end
-  # end
-
-  # resource :pupil_reports do
-  #   member do
-  #     get 'index'
-  #   end
-  # end
-
-  # resource :gradereport do
-  #   member do
-  #     get 'index', to: "gradereport#index"
-  #     get 'demo',to: "gradereport#demo"
-  #   end
-  # end
-
-  # resource :classreport do
-  #   member do
-  #     get 'index', to: "classreport#index"
-  #     get 'demo',to: "classreport#demo"
-  #   end
-  # end
-
-  # resource :pupilreport do
-  #   member do
-  #     get 'index', to: "pupilreport#index"
-  #     get 'demo', to: "pupilreport#demo"
-  #   end
-  # end
-
   resource :profile, only: [] do 
     get 'message'
     get 'account_binding'
@@ -284,28 +161,28 @@ Rails.application.routes.draw do
     get 'modify_mobile_succeed'
     get 'modify_email_succeed'
     match 'init', via: [:get, :post]
-    match 'binding_or_unbinding_mobile', via: [:get, :post]
-    match 'binding_or_unbinding_email', via: [:get, :post]
-    match 'verified_email', via: [:get, :post]
-    match 'modify_email', via: [:get, :post]
-    match 'verified_mobile', via: [:get, :post]
-    match 'modify_mobile', via: [:get, :post]
+    match 'binding_or_unbinding_mobile', via: [:get]#[:get, :post]
+    match 'binding_or_unbinding_email', via: [:get]#[:get, :post]
+    match 'verified_email', via: [:get]#[:get, :post]
+    match 'modify_email', via: [:get]#[:get, :post]
+    match 'verified_mobile', via: [:get]#[:get, :post]
+    match 'modify_mobile', via: [:get]#[:get, :post]
     post 'head_image_upload'
     post 'save_info'
   end
 
   resources :messages, only: [] do 
     collection do 
-      post 'send_sms_auth_number'
-      post 'send_email_auth_number'
-      post 'send_sms_forgot_password'
-      post 'send_email_forgot_password'
+      # post 'send_sms_auth_number'
+      # post 'send_email_auth_number'
+      # post 'send_sms_forgot_password'
+      # post 'send_email_forgot_password'
     end
   end
   
   get '/ckeditors/urlimage'=> "ckeditor#urlimage"
 
-  resources :librarys, :online_tests
+  # resources :librarys, :online_tests
   # defined routes for user authentication
   devise_for :users,
     controllers: { sessions: 'users/sessions',
@@ -319,62 +196,6 @@ Rails.application.routes.draw do
     post 'users/passwords/user_captcha_validate'
   end
 
-  ActiveAdmin.routes(self)
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
-
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
-
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
-
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
-
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
-
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-  
   #######################################
   ### errors
   
