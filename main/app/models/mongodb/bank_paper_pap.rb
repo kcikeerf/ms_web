@@ -222,6 +222,31 @@ class Mongodb::BankPaperPap
   def save_pap params
     params[:pap_uid] = id.to_s
     ##############################
+    #地理位置信息
+    current_user = Common::Uzer.get_user current_user_id
+    target_tenant = Common::Uzer.get_tenant current_user_id
+    test_associated_tenant_uids = []
+    if current_user.is_project_administrator?
+      target_area = Area.where(rid: current_user.role_obj.area_rid).first
+      params[:information][:province] = target_area.pcd_h[:province][:name_cn]
+      params[:information][:city] = target_area.pcd_h[:city][:name_cn]
+      params[:information][:district] = target_area.pcd_h[:district][:name_cn]
+      params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
+      test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
+    else
+      target_area = Area.get_area params[:information]
+      if target_tenant
+        params[:information][:province] = target_tenant.area_pcd[:province_name_cn]
+        params[:information][:city] = target_tenant.area_pcd[:city_name_cn]
+        params[:information][:district] = target_tenant.area_pcd[:district_name_cn]
+        params[:information][:school] = target_tenant.name_cn
+        test_associated_tenant_uids = [target_tenant.uid]
+      end
+    end
+    raise if test_associated_tenant_uids.blank?
+    ##############################
+
+    ##############################
     #临时处理，伴随试卷保存
     #创建测试
     if self.bank_tests.blank?
@@ -238,13 +263,13 @@ class Mongodb::BankPaperPap
       self.bank_tests[0].bank_test_tenant_links.destroy_all unless params[:information][:tenants].blank?
     end
 
-    params[:information][:tenants].each{|t|
+    test_associated_tenant_uids.each{|tnt_uid|
       test_tenant_link = Mongodb::BankTestTenantLink.new({
-        :tenant_uid => t[:tenant_uid]
+        :tenant_uid => tnt_uid
       })
       test_tenant_link.save!
       self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
-    } unless params[:information][:tenants].blank?
+    } 
 
     ##############################
     #试卷状态更新
@@ -282,32 +307,12 @@ class Mongodb::BankPaperPap
       bank_tests[0].bank_test_task_links.push(tkl_link)
     }
 
-    ##############################
-    #地理位置信息
-    current_user = Common::Uzer.get_user current_user_id
-    if current_user.is_project_administrator?
-      target_area = Area.where(rid: current_user.role_obj.area_rid).first
-      params[:information][:province] = target_area.pcd_h[:province][:name_cn]
-      params[:information][:city] = target_area.pcd_h[:city][:name_cn]
-      params[:information][:district] = target_area.pcd_h[:district][:name_cn]
-      params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
-    else
-      target_area = Area.get_area params[:information]
-      target_current = Common::Uzer.get_tenant current_user_id
-      if target_current
-        params[:information][:province] = target_current.area_pcd[:province_name_cn]
-        params[:information][:city] = target_current.area_pcd[:city_name_cn]
-        params[:information][:district] = target_current.area_pcd[:district_name_cn]
-        params[:information][:school] = target_current.name_cn
-      end
-    end
 
-    ##############################
     #试卷保存
     self.update_attributes({
       :user_id => current_user_id || "",
       :area_uid => target_area.nil?? "" : target_area.uid,
-      :tenant_uid => target_current.nil?? "" : target_current.uid,
+      :tenant_uid => target_tenant.nil?? "" : target_tenant.uid,
       :heading => params[:information][:heading] || "",
       :subheading => params[:information][:subheading] || "",
       :orig_file_id => params[:orig_file_id] || "",
