@@ -981,12 +981,13 @@ class Mongodb::BankPaperPap
     self.bank_tests[0].bank_test_tenant_links.each{|t|
       t.update(:tenant_status => status_str) if tenant_uids.include?(t[:tenant_uid])
     }
+    return params if params.blank? || !params.keys.include?("information")
     params["information"]["tenants"].each_with_index{|item, index|
       if tenant_uids.include?(item["tenant_uid"])
         params["information"]["tenants"][index]["tenant_status"] = status_str
         params["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
       end
-    } unless params[:information][:tenants].blank?
+    } unless params["information"]["tenants"].blank?
     return params
   end
 
