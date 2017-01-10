@@ -296,12 +296,12 @@ class PapersController < ApplicationController
             pap_uid: @paper._id.to_s)
           new_task.save!
           
-          Thread.new do
+          #Thread.new do
             ImportScoreJob.perform_later({
               :task_uid => new_task.uid,
               :pap_uid => params[:pap_uid]
             }) 
-          end
+          #end
           status = 200
           result[:status] = status
           result[:task_uid] = new_task.uid
