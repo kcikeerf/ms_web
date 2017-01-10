@@ -235,7 +235,7 @@ class Mongodb::BankPaperPap
       # self.bank_tests = [pap_test]
       # save!
     else
-      self.bank_tests[0].bank_test_tenant_links.destroy_all
+      self.bank_tests[0].bank_test_tenant_links.destroy_all unless params[:information][:tenants].blank?
     end
 
     params[:information][:tenants].each{|t|
@@ -262,7 +262,7 @@ class Mongodb::BankPaperPap
     params = update_test_tenants_status(params,
       Common::Test::Status::NotStarted,
       self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
-    )
+    ) unless params[:information][:tenants].blank?
 
     ##############################
     #Task List创建： 上传成绩， 生成报告
@@ -451,7 +451,7 @@ class Mongodb::BankPaperPap
       paper_h,
       Common::Test::Status::Analyzed,
       self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
-    )
+    ) unless params[:information][:tenants].blank?
 
     paper_h["information"]["paper_status"] = status
     self.update_attributes({
