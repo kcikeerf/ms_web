@@ -347,7 +347,7 @@ namespace :swtk do
 
     ckp_model = BankCheckpointCkp.judge_ckp_source({:pap_uid => args[:pap_uid]})
     target_subject = target_pap.subject
-    target_category =  BankNodestructure.get_subject_category(target_pap.grade)
+    target_category =  Common::Grade.judge_xue_duan(target_pap.grade)
 
     ckp_objs = ckp_model.where(subject: target_subject, category: target_category)
     if target_pap
@@ -645,7 +645,7 @@ namespace :swtk do
             ckp = BankSubjectCheckpointCkp.where({
                :dimesion => dimesion,
                :subject => target_pap.subject,
-               :category => BankNodestructure.get_subject_category(target_pap.grade),
+               :category => Common::Grade.judge_xue_duan(target_pap.grade),
                :is_entity => true}).sample
             ckp_qzp = Mongodb::BankCkpQzp.new
             ckp_qzp.save_ckp_qzp  qzp["id"], ckp.uid.to_s, "BankSubjectCheckpointCkp"
