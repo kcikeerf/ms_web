@@ -451,7 +451,7 @@ class Mongodb::BankPaperPap
       paper_h,
       Common::Test::Status::Analyzed,
       self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
-    ) unless params[:information][:tenants].blank?
+    ) unless paper_h["information"]["tenants"].blank?
 
     paper_h["information"]["paper_status"] = status
     self.update_attributes({
