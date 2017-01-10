@@ -1,4 +1,4 @@
-<% if true || current_user.is_project_administrator?%>
+<% if current_user.is_project_administrator?%>
   <% target_tenants = current_user.role_obj.tenants %>
 <% else %>
   <% target_tenants = [current_user.role_obj.tenant].compact %>
