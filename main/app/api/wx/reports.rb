@@ -33,7 +33,7 @@ module Reports
             next unless target_pap
             if target_pap.bank_tests.blank?
               target_report = Mongodb::PupilReport.where(pup_uid: target_pap.id.to_s).first
-              rpt_h = JSON.parse(item.report_json)
+              rpt_h = JSON.parse(target_report.report_json)
               {
                 :paper_heading => target_pap.heading,
                 :subject => rpt_h["basic"]["subject"],
