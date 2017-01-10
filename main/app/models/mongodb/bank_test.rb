@@ -78,16 +78,18 @@ class Mongodb::BankTest
       # 试卷的json中，插入测试tenant信息，未来考虑丢掉
       target_pap = self.bank_paper_pap
       paper_h = JSON.parse(target_pap.paper_json)
-      paper_h["information"]["tenants"].each_with_index{|item, index|
-        if tenant_uids.include?(item["tenant_uid"])
-          paper_h["information"]["tenants"][index]["tenant_status"] = status_str
-          paper_h["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
-        end
-      }
-      target_pap.update(:paper_json => paper_h.to_json)
+      unless paper_h["information"]["tenants"].blank?
+        paper_h["information"]["tenants"].each_with_index{|item, index|
+          if tenant_uids.include?(item["tenant_uid"])
+            paper_h["information"]["tenants"][index]["tenant_status"] = status_str
+            paper_h["information"]["tenants"][index]["tenant_status_label"] = Common::Locale::i18n("tests.status.#{status_str}")
+          end
+        }
+        target_pap.update(:paper_json => paper_h.to_json)
+      end 
     rescue Exception => ex
-      p ex.message
-      p ex.backtrace
+      logger.debug ex.message
+      logger.debug ex.backtrace
     end
   end
 end
