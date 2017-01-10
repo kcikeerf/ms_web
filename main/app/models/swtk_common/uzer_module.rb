@@ -8,7 +8,7 @@ module UzerModule
 
     def get_tenant user_id 
       tenant = nil
-      current_user = get_user
+      current_user = get_user user_id
       if current_user.is_project_administrator?
         tenant = nil
       elsif current_user.is_pupil?
