@@ -291,22 +291,23 @@ class Mongodb::BankPaperPap
 
     ##############################
     #Task List创建： 上传成绩， 生成报告
-    params["information"]["tasks"] = {}
-    bank_tests[0].bank_test_task_links.destroy_all
-    [Common::Task::Type::ImportResult, Common::Task::Type::CreateReport].each{|tk|
-      tkl = TaskList.new({
-        :name => id.to_s + "_" + Common::Locale::i18n("tasks.type." + tk),
-        :task_type => tk,
-        #:pap_uid => id.to_s,
-        :status => Common::Task::Status::InActive
-      })
-      tkl.save!
-      tkl_link = Mongodb::BankTestTaskLink.new(:task_uid => tkl.uid)
-      tkl_link.save!
-      params["information"]["tasks"][tk] = tkl.uid
-      bank_tests[0].bank_test_task_links.push(tkl_link)
-    }
-
+    params["information"]["tasks"] = params["information"]["tasks"] || {}
+    if params["information"]["tasks"].blank?
+      self.bank_tests[0].bank_test_task_links.destroy_all
+      [Common::Task::Type::ImportResult, Common::Task::Type::CreateReport].each{|tk|
+        tkl = TaskList.new({
+          :name => id.to_s + "_" + Common::Locale::i18n("tasks.type." + tk),
+          :task_type => tk,
+          #:pap_uid => id.to_s,
+          :status => Common::Task::Status::InActive
+        })
+        tkl.save!
+        tkl_link = Mongodb::BankTestTaskLink.new(:task_uid => tkl.uid)
+        tkl_link.save!
+        params["information"]["tasks"][tk] = tkl.uid
+        bank_tests[0].bank_test_task_links.push(tkl_link)
+      }
+    end
 
     #试卷保存
     self.update_attributes({
