@@ -48,15 +48,27 @@ module ApplicationHelper
 
   #地区列表
   def area_list
-  country_rid = Common::Area::CountryRids["zhong_guo"]
-  country = Area.where("rid = '#{country_rid}'").first
-  province_list = country.children_h.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-  city_list = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-  district_list = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
-  return {
-    :province => province_list,
-    :city => city_list,
-    :district => district_list
-  }
+    country_rid = Common::Area::CountryRids["zhong_guo"]
+    country = Area.where("rid = '#{country_rid}'").first
+    province_list = country.children_h.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
+    city_list = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
+    district_list = Area.default_option.map{|a| OpenStruct.new({:rid=>a[:rid], :name_cn=>a[:name_cn]})}
+    return {
+      :province => province_list,
+      :city => city_list,
+      :district => district_list
+    }
+  end
+
+  def cdn_path version
+    result = "http://#{Common::SwtkConstants::CDNDomain}/assets/"
+    case version
+    when "1.0"
+      result += Common::SwtkConstants::CDNVersion1_0
+    when "1.1"
+      result += Common::SwtkConstants::CDNVersion1_1
+    end
+    result += "/"
+    return result
   end
 end
