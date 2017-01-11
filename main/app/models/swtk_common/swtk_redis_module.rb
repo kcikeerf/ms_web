@@ -3,7 +3,7 @@ module SwtkRedisModule
     module_function
 
     module Config
-      ExpireTime = "3600" # 1 hours
+      ExpireTime = "21600" # 6 hours
     end
 
     module Prefix
