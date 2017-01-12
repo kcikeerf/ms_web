@@ -126,7 +126,7 @@ module ReportsWarehouse
             # if group_ids.compact.include?(group_id)
             unless kaku_group_check_flags.uniq.include?(false)
               content_type "application/octet-stream"
-              header['Content-Disposition'] = "attachment; filename=\"#{File.basename(target_file_path)}\""
+              header 'Content-Disposition', "attachment; filename=\"#{File.basename(target_file_path)}\""
               env['api.format'] = :binary
               data = File.open(target_file_path, 'rb').read
               #data.force_encoding(Encoding::UTF_8)
