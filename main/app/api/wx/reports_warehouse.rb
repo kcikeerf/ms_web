@@ -12,7 +12,7 @@ module ReportsWarehouse
     resource :reports_warehouse do
       before do
         set_api_header
-        #authenticate!
+        authenticate!
       end
 
       #
@@ -125,12 +125,8 @@ module ReportsWarehouse
             # group_id = path_arr[group_index_in_path + 1]
             # if group_ids.compact.include?(group_id)
             unless kaku_group_check_flags.uniq.include?(false)
-              content_type "application/octet-stream"
-              header 'Content-Disposition', "attachment; filename=\"#{File.basename(target_file_path)}\""
-              env['api.format'] = :binary
-              File.open(target_file_path, 'rb').read
-              #present data
-              #data.force_encoding(Encoding::UTF_8)
+              data = File.open(target_file_path, 'rb').read
+              data.force_encoding(Encoding::UTF_8)
             else
               status 401
               { message: "Access not allowed!" }
