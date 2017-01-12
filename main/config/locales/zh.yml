@@ -548,7 +548,7 @@ zh:
       upload_score: '上传成绩表'
       score: '成绩表'
       tenant_range: "Tenant范围"
-      test_range: "测试范围"
+      test_range: "参评范围"
     pupil:
       basic_info: '个人信息'
 
