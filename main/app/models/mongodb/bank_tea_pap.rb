@@ -8,6 +8,9 @@ class Mongodb::BankTeaPap
   field :tea_uid, type: String
   field :pap_uid, type: String
 
+  index({tea_uid: 1}, {background: true})
+  index({pap_uid: 1}, {background: true})
+
   def save_tea_pap tea_uid=nil, pap_uid=nil
       self.tea_uid = tea_uid.nil?? nil:tea_uid
       self.pap_uid = pap_uid.nil?? nil:pap_uid

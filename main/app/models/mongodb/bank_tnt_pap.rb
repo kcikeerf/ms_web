@@ -11,4 +11,7 @@ class Mongodb::BankTntPap
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
+
+  index({tnt_uid: 1}, {background: true})
+  index({pap_uid: 1}, {background: true})
 end
