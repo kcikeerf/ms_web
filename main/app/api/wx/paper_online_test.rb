@@ -49,7 +49,7 @@ module PaperOnlineTest
             #online_test_id: xxxx, #未来实现
             pap_uid: target_pap.id.to_s,
             paper_json: paper_h.to_json, 
-            message: Common::Locale::i18n("wx_commons.messages.info.get_success")
+            message: Common::Locale::i18n("wx_papers.messages.info.get_success")
           }
         else
           status 404

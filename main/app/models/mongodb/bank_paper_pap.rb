@@ -251,7 +251,7 @@ class Mongodb::BankPaperPap
     #创建测试
     if self.bank_tests.blank?
       pap_test = Mongodb::BankTest.new({
-        :name => self._id.to_s + "_" +Common::Locale.i18n("activerecord.models.bank_test"),
+        :name => self._id.to_s + "_" +Common::Locale::i18n("activerecord.models.bank_test"),
         :user_id => current_user_id,
         :quiz_date => Time.now,
         :bank_paper_pap_id => self.id.to_s

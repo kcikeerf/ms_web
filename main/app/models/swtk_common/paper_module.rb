@@ -1,31 +1,49 @@
+# -*- coding: UTF-8 -*-
+
 module PaperModule
   module Paper
     module_function
 
     QuizType = {
+      #语文
+      :yu_wen => {},
       #数学
-      :shu_xue =>{
-        :dan_xiang_xuan_ze_ti => "单项选择题",
-        :tian_kong_ti => "填空题",
-        :pan_duan_ti => "判断题",
-        :ji_suan_ti => "计算题",
-        :cao_zuo_ti => "操作题",
-        :ying_yong_ti => "应用题",
-        :jie_da_ti => "解答题",
-        :tan_suo_gui_lv_ti => "探索规律题",
-        :tan_jiu_ti => "探究题"
-      },
+      :shu_xue => {},
       #英语
-      :ying_yu => {
-        :ting_li_li_jie => "听力理解",
-        :dan_xiang_xuan_ze => "单项选择",
-        :wan_xing_tian_kong => "完形填空",
-        :yue_du_li_jie => "阅读理解",
-        :ci_yu_yun_yong => "词语运用",
-        :bu_quan_dui_hua => "补全对话",
-        :shu_mian_biao_da => "书面表达"
-      }
+      :ying_yu => {}
     }
+
+    #语文题型
+    %W{
+      dan_xiang_xuan_ze_ti
+      tian_kong_ti
+      yue_du_li_jie
+      xie_zuo
+    }.each{|item| QuizType[:yu_wen][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
+
+    #数学题型
+    %W{
+      dan_xiang_xuan_ze_ti
+      tian_kong_ti
+      pan_duan_ti
+      ji_suan_ti
+      cao_zuo_ti
+      ying_yong_ti
+      jie_da_ti
+      tan_suo_gui_lv_ti
+      tan_jiu_ti
+    }.each{|item| QuizType[:shu_xue][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
+
+    #英语题型
+    %W{
+      ting_li_li_jie
+      dan_xiang_xuan_ze
+      wan_xing_tian_kong
+      yue_du_li_jie
+      ci_yu_yun_yong
+      bu_quan_dui_hua
+      shu_mian_biao_da
+    }.each{|item| QuizType[:ying_yu][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
 
     Difficulty = {
       #难度

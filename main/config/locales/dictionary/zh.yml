@@ -95,6 +95,11 @@ zh:
     er_shi_ba_ban: "二十八班"
     er_shi_jiu_ban: "二十九班"
     san_shi_ban: "三十班"
+    #题型语文
+    dan_xiang_xuan_ze_ti: "单项选择题"
+    tian_kong_ti: "填空题"
+    yue_du_li_jie: "阅读理解"
+    xie_zuo: "写作"
     #题型数学
     dan_xiang_xuan_ze_ti: "单项选择题"
     tian_kong_ti: "填空题"
