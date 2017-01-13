@@ -10,6 +10,7 @@ module Common
   include KlassModule
   include NodeVersionModule
   include PaperModule
+  include PageModule
   include ReportModule
   include ReportPlusModule
   include RoleModule
@@ -136,10 +137,6 @@ module Common
     else
       return result
     end
-  end
-
-  module Page
-    PerPage = 10
   end
 
   module Image

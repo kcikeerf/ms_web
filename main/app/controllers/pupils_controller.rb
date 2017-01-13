@@ -9,6 +9,6 @@ class PupilsController < ApplicationController
     @papers = current_user.pupil.papers
     	.page(params[:page])
     	.per(Common::Page::PerPage)
-    	.only([:_id, :heading, :subheading, :dt_update])
+    	.only(Common::Page::PaperListLeastAttributes)
   end
 end

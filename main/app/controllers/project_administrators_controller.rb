@@ -29,7 +29,7 @@ class ProjectAdministratorsController < ApplicationController
       .by_district(district)
       .page(params[:page])
       .per(10)
-      .only([:_id, :heading, :subheading, :dt_update])
+      .only(Common::Page::PaperListLeastAttributes)
   end
 
   private
