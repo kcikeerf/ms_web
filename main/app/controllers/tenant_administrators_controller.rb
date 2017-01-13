@@ -40,6 +40,7 @@ class TenantAdministratorsController < ApplicationController
       .by_keyword(params[:keyword])
       .page(params[:page])
       .per(Common::SwtkConstants::DefaultRows)
+      .only([:_id, :heading, :subheading, :dt_update])
   end
 
   private

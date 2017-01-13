@@ -23,6 +23,7 @@ class TeachersController < ApplicationController
       .by_keyword(params[:keyword])
       .page(params[:page])
       .per(Common::Page::PerPage)
+      .only([:_id, :heading, :subheading, :dt_update])
   end
 
   def test_report
