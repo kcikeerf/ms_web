@@ -15,9 +15,11 @@ module PaperModule
 
     #语文题型
     %W{
-      dan_xiang_xuan_ze_ti
+      xuan_ze_ti
       tian_kong_ti
-      yue_du_li_jie
+      lian_xian_ti
+      jian_da_ti
+      lun_shu_ti
       xie_zuo
     }.each{|item| QuizType[:yu_wen][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
 
