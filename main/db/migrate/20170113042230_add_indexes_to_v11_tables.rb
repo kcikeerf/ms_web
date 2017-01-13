@@ -1,6 +1,5 @@
 class AddIndexesToV11Tables < ActiveRecord::Migration
   def change
-  	add_index :users, :part_number
   	add_index :pupils, :user_id
   	add_index :pupils, :loc_uid
   	add_index :pupils, :stu_number
