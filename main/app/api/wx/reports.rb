@@ -21,10 +21,11 @@ module Reports
         use :authenticate
       end
       post :list do
-        if current_user.is_pupil? || current_user.is_teacher? || current_user.is_analyzer? || current_user.is_project_administrator?
-          target_papers = current_user.role_obj.papers
-        elsif current_user.is_tenant_administrator?
-          target_papers = current_user.tenant.papers
+        target_user = current_user
+        if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? || target_user.is_project_administrator?
+          target_papers = target_user.role_obj.papers
+        elsif target_user.is_tenant_administrator?
+          target_papers = target_user.tenant.papers
         else
           target_papers = nil
         end
@@ -56,7 +57,7 @@ module Reports
                 :score => target_pap.score,
                 :report_version => "00016110",
                 :test_id => target_pap.bank_tests[0].id.to_s,
-                :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, current_user)
+                :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, target_user)
               }
             end
           }
