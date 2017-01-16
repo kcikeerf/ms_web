@@ -4,7 +4,7 @@ module ScoreModule
 
     module Thread
       NumPerTh = 50
-      ThNum = 4
+      ThNum = 1#4
       ThNumMax =20 
     end
 
