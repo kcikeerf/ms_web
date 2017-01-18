@@ -59,6 +59,7 @@ class Mongodb::BankQizpointQzp
       end
 
       ckp_ancestors = BankRid.get_all_higher_nodes(ckp.families,ckp)
+      ckp_ancestors.sort!{|a,b| Common::CheckpointCkp.compare_rid_plus(a.rid, b.rid) }
       ckps_arr = ckp_ancestors.push(ckp)
 
       ckp_uid_path = "/#{ckps_arr.map(&:uid).join('/')}"
