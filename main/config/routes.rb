@@ -427,6 +427,10 @@ Rails.application.routes.draw do
     mount Monitoring::API => "/"
     mount Tenants::API => "/"
   end
+
+  constraints do
+    mount Authorize::APIV11 => "/"
+  end
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all
