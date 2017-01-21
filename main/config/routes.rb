@@ -429,7 +429,7 @@ Rails.application.routes.draw do
   end
 
   constraints do
-    mount Authorize::APIV11 => "/"
+    mount Authentication::APIV11 => "/"
   end
   #######################################
 

@@ -315,5 +315,9 @@ class User < ActiveRecord::Base
         raise SwtkErrors::UserExistedError.new(I18.t("activerecord.errors.messages.exited_user"))
       end
     end
+
+    def update_token
+
+    end
   ########私有方法: end#######
 end
