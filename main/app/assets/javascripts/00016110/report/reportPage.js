@@ -766,7 +766,7 @@ var reportPage = {
 		createReport : function(){
 			//面包屑　
 			reportPage.baseFn.construct_bread_crumbs("grade", "project", reportPage.CurrentProjectUrl);
-			if(!reportPage.KlassData.basic){
+			if(!reportPage.ProjectData.basic){
 				$('#reportContent').html(reportPage.ProjectData.message);
 				return false;
 			}
@@ -1264,7 +1264,7 @@ var reportPage = {
 		createReport : function(){
 			//面包屑　
 			reportPage.baseFn.construct_bread_crumbs("klass", "grade", reportPage.CurrentGradeUrl);
-			if(!reportPage.KlassData.basic){
+			if(!reportPage.GradeData.basic){
 				$('#reportContent').html(reportPage.GradeData.message);
 				return false;
 			}
