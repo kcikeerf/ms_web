@@ -23,11 +23,10 @@ class TeachersController < ApplicationController
       .by_keyword(params[:keyword])
       .page(params[:page])
       .per(Common::Page::PerPage)
-      .only(Common::Page::PaperListLeastAttributes)
   end
 
   def test_report
-    @papers = current_user.teacher.papers.page(params[:page]).per(Common::Page::PerPage)
+    @papers = current_user.teacher.papers.page(params[:page]).per(Common::Page::PerPage).only(Common::Page::PaperListLeastAttributes)
 
   end
 
