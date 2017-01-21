@@ -129,7 +129,8 @@ var reportPage = {
 					callback(args);
 				},
 				error: function(data){
-					$('#reportContent').html(data.responseJSON.message);
+					console.log("error!")
+					//$('#reportContent').html(data.responseJSON.message);
 					//$('#reportContent')[0].style = "position:relative;display: flex;"
 					//$('#reportContent')[0].style = "display: block;"
 				}
@@ -765,19 +766,18 @@ var reportPage = {
 		createReport : function(){
 			//面包屑　
 			reportPage.baseFn.construct_bread_crumbs("grade", "project", reportPage.CurrentProjectUrl);
+			if(!reportPage.ProjectData.basic){
+				$('#reportContent').html(reportPage.ProjectData.message);
+				return false;
+			}
 			//基本信息
 			var gradeNavStr =
-				'<b>学校数量</b>：<span>' +
-				reportPage.CurrentBreadCrumbChildren.length +
-				'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>' +
-				reportPage.ProjectData.data.knowledge.base.pupil_number +
-				'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' +
-				reportPage.ProjectData.basic.term +
-				'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' +
-				reportPage.ProjectData.basic.quiz_type +
-				'&nbsp;|</span>&nbsp;&nbsp;' +
-				'<b>测试日期</b>：<span>' +
-				reportPage.ProjectData.basic.quiz_date +
+				'<b>学校数量</b>：<span>' + reportPage.CurrentBreadCrumbChildren.length +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>' + reportPage.ProjectData.data.knowledge.base.pupil_number +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' + reportPage.ProjectData.basic.term +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' + reportPage.ProjectData.basic.quiz_type +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>' + reportPage.ProjectData.basic.quiz_date +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学科</b>：<span>' + reportPage.ProjectData.basic.subject +
 				'</span>';
 			$('.zy-report-type').html('项目报告');
 			$('#grade-top-nav').html(gradeNavStr);
@@ -1264,19 +1264,18 @@ var reportPage = {
 		createReport : function(){
 			//面包屑　
 			reportPage.baseFn.construct_bread_crumbs("klass", "grade", reportPage.CurrentGradeUrl);
+			if(!reportPage.GradeData.basic){
+				$('#reportContent').html(reportPage.GradeData.message);
+				return false;
+			}
 			//基本信息
 			var gradeNavStr =
-				'<b>班级数量</b>：<span>' +
-				reportPage.CurrentBreadCrumbChildren.length +
-				'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>' +
-				reportPage.GradeData.data.knowledge.base.pupil_number +
-				'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' +
-				reportPage.GradeData.basic.term +
-				'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' +
-				reportPage.GradeData.basic.quiz_type +
-				'&nbsp;|</span>&nbsp;&nbsp;' +
-				'<b>测试日期</b>：<span>' +
-				reportPage.GradeData.basic.quiz_date +
+				'<b>班级数量</b>：<span>' + reportPage.CurrentBreadCrumbChildren.length +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学生数量</b>：<span>' + reportPage.GradeData.data.knowledge.base.pupil_number +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' + reportPage.GradeData.basic.term +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' + reportPage.GradeData.basic.quiz_type +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>' + reportPage.GradeData.basic.quiz_date +
+				'&nbsp;|</span>&nbsp;&nbsp;<b>学科</b>：<span>' + reportPage.GradeData.basic.subject +
 				'</span>';
 			$('.zy-report-type').html('年级报告');
 			$('#grade-top-nav').html(gradeNavStr);
@@ -1763,13 +1762,18 @@ var reportPage = {
 		createReport : function(){
 			//面包屑　
 			reportPage.baseFn.construct_bread_crumbs("pupil", "klass", reportPage.CurrentKlassUrl);
+			if(!reportPage.KlassData.basic){
+				$('#reportContent').html(reportPage.KlassData.message);
+				return false;
+			}
 			//基本信息
 			var classNavStr =
 				'<b>班级人数</b>：<span>' + reportPage.KlassData.data.knowledge.base.pupil_number
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' + reportPage.KlassData.basic.term
 			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' + reportPage.KlassData.basic.quiz_type
-			    +'&nbsp;|</span>&nbsp;&nbsp;' +'<b>测试日期</b>：<span>' + reportPage.KlassData.basic.quiz_date
-			    +'</span>';
+			    +'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>' + reportPage.KlassData.basic.quiz_date
+				+'&nbsp;|</span>&nbsp;&nbsp;<b>学科</b>：<span>' + reportPage.KlassData.basic.subject
+				+ '</span>';
 			$('#class-top-nav').html(classNavStr);
 			$('.zy-report-type').html('班级报告');
 			
@@ -2134,6 +2138,10 @@ var reportPage = {
 		createReport : function(){
 			//面包屑　
 			reportPage.baseFn.construct_bread_crumbs(null, "pupil", reportPage.CurrentPupilUrl);
+			if(!reportPage.PupilData.basic){
+				$('#reportContent').html(reportPage.PupilData.message);
+				return false;
+			}
 			//基本信息
 			var pupilNavStr =
 			'<b>分数</b>：<span>' + reportPage.baseFn.formatValueAccordingPaper(reportPage.PupilData.data.knowledge.base.weights_score_average_percent) +
@@ -2145,7 +2153,9 @@ var reportPage = {
 			'<b>性别</b>：<span>' + reportPage.PupilData.basic.sex +
 			'&nbsp;|</span>&nbsp;&nbsp;<b>学期</b>：<span>' + reportPage.PupilData.basic.term + 
 			'&nbsp;|</span>&nbsp;&nbsp;<b>测试类型</b>：<span>' + reportPage.PupilData.basic.quiz_type +
-			'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>' + reportPage.PupilData.basic.quiz_date;
+			'&nbsp;|</span>&nbsp;&nbsp;<b>测试日期</b>：<span>' + reportPage.PupilData.basic.quiz_date +
+			'&nbsp;|</span>&nbsp;&nbsp;<b>学科</b>：<span>' + reportPage.PupilData.basic.subject +
+			'</span>';
 
 			$('.zy-report-type').html('学生报告');
 			$('#pupil-top-nav').html(pupilNavStr);
