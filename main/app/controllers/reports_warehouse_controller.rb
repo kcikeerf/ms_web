@@ -2,7 +2,7 @@ class ReportsWarehouseController < ApplicationController
   layout false
 
   def get_report_file
-    target_file_path = "." + request.fullpath.to_s
+    target_file_path = request.fullpath.to_s
     if !params[:any_path].blank? && File.exist?(target_file_path)
       path_arr = params[:any_path].split("/")
       current_group = nil
