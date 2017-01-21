@@ -2,7 +2,7 @@ class ReportsWarehouseController < ApplicationController
   layout false
 
   def get_report_file
-    target_file_path = request.fullpath.to_s
+    target_file_path = "." + request.fullpath.to_s
     if !params[:any_path].blank? && File.exist?(target_file_path)
       path_arr = params[:any_path].split("/")
       current_group = nil
@@ -114,7 +114,7 @@ class ReportsWarehouseController < ApplicationController
           response.headers['Content-Type'] = "application/json"
           send_file target_file_path
         else
-          render status: 401, :json => { message: "Access not allowed!" }.to_json
+          render status: 200, :json => { status: 401, message: "Access not allowed!" }.to_json
         end
       # elsif ((path_arr&["nav", "ckps_qzps_mapping", "qzps_ckps_mapping", "paper_info"]).size > 0)
       #   data = File.open(target_file_path, 'rb').read
