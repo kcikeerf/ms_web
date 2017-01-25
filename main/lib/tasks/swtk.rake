@@ -987,7 +987,7 @@ namespace :swtk do
         test_id = target_test.id.to_s
         if ["report_completed"].include?(target_pap.paper_status)
 
-          ReportWarehousePath = args[:base_path] + "/reports_warehouse/tests/#{test_id}"
+          ReportWarehousePath = args[:base_path].to_s + "/reports_warehouse/tests/#{test_id}"
 
           #写入excel
           out_excel = Axlsx::Package.new
@@ -1118,7 +1118,7 @@ namespace :swtk do
             #数据行
 
 
-            urls = find_all_pupil_report_urls args[:base_path],ReportWarehousePath,[]
+            urls = find_all_pupil_report_urls args[:base_path].to_s,ReportWarehousePath,[]
             urls.each{|item|
               rpt_path = args[:base_path] + item
               fdata = File.open(rpt_path, 'rb').read
