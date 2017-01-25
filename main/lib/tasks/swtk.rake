@@ -978,13 +978,16 @@ namespace :swtk do
     end
 
     desc "export v1.1 pupil report data"
-    task :export_pupil_report_data,[:base_path,:test_id,:top_group,:out]=> :environment do |t, args|
-      target_test = Mongodb::BankTest.where(_id: args[:test_id]).first
-      target_pap = target_test ? target_test.bank_paper_pap : nil
+    task :export_pupil_report_data,[:base_path,:pap_id,:top_group,:out]=> :environment do |t, args|
+      # target_test = Mongodb::BankTest.where(_id: args[:test_id]).first
+      # target_pap = target_test ? target_test.bank_paper_pap : nil
+      target_pap = Mongodb::BankPaperPap.where(_id: args[:pap_id]).first
       if target_pap
+        target_test = target_pap.bank_tests[0]
+        test_id = target_test.id.to_s
         if ["report_completed"].include?(target_pap.paper_status)
 
-          ReportWarehousePath = args[:base_path] + "/reports_warehouse/tests/#{args[:test_id]}"
+          ReportWarehousePath = args[:base_path] + "/reports_warehouse/tests/#{test_id}"
 
           #写入excel
           out_excel = Axlsx::Package.new
@@ -1019,7 +1022,8 @@ namespace :swtk do
             ]
 
             #标题行
-            title_row1_info = title_row2_info.size.times.map{|t| ""}
+            title_row1_info = [target_pap.heading]
+            title_row1_info += (title_row2_info.size-1).times.map{|t| ""}
             style_row1_info = title_row2_info.size.times.map{|t| cell_style[:label] }
 
             #标题1行
