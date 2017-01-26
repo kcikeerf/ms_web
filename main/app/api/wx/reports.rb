@@ -33,21 +33,25 @@ module Reports
           target_papers.map{|target_pap|
             next unless target_pap
             if target_pap.bank_tests.blank?
-              target_report = Mongodb::PupilReport.where(pup_uid: target_pap.id.to_s).first
-              rpt_h = JSON.parse(target_report.report_json)
-              {
-                :paper_heading => target_pap.heading,
-                :subject => rpt_h["basic"]["subject"],
-                :quiz_type => rpt_h["basic"]["quiz_type"],
-                :quiz_date => rpt_h["basic"]["quiz_date"],
-                :score => rpt_h["basic"]["score"],
-                :value_ratio => rpt_h["basic"]["value_ratio"],
-                :class_rank => rpt_h["basic"]["class_rank"],
-                :grade_rank => rpt_h["basic"]["grade_rank"],
-                :report_version => "000016090",
-                :report_id => target_report._id.to_s,
-                :dt_update => target_report.dt_update.strftime("%Y-%m-%d %H:%M")
-              }
+              if target_user.is_pupil? 
+                target_report = Mongodb::PupilReport.where(pup_uid: target_user.role_obj.uid).first
+                rpt_h = JSON.parse(target_report.report_json)
+                {
+                  :paper_heading => target_pap.heading,
+                  :subject => rpt_h["basic"]["subject"],
+                  :quiz_type => rpt_h["basic"]["quiz_type"],
+                  :quiz_date => rpt_h["basic"]["quiz_date"],
+                  :score => rpt_h["basic"]["score"],
+                  :value_ratio => rpt_h["basic"]["value_ratio"],
+                  :class_rank => rpt_h["basic"]["class_rank"],
+                  :grade_rank => rpt_h["basic"]["grade_rank"],
+                  :report_version => "000016090",
+                  :report_id => target_report._id.to_s,
+                  :dt_update => target_report.dt_update.strftime("%Y-%m-%d %H:%M")
+                }
+              else
+                {}
+              end
             else
               {
                 :paper_heading => target_pap.heading,
