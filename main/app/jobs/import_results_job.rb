@@ -107,21 +107,22 @@ class ImportResultsJob < ActiveJob::Base
           job_tracker.update(process: 2/phase_total.to_f)
 
           # read title
-          loc_row = result_sheet.row(1)
+          # loc_row = result_sheet.row(1)
           hidden_row = result_sheet.row(2)
           order_row = result_sheet.row(3)
           title_row = result_sheet.row(4)
-          target_area = Area.get_area_by_name({
-            :province => Common::Locale.hanzi2pinyin(loc_row[1]),
-            :city => Common::Locale.hanzi2pinyin(loc_row[3]),
-            :district => Common::Locale.hanzi2pinyin(loc_row[5])
-          })
-          loc_h = {
+          # target_area = Area.get_area_by_name({
+          #   :province => Common::Locale.hanzi2pinyin(loc_row[1]),
+          #   :city => Common::Locale.hanzi2pinyin(loc_row[3]),
+          #   :district => Common::Locale.hanzi2pinyin(loc_row[5])
+          # })
+          loc_h = { :tenant_uid => target_tenant.uid }
+          target_area = target_tenant.area
+          loc_h.merge!({
             :area_uid => target_area.uid,
-            :area_rid => target_area.rid,
-            :tenant_uid => target_tenant.uid
-          }
-
+            :area_rid => target_area.rid
+          }) if target_area
+            
           ###
           logger.info ">>> 确定读取范围 <<<"
           job_tracker.update(process: 3/phase_total.to_f)

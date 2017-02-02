@@ -240,12 +240,10 @@ class PapersController < ApplicationController
     #文件对象
     file = nil
     if %w{filled_file usr_pwd_file empty_file}.include?(type)
-      if current_user.is_project_administrator? #项目管理员
+      if @paper.score_file_id
+        file = ScoreUpload.find(@paper.score_file_id) 
+      else
         file = @paper.bank_tests[0].score_uploads.by_tenant_uid(params[:tenant_uid]).first
-        p ">>>>"
-        p file
-      else #其他
-        file = ScoreUpload.find(@paper.score_file_id)
       end
     elsif %w{paper answer revise_paper revise_answer empty_result}.include?(type)
       file = FileUpload.find(@paper.orig_file_id)
