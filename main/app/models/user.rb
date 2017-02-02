@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
 
-  before_create :set_role#, :check_existed?
+  before_create :set_role, :set_authentication_token
 
   validates :role_name, presence: true, on: :create
   validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,20}\z/ }
@@ -115,6 +115,17 @@ class User < ActiveRecord::Base
   end
   ########类方法定义：end#######
 
+  # 生成 是否为角色方法、角色方法
+  Common::Role::NAME_ARR.each do |name|
+    define_method("is_#{name}?") do 
+      role?(name)
+    end
+
+    define_method(name) do
+     role?(name) ? name.camelcase.constantize.find_by(user_id: id) : nil
+    end
+  end
+
   def save_user(role_name, params)
     #transaction do 
       paramsh = {
@@ -197,41 +208,6 @@ class User < ActiveRecord::Base
 
   end
 
-  # 生成 是否为角色方法、角色方法
-  Common::Role::NAME_ARR.each do |name|
-    define_method("is_#{name}?") do 
-      role?(name)
-    end
-
-    define_method(name) do
-     role?(name) ? name.camelcase.constantize.find_by(user_id: id) : nil
-    end
-  end
-
-  # def is_pupil?
-  #   role?(Common::Role::Pupil)
-  # end
-
-  # def is_teacher?
-  #   role?(Common::Role::Teacher)
-  # end
-
-  # def is_analyzer?
-  #   role?(Common::Role::Analyzer)
-  # end
-
-  # def pupil
-  #   is_pupil? ? Pupil.where("user_id = ?", self.id).first : nil
-  # end
-
-  # def teacher
-  #   is_teacher? ? Teacher.where("user_id = ?", self.id).first : nil
-  # end
-
-  # def analyzer
-  #   is_analyzer? ? Analyzer.where("user_id = ?", self.id).first : nil
-  # end
-
   def role_obj
     return analyzer if is_analyzer?
     return teacher if is_teacher?
@@ -309,15 +285,15 @@ class User < ActiveRecord::Base
       self.role_id = Role.get_role_id(role_name)
     end
 
+    def set_authentication_token
+      self.authentication_token = SecureRandom.hex(Common::AuthUserConfig::AuthTokenLength)
+    end
+
     def check_existed?
       if self.class.find_user(email.presence || phone, {})
         self.errors.add(:base, I18.t("activerecord.errors.messages.exited_user"))
         raise SwtkErrors::UserExistedError.new(I18.t("activerecord.errors.messages.exited_user"))
       end
-    end
-
-    def update_token
-
     end
   ########私有方法: end#######
 end

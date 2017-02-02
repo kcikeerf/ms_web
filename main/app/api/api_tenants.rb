@@ -1,34 +1,33 @@
 # -*- coding: UTF-8 -*-
 
-module Tenants
-  class API < Grape::API
+module ApiTenants
+  class APIV11 < Grape::API
     version 'v1.1', using: :path #/api/v1/<resource>/<action>
     format :json
-    prefix "api/wx".to_sym
+    prefix "api/".to_sym
 
-    helpers ApiHelper
-    helpers SharedParamsHelper
+    helpers ApiCommonHelper
+    helpers ApiAuthHelper
 
     resource :tenants do
       
       before do
-        set_api_header
-        authenticate!
+        set_api_header!
+        @current_user = current_user
       end
 
       ###########
       
-      desc '获取当前用户所在租户的年级班级列表 post /api/wx/v1.1/tenants/grade_klass_list' # grade_class_list begin
-      params do
-        use :authenticate
+      desc '获取当前用户所在租户的年级班级列表 post /api/v1.1/tenants/grade_klass_list' # grade_class_list begin
+      params do        
         optional :grade, type: String, allow_blank: true
       end
-      post :grade_klass_list do
+      get :grade_klass_list do
         result = []
   
         # 获取当前用户的租户对象及班级范围
-        target_tenants = current_user.accessable_tenants
-        accessable_loc_uids = current_user.accessable_locations.map(&:uid)
+        target_tenants = @current_user.accessable_tenants
+        accessable_loc_uids = @current_user.accessable_locations.map(&:uid)
 
         # 返回年级班级信息
         target_tenants.map{|tnt|
@@ -47,14 +46,13 @@ module Tenants
 
       desc '获取当前用户的班级的学生列表 post /api/wx/v1.1/tenants/klass_pupil_list' # grade_class_list begin
       params do
-        use :authenticate
         optional :klass_uids, type: Array, allow_blank: false
       end
-      post :klass_pupil_list do
+      get :klass_pupil_list do
         result = []
   
         # 获取当前用户的班级可访问范围
-        accessable_loc_uids = current_user.accessable_locations.map(&:uid)
+        accessable_loc_uids = @current_user.accessable_locations.map(&:uid)
         target_loc_uids = accessable_loc_uids&params[:klass_uids]
 
         target_loc_uids.map{|loc_uid|

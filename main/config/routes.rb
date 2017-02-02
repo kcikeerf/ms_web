@@ -420,16 +420,15 @@ Rails.application.routes.draw do
   #######################################
   ### Swtk API
   constraints do
-    mount Auths::API => "/"
-    mount PaperOnlineTest::API => "/"
-    mount Reports::API => "/"
-    mount ReportsWarehouse::API => "/"
-    mount Monitoring::API => "/"
-    mount Tenants::API => "/"
-  end
+    mount ApiAuth::APIV11 => "/"#, constraints: { host: ["*"] }
+    mount ApiTenants::APIV11 => "/"
+    mount ApiReports::APIV11 => "/"
+    mount ApiReportsWarehouse::APIV11 => "/"
+    mount ApiMonitoring::APIV11 => "/"
 
-  constraints do
-    mount Authentication::APIV11 => "/"
+    # 微信
+    mount ApiWxAuth::APIV11 => "/"
+    mount ApiWxOnlineTest::APIV11 => "/"
   end
   #######################################
 

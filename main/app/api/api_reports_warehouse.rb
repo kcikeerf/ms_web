@@ -1,28 +1,28 @@
 # -*- coding: UTF-8 -*-
 
-module ReportsWarehouse
-  class API < Grape::API
-    version 'v1.1', using: :path #/api/v1/<resource>/<action>
+module ApiReportsWarehouse
+  class APIV11 < Grape::API
+    version 'v1.1', using: :path #/api/v1.1/<resource>/<action>
     format :json
-    prefix "api/wx".to_sym
+    prefix "api/".to_sym
 
-    helpers ApiHelper
-    helpers SharedParamsHelper
+    helpers ApiCommonHelper
+    helpers ApiAuthHelper
 
     resource :reports_warehouse do
       before do
-        set_api_header
-        authenticate!
+        set_api_header!
+        @current_user = current_user
       end
 
       #
       desc ''
       params do
-        use :authenticate
+
       end
-      post '*any_path' do
+      get '*any_path' do
         target_file_path = request.fullpath.to_s.split("/api/wx/v1.1")[1]
-        target_user = current_user
+        target_user = @current_user
         if !params[:any_path].blank? && File.exist?(target_file_path)
           path_arr = params[:any_path].split("/")
           current_group = nil
@@ -128,8 +128,7 @@ module ReportsWarehouse
               data = File.open(target_file_path, 'rb').read
               data.force_encoding(Encoding::UTF_8)
             else
-              #status 401
-              { status: 401, message: "Access not allowed!" }
+              message_json("w21401")
             end
           # elsif ((path_arr&["nav", "ckps_qzps_mapping", "qzps_ckps_mapping", "paper_info"]).size > 0)
           #   data = File.open(target_file_path, 'rb').read
@@ -139,8 +138,8 @@ module ReportsWarehouse
           #   { message: Common::Locale::i18n("swtk_errors.object_not_found", :message => request.fullpath.to_s ) }
           # end
         else
-            status 404
-            { message: Common::Locale::i18n("swtk_errors.object_not_found", :message => request.fullpath.to_s ) }
+          status 404
+          message_json("e40004")
         end
       end
     end

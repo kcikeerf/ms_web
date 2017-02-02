@@ -9,6 +9,7 @@ module Common
   include GradeModule
   include KlassModule
   include NodeVersionModule
+  include AuthConfigModule
   include PaperModule
   include PageModule
   include ReportModule

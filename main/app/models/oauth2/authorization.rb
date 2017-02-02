@@ -1,14 +1,14 @@
 # -*- coding: UTF-8 -*-
 
-class Oauth::Token
+class Oauth2::Authorization
   include Mongoid::Document
   include Mongoid::Timestamps
 
   field :client_id
+  field :user_id, type: String
   field :redirect_uri, type: String
-  field :access_token, type: String
+  field :code, type: String
   field :scope, type: Array, default: []
-  field :refresh_token, type: String
-  field :blocked, type: Boolean, default: true
+  # field :blocked, type: Boolean, default: true
   field :expired_at, type: Time
 end

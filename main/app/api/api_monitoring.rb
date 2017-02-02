@@ -1,35 +1,34 @@
 # -*- coding: UTF-8 -*-
 
-module Monitoring
-  class API < Grape::API
-    version 'v1.1', using: :path #/api/v1/<resource>/<action>
+module ApiMonitoring
+  class APIV11 < Grape::API
+    version 'v1.1', using: :path #/api/v1.1/<resource>/<action>
     format :json
-    prefix "api/wx".to_sym
+    prefix "api/".to_sym
 
-    helpers ApiHelper
-    helpers SharedParamsHelper
+    helpers ApiCommonHelper
+    helpers ApiAuthHelper
 
-    params do
-      use :authenticate
-    end
+    # params do
+    #   use :authenticate
+    # end
     resource :monitorings do #monitorings begin
 
       before do
-        set_api_header
-        authenticate!
+        set_api_header!
+        authenticate_token!
       end
 
       ###########
 
-      desc '获取测试状态 get /api/wx/v1.1/monitorings/check_status'
+      desc '获取测试状态 get /api/v1.1/monitorings/check_status'
       params do
         requires :task_uid, type: String, allow_blank: false
       end
-      post :check_status do
+      get :check_status do
         target_task = TaskList.where(uid: params[:task_uid]).first
         if target_task
           target_jobs = target_task.job_lists.order({dt_update: :desc})
-
           {
             :name => target_task.name,
             :jobs => target_jobs.map{|j|
@@ -42,9 +41,7 @@ module Monitoring
           }
         else
           status 404
-          {
-            :message => "Not Found"
-          }
+          message_json("e40004")
         end
       end
 

@@ -3,7 +3,7 @@ module SwtkConstantsModule
     CkpDepth = 100
     CkpStep = 3
     #UploadPrefix = Rails.root.to_s + "/uploads/"
-    UploadPrefix = "/paper_files_warehouse/"
+    UploadPrefix = Rails.root.to_s + "/paper_files_warehouse/"
     DefaultPage = 1
     DefaultRows = 10
     DefaultSheetPassword = "forbidden_by_k12ke"

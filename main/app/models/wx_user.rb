@@ -15,11 +15,18 @@ class WxUser < ActiveRecord::Base
 
   def binded_users_list
     users.map{|u|
+      target_token = AuthWl::Token.get_token_obj u.id
       {
-        :id => u.id,
+        #:id => u.id,
         :user_name => u.name,
         :name => u.role_obj.nil?? "-":u.role_obj.name,
-        :role => u.role.name
+        :role => u.role.name,
+        :auth => { 
+          token_type: "Bearer",
+          access_token: target_token.access_token,
+          expires_in: target_token.expired_at.strftime("%s").to_i - Time.now.strftime("%s").to_i,
+          refresh_token: target_token.refresh_token
+        }
       }
     }
   end
