@@ -1,0 +1,3 @@
+class Mongodb::ReportPupilGenerator
+
+end
