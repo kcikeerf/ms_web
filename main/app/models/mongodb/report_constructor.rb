@@ -1,0 +1,3 @@
+class Mongodb::ReportConstructor
+
+end
