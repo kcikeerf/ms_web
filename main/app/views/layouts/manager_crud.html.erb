@@ -2,15 +2,15 @@
 	<h2><%= page_info_item[:title] %></h2>
 	<div style="margin:20px 0;"></div>
 	<div id="tb">
-<% unless ["permissions", "pupils"].include? controller_name %>
+<%# unless ["permissions", "pupils"].include? controller_name %>
 		<a  href="#" 
 			class="easyui-linkbutton" 
 			iconCls="icon-add" plain="true" 
 			onclick="newObj('<%= LABEL("common.create")%>','<%= page_info_item[:path] %>/');">
 			<%= LABEL("common.create") %>
 		</a> 
-<% end %>
-<% unless ["roles","permissions"].include? controller_name %>
+<%# end %>
+<%# unless ["roles","permissions"].include? controller_name %>
 		<a  href="#" 
 			class="easyui-linkbutton" 
 			iconCls="icon-edit" 
@@ -29,7 +29,7 @@
 			onclick="destroy('<%= page_info_item[:path] %>/')">
 			<%= LABEL("common.delete")%>
 		</a>
-<% end %>
+<%# end %>
 	</div>  
 	<!-- singleSelect:true, 当行选择-->
 	<table  id='dg' 

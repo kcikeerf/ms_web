@@ -1,0 +1,24 @@
+<th data-options="field:'id',align:'center', width:'10%'">ID</th>
+<th data-options="field:'name',align:'center', width:'10%'">名称</th>
+<th data-options="field:'subject_class',align:'center', width:'10%'">controller</th>
+<th data-options="field:'action',align:'center', width:'10%'">action</th>
+<th data-options="field:'description',align:'center', width:'40%'">描述</th>
+
+<% content_for :form do %>
+	<div class="fname">
+		<label>名称:</label>
+		<%= text_field_tag :name, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fsubject_class">
+		<label>controller:</label>
+		<%= text_field_tag :subject_class, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="faction">
+		<label>action:</label>
+		<%= text_field_tag :action, '', class: 'easyui-validatebox', required: 'true' %>
+	</div>
+	<div class="fdescription">
+		<label>描述:</label>
+		<%= text_field_tag :description, '', class: 'easyui-validatebox' %>
+	</div>
+<% end %>

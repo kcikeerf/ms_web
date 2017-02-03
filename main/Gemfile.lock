@@ -91,7 +91,6 @@ GEM
       thor (~> 0.19)
     bson (4.2.0)
     builder (3.2.2)
-    cancancan (1.15.0)
     carrierwave (0.11.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -366,7 +365,6 @@ DEPENDENCIES
   activeadmin (~> 1.0.0.pre2)
   aliyun-sdk (~> 0.3.0)
   axlsx!
-  cancancan
   carrierwave
   coffee-rails
   devise

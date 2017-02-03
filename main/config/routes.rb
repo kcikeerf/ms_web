@@ -57,7 +57,9 @@ Rails.application.routes.draw do
         end
       end
     end
-    
+ 
+    resources :api_permissions, concerns: :destroy_all
+
     resources :permissions, concerns: :destroy_all
  
     resources :tenants, concerns: :destroy_all do

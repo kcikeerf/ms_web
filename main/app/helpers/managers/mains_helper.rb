@@ -4,6 +4,9 @@ module Managers::MainsHelper
     when "analyzers"
       title = I18n.t("activerecord.models.analyzer")
       path = "/managers/analyzers"
+    when "api_permissions"
+      title = I18n.t("activerecord.models.api_permission")
+      path = "/managers/api_permissions"
     when "permissions"
       title = I18n.t("activerecord.models.permission")
       path = "/managers/permissions"

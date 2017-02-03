@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170113042230) do
+ActiveRecord::Schema.define(version: 20170203084334) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(version: 20170113042230) do
     t.datetime "dt_add"
     t.datetime "dt_update"
     t.string   "tenant_uid", limit: 255
+  end
+
+  create_table "api_permissions", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.string   "method",      limit: 255
+    t.string   "path",        limit: 255
+    t.string   "description", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "areas", primary_key: "uid", force: :cascade do |t|
@@ -313,7 +322,6 @@ ActiveRecord::Schema.define(version: 20170113042230) do
     t.string   "subject_class", limit: 255
     t.string   "action",        limit: 255
     t.string   "description",   limit: 255
-    t.integer  "role_id",       limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -374,6 +382,13 @@ ActiveRecord::Schema.define(version: 20170113042230) do
     t.string   "desc",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "roles_api_permissions_links", force: :cascade do |t|
+    t.integer  "role_id",           limit: 4
+    t.integer  "api_permission_id", limit: 4
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "roles_permissions_links", force: :cascade do |t|

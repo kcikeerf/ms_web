@@ -43,7 +43,7 @@ gem 'rb-readline'
 # user authentication
 gem 'devise' #, '~>3.5.0'
 gem 'activeadmin', '~> 1.0.0.pre2'
-gem 'cancancan'
+# gem 'cancancan'
 
 # mongodb
 gem 'mongoid', '~> 5.1.4'

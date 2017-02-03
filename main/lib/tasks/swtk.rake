@@ -966,13 +966,16 @@ namespace :swtk do
     desc 'Print compiled grape routes'
     task :api_routes => :environment do
       api_arr =[
-        PaperOnlineTest::API,
-        Reports::API,
-        ReportsWarehouse::API
+        ApiWxOnlineTest::APIV11,
+        ApiReports::APIV11,
+        ApiReportsWarehouse::APIV11
       ]
+      format = "%s:  %s"
       api_arr.each do |api|
         api.routes.each do |route|
-          puts route.path
+          info = route.instance_variable_get :@options
+
+          p info
         end
       end
     end
@@ -1221,4 +1224,5 @@ namespace :swtk do
     end
 
   end
+
 end

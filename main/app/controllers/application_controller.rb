@@ -69,9 +69,9 @@ class ApplicationController < ActionController::Base
     # authorize!(action_name.to_sym, "#{controller_name}_controller".camelcase.constantize)
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
-    render 'errors/error_403', status: 403,  layout: 'error'
-  end
+  # rescue_from CanCan::AccessDenied do |exception|
+  #   render 'errors/error_403', status: 403,  layout: 'error'
+  # end
   
   #use in controller
   def current_tenant

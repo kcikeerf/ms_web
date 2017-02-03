@@ -22,7 +22,8 @@ zh:
       tenant: "Tenant"
       tenant_administrator: "Tenant管理员"
       project_administrator: "项目管理员"
-      permission: "权限"
+      permission: "一般权限"
+      api_permission: "API权限"
 
     attributes:
       default:
