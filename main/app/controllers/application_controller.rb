@@ -14,8 +14,8 @@ class ApplicationController < ActionController::Base
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
     cond3 = (controller_name == "Managers::SessionsController" && action_name == "new")
-#    cond4 = (controller_name == "ReportsController" && action_name == "generate_reports")
-    if cond1 || cond2 || cond3# || cond4
+    cond4 = (controller_name == "Oauth2Controller" && action_name == "authorize")
+    if cond1 || cond2 || cond3 || cond4
       next
     end
 

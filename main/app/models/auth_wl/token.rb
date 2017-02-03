@@ -6,7 +6,7 @@ class AuthWl::Token
 
   field :user_id
   field :access_token, type: String
-  field :scope, type: Array, default: []
+  field :scope, type: Array
   field :refresh_token, type: String
   field :expired_at, type: Time
 
@@ -60,7 +60,7 @@ class AuthWl::Token
 
     def random_access_token
       self.access_token = loop do 
-        token = SecureRandom.hex(Common::AuthConfig::TokenLength)
+        token = Common::AuthConfig::random_codes(Common::AuthConfig::TokenLength)
         old_tokens = self.class.where(access_token: token)
         break token if old_tokens.blank? 
         old_tokens.each{|item| item.validate_token }
@@ -69,8 +69,8 @@ class AuthWl::Token
 
     def random_refresh_token
       self.refresh_token = loop do 
-        token = SecureRandom.hex(Common::AuthConfig::TokenLength)
-        old_tokens = self.class.where(refresh_token: token)
+        token = Common::AuthConfig::random_codes(Common::AuthConfig::TokenLength)
+        old_tokens = self.class.where(user_id: self.user_id, refresh_token: token)
         break token if old_tokens.blank? 
         old_tokens.each{|item| item.validate_token }
       end

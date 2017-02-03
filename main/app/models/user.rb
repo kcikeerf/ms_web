@@ -99,7 +99,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def find_user(login, conditions)
+    def find_user(login, conditions={})
       user = 
         case judge_type(login)
         when 'mobile'

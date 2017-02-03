@@ -90,6 +90,8 @@ Rails.application.routes.draw do
 
   # routes for quiz_paper controller
 
+  get '/oauth2/authorize', to: 'oauth2#authorize'
+
   resources :node_structures do
     collection do 
       get 'get_subjects'

@@ -13,6 +13,9 @@ Rails.application.config.assets.precompile += [
 #用户中心
 	'default/users.css', 
 	'users.js',
+#oauth2
+    '00017020/oauth2/base.js',
+    '00017020/oauth2/base.css.scss',
 #整卷解析
 	'zhengjuan.css', 
 	'init_zhengjuan.js', 

@@ -12,61 +12,111 @@ module ApiAuth
     params do
     end
     resource :auth do #monitorings begin
+      group do #来自白名单域名的请求
+        before do
+          set_api_header!
+        end
 
-      before do
+        ###########
 
-      end
-
-      ###########
-
-      desc ''
-      params do
-        requires :grant_type, type: String, values: -> {["authorization_code", "refresh_token"]} #,"password"]}
-        given grant_type: ->(val){ val == "authorization_code" } do
-          requires :code, type: String
-          requires :redirect_uri, type: String
+        desc ''
+        params do
+          requires :login, type: String
+          requires :password, type: String
+          requires :response_type, type: String, values: -> {["code"]}#, "token"]}
           requires :client_id, type: String
-          requires :secret, type: String
+          optional :redirect_uri, type: String
+          optional :scope, type: Array
+          optional :state, type: String
+        end        
+        post :code do
+          target_user = User.find_user(params[:login])
+          if target_user && target_user.valid_password?(params[:password])
+            case params[:response_type]
+            when "code"
+              target_code = Oauth2::Authorization.new(client_id: params[:client_id], redirect_uri: params[:redirect_uri], user_id: target_user.id, scope: params[:scope])
+              if target_code.save
+                redirect_url = params[:redirect_uri] + "?code=" + target_code.code + "&state=" + params[:state]
+                #status 301
+                #header 'Location', redirect_url
+                redirect redirect_url, permanent: true
+              end
+            end
+          else
+            status 401
+            message_json("e41001")
+          end
         end
-        # given grant_type: ->(val){ val == "password" } do
-        #   requires :user_name, type: String
-        #   requires :password, type: String
-        # end
-        given grant_type: ->(val){ val == "refresh_token" } do
-          requires :user_name, type: String
-          requires :refresh_token, type: String
+
+        ###########
+
+        namespace :token do
+          desc ''
+          params do
+            requires :grant_type, type: String, values: -> {["authorization_code", "refresh_token"]} #,"password"]}
+            given grant_type: ->(val){ val == "authorization_code" } do
+              requires :code, type: String
+              requires :redirect_uri, type: String
+              requires :client_id, type: String
+              requires :secret, type: String
+            end
+            # given grant_type: ->(val){ val == "password" } do
+            #   requires :user_name, type: String
+            #   requires :password, type: String
+            # end
+            given grant_type: ->(val){ val == "refresh_token" } do
+              requires :refresh_token, type: String
+              requires :client_id, type: String
+              requires :secret, type: String
+            end
+            optional :scope, type: String
+          end
+          before do
+            case params[:grant_type]
+            when "authorization_code"
+              authenticate_client!
+              @target_code = authenticate_code!
+            when "refresh_token"
+              #
+            end
+          end
+          post '/' do
+            case grant_type
+            when "authorization_code"
+              target_token = Oauth2::Token.new(client_id: params[:client_id], redirect_uri: params[:redirect_uri], user_id: @target_code.user_id, scope: @target_code.scope)
+              if target_token.save
+                {
+                  token_type: "Bearer",
+                  access_token: target_token.access_token,
+                  expires_in: target_token.expired_at.strftime("%s").to_i - Time.now.strftime("%s").to_i,
+                  refresh_token: target_token.refresh_token 
+                }
+              end
+            when "refresh_token"
+              target_token = Oauth2::Token.where(client_id: params[:client_id], refresh_token: params[:refresh_token]).first
+              if target_token.save
+                {
+                  token_type: "Bearer",
+                  access_token: target_token.access_token,
+                  expires_in: target_token.expired_at.strftime("%s").to_i - Time.now.strftime("%s").to_i,
+                  refresh_token: target_token.refresh_token 
+                }
+              end
+            end
+          end
         end
-        optional :scope, type: String
-      end
-      post :token do
-        case grant_type
-        when "authorization_code"
 
-        # when "password"
-        #   target_user = User.where(name: params[:user_name]).first
-        #   if target_user && target_user.valid_password?(params[:password])
-        #     target_user.update_token
-        #   end
-        #   {
-        #     "access_token": target_user.token,
-        #     "token_type": "bearer",
-        #     "expires_in": self.token_expired_at.strftime("%s").to_i - Time.now.strftime("%s").to_i,
-        #   }
-        when "refresh_token"
+        ###########
+
+        desc ''
+        params do
 
         end
-      end
+        post :verify_token_info do
 
-      ###########
-
-      desc ''
-      params do
+        end
 
       end
-      post :verify_token_info do
-
-      end
-
       ################################
       #       来自白名单域名的请求       #
       ################################

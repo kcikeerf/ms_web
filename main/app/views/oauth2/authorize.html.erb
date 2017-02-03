@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>授权登录</title>
+    <%= stylesheet_link_tag '00017020/oauth2/base', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag '00017020/oauth2/base', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+</html>
+  <body>
+      <div style="text-align:left;" >
+        <img style="width:30%; height: 30%" sizealt="甄学" src="<%= image_url('logo-1.png') %>">
+      </div>
+      <form method="POST" action="/api/v1.1/auth/code">
+        <div style="text-align:left;padding:20px;">
+          用户名：<input type="text" name="login" value=""> <br>
+          密码：<input type="password" name="password" value=""> <br>
+          <input type="text" style="display:none" name="response_type" value="<%=params[:response_type]%>">
+          <input type="text" style="display:none" name="client_id" value="<%=params[:client_id]%>">
+          <input type="text" style="display:none" name="redirect_uri" value="<%=params[:redirect_uri]%>">
+          <input type="checkbox"  name="scope[]" value="profile">用户信息 <br>
+          <input type="checkbox"  name="scope[]" value="paper">试卷 <br>
+          <input type="checkbox"  name="scope[]" value="report">报告 <br>
+          <% if params[:state] %>
+            <input type="text" style="display:none" name="state" value="<%=params[:state]%>">
+          <% end %>
+        </div>
+        <div>
+          <span><button >登录并授权</button></span>
+        </div>
+      </form>
+
+      <%= render 'shared/footer' %>
+  </body>
+</html>

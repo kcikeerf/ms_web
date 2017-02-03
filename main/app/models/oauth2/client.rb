@@ -11,4 +11,17 @@ class Oauth2::Client
   field :blocked, type: Boolean, default: true
   field :expired_at, type: Time
 
+  index({name:1}, {unique: true, background: true})
+
+  before_create :random_secret_code
+
+  def expired?
+    self.expired_at < Time.now
+  end
+
+  private
+
+    def random_secret_code
+      self.code = Common::AuthConfig::random_codes(Common::AuthConfig::SecretCodeLength)
+    end
 end
