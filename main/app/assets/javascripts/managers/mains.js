@@ -188,6 +188,7 @@ function editObj(url){
     $('#dlg').dialog('open').dialog('setTitle','编辑');
     $('#fm').form('clear').attr('action', url);
     $('#fm')[0]["authenticity_token"].value = $('meta[name="csrf-token"]')[0].content;
+    console.log(url + (row.id == undefined ? row.uid : row.id));
     $('#fm').form('load',row).attr('action', url + (row.id == undefined ? row.uid : row.id));
     $('#manager_method').val('put');
   }

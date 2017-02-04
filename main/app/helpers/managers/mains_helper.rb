@@ -51,4 +51,8 @@ module Managers::MainsHelper
     }
     result
   end
+
+  def http_method_list
+    %W{GET POST PUT DELETE HEAD OPTIONS}
+  end
 end

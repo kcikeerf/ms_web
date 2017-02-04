@@ -1,0 +1,71 @@
+角色权限关联。
+<div class="easyui-tabs" style="width:90%;height:auto !important;height:100%;margin: 5px;">
+
+	<!--Generic Permission Tab-->
+    <div title="一般权限列表" style="padding:10px">
+        <div style="margin:5px 0px 5px 15px;">
+            <label>一般权限列表</label>
+            <select class="easyui-combobox" 
+                    id="permission_list" 
+                    name="permissions[]"
+                    multiple="true" 
+                    multiline="true" 
+                    style="width:400px;height:300px;"
+                    data-options="valueField:'id',textField:'name',method:'GET', url:'/managers/permissions/list.json'">
+                <option value=""></option>
+            </select>
+        </div>	
+
+        <div style="margin:5px 0px 5px 100px;">
+<!--             <a href="#" 
+                onclick="$('#permission_list').combobox('reload', '/managers/permissions/list.json')"
+                class="easyui-linkbutton" 
+                data-options="iconCls:'icon-reload'" 
+                style="width:15%">Reload</a> -->
+            <a href="#"
+                id="permission_list_save"
+                class="easyui-linkbutton" 
+                data-options="iconCls:'icon-save'" 
+                style="width:15%">Save</a>
+        </div>
+
+	</div>
+
+    <!--API Permission Tab-->
+	<div title="API" style="padding:10px">
+        <div style="margin:5px 0px 5px 15px;">
+            <label>API权限列表</label>
+            <select class="easyui-combobox" 
+                    id="api_permission_list" 
+                    name="api_permissions[]"
+                    multiple="true" 
+                    multiline="true" 
+                    style="width:400px;height:300px;"
+                    data-options="valueField:'id',textField:'name',method:'GET',url:'/managers/api_permissions/list.json'">
+                <option value=""></option>
+            </select>
+        </div>  
+
+        <div style="margin:5px 0px 5px 100px;">
+<!--             <a href="#" 
+                onclick="$('#api_permission_list').combobox('reload', '/managers/api_permissions/list.json')"
+                class="easyui-linkbutton" 
+                data-options="iconCls:'icon-reload'" 
+                style="width:15%">Reload</a> -->
+            <a href="#"
+                id="api_permission_list_save"
+                class="easyui-linkbutton" 
+                data-options="iconCls:'icon-save'" 
+                style="width:15%">Save</a>
+        </div>
+	</div>
+    <script type="text/javascript" src="/assets/managers/role_permission.js"></script>
+    <script type="text/javascript">
+        var plist = new role_permission_list("#permission_list","<%=params[:id]%>", "permission");
+        var api_plist = new role_permission_list("#api_permission_list","<%=params[:id]%>", "api_permission");
+        plist.init();
+        api_plist.init();
+        $("#permission_list_save").on("click", function(){plist.save_role_permissions()});
+        $("#api_permission_list_save").on("click", function(){api_plist.save_role_permissions()});
+    </script>
+</div>

@@ -1,0 +1,27 @@
+<% content_for :form do %>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="api_permission_name">名称</label>
+      <input class="easyui-validatebox" id="api_permission_name" name="name" style="width:200px;" data-options="required:true">
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label>METHOD</label>
+      <select class="easyui-combobox" id="textbook_subject" name="method" style="width:200px;" data-options="required:true">
+        <% http_method_list.each do |item| %>
+          <option value="<%=item%>"><%=item%></option>
+        <% end %>
+      </select>
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="api_permission_path">PATH</label>
+      <input class="easyui-validatebox" id="api_permission_path" name="path" style="width:200px;" data-options="required:true">
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+        <label>描述</label>
+        <textarea type="text" cols="35" rows="4" name="description" id="api_permission_description"></textarea>
+    </div>
+
+<% end %>

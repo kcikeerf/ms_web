@@ -1,89 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :managers, controllers: {sessions: 'managers/sessions', 
-                                      registrations: 'managers/registrations', 
-                                      passwords: 'managers/passwords'}, 
-                        path_names: { sign_in: 'login', 
-                                      sign_out: 'logout' }
-
-  namespace :managers do
-    root 'mains#index'
-
-
-    concern :destroy_all do
-      delete 'destroy_all', on: :collection
-    end  
-
-    resources :mains do    
-      get 'navigation'
-    end
-    
-    resources :checkpoints, :except => [:edit, :destroy] do      
-      collection do
-        # delete '/:uid', action: :destroy, as: 'destroy'
-        # get '/:uid/edit',action: :edit, as: 'edit'
-        # post '/:id/move_node', action: :move_node, as: 'move_node'
-        # post 'import_ckp_file'
-        post 'combine_node_catalogs_subject_checkpoints'
-        post 'list'
-      end
-    end
-
-    resources :subject_checkpoints, concerns: :destroy_all do    
-      collection do   
-        post '/:id/move_node', action: :move_node, as: 'move_node'
-        get 'list'
-        get 'get_subject_volume_ckps'
-        get 'get_volume_catalog_ckps'
-        post 'import_ckp_file'
-      end
-    end
-
-    resources :roles, concerns: :destroy_all do
-      resources :role_permissions, concerns: :destroy_all 
-    end
-
-    resources :node_structures, concerns: :destroy_all do 
-      get "catalog_tree", on: :collection
-      resources :node_catalogs, concerns: :destroy_all do 
-        resources :checkpoints, concerns: :destroy_all do
-          collection do
-            get "tree"
-          end
-        end
-      end
-      resources :checkpoints, concerns: :destroy_all do
-        collection do
-          get "tree"
-        end
-      end
-    end
- 
-    resources :api_permissions, concerns: :destroy_all
-
-    resources :permissions, concerns: :destroy_all
- 
-    resources :tenants, concerns: :destroy_all do
-      collection do
-        #delete 'destroy_all', :to => "tenants#destroy_all"
-      end
-    end
-
-    resources :areas do
-      collection do
-        get 'get_province'
-        get 'get_city'
-        get 'get_district'
-        get 'get_tenants'
-      end
-    end
-
-    resources :analyzers, concerns: :destroy_all
-    resources :teachers, concerns: :destroy_all
-    resources :pupils, concerns: :destroy_all
-    resources :tenant_administrators, concerns: :destroy_all
-    resources :project_administrators, concerns: :destroy_all
-    resources :node_catalogs, concerns: :destroy_all
-  end
 
   mount RuCaptcha::Engine => "/rucaptcha"
   root 'welcomes#index'
@@ -389,7 +304,7 @@ Rails.application.routes.draw do
   get "/505", :to => "errors#error_505"
 
   #######################################
-  ### Wechat API
+  ### Wechat API, old, to be clear
 
   #constraints(:host => 'wx.k12ke.com') do
     namespace :wx do
@@ -439,5 +354,119 @@ Rails.application.routes.draw do
   # match '*path', to: 'welcomes#error_404', via: :all
   #require 'sidekiq/web'
   #mount Sidekiq::Web => '/sidekiq'
-  get '*path', to: 'welcomes#index'
+
+  ################ Manager Console, begin ################
+  devise_for :managers, 
+    controllers: {
+      sessions: 'managers/sessions', 
+      registrations: 'managers/registrations', 
+      passwords: 'managers/passwords'
+    }, 
+    path_names: { 
+      sign_in: 'login', 
+      sign_out: 'logout' 
+    }
+
+  namespace :managers do
+    root 'mains#index'
+
+    concern :destroy_all do
+      delete 'destroy_all', on: :collection
+    end  
+
+    resources :mains do    
+      get 'navigation'
+    end
+    
+    resources :checkpoints, :except => [:edit, :destroy] do      
+      collection do
+        # delete '/:uid', action: :destroy, as: 'destroy'
+        # get '/:uid/edit',action: :edit, as: 'edit'
+        # post '/:id/move_node', action: :move_node, as: 'move_node'
+        # post 'import_ckp_file'
+        post 'combine_node_catalogs_subject_checkpoints'
+        post 'list'
+      end
+    end
+
+    resources :subject_checkpoints, concerns: :destroy_all do    
+      collection do   
+        post '/:id/move_node', action: :move_node, as: 'move_node'
+        get 'list'
+        get 'get_subject_volume_ckps'
+        get 'get_volume_catalog_ckps'
+        post 'import_ckp_file'
+      end
+    end
+
+    resources :node_structures, concerns: :destroy_all do 
+      get "catalog_tree", on: :collection
+      resources :node_catalogs, concerns: :destroy_all do 
+        resources :checkpoints, concerns: :destroy_all do
+          collection do
+            get "tree"
+          end
+        end
+      end
+      resources :checkpoints, concerns: :destroy_all do
+        collection do
+          get "tree"
+        end
+      end
+    end
+ 
+    resources :areas do
+      collection do
+        get 'get_province'
+        get 'get_city'
+        get 'get_district'
+        get 'get_tenants'
+      end
+    end
+
+    resources :roles, concerns: :destroy_all do
+      member do
+        get 'permission_management'
+        post 'combine_permissions'
+        post 'combine_api_permissions'
+        # get 'api_permission_list', :to => "permissions#list"
+        # get 'permission_list', :to => "api_permissions#list"
+      end
+      resources :api_permissions, concerns: :destroy_all do
+        collection do
+          get 'list'
+        end
+      end
+      resources :permissions, concerns: :destroy_all do
+        collection do
+          get 'list'
+        end
+      end
+    end
+
+    resources :api_permissions, concerns: :destroy_all do
+      collection do
+        get 'list'
+      end
+    end
+
+    resources :permissions, concerns: :destroy_all do
+      collection do
+        get 'list'
+      end
+    end
+
+    resources :analyzers, concerns: :destroy_all
+    resources :teachers, concerns: :destroy_all
+    resources :pupils, concerns: :destroy_all
+    resources :tenants, concerns: :destroy_all
+    resources :tenant_administrators, concerns: :destroy_all
+    resources :project_administrators, concerns: :destroy_all
+    resources :node_catalogs, concerns: :destroy_all
+
+
+  end
+  ################ Manager Console, end ################
+
+  get '*path', to: 'welcomes#index'  
 end

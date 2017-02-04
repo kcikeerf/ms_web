@@ -320,10 +320,10 @@ ActiveRecord::Schema.define(version: 20170203084334) do
   create_table "permissions", force: :cascade do |t|
     t.string   "name",          limit: 255
     t.string   "subject_class", limit: 255
-    t.string   "action",        limit: 255
     t.string   "description",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "operation",     limit: 255
   end
 
   create_table "project_administrator_tenant_links", primary_key: "uid", force: :cascade do |t|

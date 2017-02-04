@@ -1,8 +1,16 @@
 <!--list columns-->
-<th data-options="field:'id',align:'center', width:'10%'">ID</th>
+<th data-options="field:'id',align:'center', width:'5%'">ID</th>
 <th data-options="field:'name',align:'center', width:'20%'">名称</th>
-<th data-options="field:'desc',align:'center', width:'45%'">描述</th>
-<th data-options="field:'ID',width:'15%',align:'center',formatter:formatOper">操作</th>
+<th data-options="field:'desc',align:'center', width:'20%'">描述</th>
+<th data-options="field:'ID',width:'40%',align:'center',formatter:formatOper">操作</th>
 
 <!--form in dialog-->
 <%= render partial: "form_in_dialog" %>
+
+<script type="text/javascript">
+	function formatOper(val,row,index){
+	    var click_permissions_func = 'reopen(window.parent.$("#tabs"),"角色权限管理", "<%= page_info_item[:path] %>\/'+row["id"]+'\/permission_management")';
+		var link_str = "<a href='#'' onclick='" + click_permissions_func + "'>角色权限管理</a>&nbsp;";
+		return link_str;
+	}	 
+</script>
