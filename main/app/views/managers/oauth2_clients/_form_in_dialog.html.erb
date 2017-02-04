@@ -1,0 +1,23 @@
+<% content_for :form do %>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="oauth2_client_name">名称</label>
+      <input class="easyui-validatebox" id="oauth2_client_name" name="name" style="width:200px;" data-options="required:true">
+    </div>
+
+<!--     <div style="margin:5px 0px 5px 15px;">
+      <label for="oauth2_client_secret">Secret码</label>
+      <input class="easyui-validatebox" id="oauth2_client_secret" name="secret_code" style="width:200px;" data-options="required:true">
+    </div> -->
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="oauth2_client_machine">机器码</label>
+      <input class="easyui-validatebox" id="oauth2_client_machine" name="machine_code" style="width:200px;" data-options="required:true">
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="oauth2_client_scope">可访问范围</label>
+      <input class="easyui-validatebox" id="oauth2_client_scope" name="scope" style="width:200px;" data-options="required:true">
+    </div>
+
+<% end %>

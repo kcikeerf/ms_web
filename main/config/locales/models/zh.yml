@@ -156,3 +156,9 @@ zh:
         odd: "必须为单数"
         even: "必须为双数"
         record_invalid: "校验失败: %{errors}"
+
+  nosql:
+    models:
+      auth_wl_domain_white_lists: "认证域名白名单"
+      oauth2_clients: "认证第三方客户端"
+    attributes:

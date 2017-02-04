@@ -7,6 +7,12 @@ module Managers::MainsHelper
     when "api_permissions"
       title = I18n.t("activerecord.models.api_permission")
       path = "/managers/api_permissions"
+    when "auth_domain_white_lists"
+      title = I18n.t("nosql.models.auth_wl_domain_white_lists")
+      path = "/managers/auth_domain_white_lists"
+    when "oauth2_clients"
+      title = I18n.t("nosql.models.oauth2_clients")
+      path = "/managers/oauth2_clients"
     when "permissions"
       title = I18n.t("activerecord.models.permission")
       path = "/managers/permissions"

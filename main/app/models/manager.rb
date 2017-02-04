@@ -20,14 +20,7 @@ class Manager < ActiveRecord::Base
   def self.left_menus
     [
       {
-        id: 1, icon: 'icon-sys', name: '权限管理',
-        menus: [
-          {id: 101, name: Common::Locale::i18n("managers.menus.generic_quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
-          {id: 102, name: Common::Locale::i18n("managers.menus.api_quan_xian_guan_li"), icon: '', url: '/managers/api_permissions'}
-        ]
-      },
-      {
-        id: 2, icon: 'icon-sys', name: '用户管理',
+        id: 1, icon: 'icon-sys', name: '用户管理',
         menus: [
           {id: 101, name: Common::Locale::i18n("managers.menus.jue_se_guan_li"), icon: '', url: '/managers/roles'},          
           {id: 102, name: Common::Locale::i18n("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/project_administrators'},
@@ -36,6 +29,13 @@ class Manager < ActiveRecord::Base
           {id: 105, name: Common::Locale::i18n("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},
           {id: 106, name: Common::Locale::i18n("managers.menus.jiao_shi_guan_li"), icon: '', url: '/managers/teachers'},
           {id: 107, name: Common::Locale::i18n("managers.menus.xue_sheng_guan_li"), icon: '', url: '/managers/pupils'}
+        ]
+      },
+      {
+        id: 2, icon: 'icon-sys', name: '权限管理',
+        menus: [
+          {id: 101, name: Common::Locale::i18n("managers.menus.generic_quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
+          {id: 102, name: Common::Locale::i18n("managers.menus.api_quan_xian_guan_li"), icon: '', url: '/managers/api_permissions'}
         ]
       },
       {

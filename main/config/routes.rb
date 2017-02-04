@@ -463,7 +463,8 @@ Rails.application.routes.draw do
     resources :tenant_administrators, concerns: :destroy_all
     resources :project_administrators, concerns: :destroy_all
     resources :node_catalogs, concerns: :destroy_all
-
+    resources :auth_domain_white_lists, concerns: :destroy_all
+    resources :oauth2_clients, concerns: :destroy_all
 
   end
   ################ Manager Console, end ################

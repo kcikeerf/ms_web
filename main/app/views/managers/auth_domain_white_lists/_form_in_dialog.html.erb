@@ -1,0 +1,13 @@
+<% content_for :form do %>
+
+    <div style="margin:5px 0px 5px 15px;">
+      <label for="white_domain_name">域名</label>
+      <input class="easyui-validatebox" id="white_domain_name" name="domain" style="width:200px;" onkeydown="if(event.keyCode==13){return false;}" data-options="required:true">
+    </div>
+
+    <div style="margin:5px 0px 5px 15px;">
+        <label>描述</label>
+        <textarea type="text" cols="35" rows="4" name="description" id="white_domain_description"></textarea>
+    </div>
+
+<% end %>

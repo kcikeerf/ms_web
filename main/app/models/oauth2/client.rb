@@ -22,6 +22,6 @@ class Oauth2::Client
   private
 
     def random_secret_code
-      self.code = Common::AuthConfig::random_codes(Common::AuthConfig::SecretCodeLength)
+      self.secret_code = Common::AuthConfig::random_codes(Common::AuthConfig::SecretCodeLength)
     end
 end
