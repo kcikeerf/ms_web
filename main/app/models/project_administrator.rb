@@ -66,4 +66,8 @@ class ProjectAdministrator < ActiveRecord::Base
   def papers
     Mongodb::BankPaperPap.by_user(self.user.id)
   end
+
+  def area
+    Area.where(rid: self.area_rid).first
+  end
 end

@@ -97,6 +97,10 @@ class Teacher < ActiveRecord::Base
     }
   end
 
+  def is_headteacher?
+    locations.map{|loc| is_class_headteacher?(loc.uid) }.include?(true)
+  end
+
   def is_class_headteacher?(loc_uid)
     result = false
     return result unless self.tenant

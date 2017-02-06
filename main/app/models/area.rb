@@ -71,29 +71,35 @@ class Area < ActiveRecord::Base
   #根据rid获取省市区的hash
   def pcd_h
     result = {
-      :province => {:rid => "", :name=>"", :name_cn => ""},
-      :city => {:rid => "", :name=>"", :name_cn => ""},
-      :district => {:rid => "",:name=>"", :name_cn => ""}
+      :province => {},
+      :city => {},
+      :district => {}
     }
     case area_type
     when Common::Area::Type::Province
+      result[:province][:uid] = uid
       result[:province][:rid] = rid
       result[:province][:name] = name
       result[:province][:name_cn] = name_cn
     when Common::Area::Type::City
+      result[:province][:uid] = parent.uid
       result[:province][:rid] = parent.rid
       result[:province][:name] = name
       result[:province][:name_cn] = parent.name_cn
+      result[:city][:uid] = uid
       result[:city][:rid] = rid
       result[:city][:name] = name
       result[:city][:name_cn] = name_cn
     when Common::Area::Type::District
+      result[:province][:uid] = parent.uid
       result[:province][:rid] = parent.parent.rid
       result[:province][:name] = name
       result[:province][:name_cn] = parent.parent.name_cn
+      result[:city][:uid] = uid
       result[:city][:rid] = parent.rid
       result[:city][:name] = name
       result[:city][:name_cn] = parent.name_cn
+      result[:district][:uid] = uid
       result[:district][:rid] = rid
       result[:district][:name] = name
       result[:district][:name_cn] = name_cn
