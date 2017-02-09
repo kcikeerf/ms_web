@@ -110,7 +110,8 @@ module ApiAuth
 
         desc ''
         params do
-
+          requires :access_token, type: String
+          requires :request_referrer, type: String
         end
         post :verify_token_info do
 

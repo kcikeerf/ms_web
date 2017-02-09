@@ -42,7 +42,9 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
-      find_user(login, conditions)
+      target_user = find_user(login, conditions)
+      target_user.create_user_auth_redis if target_user
+      target_user
       # where(conditions.to_h).where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     end
 
@@ -229,6 +231,8 @@ class User < ActiveRecord::Base
     result = nil
     if is_pupil?
       result = role_obj.location.tenant if role_obj && role_obj.location
+    elsif is_project_administrator?
+      # do nothing
     else
       result = role_obj.tenant if role_obj
     end
@@ -268,6 +272,88 @@ class User < ActiveRecord::Base
     end
     result
   end
+
+  def create_user_auth_redis
+    key_arr = Common::SwtkRedis::find_keys Common::SwtkRedis::Ns::Auth, "/users/#{self.id}"
+    if key_arr.blank?
+      refresh_user_auth_redis!
+    end
+  end
+
+  def refresh_user_auth_redis!
+    return false unless self.id
+    
+    base_key = "/users/#{self.id}"
+    Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Auth, base_key
+    
+    ####### 权限 #######
+    # 一般权限redis缓存
+    self.role.permissions.each{|item|
+      permission_key = base_key + "/permissions/#{item.subject_class}/#{item.operation}"
+      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, permission_key, 1
+    }
+    # API权限redis缓存
+    self.role.api_permissions.each{|item|
+      api_permission_key = base_key + "/api_permissions/#{item.method}/#{item.path}"
+      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, api_permission_key, 1
+    }
+
+    ####### 地理组织所属 #######
+    path_arr = []
+    # 地理位置信息redis缓存
+    organization_key = base_key + "/organization"
+    # /省/<id>/市/<id>/区/<id>
+    if is_project_administrator?
+      target_area = self.role_obj.area
+    else
+      target_area = self.tenant.area
+    end
+    pcd_h = target_area.pcd_h
+    organization_key += "/province/#{pcd_h[:province][:uid]}/city/#{pcd_h[:city][:uid]}/district/#{pcd_h[:district][:uid]}"
+
+    # /学校/<id>/班级/<id>/学生/<id>
+    if is_pupil?
+      organization_key += "/tenant/#{self.tenant.uid}/klass/#{self.role_obj.location.uid}/pupil/#{self.role_obj.uid}"
+      path_arr << organization_key
+    elsif is_teacher?
+      path_arr = self.accessable_locations.map{|loc| 
+         organization_key + "/tenant/#{self.tenant.uid}/klass/#{loc.uid}"
+      }
+    # elsif is_analyzer?
+    #   organization_key += "/tenant/#{self.tenant.uid}"
+    #   path_arr << organization_key
+    # elsif is_tenant_administrator?
+    #   organization_key += "/tenant/#{self.tenant.uid}"
+    #   path_arr << organization_key
+    elsif is_project_administrator?
+      path_arr = self.accessable_tenants.map{|tnt|
+        organization_key + "/tenant/#{tnt.uid}"
+      }
+    else
+      organization_key += "/tenant/#{self.tenant.uid}"
+      path_arr << organization_key
+    end
+    path_arr.each{|item|
+      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, item, 1
+    }
+
+    ####### 过滤器定义 #######
+    # filter缓存
+    # filter_key = base_key + "/filter"
+    # if is_teacher?
+    #   if self.role_obj.is_head_teacher?
+        
+    #   else
+
+    #   end
+    # elsif is_analyzer?
+
+    # else
+
+    # end
+  end
+
+  
 
   ########私有方法: begin#######
   private
