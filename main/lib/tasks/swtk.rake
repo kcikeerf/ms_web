@@ -1205,6 +1205,93 @@ namespace :swtk do
       end
     end
 
+    desc "temporary use: import zhiduoxing json"
+    task :import_zhiduoxing_json,[:base_path,:test_name,:test_type,:test_date,:target_path] => :environment do |t, args|
+      begin
+        if args[:test_name].blank? || args[:test_type].blank? || args[:target_path].blank?
+          raise "Command format not correct."
+        end
+
+        target_pap = Mongodb::PaperQuestion.new({
+          :name => args[:test_name],
+          :heading => args[:test_name],
+          :quiz_type => args[:test_type],
+          :quiz_date => args[:test_date]
+        })
+        unless target_pap.save
+          raise "Mongodb::PaperQuestion save failed"
+        end
+
+        target_test = Mongodb::BankTest.new({
+          :name => args[:test_name],
+          :quiz_type => args[:test_type],
+          :quiz_date => args[:test_date],
+          :paper_question_id => target_pap._id.to_s
+        })
+        unless target_test.save
+          raise "Mongodb::BankTest save failed"
+        end
+
+        Dir.glob(args[:target_path] + "/*.json").each{|f|
+          fdata = File.open(f, 'rb').read
+          jdata = JSON.parse(fdata.force_encoding(Encoding::UTF_8))
+
+          json_path = "./reports_warehouse/test/#{target_test.id.to_s}/project/#{target_test.id.to_s}"
+          if jdata["basic"]["tenant"].blank? || jdata["basic"]["grade"].blank? || jdata["basic"]["classroom"].blank? || jdata["basic"]["stu_number"].blank? || jdata["basic"]["name"].blank?
+            puts "#{f}, invalid data"
+            puts jdata["basic"]
+            next
+          end
+
+          # tenant
+          target_tenant = Tenant.where(name_cn: jdata["basic"]["tenant"].strip).first
+          unless target_tenant
+            puts "#{f}, invalid tenant"
+            next
+          end
+          json_path += "/grade/#{target_tenant.uid}"
+
+          # location
+          grade = Common::Locale::hanzi2pinyin jdata["basic"]["grade"].strip
+          klass = Common::Locale::hanzi2pinyin jdata["basic"]["classroom"].strip
+          target_location = target_tenant.locations.where(grade: grade, classroom: klass).first
+          unless target_location
+            puts "#{f}, invalid location"
+            next
+          end
+          json_path += "/klass/#{target_location.uid}"
+
+          # pupil
+          user_name = target_tenant.number + jdata["basic"]["stu_number"].strip + Common::Locale.hanzi2abbrev(jdata["basic"]["name"].strip)
+          target_user= User.where(name: user_name).first
+          unless target_user
+            puts "#{f}, invalid pupil: #{user_name}"
+            next
+          end
+
+          target_link = Mongodb::BankTestUserLink.new({
+            :bank_test_id => target_test.id.to_s,
+            :user_id => target_user.id
+          })
+
+          unless target_link.save
+            puts "#{f}, failed save pupil paper link"
+            next
+          end
+
+          json_path += "/pupil"
+          FileUtils.mkdir_p json_path
+          json_path += "/#{target_user.pupil.uid}.json"
+          FileUtils.mv f,json_path
+        }
+      rescue Exception => ex
+        puts "exception: #{ex.message}"
+        puts ex.backtrace
+        exit -1
+      end
+
+    end
+
     def find_all_pupil_report_urls base_path, search_path, urls=[]
       fdata = File.open(search_path + "/nav.json", 'rb').read
       jdata = JSON.parse(fdata)
