@@ -195,7 +195,7 @@ Rails.application.routes.draw do
     get 'users/get_user_password_file', :to => 'users/registrations#get_user_password_file'
     post 'users/passwords/user_captcha_validate'
   end
-  devise_for :managers, :skip =>[:sessions,:registrations,:passwords]
+
   #######################################
   ### errors
   

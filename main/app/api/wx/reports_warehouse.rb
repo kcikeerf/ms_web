@@ -57,6 +57,8 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Klass][:value] = [target_user.role_obj.location.uid]
               path_h[Common::Report::Group::Grade][:value] = [target_user.tenant.uid]
               target_papers = target_user.role_obj.papers
+              path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
+              path_h[Common::Report::Group::Project][:value] += target_user.bank_tests.map{|item| item.id.to_s}
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 教师
@@ -71,6 +73,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:value] = [target_user.tenant.uid]
               target_papers = target_user.role_obj.papers
+              path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 分析员
@@ -84,6 +87,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Grade][:value] = [target_user.tenant.uid]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
               target_papers = target_user.role_obj.papers
+              path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 租户管理员
@@ -97,6 +101,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Grade][:value] = [target_user.tenant.uid]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
               target_papers = target_user.tenant.papers
+              path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re] 
             # 项目管理员
             elsif target_user.is_project_administrator?
@@ -108,10 +113,11 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
               target_papers = target_user.role_obj.papers
+              path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re] 
             end
           end
-          path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
+          
 
           # if !((path_arr&["nav", "ckps_qzps_mapping", "qzps_ckps_mapping", "paper_info"]).size > 0)
             # 检查Group ID
@@ -121,7 +127,6 @@ module ReportsWarehouse
               group_id = group_index_in_path.nil?? nil : path_arr[group_index_in_path + 1]
               group_index_in_path.nil?? true : (path_h[group][:value].include?(group_id) && path_h[group][:allowed_file_regx].map{|item| item.match(path_arr[-1]+".json").blank? }.include?(false) )
             }
-
             # group_id = path_arr[group_index_in_path + 1]
             # if group_ids.compact.include?(group_id)
             unless kaku_group_check_flags.uniq.include?(false)

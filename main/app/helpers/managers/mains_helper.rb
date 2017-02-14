@@ -1,6 +1,9 @@
 module Managers::MainsHelper
   def page_info_item
     case controller_name
+    when "area_administrators"
+      title = I18n.t("activerecord.models.area_administrator")
+      path = "/managers/area_administrators"      
     when "analyzers"
       title = I18n.t("activerecord.models.analyzer")
       path = "/managers/analyzers"

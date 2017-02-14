@@ -18,6 +18,8 @@ class Mongodb::BankTestTenantLink
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
+  index({bank_test_id: 1, tenant_uid: 1}, {unique: true, background: true})
+  
   def tenant
     Tenant.where(uid: tenant_uid).first
   end

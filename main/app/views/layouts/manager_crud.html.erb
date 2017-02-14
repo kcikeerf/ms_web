@@ -16,7 +16,7 @@
 			iconCls="icon-edit" 
 			plain="true" 
 			onclick="
-<% if ["tenants", "analyzers", "teachers", "pupils", "tenant_administrators", "project_administrators"].include? controller_name %>
+<% if ["tenants", "analyzers", "teachers", "pupils", "tenant_administrators", "project_administrators", "area_administrators"].include? controller_name %>
         editObjWithArea('<%= page_info_item[:path] %>/')
 <% else %>
 		editObj('<%= page_info_item[:path] %>/')

@@ -114,7 +114,8 @@ class Tenant < ActiveRecord::Base
   end
 
   def papers
-    Mongodb::BankPaperPap.where(:tenant_uid => self.uid).to_a
+    Mongodb::BankPaperPap.where(:tenant_uid => self.uid).to_a + 
+    Mongodb::BankTestTenantLink.where(:tenant_uid => self.uid).map{|item| item.bank_test.bank_paper_pap}
   end
 
   def area
@@ -191,4 +192,7 @@ class Tenant < ActiveRecord::Base
     }
   end
 
+  def bank_tests
+    Mongodb::BankTestTenantLink.where(tenant_uid: self.uid).map{|item| item.bank_test}.compact
+  end
 end

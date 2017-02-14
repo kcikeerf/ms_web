@@ -3,6 +3,7 @@ zh:
   activerecord:
     models:
       area: "地区"
+      area_administrator: "地区管理员"
       bank_checkpoint_ckp: "测评点表"
       bank_ckp_comment: "测评点评价模版表"
       bank_ckp_cube: "测评点立体交叉表"

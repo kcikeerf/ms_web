@@ -81,6 +81,7 @@ Rails.application.routes.draw do
     resources :pupils, concerns: :destroy_all
     resources :tenant_administrators, concerns: :destroy_all
     resources :project_administrators, concerns: :destroy_all
+    resources :area_administrators, concerns: :destroy_all
     resources :node_catalogs, concerns: :destroy_all
   end
 

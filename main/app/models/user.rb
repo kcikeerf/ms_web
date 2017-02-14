@@ -169,6 +169,7 @@ class User < ActiveRecord::Base
       when is_teacher? then (teacher.nil?? Teacher.new : teacher)
       when is_tenant_administrator? then (tenant_administrator.nil?? TenantAdministrator.new : tenant_administrator)
       when is_project_administrator? then (project_administrator.nil?? ProjectAdministrator.new : project_administrator)
+      when is_area_administrator? then (area_administrator.nil?? AreaAdministrator.new : area_administrator)
       else nil
       end
 
@@ -187,6 +188,7 @@ class User < ActiveRecord::Base
       when is_teacher? then Teacher
       when is_tenant_administrator? then TenantAdministrator
       when is_project_administrator? then ProjectAdministrator
+      when is_area_administrator? then AreaAdministrator  
       else nil
       end
 
@@ -208,36 +210,13 @@ class User < ActiveRecord::Base
     end
   end
 
-  # def is_pupil?
-  #   role?(Common::Role::Pupil)
-  # end
-
-  # def is_teacher?
-  #   role?(Common::Role::Teacher)
-  # end
-
-  # def is_analyzer?
-  #   role?(Common::Role::Analyzer)
-  # end
-
-  # def pupil
-  #   is_pupil? ? Pupil.where("user_id = ?", self.id).first : nil
-  # end
-
-  # def teacher
-  #   is_teacher? ? Teacher.where("user_id = ?", self.id).first : nil
-  # end
-
-  # def analyzer
-  #   is_analyzer? ? Analyzer.where("user_id = ?", self.id).first : nil
-  # end
-
   def role_obj
     return analyzer if is_analyzer?
     return teacher if is_teacher?
     return pupil if is_pupil?
     return tenant_administrator if is_tenant_administrator?
     return project_administrator if is_project_administrator?
+    return area_administrator if is_area_administrator?
   end  
 
   def role?(r)
@@ -259,13 +238,11 @@ class User < ActiveRecord::Base
     result
   end
 
-  def bank_tests
-    Mongodb::BankTest.where(user_id: self.id).to_a
-  end
-
   def accessable_tenants
     result = []
-    if self.is_project_administrator?
+    if self.is_area_administrator?
+      result = self.role_obj.area.all_tenants
+    elsif self.is_project_administrator?
       result = self.role_obj.tenants
     else
       result = [self.tenant]
@@ -277,20 +254,25 @@ class User < ActiveRecord::Base
     result = []
     target_tenants = self.accessable_tenants
     
-    # 租户管理员全部班级
-    if self.is_tenant_administrator?
-      result = target_tenants.map{|item| item.locations}.flatten
     # 老师在当前所属租户担当教学的班级
-    elsif self.is_teacher?
+    if self.is_teacher?
       result = self.role_obj.locations({:tenant_uid => target_tenants.map(&:uid)})
     # 学生在当前所属租户的所属班级
     elsif self.is_pupil?
       result = [self.role_obj.location]
     # 其它返回空记录
     else
-      # do nothing
+      result = target_tenants.map{|item| item.locations}.flatten
     end
     result
+  end
+
+  def paper_questions
+    Mongodb::BankTestUserLink.where(user_id: self.id).map{|item| item.bank_test.paper_question if item.bank_test}.compact
+  end
+
+  def bank_tests
+    Mongodb::BankTestUserLink.where(user_id: self.id).map{|item| item.bank_test}.compact
   end
 
   ########私有方法: begin#######

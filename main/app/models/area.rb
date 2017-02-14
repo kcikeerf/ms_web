@@ -8,6 +8,7 @@ class Area < ActiveRecord::Base
   include InitUid
 
   has_many :tenants, foreign_key: "area_uid"
+  has_many :area_administrators, foreign_key: "area_uid"
 
   ########类方法定义：begin#######
   class << self
@@ -132,4 +133,7 @@ class Area < ActiveRecord::Base
     families.map{|f| f.tenants}.flatten
   end
 
+  def bank_tests
+    Mongodb::BankTestAreaLink.where(area_uid: self.uid).map{|item| item.bank_test}.compact
+  end
 end

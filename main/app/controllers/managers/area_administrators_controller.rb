@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
-#
 
-class Managers::ProjectAdministratorsController < ApplicationController
+class Managers::AreaAdministratorsController < ApplicationController
   layout 'manager_crud'
 
   respond_to :json, :html, :xml
@@ -10,8 +9,8 @@ class Managers::ProjectAdministratorsController < ApplicationController
 
   # 列表
   def index
-    @proj_admins = ProjectAdministrator.get_list(params)
-    respond_with({rows: @proj_admins, total: @proj_admins.total_count})
+    @area_admins = AreaAdministrator.get_list(params)
+    respond_with({rows: @area_admins, total: @area_admins.total_count})
   end
 
   # 创建
@@ -22,7 +21,7 @@ class Managers::ProjectAdministratorsController < ApplicationController
     data = {:status => 403 }
 
     begin
-      new_user.save_user(Common::Role::ProjectAdministrator, user_params)
+      new_user.save_user(Common::Role::AreaAdministrator, user_params)
       if new_user.errors && new_user.errors.messages.blank?
         status = 200
         data = {:status => 200, :message => "200" }
@@ -43,7 +42,7 @@ class Managers::ProjectAdministratorsController < ApplicationController
     data = {:status => 403 }
 
     begin
-      @user.update_user(Common::Role::ProjectAdministrator, user_params)
+      @user.update_user(Common::Role::AreaAdministrator, user_params)
       if @user.errors && @user.errors.messages.blank?
         status = 200
         data = {:status => 200, :message => "200" }
@@ -66,8 +65,8 @@ class Managers::ProjectAdministratorsController < ApplicationController
     data = {:status => 403 }
 
     begin
-      target_project_administrators = ProjectAdministrator.where(:uid=> params[:id])
-      target_project_administrators.each{|u| u.destroy_obj}
+      target_area_administrators = AreaAdministrator.where(:uid=> params[:id])
+      target_area_administrators.each{|u| u.destroy_obj}
       status = 200
       data = {:status => "200"}
     rescue Exception => ex
@@ -81,7 +80,7 @@ class Managers::ProjectAdministratorsController < ApplicationController
   private
   def get_user
     params.permit(:id)
-    proj_admin = ProjectAdministrator.find(params[:id])
+    proj_admin = AreaAdministrator.find(params[:id])
     @user = proj_admin.user
   end
 
@@ -97,7 +96,6 @@ class Managers::ProjectAdministratorsController < ApplicationController
       :subject, 
       :qq, 
       :phone,
-      :email,
-      :tenant_uids => [])
+      :email)
   end
 end

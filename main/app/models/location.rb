@@ -178,16 +178,21 @@ class Location < ActiveRecord::Base
 
   end
 
+  def bank_tests
+    Mongodb::BankTestLocationLink.where(loc_uid: self.uid).map{|item| item.bank_test}.compact
+  end
+  
+  ########私有方法: begin#######
   private
 
-  def get_a_teacher objs
-    result = nil
-    objs.compact!
-    return result if objs.blank?
-    objs.each{|obj|
-      result = Teacher.where(uid: obj.tea_uid).first
-      return result if result
-    }
-    return result
-  end 
+    def get_a_teacher objs
+      result = nil
+      objs.compact!
+      return result if objs.blank?
+      objs.each{|obj|
+        result = Teacher.where(uid: obj.tea_uid).first
+        return result if result
+      }
+      return result
+    end 
 end

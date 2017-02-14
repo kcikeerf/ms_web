@@ -1,2 +1,0 @@
-module Managers::TenantsHelper
-end

@@ -22,13 +22,14 @@ module Reports
       end
       post :list do
         target_user = current_user
-        if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? || target_user.is_project_administrator?
+        if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
           target_papers = target_user.role_obj.papers
-        elsif target_user.is_tenant_administrator?
-          target_papers = target_user.tenant.papers
+        elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
+          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten
         else
           target_papers = nil
         end
+
         unless target_papers.blank?
           target_papers.map{|target_pap|
             next unless target_pap
@@ -49,8 +50,6 @@ module Reports
                   :report_id => target_report._id.to_s,
                   :dt_update => target_report.dt_update.strftime("%Y-%m-%d %H:%M")
                 }
-              else
-                {}
               end
             else
               {
@@ -64,11 +63,46 @@ module Reports
                 :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, target_user)
               }
             end
-          }
+          }.compact
         else
-          [{}]
+          []
         end
       end
+
+      #
+      desc ''
+      params do
+        use :authenticate
+        #requires :quiz_type, type: String, allow_blank: false
+      end
+      post :list2 do
+        target_user = current_user
+        if target_user.is_area_administrator?
+          target_tests = target_user.role_obj.area.bank_tests
+        elsif target_user.is_tenant_administrator?
+          target_tests = target_user.accessable_tenants.bank_tests
+        elsif target_user.is_teacher?
+          target_tests = target_user.accessable_locations.bank_tests
+        elsif target_user.is_pupil?
+          target_tests = target_user.bank_tests
+        else
+          target_tests = []
+        end
+
+        target_tests.map{|t|
+          target_pap = t.paper_question
+          next unless target_pap
+          {
+            :paper_heading => target_pap.heading,
+            :quiz_type => Common::Locale::i18n("dict.#{target_pap.quiz_type}"),
+            :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
+            :report_version => "00016110",
+            :test_id => t.id.to_s,
+            :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(t.id.to_s, target_user)
+          }
+        }
+      end
+
     end
 
    end

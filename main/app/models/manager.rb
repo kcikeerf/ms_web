@@ -24,12 +24,13 @@ class Manager < ActiveRecord::Base
         menus: [
           {id: 101, name: Common::Locale::i18n("managers.menus.jue_se_guan_li"), icon: '', url: '/managers/roles'},
           {id: 102, name: Common::Locale::i18n("managers.menus.quan_xian_guan_li"), icon: '', url: '/managers/permissions'},
-          {id: 103, name: Common::Locale::i18n("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/project_administrators'},
-          {id: 104, name: Common::Locale::i18n("managers.menus.tenant_guan_li"), icon: '', url: '/managers/tenants'},
-          {id: 105, name: Common::Locale::i18n("managers.menus.tenant_yong_hu_guan_li"), icon: '', url: '/managers/tenant_administrators'},
-          {id: 106, name: Common::Locale::i18n("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},
-          {id: 107, name: Common::Locale::i18n("managers.menus.jiao_shi_guan_li"), icon: '', url: '/managers/teachers'},
-          {id: 108, name: Common::Locale::i18n("managers.menus.xue_sheng_guan_li"), icon: '', url: '/managers/pupils'}
+          {id: 103, name: Common::Locale::i18n("managers.menus.area_admin_guan_li"), icon: '', url: '/managers/area_administrators'},
+          {id: 104, name: Common::Locale::i18n("managers.menus.project_admin_guan_li"), icon: '', url: '/managers/project_administrators'},
+          {id: 105, name: Common::Locale::i18n("managers.menus.tenant_guan_li"), icon: '', url: '/managers/tenants'},
+          {id: 106, name: Common::Locale::i18n("managers.menus.tenant_yong_hu_guan_li"), icon: '', url: '/managers/tenant_administrators'},
+          {id: 107, name: Common::Locale::i18n("managers.menus.fen_xi_yuan_guan_li"), icon: '', url: '/managers/analyzers'},
+          {id: 108, name: Common::Locale::i18n("managers.menus.jiao_shi_guan_li"), icon: '', url: '/managers/teachers'},
+          {id: 109, name: Common::Locale::i18n("managers.menus.xue_sheng_guan_li"), icon: '', url: '/managers/pupils'}
         ]
       },
       {
