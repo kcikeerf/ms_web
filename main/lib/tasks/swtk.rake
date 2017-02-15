@@ -1257,7 +1257,7 @@ namespace :swtk do
           fdata = File.binread(f)
           str = fdata.force_encoding(Encoding::UTF_8)
           jdata = JSON.parse(str)
-          json_path = "./reports_warehouse/tests/#{target_test.id.to_s}/project/#{target_test.id.to_s}"
+          json_path = "#{base_path}/reports_warehouse/tests/#{target_test.id.to_s}/project/#{target_test.id.to_s}"
           if jdata["basic"]["tenant"].blank? || jdata["basic"]["grade"].blank? || jdata["basic"]["classroom"].blank? || jdata["basic"]["stu_number"].blank? || jdata["basic"]["name"].blank?
             puts "#{f}, invalid data"
             puts jdata["basic"]
