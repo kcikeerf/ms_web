@@ -37,7 +37,7 @@
 <% else %>
 		<tbody class="tenant_range_display_list">
     <% unless (target_tenants.blank? && @current_test && @current_test.tenants.blank?) %>
-		<% @current_test.tenant_list.each_with_index do |t,index| %>
+		<% @current_test_tenant_list.each_with_index do |t,index| %>
  			<tr class="tenant_result_list">
 				<td><%=index+1%></td>
 				<td><%= t[:tenant_name] %></td>
