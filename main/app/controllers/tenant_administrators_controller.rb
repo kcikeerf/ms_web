@@ -56,7 +56,7 @@ class TenantAdministratorsController < ApplicationController
 
   def filter_papers
     tests = @tenant.bank_tests
-    pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s }
+    pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s if t && t.bank_paper_pap  }.compact
     #初步过滤试卷范围
     @papers_filter = { 
       id: {'$in'=>pap_ids} 
