@@ -114,8 +114,14 @@ class Tenant < ActiveRecord::Base
   end
 
   def papers
-    Mongodb::BankPaperPap.where(:tenant_uid => self.uid).to_a + 
-    Mongodb::BankTestTenantLink.where(:tenant_uid => self.uid).map{|item| item.bank_test.bank_paper_pap}
+    # Mongodb::BankPaperPap.where(:tenant_uid => self.uid).to_a + 
+    # Mongodb::BankTestTenantLink.where(:tenant_uid => self.uid).map{|item| item.bank_test.bank_paper_pap}
+    tests =self.bank_tests
+    pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s if t && t.bank_paper_pap  }.compact
+    @papers_filter = { 
+      id: {'$in'=>pap_ids} 
+    }
+    Mongodb::BankPaperPap.where(@papers_filter).order({dt_update: :desc})
   end
 
   def area
