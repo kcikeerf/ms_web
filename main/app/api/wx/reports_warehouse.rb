@@ -75,6 +75,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
               target_papers = target_user.role_obj.papers
               path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
+              path_h[Common::Report::Group::Project][:value] += target_user.accessable_locations.map{|loc| loc.bank_tests.map{|t| t.id.to_s if t } if loc }.flatten.compact.uniq
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re]
 
             # 分析员
@@ -103,6 +104,7 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
               target_papers = target_user.tenant.papers
               path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
+              path_h[Common::Report::Group::Project][:value] += target_user.accessable_tenants.map{|tnt| tnt.bank_tests.map{|t| t.id.to_s if t } if tnt }.flatten.compact.uniq
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re] 
             # 项目管理员
             elsif target_user.is_project_administrator?
@@ -115,7 +117,18 @@ module ReportsWarehouse
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
               target_papers = target_user.role_obj.papers
               path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
-              path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re] 
+              path_h[Common::Report::Group::Project][:value] += target_user.accessable_tenants.map{|tnt| tnt.bank_tests.map{|t| t.id.to_s if t } if tnt }.flatten.compact.uniq
+              path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re]
+            elsif target_user.is_area_administrator?
+
+              start_index = Common::Report::Group::ListArr.find_index(Common::Report::Group::Project)
+
+              path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
+              path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
+              target_papers = target_user.role_obj.papers
+              path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
+              path_h[Common::Report::Group::Project][:value] += target_user.role_obj.area.bank_tests.map{|t| t.id.to_s if t }.flatten.compact.uniq
+              path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re]
             end
           end
           
