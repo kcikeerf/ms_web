@@ -127,9 +127,9 @@ var reportPage = {
 							reportPage.CurrentBreadCrumbChildren[args.data.length].resp = data;
 						} else {
 							var from = (args.data.length == 0 ) ? 0 : args.data.length ;
-							var to = (args.data.length == 0 ) ? 1 : args.data.length ;
-							reportPage.CurrentBreadCrumbChildren.splice(from,to);
+							reportPage.CurrentBreadCrumbChildren.splice(from,1);
 						}
+						console.log(reportPage.CurrentBreadCrumbChildren);
 					}
 
 					callback(args);
