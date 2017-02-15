@@ -1238,7 +1238,7 @@ namespace :swtk do
         url_arr = [
           "#{base_path}",
           "reports_warehouse",
-          "test",
+          "tests",
           target_test.id.to_s,
           "project",
           target_test.id.to_s
@@ -1247,17 +1247,17 @@ namespace :swtk do
         nav_arr = [
           "#{base_path}",
           "reports_warehouse",
-          "test",
+          "tests",
           target_test.id.to_s
         ]
-        update_nav_json nav_arr.join("/"), "test", "project", nav_item
+        update_nav_json nav_arr.join("/"), "tests", "project", nav_item
 
         Dir.glob(args[:target_path] + "/*.json").each{|f|
           puts f
           fdata = File.binread(f)
           str = fdata.force_encoding(Encoding::UTF_8)
           jdata = JSON.parse(str)
-          json_path = "./reports_warehouse/test/#{target_test.id.to_s}/project/#{target_test.id.to_s}"
+          json_path = "./reports_warehouse/tests/#{target_test.id.to_s}/project/#{target_test.id.to_s}"
           if jdata["basic"]["tenant"].blank? || jdata["basic"]["grade"].blank? || jdata["basic"]["classroom"].blank? || jdata["basic"]["stu_number"].blank? || jdata["basic"]["name"].blank?
             puts "#{f}, invalid data"
             puts jdata["basic"]
@@ -1296,7 +1296,7 @@ namespace :swtk do
           url_arr = [
             "#{base_path}",
             "reports_warehouse",
-            "test",
+            "tests",
             target_test.id.to_s,
             "project",
             target_test.id.to_s,
@@ -1307,7 +1307,7 @@ namespace :swtk do
           nav_arr = [
             "#{base_path}",
             "reports_warehouse",
-            "test",
+            "tests",
             target_test.id.to_s,
             "project",
             target_test.id.to_s
@@ -1338,7 +1338,7 @@ namespace :swtk do
           url_arr = [
             "#{base_path}",
             "reports_warehouse",
-            "test",
+            "tests",
             target_test.id.to_s,
             "project",
             target_test.id.to_s,
@@ -1351,7 +1351,7 @@ namespace :swtk do
           nav_arr = [
             "#{base_path}",
             "reports_warehouse",
-            "test",
+            "tests",
             target_test.id.to_s,
             "project",
             target_test.id.to_s,
@@ -1382,7 +1382,7 @@ namespace :swtk do
           url_arr = [
             "#{base_path}",
             "reports_warehouse",
-            "test",
+            "tests",
             target_test.id.to_s,
             "project",
             target_test.id.to_s,
@@ -1397,7 +1397,7 @@ namespace :swtk do
           nav_arr = [
             "#{base_path}",
             "reports_warehouse",
-            "test",
+            "tests",
             target_test.id.to_s,
             "project",
             target_test.id.to_s,

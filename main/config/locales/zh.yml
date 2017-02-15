@@ -156,6 +156,7 @@ zh:
       common:
         info:
         warn:
+          access_no_allowed: "无访问权限报告！"
         error:
           invalid_params: "请求参数无效！"
       grade:

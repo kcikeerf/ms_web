@@ -1,16 +1,10 @@
-<% @page_title = t('page.user_left_menu.my_home') %>
-<section>
-	<div class="container clearfix">
-		<!-- Nav tabs -->
-		<%= render 'shared/user/left_menu' %>
-		<!-- Tab panes -->
-		<div class="tab-content">
-			<div role="tabpanel" class="tab-pane active" id="home">
-				<div class="panel">
-					<!-- 基本信息 -->					
-					<%= render 'basic_info' %>
-				</div>
+<% content_for :work_field do %>
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="home">
+			<div class="panel">
+				<!-- 个人信息 -->					
+				<%= render 'shared/user/info' %>
 			</div>
 		</div>
 	</div>
-</section>
+<% end %>
