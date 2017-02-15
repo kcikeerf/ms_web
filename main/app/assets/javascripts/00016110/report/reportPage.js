@@ -126,8 +126,8 @@ var reportPage = {
 						if(data.basic){
 							reportPage.CurrentBreadCrumbChildren[args.data.length].resp = data;
 						} else {
-							var from = (args.data.length == 0) ? 0 : args.data.length -1 ;
-							var to = (args.data.length > 1) ? args.data.length -1 : 1;
+							var from = (args.data.length == 0 ) ? 0 : args.data.length ;
+							var to = (args.data.length == 0 ) ? 1 : args.data.length ;
 							reportPage.CurrentBreadCrumbChildren.splice(from,to);
 						}
 					}
