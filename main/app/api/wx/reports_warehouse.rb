@@ -69,7 +69,7 @@ module ReportsWarehouse
               start_index = Common::Report::Group::ListArr.find_index(Common::Report::Group::Pupil)
 
               path_h[Common::Report::Group::Pupil][:value] = target_user.role_obj.pupils.map{|item| item.uid}
-              path_h[Common::Report::Group::Klass][:value] = target_user.role_obj.locations.map{|item| item.uid}
+              path_h[Common::Report::Group::Klass][:value] = target_user.tenant.locations.map{|item| item.uid}
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:value] = [target_user.tenant.uid]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re] 
