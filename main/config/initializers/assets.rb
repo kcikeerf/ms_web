@@ -31,17 +31,5 @@ Rails.application.config.assets.precompile += [
 	'echarts.min.js', 
 	'echarts_themes/macarons.js', 
 	'echarts_themes/vintage.js',
-#managers
-    'managers/*',
-	# 'managers/mains.css', 
-	# 'managers/mains.js',
-	# 'managers/subject_checkpoints.css.scss', 
-	# 'managers/subject_checkpoints.js', 
-	# 'managers/checkpoints.css', 
-	# 'managers/selected_nodes_tree.js', 
-	# 'managers/node_subject_checkpoints.js', 
-	# 'managers/node_structure_catalog.js', 
-	# 'managers/node_catalog_checkpoint_combination.js',
-	# 'managers/node_catalog_checkpoint_display.js',
 	'jquery.remotipart.js',
 	'default/ques-bank.css']

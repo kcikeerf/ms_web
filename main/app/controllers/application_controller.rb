@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   before_action :set_locale, :authorize_access, :user_init
-  before_action :configure_permitted_parameters, if: :devise_controller? || :manager_controller?
+  before_action :configure_permitted_parameters, if: :devise_controller?# || :manager_controller?
 
   devise_group :person, contains: [:user, :manager]
   #before_action :authenticate_person!
@@ -13,18 +13,13 @@ class ApplicationController < ActionController::Base
     controller_name = controller.class.to_s
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
-    cond3 = (controller_name == "Managers::SessionsController" && action_name == "new")
-#    cond4 = (controller_name == "ReportsController" && action_name == "generate_reports")
-    if cond1 || cond2 || cond3# || cond4
+    if cond1 || cond2
       next
     end
 
     #authenticate_person!
-    if (controller_name =~ /^Managers.*$/) == 0
-      authenticate_manager!
-      #redirect_to new_manager_session_path unless current_manager
-    elsif (controller_name =~ /^Wx.*$/) != 0
-      authenticate_user! unless current_manager
+    if (controller_name =~ /^Wx.*$/) != 0
+      authenticate_user!
       #redirect_to new_user_session_path unless current_user
     end
   end
@@ -118,8 +113,6 @@ class ApplicationController < ActionController::Base
          @redirect_target = my_home_pupils_path
        else
        end
-     when :manager, Manager
-       managers_mains_path
      else
      end
   end
@@ -128,20 +121,11 @@ class ApplicationController < ActionController::Base
   def after_sign_out_path_for(resource)
      case resource
      when :user, User
-       p "users logout"
        root_path
-     when :manager, Manager
-       new_manager_session_path
      else
      end
   end
 
-  def authenticate_manager
-    authenticate_manager!
-    unless current_manager
-      redirect_to new_manager_session_path
-    end
-  end
   #######
 
   def response_json(status=403, data={})
