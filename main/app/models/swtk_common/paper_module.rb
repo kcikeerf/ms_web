@@ -4,6 +4,19 @@ module PaperModule
   module Paper
     module_function
 
+    Type = {}
+    %W{
+      xy_default
+      zh_dyzn
+      zh_fzqn
+      zh_rwdy
+      zh_kxjs
+      zh_xhxx
+      zh_jksh
+      zh_zrdd
+      zh_sjcx
+    }.each{|item| Type[item.to_sym] = Common::Locale::i18n("dict.#{item}")}    
+
     QuizType = {
       #语文
       :yu_wen => {},

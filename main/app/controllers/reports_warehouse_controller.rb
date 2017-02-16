@@ -114,7 +114,7 @@ class ReportsWarehouseController < ApplicationController
           response.headers['Content-Type'] = "application/json"
           send_file target_file_path
         else
-          render status: 200, :json => { status: 401, message: "Access not allowed!" }.to_json
+          render status: 200, :json => { status: 401, message: Common::Locale::i18n("reports.messages.common.warn.access_no_allowed") }.to_json
         end
       # elsif ((path_arr&["nav", "ckps_qzps_mapping", "qzps_ckps_mapping", "paper_info"]).size > 0)
       #   data = File.open(target_file_path, 'rb').read

@@ -8,13 +8,19 @@ class Mongodb::BankTest
   before_save :set_update_time_stamp
 
   belongs_to :bank_paper_pap, class_name: "Mongodb::BankPaperPap"
-  has_many :bank_test_tenant_links, class_name: "Mongodb::BankTestTenantLink", dependent: :delete
-  has_many :bank_test_task_links, class_name: "Mongodb::BankTestTaskLink", dependent: :delete
-  has_many :bank_test_cloud_resource_links, class_name: "Mongodb::BankTestCloudResourceLink"
+  belongs_to :paper_question, class_name: "Mongodb::PaperQuestion"
 
-  scope :by_user, ->(user_id) { where(user_id: user_id) }
+  has_many :bank_test_task_links, class_name: "Mongodb::BankTestTaskLink", dependent: :delete
+  has_many :bank_test_area_links, class_name: "Mongodb::BankTestAreaLink", dependent: :delete
+  has_many :bank_test_tenant_links, class_name: "Mongodb::BankTestTenantLink", dependent: :delete
+  has_many :bank_test_location_links, class_name: "Mongodb::BankTestLocationLink", dependent: :delete
+  has_many :bank_test_user_links, class_name: "Mongodb::BankTestUserLink", dependent: :delete
+
+  scope :by_user, ->(id) { where(user_id: id) }
+  scope :by_type, ->(str) { where(quiz_type: str) }
 
   field :name, type: String
+  field :quiz_type, type: String
   field :quiz_date, type: DateTime
   field :user_id, type: String
   field :report_version, type: String

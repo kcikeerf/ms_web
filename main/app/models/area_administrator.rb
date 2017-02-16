@@ -1,15 +1,14 @@
 # -*- coding: UTF-8 -*-
 
-class ProjectAdministrator < ActiveRecord::Base
+class AreaAdministrator < ActiveRecord::Base
   self.primary_key = "uid"
 
   #concerns
   include TimePatch
   include InitUid
 
-  belongs_to :user
-  has_many :tenants, through: :project_administrator_tenant_links
-  has_many :project_administrator_tenant_links, foreign_key: "project_administrator_uid", dependent: :destroy
+  belongs_to :user, foreign_key: "user_id"
+  belongs_to :area, foreign_key: "area_uid"
 
   # class method definition begin
   class << self
@@ -32,8 +31,6 @@ class ProjectAdministrator < ActiveRecord::Base
         end
 
         h = {
-          :"tenant_uids[]" => item.tenant_ids,
-          :tenants_range => item.tenants.nil?? "":item.tenants.map(&:name_cn).join("<br>"),
           :user_name => item.user.nil?? "":item.user.name,
           :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
           :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
@@ -53,11 +50,12 @@ class ProjectAdministrator < ActiveRecord::Base
     area_ird = params[:province_rid] unless params[:province_rid].blank?
     area_rid = params[:city_rid] unless params[:city_rid].blank?
     area_rid = params[:district_rid] unless params[:district_rid].blank?
+    target_area = Area.where(rid: area_rid).first
     paramsh = {
       :user_id => params[:user_id],
       :name => params[:name],
-      :area_rid => area_rid,
-      :tenant_ids =>params[:tenant_uids]
+      :area_uid => target_area.uid,
+      :area_rid => target_area.rid
     }
     update_attributes(paramsh)
     save!
@@ -70,11 +68,4 @@ class ProjectAdministrator < ActiveRecord::Base
     end
   end
 
-  def papers
-    Mongodb::BankPaperPap.by_user(self.user.id)
-  end
-
-  def area
-    Area.where(rid: self.area_rid).first
-  end
 end

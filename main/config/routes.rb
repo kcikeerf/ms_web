@@ -156,45 +156,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # resource :grade_reports do
-  #   member do
-  #     get 'index'
-  #   end
-  # end
-
-  # resource :class_reports do
-  #   member do
-  #     get 'index'
-  #   end
-  # end
-
-  # resource :pupil_reports do
-  #   member do
-  #     get 'index'
-  #   end
-  # end
-
-  # resource :gradereport do
-  #   member do
-  #     get 'index', to: "gradereport#index"
-  #     get 'demo',to: "gradereport#demo"
-  #   end
-  # end
-
-  # resource :classreport do
-  #   member do
-  #     get 'index', to: "classreport#index"
-  #     get 'demo',to: "classreport#demo"
-  #   end
-  # end
-
-  # resource :pupilreport do
-  #   member do
-  #     get 'index', to: "pupilreport#index"
-  #     get 'demo', to: "pupilreport#demo"
-  #   end
-  # end
-
   resource :profile, only: [] do 
     get 'message'
     get 'account_binding'
@@ -203,28 +164,28 @@ Rails.application.routes.draw do
     get 'modify_mobile_succeed'
     get 'modify_email_succeed'
     match 'init', via: [:get, :post]
-    match 'binding_or_unbinding_mobile', via: [:get, :post]
-    match 'binding_or_unbinding_email', via: [:get, :post]
-    match 'verified_email', via: [:get, :post]
-    match 'modify_email', via: [:get, :post]
-    match 'verified_mobile', via: [:get, :post]
-    match 'modify_mobile', via: [:get, :post]
+    match 'binding_or_unbinding_mobile', via: [:get]#[:get, :post]
+    match 'binding_or_unbinding_email', via: [:get]#[:get, :post]
+    match 'verified_email', via: [:get]#[:get, :post]
+    match 'modify_email', via: [:get]#[:get, :post]
+    match 'verified_mobile', via: [:get]#[:get, :post]
+    match 'modify_mobile', via: [:get]#[:get, :post]
     post 'head_image_upload'
     post 'save_info'
   end
 
   resources :messages, only: [] do 
     collection do 
-      post 'send_sms_auth_number'
-      post 'send_email_auth_number'
-      post 'send_sms_forgot_password'
-      post 'send_email_forgot_password'
+      # post 'send_sms_auth_number'
+      # post 'send_email_auth_number'
+      # post 'send_sms_forgot_password'
+      # post 'send_email_forgot_password'
     end
   end
   
   get '/ckeditors/urlimage'=> "ckeditor#urlimage"
 
-  resources :librarys, :online_tests
+  # resources :librarys, :online_tests
   # defined routes for user authentication
   devise_for :users,
     controllers: { sessions: 'users/sessions',
@@ -238,62 +199,6 @@ Rails.application.routes.draw do
     post 'users/passwords/user_captcha_validate'
   end
 
-  ActiveAdmin.routes(self)
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
-
-  # You can have the root of your site routed with "root"
-  # root 'welcome#index'
-
-  # Example of regular route:
-  #   get 'products/:id' => 'catalog#view'
-
-  # Example of named route that can be invoked with purchase_url(id: product.id)
-  #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
-
-  # Example resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Example resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Example resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Example resource route with more complex sub-resources:
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', on: :collection
-  #     end
-  #   end
-
-  # Example resource route with concerns:
-  #   concern :toggleable do
-  #     post 'toggle'
-  #   end
-  #   resources :posts, concerns: :toggleable
-  #   resources :photos, concerns: :toggleable
-
-  # Example resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-  
   #######################################
   ### errors
   

@@ -1208,6 +1208,228 @@ namespace :swtk do
       end
     end
 
+    desc "temporary use: import zhiduoxing json"
+    task :import_zhiduoxing_json,[:base_path,:test_name,:test_type,:test_date,:target_path] => :environment do |t, args|
+      begin
+        if args[:test_name].blank? || args[:test_type].blank? || args[:target_path].blank?
+          raise "Command format not correct."
+        end
+
+        base_path = args[:base_path].blank?? "." : args[:base_path]
+
+        target_pap = Mongodb::PaperQuestion.new({
+          :name => args[:test_name],
+          :heading => args[:test_name],
+          :quiz_type => args[:test_type],
+          :quiz_date => args[:test_date]
+        })
+        unless target_pap.save
+          raise "Mongodb::PaperQuestion save failed"
+        end
+
+        target_test = Mongodb::BankTest.new({
+          :name => args[:test_name],
+          :quiz_type => args[:test_type],
+          :quiz_date => args[:test_date],
+          :paper_question_id => target_pap._id.to_s
+        })
+        unless target_test.save
+          raise "Mongodb::BankTest save failed"
+        end
+
+        # test nav
+        url_arr = [
+          "#{base_path}",
+          "reports_warehouse",
+          "tests",
+          target_test.id.to_s,
+          "project",
+          target_test.id.to_s
+        ]
+        nav_item = [target_test.id.to_s, { :label => target_test.name, :report_url =>  url_arr.join("/") + ".json" }]
+        nav_arr = [
+          "#{base_path}",
+          "reports_warehouse",
+          "tests",
+          target_test.id.to_s
+        ]
+        update_nav_json nav_arr.join("/"), "tests", "project", nav_item
+
+        Dir.glob(args[:target_path] + "/*.json").each{|f|
+          puts f
+          fdata = File.binread(f)
+          str = fdata.force_encoding(Encoding::UTF_8)
+          jdata = JSON.parse(str)
+          json_path = "#{base_path}/reports_warehouse/tests/#{target_test.id.to_s}/project/#{target_test.id.to_s}"
+          if jdata["basic"]["tenant"].blank? || jdata["basic"]["grade"].blank? || jdata["basic"]["classroom"].blank? || jdata["basic"]["stu_number"].blank? || jdata["basic"]["name"].blank?
+            puts "#{f}, invalid data"
+            puts jdata["basic"]
+            next
+          end
+
+          # tenant
+          target_tenant = Tenant.where(name:  Common::Locale::hanzi2pinyin(jdata["basic"]["tenant"].strip) ).first
+          unless target_tenant
+            puts "#{f}, invalid tenant"
+            next
+          end
+          json_path += "/grade/#{target_tenant.uid}"
+
+          link_params = {
+            :bank_test_id => target_test.id.to_s,
+            :tenant_uid => target_tenant.uid
+          }
+          target_link = Mongodb::BankTestTenantLink.where(link_params) 
+          if target_link.blank?
+            target_link = Mongodb::BankTestTenantLink.new(link_params)
+            target_link.save!
+          end
+
+          link_params = {
+            :bank_test_id => target_test.id.to_s,
+            :area_uid => target_tenant.area.uid
+          }
+          target_link = Mongodb::BankTestAreaLink.where(link_params) 
+          if target_link.blank?
+            target_link = Mongodb::BankTestAreaLink.new(link_params)
+            target_link.save!
+          end
+
+          # project nav
+          url_arr = [
+            "#{base_path}",
+            "reports_warehouse",
+            "tests",
+            target_test.id.to_s,
+            "project",
+            target_test.id.to_s,
+            "grade",
+            target_tenant.uid
+          ]
+          nav_item = [target_tenant.name, { :label => target_tenant.name_cn, :report_url =>  url_arr.join("/") + ".json" }]
+          nav_arr = [
+            "#{base_path}",
+            "reports_warehouse",
+            "tests",
+            target_test.id.to_s,
+            "project",
+            target_test.id.to_s
+          ]
+          update_nav_json nav_arr.join("/"), "project", "grade", nav_item
+
+          # location
+          grade = Common::Locale::hanzi2pinyin jdata["basic"]["grade"].strip
+          klass = Common::Locale::hanzi2pinyin jdata["basic"]["classroom"].strip
+          target_location = target_tenant.locations.where(grade: grade, classroom: klass).order(dt_update: :desc).first
+          unless target_location
+            puts "#{f}, invalid location"
+            next
+          end
+          json_path += "/klass/#{target_location.uid}"
+
+          link_params = {
+            :bank_test_id => target_test.id.to_s,
+            :loc_uid => target_location.uid
+          }
+          target_link = Mongodb::BankTestLocationLink.where(link_params) 
+          if target_link.blank?
+            target_link = Mongodb::BankTestLocationLink.new(link_params)
+            target_link.save!
+          end
+
+          # grade nav
+          url_arr = [
+            "#{base_path}",
+            "reports_warehouse",
+            "tests",
+            target_test.id.to_s,
+            "project",
+            target_test.id.to_s,
+            "grade",
+            target_tenant.uid,
+            "klass",
+            target_location.uid
+          ]
+          nav_item = [target_location.classroom, { :label => Common::Locale::i18n("dict.#{target_location.classroom}"), :report_url =>  url_arr.join("/") + ".json" }]
+          nav_arr = [
+            "#{base_path}",
+            "reports_warehouse",
+            "tests",
+            target_test.id.to_s,
+            "project",
+            target_test.id.to_s,
+            "grade",
+            target_tenant.uid
+          ]
+          update_nav_json nav_arr.join("/"), "grade", "klass", nav_item
+
+          # pupil
+          user_name = target_tenant.number + jdata["basic"]["stu_number"].strip + Common::Locale.hanzi2abbrev(jdata["basic"]["name"].strip)
+          target_user= User.where(name: user_name).first
+          unless target_user
+            puts "#{f}, invalid pupil: #{user_name}"
+            next
+          end
+
+          link_params = {
+            :bank_test_id => target_test.id.to_s,
+            :user_id => target_user.id
+          }
+          target_link = Mongodb::BankTestUserLink.where(link_params)
+          if target_link.blank?
+            target_link = Mongodb::BankTestUserLink.new(link_params)
+            target_link.save!
+          end
+
+          # location nav
+          url_arr = [
+            "#{base_path}",
+            "reports_warehouse",
+            "tests",
+            target_test.id.to_s,
+            "project",
+            target_test.id.to_s,
+            "grade",
+            target_tenant.uid,
+            "klass",
+            target_location.uid,
+            "pupil",
+            target_user.role_obj.uid
+          ]
+          nav_item = [target_user.role_obj.stu_number, { :label => target_user.role_obj.name+"(#{target_user.role_obj.stu_number})", :report_url =>  url_arr.join("/") + ".json" }]
+          nav_arr = [
+            "#{base_path}",
+            "reports_warehouse",
+            "tests",
+            target_test.id.to_s,
+            "project",
+            target_test.id.to_s,
+            "grade",
+            target_tenant.uid,
+            "klass",
+            target_location.uid
+          ]
+          update_nav_json nav_arr.join("/"), "klass", "pupil", nav_item
+
+          json_path += "/pupil"
+          FileUtils.mkdir_p json_path
+          json_path += "/#{target_user.pupil.uid}.json"
+          FileUtils.cp f,json_path
+        }
+      rescue Exception => ex
+        target_pap.destroy
+        target_test.destroy
+        Mongodb::BankTestAreaLink.delete_all(:bank_test_id => target_test.id.to_s)
+        Mongodb::BankTestTenantLink.delete_all(:bank_test_id => target_test.id.to_s)
+        Mongodb::BankTestLocationLink.delete_all(:bank_test_id => target_test.id.to_s)
+        Mongodb::BankTestUserLink.delete_all(:bank_test_id => target_test.id.to_s)
+        puts "exception: #{ex.message}"
+        puts ex.backtrace
+        exit -1
+      end
+
+    end
+
     def find_all_pupil_report_urls base_path, search_path, urls=[]
       fdata = File.open(search_path + "/nav.json", 'rb').read
       jdata = JSON.parse(fdata)
@@ -1221,6 +1443,32 @@ namespace :swtk do
         end
       }
       return urls
+    end
+
+    def update_nav_json nav_path, parent_group, group_type, nav_item
+      begin
+        FileUtils.mkdir_p(nav_path) unless File.directory?(nav_path)
+        nav_json_path = nav_path + "/nav.json"
+        if File.exist?(nav_json_path)
+          fdata = File.binread(nav_json_path)
+          str = fdata.force_encoding(Encoding::UTF_8)
+          jdata = JSON.parse(str)
+
+          nav_items_arr = jdata[parent_group]
+          unless nav_items_arr.assoc(nav_item[0]).blank?
+            return true
+          else
+            jdata[parent_group] = Common::insert_item_to_arr_with_order(group_type, nav_items_arr, nav_item)
+          end        
+        else
+          jdata = { parent_group => [nav_item]}
+        end
+        File.write(nav_json_path, jdata.to_json)
+      rescue Exception => ex
+        puts ex.message
+        puts ex.backtrace
+        return false
+      end
     end
 
   end

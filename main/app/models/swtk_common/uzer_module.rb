@@ -23,5 +23,9 @@ module UzerModule
       User.where(id: user_id).first
     end
 
+    def format_user_name args=[]
+      args.join(Common::Uzer::UserNameSperator)
+    end
+
   end
 end

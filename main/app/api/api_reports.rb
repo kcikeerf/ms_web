@@ -22,32 +22,36 @@ module ApiReports
 
       end
       get :list do
-        if @current_user.is_pupil? || @current_user.is_teacher? || @current_user.is_analyzer? || @current_user.is_project_administrator?
-          target_papers = @current_user.role_obj.papers
-        elsif @current_user.is_tenant_administrator?
-          target_papers = @current_user.tenant.papers
+        target_user = @current_user
+        if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
+          target_papers = target_user.role_obj.papers
+        elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
+          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten
         else
           target_papers = nil
         end
+
         unless target_papers.blank?
           target_papers.map{|target_pap|
             next unless target_pap
             if target_pap.bank_tests.blank?
-              target_report = Mongodb::PupilReport.where(pup_uid: target_pap.id.to_s).first
-              rpt_h = JSON.parse(target_report.report_json)
-              {
-                :paper_heading => target_pap.heading,
-                :subject => rpt_h["basic"]["subject"],
-                :quiz_type => rpt_h["basic"]["quiz_type"],
-                :quiz_date => rpt_h["basic"]["quiz_date"],
-                :score => rpt_h["basic"]["score"],
-                :value_ratio => rpt_h["basic"]["value_ratio"],
-                :class_rank => rpt_h["basic"]["class_rank"],
-                :grade_rank => rpt_h["basic"]["grade_rank"],
-                :report_version => "000016090",
-                :report_id => target_report._id.to_s,
-                :dt_update => target_report.dt_update.strftime("%Y-%m-%d %H:%M")
-              }
+              if target_user.is_pupil? 
+                target_report = Mongodb::PupilReport.where(pup_uid: target_user.role_obj.uid).first
+                rpt_h = JSON.parse(target_report.report_json)
+                {
+                  :paper_heading => target_pap.heading,
+                  :subject => rpt_h["basic"]["subject"],
+                  :quiz_type => rpt_h["basic"]["quiz_type"],
+                  :quiz_date => rpt_h["basic"]["quiz_date"],
+                  :score => rpt_h["basic"]["score"],
+                  :value_ratio => rpt_h["basic"]["value_ratio"],
+                  :class_rank => rpt_h["basic"]["class_rank"],
+                  :grade_rank => rpt_h["basic"]["grade_rank"],
+                  :report_version => "000016090",
+                  :report_id => target_report._id.to_s,
+                  :dt_update => target_report.dt_update.strftime("%Y-%m-%d %H:%M")
+                }
+              end
             else
               {
                 :paper_heading => target_pap.heading,
@@ -57,14 +61,48 @@ module ApiReports
                 :score => target_pap.score,
                 :report_version => "00016110",
                 :test_id => target_pap.bank_tests[0].id.to_s,
-                :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, @current_user)
+                :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, target_user)
               }
             end
-          }
+          }.compact
         else
-          [{}]
+          []
         end
       end # api list end
+
+
+      #
+      desc ''
+      params do
+
+      end
+      post :list2 do
+        target_user = current_user
+        if target_user.is_area_administrator?
+          target_tests = target_user.role_obj.area.bank_tests
+        elsif target_user.is_tenant_administrator?
+          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten.uniq
+        elsif target_user.is_teacher?
+          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten.uniq
+        elsif target_user.is_pupil?
+          target_tests = target_user.bank_tests
+        else
+          target_tests = []
+        end
+
+        target_tests.map{|t|
+          target_pap = t.paper_question
+          next unless target_pap
+          {
+            :paper_heading => target_pap.heading,
+            :quiz_type => Common::Locale::i18n("dict.#{target_pap.quiz_type}"),
+            :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
+            :report_version => "00016110",
+            :test_id => t.id.to_s,
+            :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(t.id.to_s, target_user)
+          }
+        }
+      end
 
       ###########
 

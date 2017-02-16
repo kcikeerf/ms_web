@@ -123,7 +123,13 @@ var reportPage = {
 							reportPage.CurrentBreadCrumbChildren = args.data.slice(0);
 						}
 					} else if (options.ajax_type == "crumb_children") {
-						reportPage.CurrentBreadCrumbChildren[args.data.length].resp = data;
+						if(data.basic){
+							reportPage.CurrentBreadCrumbChildren[args.data.length].resp = data;
+						} else {
+							var from = (args.data.length == 0 ) ? 0 : args.data.length ;
+							reportPage.CurrentBreadCrumbChildren.splice(from,1);
+						}
+						console.log(reportPage.CurrentBreadCrumbChildren);
 					}
 
 					callback(args);
