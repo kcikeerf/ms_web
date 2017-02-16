@@ -48,7 +48,7 @@ class ReportsWarehouseController < ApplicationController
           start_index = Common::Report::Group::ListArr.find_index(Common::Report::Group::Pupil)
 
           path_h[Common::Report::Group::Pupil][:value] = current_user.role_obj.pupils.map{|item| item.uid}
-          path_h[Common::Report::Group::Klass][:value] = current_user.role_obj.locations.map{|item| item.uid}
+          path_h[Common::Report::Group::Klass][:value] = current_user.tenant.locations.map{|item| item.uid}
           path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
           path_h[Common::Report::Group::Grade][:value] = [current_user.tenant.uid]
           target_papers = current_user.role_obj.papers
