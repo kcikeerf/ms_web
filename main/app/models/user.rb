@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
   has_many :wx_user_mappings, foreign_key: "user_id"
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
+  has_many :user_skope_links, foreign_key: "user_id"
+  has_many :skopes, through: :user_skope_links
 
   before_create :set_role, :set_authentication_token
 

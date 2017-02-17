@@ -55,6 +55,22 @@ module ApiAuthHelper
     target_token 
   end
 
+  def autheticate_scopes! category_str=nil
+    target_skopes = current_user.skopes
+    target_skope_rules = target_skopes.map{|item|
+      category.blank?? item.skope_rules : item.skope_rules.where(category: category_str)
+    }.flatten.uniq
+    target_rules = target_skope_rules.sort{|a,b| b.priority <=> a.priority }
+    target_rules.each{|r|
+      case r.category
+      when "report"
+
+      when "paper"
+
+      end
+    }
+  end
+
   def current_user
     # if white_list_domain?
     #   authenticate_token!
@@ -70,7 +86,8 @@ module ApiAuthHelper
   end
 
   ####### 微信 ######
-  # 获取登录的微信账户 
+  # 获取登录的微信账户
+
   def current_wx_user
     target_wx_user = WxUser.where(:wx_openid => params[:wx_openid]).first
     unless target_wx_user

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170212130213) do
+ActiveRecord::Schema.define(version: 20170217074022) do
 
   create_table "analyzers", primary_key: "uid", force: :cascade do |t|
     t.string   "user_id",    limit: 255
@@ -404,6 +404,27 @@ ActiveRecord::Schema.define(version: 20170212130213) do
     t.string   "tenant_uid",   limit: 255
   end
 
+  create_table "skope_rules", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "category",   limit: 255
+    t.integer  "priority",   limit: 4
+    t.string   "rkey",       limit: 255
+    t.string   "rvalue",     limit: 255
+    t.string   "desc",       limit: 255
+    t.string   "skope_id",   limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "skope_rules", ["category"], name: "index_skope_rules_on_category", using: :btree
+
+  create_table "skopes", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "desc",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "swtk_configs", primary_key: "uid", force: :cascade do |t|
     t.string   "name",      limit: 255
     t.string   "value",     limit: 255
@@ -473,6 +494,16 @@ ActiveRecord::Schema.define(version: 20170212130213) do
   end
 
   add_index "tenants", ["number", "name"], name: "index_tenants_on_number_and_name", using: :btree
+
+  create_table "user_skope_links", force: :cascade do |t|
+    t.string   "user_id",    limit: 255
+    t.string   "skope_id",   limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "user_skope_links", ["skope_id"], name: "index_user_skope_links_on_skope_id", using: :btree
+  add_index "user_skope_links", ["user_id"], name: "index_user_skope_links_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "",    null: false
