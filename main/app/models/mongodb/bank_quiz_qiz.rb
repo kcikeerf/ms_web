@@ -38,11 +38,7 @@ class Mongodb::BankQuizQiz
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
-  has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
-  has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
   has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete 
-  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
-
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
 
   def save_quiz params
