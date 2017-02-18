@@ -35,6 +35,7 @@ module Reports
         unless target_papers.blank?
           target_papers.map{|target_pap|
             next unless target_pap
+            next if target_pap.paper_status != Common::Paper::Status::ReportCompleted
             if target_pap.bank_tests.blank?
               if target_user.is_pupil? 
                 target_report = Mongodb::PupilReport.where(pup_uid: target_user.role_obj.uid).first
