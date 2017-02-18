@@ -125,7 +125,7 @@ module ReportsWarehouse
 
               path_h[Common::Report::Group::Klass][:allowed_file_regx] += [nav_re]
               path_h[Common::Report::Group::Grade][:allowed_file_regx] += [nav_re]
-              target_papers = target_user.role_obj.papers
+              target_papers = target_user.accessable_tenants.map{|tnt| tnt.papers }.flatten.uniq.compact
               path_h[Common::Report::Group::Project][:value] = Mongodb::BankTest.where(bank_paper_pap_id: {"$in" => target_papers.only(:_id).map{|a| a._id.to_s }}).map{|item| item.id.to_s}
               path_h[Common::Report::Group::Project][:value] += target_user.role_obj.area.bank_tests.map{|t| t.id.to_s if t }.flatten.compact.uniq
               path_h[Common::Report::Group::Project][:allowed_file_regx] += [paper_info_re, nav_re]
