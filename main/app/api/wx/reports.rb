@@ -105,7 +105,7 @@ module Reports
             :test_id => t.id.to_s,
             :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(t.id.to_s, target_user)
           }
-        }
+        }.compact
       end
 
     end
