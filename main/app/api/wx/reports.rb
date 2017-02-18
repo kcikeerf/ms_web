@@ -25,10 +25,12 @@ module Reports
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
           target_papers = target_user.role_obj.papers
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
-          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten.uniq.compact
+          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten
         else
-          target_papers = nil
+          target_papers = []
         end
+        target_papers.compact!
+        target_papers.uniq!
 
         unless target_papers.blank?
           target_papers.map{|target_pap|
@@ -80,14 +82,16 @@ module Reports
         if target_user.is_area_administrator?
           target_tests = target_user.role_obj.area.bank_tests
         elsif target_user.is_tenant_administrator?
-          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten.uniq
+          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten
         elsif target_user.is_teacher?
-          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten.uniq
+          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten
         elsif target_user.is_pupil?
           target_tests = target_user.bank_tests
         else
           target_tests = []
         end
+        target_tests.compact!
+        target_tests.uniq!
 
         target_tests.map{|t|
           target_pap = t.paper_question
