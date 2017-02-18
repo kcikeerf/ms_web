@@ -25,7 +25,7 @@ module Reports
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
           target_papers = target_user.role_obj.papers
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
-          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten
+          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten.uniq.compact
         else
           target_papers = nil
         end
