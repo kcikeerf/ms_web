@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 class User < ActiveRecord::Base
   attr_accessor :role_name, :login, :password_confirmation
 
@@ -9,11 +11,18 @@ class User < ActiveRecord::Base
   belongs_to :role
   has_one :image_upload
 
-  has_many :wx_user_mappings, foreign_key: "user_id"
+  has_many :wx_user_mappings, foreign_key: "user_id", dependent: :destroy
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
-  has_many :user_skope_links, foreign_key: "user_id"
+  has_many :user_skope_links, foreign_key: "user_id", dependent: :destroy
   has_many :skopes, through: :user_skope_links
+
+  #
+  belongs_to :area
+  has_many :user_tenant_links, foreign_key: "user_id", dependent: :destroy
+  has_many :tenants, through: :user_tenant_links
+  has_many :user_location_links, foreign_key: "user_id", dependent: :destroy
+  has_many :locations, through: :user_location_links
 
   before_create :set_role, :set_authentication_token
 
@@ -141,6 +150,34 @@ class User < ActiveRecord::Base
         :phone => params[:phone] || "",
         :email => params[:email] || ""
       }
+
+      area_rid = params[:province_rid] unless params[:province_rid].blank?
+      area_rid = params[:city_rid] unless params[:city_rid].blank?
+      area_rid = params[:district_rid] unless params[:district_rid].blank?
+      target_area = Area.where(rid: area_rid).first
+      paramsh[:area_uid] = target_area.uid if target_area
+
+      unless params[:tenant_uids].blank?
+        self.user_tenant_links.destroy_all
+        params[:tenant_uids].each{|tenant_uid|
+          UserTenantLink.new({
+            :user_id => self.id,
+            :tenant_uid => tenant_uid
+          }).save! if tenant_uid
+        }
+      end
+
+      unless params[:loc_uids].blank?
+        self.user_location_links.destroy_all
+        params[:loc_uids].each{|loc_uid|
+          UserLocationLink.new({
+            :user_id => self.id,
+            :loc_uid => loc_uid
+          }).save! if loc_uid
+        }
+      end
+
+      paramsh[:role_id] = params[:role_id] unless params[:role_id].blank?
       return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
@@ -162,6 +199,34 @@ class User < ActiveRecord::Base
         paramsh[:password_confirmation] = params[:password_confirmation]
         paramsh[:initial_password] = ""
       end
+
+      area_rid = params[:province_rid] unless params[:province_rid].blank?
+      area_rid = params[:city_rid] unless params[:city_rid].blank?
+      area_rid = params[:district_rid] unless params[:district_rid].blank?
+      target_area = Area.where(rid: area_rid).first
+      paramsh[:area_uid] = target_area.uid if target_area
+
+      unless params[:tenant_uids].blank?
+        self.user_tenant_links.destroy_all
+        params[:tenant_uids].each{|tenant_uid|
+          UserTenantLink.new({
+            :user_id => self.id,
+            :tenant_uid => tenant_uid
+          }).save! if tenant_uid
+        }
+      end
+
+      unless params[:loc_uids].blank?
+        self.user_location_links.destroy_all
+        params[:loc_uids].each{|loc_uid|
+          UserLocationLink.new({
+            :user_id => self.id,
+            :loc_uid => loc_uid
+          }).save! if loc_uid
+        }
+      end
+
+      paramsh[:role_id] = params[:role_id] unless params[:role_id].blank?
       return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
@@ -310,59 +375,33 @@ class User < ActiveRecord::Base
       Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, api_permission_key, 1
     }
 
-    ####### 地理组织所属 #######
-    path_arr = []
-    # 地理位置信息redis缓存
-    organization_key = base_key + "/organization"
-    # /省/<id>/市/<id>/区/<id>
-    if is_project_administrator?
-      target_area = self.role_obj.area
-    else
-      target_area = self.tenant.area
-    end
-    pcd_h = target_area.pcd_h
-    organization_key += "/province/#{pcd_h[:province][:uid]}/city/#{pcd_h[:city][:uid]}/district/#{pcd_h[:district][:uid]}"
+    ####### Skope #######
+    skope_base_key = base_key + "/skope"
+    skope_rules = self.skopes.map{|item| item.skope_rules }.flatten
+    skope_rules.compact!
+    skope_rules.uniq!
+    skope_rules.sort!{|a,b| b.priority <=> a.priority}
 
-    # /学校/<id>/班级/<id>/学生/<id>
-    if is_pupil?
-      organization_key += "/tenant/#{self.tenant.uid}/klass/#{self.role_obj.location.uid}/pupil/#{self.role_obj.uid}"
-      path_arr << organization_key
-    elsif is_teacher?
-      path_arr = self.accessable_locations.map{|loc| 
-         organization_key + "/tenant/#{self.tenant.uid}/klass/#{loc.uid}"
-      }
-    # elsif is_analyzer?
-    #   organization_key += "/tenant/#{self.tenant.uid}"
-    #   path_arr << organization_key
-    # elsif is_tenant_administrator?
-    #   organization_key += "/tenant/#{self.tenant.uid}"
-    #   path_arr << organization_key
-    elsif is_project_administrator?
-      path_arr = self.accessable_tenants.map{|tnt|
-        organization_key + "/tenant/#{tnt.uid}"
-      }
-    else
-      organization_key += "/tenant/#{self.tenant.uid}"
-      path_arr << organization_key
-    end
-    path_arr.each{|item|
-      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, item, 1
+    target_area = self.area
+    pcd_h = target_area.pcd_h
+    target_tenants = self.tenants
+    target_locations = self.locations
+
+    skope_re = {
+      :province => "(#{pcd_h[:province][:uid]})",
+      :city => "(#{pcd_h[:city][:uid]})",
+      :district => "(#{pcd_h[:district][:uid]})",
+      :tenant => "(#{target_tenants.map(&:uid).join("|")})",
+      :klass => "(#{target_locations.map(&:uid).join("|")})"
+    }
+    skope_re[:pupil] = "(#{self.authentication_token})"
+
+    skope_rules.each{|item|
+      skope_key = skope_base_key + "/#{item.rkey}"
+      skope_value = (item.category == "skope")? skope_re[item.rkey.to_sym] : item.rvalue
+      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, item, skope_value
     }
 
-    ####### 过滤器定义 #######
-    # filter缓存
-    # filter_key = base_key + "/filter"
-    # if is_teacher?
-    #   if self.role_obj.is_head_teacher?
-        
-    #   else
-
-    #   end
-    # elsif is_analyzer?
-
-    # else
-
-    # end
   end
 
   def paper_questions
@@ -390,7 +429,13 @@ class User < ActiveRecord::Base
     end
 
     def set_authentication_token
-      self.authentication_token = SecureRandom.hex(Common::AuthUserConfig::AuthTokenLength)
+      self.authentication_token = loop do 
+        token = Common::AuthConfig::random_codes(Common::Uzer::AuthTokenLength)
+        old_tokens = self.class.where(authentication_token: token)
+        break token if old_tokens.blank? 
+      end
+      puts "======="
+      puts self.authentication_token      
     end
 
     def check_existed?

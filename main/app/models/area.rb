@@ -10,6 +10,8 @@ class Area < ActiveRecord::Base
   has_many :tenants, foreign_key: "area_uid"
   has_many :area_administrators, foreign_key: "area_uid"
 
+  has_many :users, foreign_key: "area_uid"
+
   ########类方法定义：begin#######
   class << self
     def get_area params
