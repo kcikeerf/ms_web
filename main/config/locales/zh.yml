@@ -13,9 +13,8 @@ zh:
     list: "列表"
     save: "保存"
     cancel: "取消"
-  areas:
-    list:
-      all: "全部"
+    all: "全部"
+    list_to_select: "请选择..."
   #各功能用label
   checkpoints:
     label:
@@ -304,49 +303,6 @@ zh:
       warn:
         no_belong: "无所属"
       error:
-
-  managers:
-    users:
-      basic: "基本信息"
-      tenant: "Tenant"
-    head: "三维题库管理Console"
-    admin: "后台管理员"
-    user:
-      login_title: "欢迎登录三维题库管理Console"
-    node_structure: "教材版本"
-    checkpoint: "指标体系"
-    root_node: "根节点"
-    panel:
-      welcome: "Welcome"
-      navi: "功能菜单"
-    menus:
-      jue_se_guan_li: "角色管理"
-      quan_xian_guan_li: "权限管理"
-      generic_quan_xian_guan_li: "一般权限管理"
-      api_quan_xian_guan_li: "API权限管理"
-      area_admin_guan_li: "地区管理员"
-      project_admin_guan_li: "项目管理员管理"
-      tenant_guan_li: "Tenant管理"
-      tenant_yong_hu_guan_li: "Tenant管理员管理"
-      fen_xi_yuan_guan_li: "分析员管理"
-      jiao_shi_guan_li: "教师管理"
-      xue_sheng_guan_li: "学生管理"
-      yu_ming_bai_ming_dan_guan_li: "域名白名单管理"
-      di_san_fang_ke_hu_duan_guan_li: "第三方客户端管理"
-      jiao_cai_guan_li: "教材管理"
-      mu_lu_guan_li: "目录管理"
-      zhi_biao_ti_xi_guan_li: "指标体系管理"
-      jiao_cai_ji_mu_lu_guan_li: "教材及目录管理"
-      jiao_cai_ji_mu_lu_zhi_biao_ti_xi_guan_li: "教材及目录指标体系管理"
-      ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
-    messages:
-      welcome: "欢迎访问三题库管理后台!"
-      tenant:
-        select: "请选择Tenant..."
-      user:
-        input_username: "请输入用户名。"
-        input_password: "请输入密码。"
-
 
   # active admin使用的默认标示
   active_admin:

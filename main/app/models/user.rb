@@ -125,6 +125,45 @@ class User < ActiveRecord::Base
 
       user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     end
+
+    # used by manager console
+    def get_list params={}
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      result = self.order("updated_at desc").page(params[:page]).per(params[:rows])
+      result.each_with_index{|item, index|
+        #角色Scope
+        h = item.attributes
+        h[:role_id] = item.role.blank?? "" : item.role.id
+        h[:role_name] = item.role.blank?? "" : item.role.name_label
+        h[:skope_ids] = item.skopes.blank?? "" : item.skopes.map(&:id)
+        h[:skope_names] = item.skopes.blank?? "" : item.skopes.map(&:name)
+
+        #地区
+        target_area = item.area
+        if target_area
+          h[:province_rid] = target_area.pcd_h[:province][:rid]
+          h[:city_rid] = target_area.pcd_h[:city][:rid]
+          h[:district_rid] = target_area.pcd_h[:district][:rid]
+        end
+
+        #学校
+        target_tenants = item.tenants
+        unless target_tenants.blank?
+          h[:tenant_uids] = target_tenants.map(&:uid)
+          # h[:tenant_name_cns] = target_tenants.map(&:name_cn)
+        end
+
+        #班级
+        target_locations = item.locations
+        unless target_locations.blank?
+          h[:loc_uids] = target_tenants.map(&:uid)
+        end
+
+        result[index] = h
+      }
+      return result
+    end    
   end
   ########类方法定义：end#######
 
@@ -142,7 +181,8 @@ class User < ActiveRecord::Base
   def save_user(role_name, params)
     #transaction do 
       paramsh = {
-        :name => params[:user_name], 
+        :name => params[:name],
+        :real_name => params[:real_name],
         :password => params[:password], 
         :password_confirmation => params[:password_confirmation],
         :role_name => role_name,
@@ -433,9 +473,7 @@ class User < ActiveRecord::Base
         token = Common::AuthConfig::random_codes(Common::Uzer::AuthTokenLength)
         old_tokens = self.class.where(authentication_token: token)
         break token if old_tokens.blank? 
-      end
-      puts "======="
-      puts self.authentication_token      
+      end   
     end
 
     def check_existed?

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170220053637) do
+ActiveRecord::Schema.define(version: 20170221143100) do
 
   create_table "analyzers", primary_key: "uid", force: :cascade do |t|
     t.string   "user_id",    limit: 255
@@ -377,6 +377,7 @@ ActiveRecord::Schema.define(version: 20170220053637) do
     t.string   "desc",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name_label", limit: 255
   end
 
   create_table "roles_api_permissions_links", force: :cascade do |t|
@@ -405,15 +406,17 @@ ActiveRecord::Schema.define(version: 20170220053637) do
   end
 
   create_table "skope_rules", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "category",   limit: 255
-    t.integer  "priority",   limit: 4
-    t.string   "rkey",       limit: 255
-    t.string   "rvalue",     limit: 255
-    t.string   "desc",       limit: 255
-    t.string   "skope_id",   limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "name",         limit: 255
+    t.string   "category",     limit: 255
+    t.integer  "priority",     limit: 4
+    t.string   "rkey",         limit: 255
+    t.string   "rkey_label",   limit: 255
+    t.string   "rvalue",       limit: 255
+    t.string   "rvalue_label", limit: 255
+    t.string   "desc",         limit: 255
+    t.string   "skope_id",     limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   add_index "skope_rules", ["category"], name: "index_skope_rules_on_category", using: :btree
@@ -553,6 +556,10 @@ ActiveRecord::Schema.define(version: 20170220053637) do
     t.datetime "expired_at"
     t.string   "area_uid",               limit: 255
     t.string   "authentication_token",   limit: 255
+    t.string   "real_name",              limit: 255
+    t.boolean  "gender",                 limit: 1
+    t.string   "subject",                limit: 255
+    t.string   "grade",                  limit: 255
   end
 
   add_index "users", ["area_uid"], name: "index_users_on_area_uid", using: :btree

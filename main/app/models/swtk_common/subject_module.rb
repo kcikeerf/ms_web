@@ -30,6 +30,21 @@ module SubjectModule
       :ji_shu          => Common::Locale::i18n("dict.ji_shu")
     }
 
+    ListArr = [
+      {:key => "yu_wen", :label => Common::Locale::i18n("dict.yu_wen")},
+      {:key => "shu_xue", :label=> Common::Locale::i18n("dict.shu_xue")},
+      {:key => "ying_yu", :label=> Common::Locale::i18n("dict.ying_yu")},
+      {:key => "li_shi", :label=> Common::Locale::i18n("dict.li_shi")},
+      {:key => "di_li", :label=> Common::Locale::i18n("dict.di_li")},
+      {:key => "wu_li", :label=> Common::Locale::i18n("dict.wu_li")},
+      {:key => "hua_xue", :label=> Common::Locale::i18n("dict.hua_xue")},
+      {:key => "sheng_wu", :label=> Common::Locale::i18n("dict.sheng_wu")},
+      {:key => "si_xiang_pin_de", :label=> Common::Locale::i18n("dict.si_xiang_pin_de")},
+      {:key => "zheng_zhi", :label=> Common::Locale::i18n("dict.zheng_zhi")},
+      {:key => "xin_xi_ji_shu", :label=> Common::Locale::i18n("dict.xin_xi_ji_shu")},
+      {:key => "ji_shu", :label=> Common::Locale::i18n("dict.ji_shu")}
+    ]
+
     Order = {
       :yu_wen => "1",
       :shu_xue => "2",

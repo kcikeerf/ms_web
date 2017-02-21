@@ -59,10 +59,11 @@ class Area < ActiveRecord::Base
   
     def default_option
       result = [{
-        :uid=> "", 
-        :rid=> "", 
-        :name=> "all", 
-        :name_cn=> Common::Locale::i18n("areas.list.all")}]
+          :uid=> "", 
+          :rid=> "", 
+          :name=> "", 
+          :name_cn=> Common::Locale::i18n("common.list_to_select")
+        }]
     end
   end
   ########类方法定义：end#######

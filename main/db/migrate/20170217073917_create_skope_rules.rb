@@ -5,7 +5,9 @@ class CreateSkopeRules < ActiveRecord::Migration
       t.string :category
       t.integer :priority
       t.string :rkey
+      t.string :rkey_label
       t.string :rvalue
+      t.string :rvalue_label
       t.string :desc
       t.string :skope_id
 

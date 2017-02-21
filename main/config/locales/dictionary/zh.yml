@@ -23,6 +23,7 @@ zh:
     pupil_number: "学号"
     name: "姓名"
     sex: "性别"
+    gender: "性别"
     knowledge: "知识"
     skill: "技能"
     ability: "能力"
@@ -198,3 +199,4 @@ zh:
     #性别
     nan: "男"
     n̈u: "女"
+    nv: "女"

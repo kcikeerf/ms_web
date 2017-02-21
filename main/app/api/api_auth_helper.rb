@@ -55,7 +55,11 @@ module ApiAuthHelper
     target_token 
   end
 
-  def autheticate_scopes! category_str=nil
+  def authenticate_permission!
+
+  end
+
+  def authenticate_scopes! category_str=nil
     # target_skopes = current_user.skopes
     # target_skope_rules = target_skopes.map{|item|
     #   category.blank?? item.skope_rules : item.skope_rules.where(category: category_str)

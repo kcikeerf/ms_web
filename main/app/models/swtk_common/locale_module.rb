@@ -47,6 +47,11 @@ module LocaleModule
     	:n̈u => i18n("dict.n̈u")
     }
 
+    GenderListArr = [
+      { key: true, label: Common::Locale::i18n("dict.nan")},
+      { key: false, label: Common::Locale::i18n("dict.nv")}
+    ]
+
     def hanzi2pinyin hanzi_str
       PinYin.backend = PinYin::Backend::Simple.new
       PinYin.of_string(hanzi_str).join("_")
