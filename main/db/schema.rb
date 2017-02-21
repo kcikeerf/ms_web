@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170221143100) do
+ActiveRecord::Schema.define(version: 20170221151250) do
 
   create_table "analyzers", primary_key: "uid", force: :cascade do |t|
     t.string   "user_id",    limit: 255
@@ -556,6 +556,7 @@ ActiveRecord::Schema.define(version: 20170221143100) do
     t.datetime "expired_at"
     t.string   "area_uid",               limit: 255
     t.string   "authentication_token",   limit: 255
+    t.string   "my_number",              limit: 255
     t.string   "real_name",              limit: 255
     t.boolean  "gender",                 limit: 1
     t.string   "subject",                limit: 255
