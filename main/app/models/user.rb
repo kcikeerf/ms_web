@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def save_user(role_name, params)
+  def save_user(role_name=nil, params)
     #transaction do 
       paramsh = {
         :name => params[:name],
