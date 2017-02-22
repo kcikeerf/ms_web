@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
     :recoverable, :rememberable, :trackable, :validatable#, :lockable
 
   belongs_to :role
+  belongs_to :area, foreign_key: "area_uid"
+
   has_one :image_upload
 
   has_many :wx_user_mappings, foreign_key: "user_id", dependent: :destroy
@@ -18,19 +20,18 @@ class User < ActiveRecord::Base
   has_many :skopes, through: :user_skope_links
 
   #
-  belongs_to :area
   has_many :user_tenant_links, foreign_key: "user_id", dependent: :destroy
-  has_many :tenants, through: :user_tenant_links
+  has_many :tenants, through: :user_tenant_links, foreign_key: "user_id"
   has_many :user_location_links, foreign_key: "user_id", dependent: :destroy
-  has_many :locations, through: :user_location_links
+  has_many :locations, through: :user_location_links,foreign_key: "user_id"
 
   before_create :set_role, :set_authentication_token
 
   validates :role_name, presence: true, on: :create
   validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,20}\z/ }
   
-  validates_confirmation_of :password
-  validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
+  # validates_confirmation_of :password
+  # validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
 
   validates :email, format: { with: /\A[^@\s]+@[^@\s]+\z/ }, allow_blank: true
   validates :phone, format: { with: /\A1\d{10}\z/ }, allow_blank: true
@@ -136,7 +137,7 @@ class User < ActiveRecord::Base
         h = item.attributes
         h[:role_id] = item.role.blank?? "" : item.role.id
         h[:role_name] = item.role.blank?? "" : item.role.name_label
-        h[:skope_ids] = item.skopes.blank?? "" : item.skopes.map(&:id)
+        h[:"skope_ids[]"] = item.skopes.blank?? "" : item.skopes.map(&:id)
         h[:skope_names] = item.skopes.blank?? "" : item.skopes.map(&:name)
 
         #地区
@@ -150,14 +151,13 @@ class User < ActiveRecord::Base
         #学校
         target_tenants = item.tenants
         unless target_tenants.blank?
-          h[:tenant_uids] = target_tenants.map(&:uid)
-          # h[:tenant_name_cns] = target_tenants.map(&:name_cn)
+          h[:"tenant_uids[]"] = target_tenants.map(&:uid)
         end
 
         #班级
         target_locations = item.locations
         unless target_locations.blank?
-          h[:loc_uids] = target_tenants.map(&:uid)
+          h[:"loc_uids[]"] = target_tenants.map(&:uid)
         end
 
         result[index] = h
@@ -179,18 +179,54 @@ class User < ActiveRecord::Base
   end
 
   def save_user(role_name=nil, params)
-    #transaction do 
+    result = false
+    begin
+      usr_skp_links = []
+      usr_tnt_links = []
+      usr_loc_links = []
+
       paramsh = {
         :name => params[:name],
-        :real_name => params[:real_name],
-        :password => params[:password], 
-        :password_confirmation => params[:password_confirmation],
+        :real_name => params[:real_name].blank?? params[:name] : params[:real_name],
+        :my_number => params[:my_number],
+        :gender => params[:gender],
+        :subject => params[:subject],
+        :grade => params[:grade],
         :role_name => role_name,
+        :role_id => params[:role_id],
         :qq => params[:qq] || "",
         :phone => params[:phone] || "",
         :email => params[:email] || ""
       }
 
+      if self.id.blank?
+        random_password_codes = self.class.generate_rand_password
+        paramsh[:password] = random_password_codes
+        paramsh[:password_confirmation] = random_password_codes
+        paramsh[:initial_password] = random_password_codes
+      else
+        if !params[:password].blank? || !params[:password_confirmation].blank?
+          paramsh[:password] = params[:password]
+          paramsh[:password_confirmation] = params[:password_confirmation]
+          paramsh[:initial_password] = nil
+        end
+      end
+
+      # 更新Scope
+      unless params[:skope_ids].blank?
+        self.user_skope_links.destroy_all
+        params[:skope_ids].each{|skope_id|
+          next if skope_id.blank?
+          item = UserSkopeLink.new({
+            :user_id => self.id,
+            :skope_id => skope_id
+          })
+          item.save!
+          usr_skp_links << item
+        }
+      end
+
+      # 更新地区/租户/班级
       area_rid = params[:province_rid] unless params[:province_rid].blank?
       area_rid = params[:city_rid] unless params[:city_rid].blank?
       area_rid = params[:district_rid] unless params[:district_rid].blank?
@@ -200,24 +236,51 @@ class User < ActiveRecord::Base
       unless params[:tenant_uids].blank?
         self.user_tenant_links.destroy_all
         params[:tenant_uids].each{|tenant_uid|
-          UserTenantLink.new({
+          next if tenant_uid.blank?
+          item = UserTenantLink.new({
             :user_id => self.id,
             :tenant_uid => tenant_uid
-          }).save! if tenant_uid
+          })
+          item.save!
+          usr_tnt_links << item
         }
       end
 
       unless params[:loc_uids].blank?
         self.user_location_links.destroy_all
         params[:loc_uids].each{|loc_uid|
-          UserLocationLink.new({
+          next if loc_uid.blank?
+          item = UserLocationLink.new({
             :user_id => self.id,
             :loc_uid => loc_uid
-          }).save! if loc_uid
+          })
+          item.save!
+          usr_loc_links << item
         }
-      end
+      end 
 
-      paramsh[:role_id] = params[:role_id] unless params[:role_id].blank?
+      update_attributes!(paramsh)
+      result = true
+    rescue Exception => ex
+      usr_skp_links.each{|item| item.destroy }
+      usr_tnt_links.each{|item| item.destroy }
+      usr_loc_links.each{|item| item.destroy }
+    ensure
+      return result
+    end
+  end
+
+  def old_save_user(role_name=nil, params)
+    #transaction do 
+      paramsh = {
+        :name => params[:name],
+        :password => params[:password], 
+        :password_confirmation => params[:password_confirmation],
+        :role_name => role_name,
+        :qq => params[:qq] || "",
+        :phone => params[:phone] || "",
+        :email => params[:email] || ""
+      }
       return self unless update_attributes(paramsh)
 
       save_role_obj(params.merge({user_id: self.id}))
@@ -422,8 +485,7 @@ class User < ActiveRecord::Base
     skope_rules.uniq!
     skope_rules.sort!{|a,b| b.priority <=> a.priority}
 
-    target_area = self.area
-    pcd_h = target_area.pcd_h
+    pcd_h = self.area ? self.area.pcd_h : {:province => {}, :city => {}, :district => {}}
     target_tenants = self.tenants
     target_locations = self.locations
 
@@ -456,7 +518,7 @@ class User < ActiveRecord::Base
   private
 
     def password_required?
-      !persisted? || !password.nil? || !password_confirmation.nil?
+      !persisted? #|| !password.nil? || !password_confirmation.nil?
     end
 
     # Email is not required

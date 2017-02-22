@@ -558,7 +558,7 @@ ActiveRecord::Schema.define(version: 20170221151250) do
     t.string   "authentication_token",   limit: 255
     t.string   "my_number",              limit: 255
     t.string   "real_name",              limit: 255
-    t.boolean  "gender",                 limit: 1
+    t.string   "gender",                 limit: 255
     t.string   "subject",                limit: 255
     t.string   "grade",                  limit: 255
   end

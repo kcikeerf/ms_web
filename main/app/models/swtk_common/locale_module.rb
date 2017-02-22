@@ -48,8 +48,8 @@ module LocaleModule
     }
 
     GenderListArr = [
-      { key: true, label: i18n("dict.nan")},
-      { key: false, label: i18n("dict.nv")}
+      { key: "nan", label: i18n("dict.nan")},
+      { key: "nv", label: i18n("dict.nv")}
     ]
 
     def hanzi2pinyin hanzi_str
