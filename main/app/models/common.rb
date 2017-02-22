@@ -16,6 +16,7 @@ module Common
   include ReportPlusModule
   include RoleModule
   include ScoreModule
+  include SkopeModule
   include SubjectModule
   include SwtkRedisModule
   include TaskJobModule

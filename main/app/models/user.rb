@@ -178,7 +178,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def save_user(role_name=nil, params)
+  def save_ins(role_name=nil, params)
     result = false
     begin
       usr_skp_links = []
