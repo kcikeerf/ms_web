@@ -14,8 +14,9 @@ zh:
     save: "保存"
     cancel: "取消"
     all: "全部"
+    others: "其它"
     list_to_select: "请选择..."
-  #各功能用label
+  #
   checkpoints:
     label:
       knowledge:
@@ -31,33 +32,14 @@ zh:
         xiao_xue: "小学"
         chu_zhong: "初中"
         gao_zhong: "高中"
-  images:
-    messages:
-      info:
-        success: "头像图片上传成功。"
-      error:
-        failed: "头像图片上传失败！原因（%{cause}）"
-        invalid_size: "图片文件大小超过300KB"
-
-  views:
-    pagination:
-      first: "&laquo; 首页"
-      last: "末页 &raquo;"
-      previous: "&laquo; 上一页"
-      next: "下一页 &raquo;"
-      truncate: "..."
-
-  jobs:
-    status:
-      notinqueue: "未入队列"
-      inqueue: "已入队列"
-      processing: "正在生成"
-      completed: "报告完成"
+  
+  #
   locations:
     messages:
       error:
         invalid_location: "无效的Location（班级对象）!"
 
+  #
   messages:
     invalid_mobile: '短信验证码不正确或已失效'
     invalid_email: '邮箱验证码不正确或已失效'
@@ -69,6 +51,7 @@ zh:
     password_auth_number: '你正在找回密码，验证码为：'
     send_limit: '超出发送次数，请稍后再试'
 
+  #
   papers:
     status:
       none: "无"
@@ -112,6 +95,7 @@ zh:
       error:
         no_tenant: "该试卷无所属Tenant"
 
+  #
   quizs:
     nosource: "自编"
     order: "题号"
@@ -132,6 +116,8 @@ zh:
         invalid_params: "检索条件无效：\n(%{message})"
         success: "获取试题列表成功！"
         fail: "获取试题列表失败！"
+
+  #
   reports:
     none: "无"
     total: "总体情况"
@@ -170,6 +156,8 @@ zh:
         get_report:
           success: "成功取得个人报告。"
           failed: "未能取得有效的个人报告！"
+
+  #
   scores:
     grade_rank: "年级排名"
     excel:
@@ -188,6 +176,14 @@ zh:
         add_user_failed: "生成用户异常！"
         upload_failed: "文件上传失败！"
         upload_exception: "文件上传中发生异常错误！"
+
+  #
+  skope_rules:
+    all_invalid: "所有无效"
+    specified_available: "所属范围访问有效"
+    all_available: "所有有效"
+
+  #       
   tasks:
     type:
       create_report: "生成报告"
@@ -196,10 +192,14 @@ zh:
       in_active: "未执行"
       active: "执行中"
       completed: "完成"
+
+  #
   teachers:
     abbrev:
       subject: "科"
       head_teacher: "主"
+  
+  #
   tests:
     status:
       not_started: "未测试"
@@ -214,79 +214,19 @@ zh:
       score_imported: "成绩已导入"
       report_generating: "报告生成中"
       report_completed: "报告生成完毕" 
-
+  
+  #
   swtk_errors:
     parameter_invalid_error: "参数无效！"
     object_not_found: "对象未找到或不存在(详细：%{message})"
 
-  #微信使用labels
-  wx_commons:
-    messages:
-      info:
-
-      warn:
-        invalid_params: "参数无效！"
-      error:
-  wx_users:
-    messages:
-      info:
-        is_binded: "您的微信账户已与三维题库账户绑定。"
-        not_binded: "您的微信帐户未与三维题库帐户绑定."
-        wx_binded: "您的微信账户与三维题库账户绑定成功！"
-        wx_unbinded: "您的微信帐户与三维题库帐户解绑成功！"
-      warn:
-        not_binded: "您的微信账户尚未与三维题库账户绑定!"
-        invalid_binded: "您的微信账户虽已与三维题库账户绑定，但存在异常，请联系管理员。"
-        not_wx_user: "非有效微信用户!"
-        invalid_pupil: "请确认此学生账户是否存在"
-        invalid_binding_params: "您的微信绑定参数无效！"
-        invalid_wx_user: "您的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
-        wx_binding_limit: "您的微信帐户绑定题库帐户超过 %{limit} 个，若希望绑定更多的题库帐户请联系题库！"
-        user_binding_limit: "指定的题库帐户绑定微信帐户超过 %{limit} 个，若希望绑定更多的题库帐户请联系题库！"
-      error:
-        login_failed: "您输入的用户名或密码有错误，未通过认证！"
-        wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
-
-  wx_papers:
-    messages:
-      info:
-        get_success: "成功获取试卷."
-        no_paper: "未找到合适的试卷."
-      warn:
-
-      error:
-  wx_reports:
-    messages:
-      info:
-        got_report: "成功获取您的报告！"
-        no_report: "您的报告尚未生成。"
-      warn:
-
-      error:
-        got_report_failed: "无法获得您的报告，请联系管理员。"
-  wx_scores:
-    messages:
-      info:
-        save_success: "成绩保存成功。"
-      warn:
-        no_quizs: "发生未知错误，未收到任何试题。"
-      error:
-        save_exception: "成绩保存中发生异常错误!"
-  online_tests:
-    messages:
-      info:
-        save_success: "成绩保存成功。"
-      warn:
-        no_quizs: "发生未知错误，未收到任何试题。"
-      error:
-        save_failed: "在线测试结果保存失败!"
-  #################
-
+  #
   time:
     formats:
       default: "%Y-%m-%d %H:%M"
       long: "%Y-%m-%d %H:%M:%S"
-
+  
+  #
   tenants:
     type: "租户类型"
     types:
@@ -439,6 +379,89 @@ zh:
       search_placeholder: '请输入关键字进行搜索'
     reports:
       report: "报告"
+  views:
+    pagination:
+      first: "&laquo; 首页"
+      last: "末页 &raquo;"
+      previous: "&laquo; 上一页"
+      next: "下一页 &raquo;"
+      truncate: "..."
 
+  jobs:
+    status:
+      notinqueue: "未入队列"
+      inqueue: "已入队列"
+      processing: "正在生成"
+      completed: "报告完成"
 
+  images:
+    messages:
+      info:
+        success: "头像图片上传成功。"
+      error:
+        failed: "头像图片上传失败！原因（%{cause}）"
+        invalid_size: "图片文件大小超过300KB"
 
+  #################
+  #微信使用labels
+  wx_commons:
+    messages:
+      info:
+
+      warn:
+        invalid_params: "参数无效！"
+      error:
+  wx_users:
+    messages:
+      info:
+        is_binded: "您的微信账户已与三维题库账户绑定。"
+        not_binded: "您的微信帐户未与三维题库帐户绑定."
+        wx_binded: "您的微信账户与三维题库账户绑定成功！"
+        wx_unbinded: "您的微信帐户与三维题库帐户解绑成功！"
+      warn:
+        not_binded: "您的微信账户尚未与三维题库账户绑定!"
+        invalid_binded: "您的微信账户虽已与三维题库账户绑定，但存在异常，请联系管理员。"
+        not_wx_user: "非有效微信用户!"
+        invalid_pupil: "请确认此学生账户是否存在"
+        invalid_binding_params: "您的微信绑定参数无效！"
+        invalid_wx_user: "您的微信账户无效！请确认与三维题库是否绑定，若已绑定，请联系管理员。"
+        wx_binding_limit: "您的微信帐户绑定题库帐户超过 %{limit} 个，若希望绑定更多的题库帐户请联系题库！"
+        user_binding_limit: "指定的题库帐户绑定微信帐户超过 %{limit} 个，若希望绑定更多的题库帐户请联系题库！"
+      error:
+        login_failed: "您输入的用户名或密码有错误，未通过认证！"
+        wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
+
+  wx_papers:
+    messages:
+      info:
+        get_success: "成功获取试卷."
+        no_paper: "未找到合适的试卷."
+      warn:
+
+      error:
+  wx_reports:
+    messages:
+      info:
+        got_report: "成功获取您的报告！"
+        no_report: "您的报告尚未生成。"
+      warn:
+
+      error:
+        got_report_failed: "无法获得您的报告，请联系管理员。"
+  wx_scores:
+    messages:
+      info:
+        save_success: "成绩保存成功。"
+      warn:
+        no_quizs: "发生未知错误，未收到任何试题。"
+      error:
+        save_exception: "成绩保存中发生异常错误!"
+  online_tests:
+    messages:
+      info:
+        save_success: "成绩保存成功。"
+      warn:
+        no_quizs: "发生未知错误，未收到任何试题。"
+      error:
+        save_failed: "在线测试结果保存失败!"
+  #################

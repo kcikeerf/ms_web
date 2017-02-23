@@ -4,6 +4,16 @@ module SkopeModule
   end
 
   module SkopeRule
+    DefaultCategoryListArr = %W{
+      resource
+      module
+    }
+
+    DefaultCategoryList = {
+      "resource" => Common::Locale::i18n("skope_rules.category.resource"),
+      "module" => Common::Locale::i18n("skope_rules.category.module")
+    }
+
     DefaultKeyListArr = [
       {rkey: "province", rkey_label: Common::Locale::i18n("dict.province")},
       {rkey: "city", rkey_label: Common::Locale::i18n("dict.city")},
@@ -12,7 +22,8 @@ module SkopeModule
       {rkey: "klass", rkey_label: Common::Locale::i18n("dict.classroom")},
       {rkey: "pupil", rkey_label: Common::Locale::i18n("dict.pupil")},
       {rkey: "subject", rkey_label: Common::Locale::i18n("dict.subject")},
-      {rkey: "grade", rkey_label: Common::Locale::i18n("dict.grade")}
+      {rkey: "grade", rkey_label: Common::Locale::i18n("dict.grade")},
+      {rkey: "others", rkey_label: Common::Locale::i18n("common.others")},
     ]
 
     DefaultKeyList = {
@@ -23,19 +34,20 @@ module SkopeModule
       "klass" => Common::Locale::i18n("dict.classroom"),
       "pupil" => Common::Locale::i18n("dict.pupil"),
       "subject" => Common::Locale::i18n("dict.subject"),
-      "grade" => Common::Locale::i18n("dict.grade")
+      "grade" => Common::Locale::i18n("dict.grade"),
+      "others" => Common::Locale::i18n("common.others")
     }
 
     DefaultValueListArr = [
-      {rvalue: "-1", rvalue_label: Common::Locale::i18n("managers.skope_rules.all_invalid")},
-      {rvalue: "1", rvalue_label: Common::Locale::i18n("managers.skope_rules.specified_available")},
-      {rvalue: "99", rvalue_label: Common::Locale::i18n("managers.skope_rules.all_available")}      
+      {rvalue: "-1", rvalue_label: Common::Locale::i18n("skope_rules.all_invalid")},
+      {rvalue: "1", rvalue_label: Common::Locale::i18n("skope_rules.specified_available")},
+      {rvalue: "99", rvalue_label: Common::Locale::i18n("skope_rules.all_available")}      
     ]
 
     DefaultValueList = {
-      "-1" => Common::Locale::i18n("managers.skope_rules.all_invalid"),
-      "1" => Common::Locale::i18n("managers.skope_rules.specified_available"),
-      "99" => Common::Locale::i18n("managers.skope_rules.all_available")     
+      "-1" => Common::Locale::i18n("skope_rules.all_invalid"),
+      "1" => Common::Locale::i18n("skope_rules.specified_available"),
+      "99" => Common::Locale::i18n("skope_rules.all_available")     
     }
   end
 end

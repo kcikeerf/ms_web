@@ -5,8 +5,8 @@ class SkopeRule < ActiveRecord::Base
     result = false
     begin
       paramsh = params.clone
-      paramsh[:rkey_label] = Common::SkopeRule::DefaultKeyList[params[:rkey]]
-      paramsh[:rvalue_label] = Common::SkopeRule::DefaultValueList[params[:rvalue]]
+      paramsh[:rkey_label] = Common::SkopeRule::DefaultKeyList[params[:rkey]] || params[:rkey]
+      paramsh[:rvalue_label] = Common::SkopeRule::DefaultValueList[params[:rvalue]] || params[:rvalue]
 
       update_attributes!(paramsh)
       result = true

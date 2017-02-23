@@ -502,23 +502,57 @@ class User < ActiveRecord::Base
     skope_rules.sort!{|a,b| b.priority <=> a.priority}
 
     pcd_h = self.area ? self.area.pcd_h : {:province => {}, :city => {}, :district => {}}
-    target_tenants = self.tenants
-    target_locations = self.locations
-
-    skope_re = {
-      :province => "(#{pcd_h[:province][:uid]})",
-      :city => "(#{pcd_h[:city][:uid]})",
-      :district => "(#{pcd_h[:district][:uid]})",
-      :tenant => "(#{target_tenants.map(&:uid).join("|")})",
-      :klass => "(#{target_locations.map(&:uid).join("|")})"
-    }
-    skope_re[:pupil] = "(#{self.authentication_token})"
-
+    
     skope_rules.each{|item|
-      skope_key = skope_base_key + "/#{item.rkey}"
-      skope_value = (item.category == "skope")? skope_re[item.rkey.to_sym] : item.rvalue
-      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, item, skope_value
+      skope_rule_base_key = skope_base_key + "/#{item.category}/#{item.rkey}"
+
+      if item.rvalue == "-1"
+        item_re = "^(\w\W)" 
+      elsif item.rvalue == "99"
+        item_re = ".*"
+      elsif item.rvalue == "1"
+        case item.rkey
+        when "province"
+          item_re = "(#{pcd_h[:province][:uid]})"
+        when "city"
+          item_re = "(#{pcd_h[:city][:uid]})"
+        when "district"
+          item_re = "(#{pcd_h[:district][:uid]})"
+        when "tenant"
+          item_re = "(#{tenants.map(&:uid).join("|")})"
+        when "klass"
+          item_re = "(#{locations.map(&:uid).join("|")})"
+        when "pupil"
+          item_re = "(#{self.authentication_token})"
+        when "subject"
+          item_re = "(#{self.subject})"
+        when "grade"
+          item_re = "(#{self.grade})"
+        end        
+      end
+      
+      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, skope_rule_base_key, item_re
+
     }
+
+    # pcd_h = self.area ? self.area.pcd_h : {:province => {}, :city => {}, :district => {}}
+    # target_tenants = self.tenants
+    # target_locations = self.locations
+
+    # skope_re = {
+    #   :province => "(#{pcd_h[:province][:uid]})",
+    #   :city => "(#{pcd_h[:city][:uid]})",
+    #   :district => "(#{pcd_h[:district][:uid]})",
+    #   :tenant => "(#{target_tenants.map(&:uid).join("|")})",
+    #   :klass => "(#{target_locations.map(&:uid).join("|")})"
+    # }
+    # skope_re[:pupil] = "(#{self.authentication_token})"
+
+    # skope_rules.each{|item|
+    #   skope_key = skope_base_key + "/#{item.rkey}"
+    #   skope_value = (["resource"].include?(item.category)? skope_re[item.rkey.to_sym] : item.rvalue
+    #   Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, item, skope_value
+    # }
 
   end
 

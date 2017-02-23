@@ -55,24 +55,31 @@ module ApiAuthHelper
     target_token 
   end
 
-  def authenticate_permission!
-
+  def authenticate_api_permission! user_id=nil, http_method=nil, api_path=nil
+    error!(message_json("e41001"), 401) if user_id.blank?
+    error!(message_json("e41401"), 401) if target_scope_h.blank?
+    error!(message_json("e41401"), 401) unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Auth,"/users/#{user_id}/api_permissions/#{http_method}/#{api_path}" 
   end
 
-  def authenticate_scopes! category_str=nil
-    # target_skopes = current_user.skopes
-    # target_skope_rules = target_skopes.map{|item|
-    #   category.blank?? item.skope_rules : item.skope_rules.where(category: category_str)
-    # }.flatten.uniq
-    # target_rules = target_skope_rules.sort{|a,b| b.priority <=> a.priority }
-    # target_rules.each{|r|
-    #   case r.category
-    #   when "report"
+  def authenticate_scopes! user_id=nil, target_scope_h={}
+    error!(message_json("e41001"), 401) if user_id.blank?
+    error!(message_json("e41401"), 401) if target_scope_h.blank?
 
-    #   when "paper"
-
-    #   end
-    # }
+    target_scope_h.each{|cat, cat_h|
+      redis_base_key = "/users/#{user_id}/skope/#{cat}"
+      cat_h.each{|rkey,rvalue|
+        redis_rkey = redis_base_key + "/#{rkey}"
+        user_scope_str = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Auth, redis_rkey
+        error!(message_json("w21401"), 401) if user_scope_str.blank?
+        user_scope_re = Regexp.new user_scope_str
+        puts user_scope_re
+        puts rvalue
+        puts user_scope_re.match(rvalue).blank?
+        if user_scope_re.match(rvalue).blank?
+          error!(message_json("w21401"), 401)
+        end
+      }
+    }
   end
 
   def current_user
