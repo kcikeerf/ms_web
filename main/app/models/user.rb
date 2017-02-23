@@ -157,7 +157,7 @@ class User < ActiveRecord::Base
         #班级
         target_locations = item.locations
         unless target_locations.blank?
-          h[:"loc_uids[]"] = target_tenants.map(&:uid)
+          h[:"loc_uids[]"] = target_locations.map(&:uid)
         end
 
         result[index] = h
@@ -185,6 +185,7 @@ class User < ActiveRecord::Base
       usr_tnt_links = []
       usr_loc_links = []
 
+      # 基本信息
       paramsh = {
         :name => params[:name],
         :real_name => params[:real_name].blank?? params[:name] : params[:real_name],
@@ -199,6 +200,7 @@ class User < ActiveRecord::Base
         :email => params[:email] || ""
       }
 
+      # 是否更新密码
       if self.id.blank?
         random_password_codes = self.class.generate_rand_password
         paramsh[:password] = random_password_codes
@@ -226,38 +228,52 @@ class User < ActiveRecord::Base
         }
       end
 
-      # 更新地区/租户/班级
+      # 更新地区
       area_rid = params[:province_rid] unless params[:province_rid].blank?
       area_rid = params[:city_rid] unless params[:city_rid].blank?
       area_rid = params[:district_rid] unless params[:district_rid].blank?
       target_area = Area.where(rid: area_rid).first
       paramsh[:area_uid] = target_area.uid if target_area
 
-      unless params[:tenant_uids].blank?
-        self.user_tenant_links.destroy_all
-        params[:tenant_uids].each{|tenant_uid|
-          next if tenant_uid.blank?
-          item = UserTenantLink.new({
-            :user_id => self.id,
-            :tenant_uid => tenant_uid
-          })
-          item.save!
-          usr_tnt_links << item
-        }
+      # 更新租户
+      tenant_uids = []
+      if params[:tenant_uids].blank?
+        if !params[:tenant_all].blank?
+          tenant_uids = area.all_tenants.map(&:uid)
+        end
+      else
+        tenant_uids = params[:tenant_uids]
       end
+      self.user_tenant_links.destroy_all
+      tenant_uids.each{|tenant_uid|
+        next if tenant_uid.blank?
+        item = UserTenantLink.new({
+          :user_id => self.id,
+          :tenant_uid => tenant_uid
+        })
+        item.save!
+        usr_tnt_links << item
+      }      
 
-      unless params[:loc_uids].blank?
-        self.user_location_links.destroy_all
-        params[:loc_uids].each{|loc_uid|
-          next if loc_uid.blank?
-          item = UserLocationLink.new({
-            :user_id => self.id,
-            :loc_uid => loc_uid
-          })
-          item.save!
-          usr_loc_links << item
-        }
-      end 
+      # 更新班级
+      loc_uids = []
+      if params[:loc_uids].blank?
+        if !params[:loc_all].blank?
+          loc_uids = Location.where(tenant_uid: tenant_uids).map(&:uid)
+        end
+      else
+        loc_uids = params[:loc_uids]
+      end
+      self.user_location_links.destroy_all
+      loc_uids.each{|loc_uid|
+        next if loc_uid.blank?
+        item = UserLocationLink.new({
+          :user_id => self.id,
+          :loc_uid => loc_uid
+        })
+        item.save!
+        usr_loc_links << item
+      } 
 
       update_attributes!(paramsh)
       result = true
