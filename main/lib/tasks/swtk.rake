@@ -3,6 +3,7 @@
 require 'ox'
 require 'roo'
 require 'axlsx'
+require 'find'
 
 namespace :swtk do
 
@@ -1425,6 +1426,76 @@ namespace :swtk do
         exit -1
       end
 
+    end
+
+
+    desc "temporary use: import hyt quiz picture url"
+    task :import_hyt_quiz_url,[:report_path,:hyt_file_path] => :environment do |t, args|
+
+      hyt_pupil_items = {}
+      hyt_file = Roo::Excelx.new(args[:hyt_file_path])
+      hyt_sheet = hyt_file.sheet(hyt_file.sheets[0])
+      hyt_row_count = hyt_sheet.count
+      hyt_title_row = hyt_sheet.row(1)
+      [*2..hyt_row_count].each{|index|
+        row_data = hyt_sheet.row(index)        
+        temp_arr = []
+        row_data[2..-1].each_with_index{|item,i|
+          temp_arr << {
+            :qzp_order => hyt_title_row[2+i].to_s,
+            :image_url => item
+          }
+        }
+        hyt_pupil_items[row_data[0].to_s] = temp_arr
+      }
+
+      Find.find(args[:report_path]){|f|
+        re = Regexp.new ".*pupil/(.*).json"
+        r = re.match(f)
+        unless r.blank?
+          pup_uid = r[1].to_s
+          target_pupil = Pupil.where(uid: pup_uid).first
+          target_stu_number = target_pupil.stu_number if target_pupil
+          next if hyt_pupil_items[target_stu_number.to_s].blank?
+          target_pupil_optional_filename = f.split(".json")[0] + "_hyt_snapshot_data.json"
+          File.write(target_pupil_optional_filename, hyt_pupil_items[target_stu_number.to_s].to_json)
+        end
+      }
+    end
+
+    desc "temporary use: import hyt quiz answers"
+    task :import_hyt_quiz_answer,[:report_path,:hyt_file_path] => :environment do |t, args|
+
+      hyt_pupil_items = {}
+      hyt_file = Roo::Excelx.new(args[:hyt_file_path])
+      hyt_sheet = hyt_file.sheet(hyt_file.sheets[0])
+      hyt_row_count = hyt_sheet.count
+      [*2..hyt_row_count].each{|index|
+        row_data = hyt_sheet.row(index)        
+        temp_arr = []
+        answer_str = row_data[8]
+        answer_arr = answer_str.split(",")
+        answer_arr.each_with_index{|item,i|
+          temp_arr << {
+            :qzp_order => (i + 1).to_s,
+            :answer => item
+          }
+        }
+        hyt_pupil_items[row_data[0].to_s] = temp_arr
+      }
+
+      Find.find(args[:report_path]){|f|
+        re = Regexp.new ".*pupil/(.*).json"
+        r = re.match(f)
+        unless r.blank?
+          pup_uid = r[1].to_s
+          target_pupil = Pupil.where(uid: pup_uid).first
+          target_stu_number = target_pupil.stu_number if target_pupil
+          next if hyt_pupil_items[target_stu_number.to_s].blank?
+          target_pupil_optional_filename = f.split(".json")[0] + "_hyt_quiz_data.json"
+          File.write(target_pupil_optional_filename, hyt_pupil_items[target_stu_number.to_s].to_json)
+        end
+      }
     end
 
     def find_all_pupil_report_urls base_path, search_path, urls=[]

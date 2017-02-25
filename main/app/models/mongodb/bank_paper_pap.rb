@@ -561,6 +561,7 @@ class Mongodb::BankPaperPap
         }.uniq
       }
       result << {
+        "qzp_id" => qzp.id.to_s,
         "qzp_order" => (index+1).to_s,
         "qzp_type" => qzp.type,
         "ckps" => target_level_ckp_h

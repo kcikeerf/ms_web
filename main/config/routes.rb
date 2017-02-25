@@ -248,6 +248,7 @@ Rails.application.routes.draw do
     mount ReportsWarehouse::API => "/"
     mount Monitoring::API => "/"
     mount Tenants::API => "/"
+    mount Quizs::API => "/"
   end
   #######################################
 
