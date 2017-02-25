@@ -1213,7 +1213,7 @@ namespace :swtk do
           raise "Command format not correct."
         end
 
-        base_path = args[:base_path].blank?? "." : args[:base_path]
+        base_path = args[:base_path].blank?? "" : args[:base_path]
 
         target_pap = Mongodb::PaperQuestion.new({
           :name => args[:test_name],
