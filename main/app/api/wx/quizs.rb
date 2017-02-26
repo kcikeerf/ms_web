@@ -59,7 +59,7 @@ module Quizs
           # 临时添加
           hyt_quiz_data_h = {}
           hyt_snapshot_data_h = {}
-          Find.find("./reports_warehouse/tests/#{params[:test_id]}"){|f|
+          Find.find("/reports_warehouse/tests/#{params[:test_id]}"){|f|
             # quiz data
             hyt_quiz_data_re = Regexp.new ".*pupil/#{target_user.role_obj.uid}_hyt_quiz_data.json"
             r = hyt_quiz_data_re.match(f)
