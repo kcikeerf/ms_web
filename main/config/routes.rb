@@ -256,6 +256,7 @@ Rails.application.routes.draw do
     # 微信
     mount ApiWxAuth::APIV11 => "/"
     mount ApiWxOnlineTest::APIV11 => "/"
+    mount Quizs::API => "/"
   end
 
   #######################################
