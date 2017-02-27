@@ -21,13 +21,14 @@ module Quizs
       params do
         use :authenticate
         requires :test_id, type: String, allow_blank: false
+        requires :pupil_user_name, type: String, allow_blank: false
         optional :qzp_id, type: String, allow_blank: true
         optional :qzp_order, type: String, allow_blank: true
         exactly_one_of :qzp_id, :qzp_order
       end
       post :detail do
-        target_user = current_user
-        error!(message_json("w21204"), 403) unless target_user.is_pupil?
+        target_user = User.where(name: params[:pupil_user_name]).first
+        error!(message_json("w21204"), 403) if target_user.blank? || !target_user.is_pupil?
         unless params[:qzp_id].blank?
           redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_user.id}/qzp_id/#{params[:qzp_id]}"
         else
@@ -59,22 +60,26 @@ module Quizs
           # 临时添加
           hyt_quiz_data_h = {}
           hyt_snapshot_data_h = {}
-          Find.find("/reports_warehouse/tests/#{params[:test_id]}"){|f|
-            # quiz data
-            hyt_quiz_data_re = Regexp.new ".*pupil/#{target_user.role_obj.uid}_hyt_quiz_data.json"
-            r = hyt_quiz_data_re.match(f)
-            unless r.blank?
-              data = File.open(f, 'rb').read
-              hyt_quiz_data_h = JSON.parse(data)
-            end
-            # snapshot data
-            hyt_snapshot_data_re = Regexp.new ".*pupil/#{target_user.role_obj.uid}_hyt_snapshot_data.json"
-            r = hyt_snapshot_data_re.match(f)
-            unless r.blank?
-              data = File.open(f, 'rb').read
-              hyt_snapshot_data_h = JSON.parse(data)
-            end          
-          }
+          begin
+            Find.find("/reports_warehouse/tests/#{params[:test_id]}"){|f|
+              # quiz data
+              hyt_quiz_data_re = Regexp.new ".*pupil/#{target_user.role_obj.uid}_hyt_quiz_data.json"
+              r = hyt_quiz_data_re.match(f)
+              unless r.blank?
+                data = File.open(f, 'rb').read
+                hyt_quiz_data_h = JSON.parse(data)
+              end
+              # snapshot data
+              hyt_snapshot_data_re = Regexp.new ".*pupil/#{target_user.role_obj.uid}_hyt_snapshot_data.json"
+              r = hyt_snapshot_data_re.match(f)
+              unless r.blank?
+                data = File.open(f, 'rb').read
+                hyt_snapshot_data_h = JSON.parse(data)
+              end          
+            }
+          rescue Exception => ex
+            # do nothing
+          end
 
           hyt_quiz_data = {}
           hyt_snapshot_data = {}
