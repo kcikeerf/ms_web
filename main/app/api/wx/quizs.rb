@@ -41,7 +41,7 @@ module Quizs
         else
           target_test = Mongodb::BankTest.where(_id: params[:test_id]).first
           target_paper = target_test.bank_paper_pap
-          target_qzps = target_paper.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten.map{|item| item }.sort{|a,b| Common::Locale.mysort(a.order.gsub(/(\(|\))/,"").ljust(5,"0"),b.order.gsub(/(\(|\))/,"").ljust(5,"0")) }
+          target_qzps = target_paper.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten.sort{|a,b| Common::Locale.mysort(a.order.gsub(/(\(|\))/,"").ljust(5,"0"),b.order.gsub(/(\(|\))/,"").ljust(5,"0")) }
           target_qzp_order_arr = target_qzps.map{|item| item.order.gsub(/(\(|\))/,"").ljust(5,"0")}
           unless params[:qzp_id].blank?
             target_qzp = Mongodb::BankQizpointQzp.where(_id: params[:qzp_id]).first

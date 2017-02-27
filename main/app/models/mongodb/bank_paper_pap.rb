@@ -540,7 +540,7 @@ class Mongodb::BankPaperPap
   def qzps_checkpoints_mapping ckp_level=1
     result = []
     return result if bank_quiz_qizs.blank?
-    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten.sort{|a,b| Common::Locale.mysort(a.order.gsub(/(\(|\))/,"").ljust(5,"0"),b.order.gsub(/(\(|\))/,"").ljust(5,"0")) }
     return result if qzps.blank?
     target_level = ckp_level
     target_level = -1 if ckp_level > Common::Report::CheckPoints::DefaultLevelEnd
