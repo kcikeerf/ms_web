@@ -15,7 +15,8 @@ module Reports
         authenticate!
       end
 
-      #
+      ###########
+
       desc ''
       params do
         use :authenticate
@@ -72,7 +73,8 @@ module Reports
         end
       end
 
-      #
+      ###########
+
       desc ''
       params do
         use :authenticate
@@ -107,6 +109,34 @@ module Reports
           }
         }.compact
       end
+
+      ###########
+
+      desc '获取当前用户所在租户的年级班级列表 post /api/wx/v1.1/reports/klass_list' # grade_class_list begin
+      params do
+        use :authenticate
+        requires :test_id, type: String, allow_blank: true
+        requires :tenant_uid, type: String, allow_blank: true
+      end
+      post :klass_list do
+        result = []
+
+        accessable_loc_uids = current_user.accessable_locations.map(&:uid)
+  
+        nav_h = {}
+        Find.find("./reports_warehouse/tests/#{params[:test_id]}"){|f|
+          if f =~ /.*#{params[:tenant_uid]}\/nav.json/
+            data = File.open(f, 'rb').read
+            nav_h = JSON.parse(data)
+            break
+          end
+        }
+
+        nav_h.values[0].map{|item| item if accessable_loc_uids.include?(item[1]["uid"])}.compact
+
+      end # grade_class_list end
+
+      ###########      
 
     end
 

@@ -276,11 +276,13 @@ class ImportResultsJob < ActiveJob::Base
           #
           args[:loc_h][:grade] = cells[:grade]
           args[:loc_h][:classroom] = cells[:classroom]
-          loc = Location.where(args[:loc_h]).first
-          if loc.nil?
-            loc = Location.new(args[:loc_h])
-            loc.save!
-          end
+          # loc = Location.where(args[:loc_h]).first
+          # if loc.nil?
+          #   loc = Location.new(args[:loc_h])
+          #   loc.save!
+          # end
+          loc = Location.new(args[:loc_h])
+          loc.save!
           raise SwtkErrors::NotFoundError.new(I18.t("swtk_errors.object_not_found", :message => "location, loc_h:#{args[:loc_h]}")) unless loc
           user_row_arr = []
           # 
