@@ -132,7 +132,7 @@ module Reports
   
 
         nav_h = {}
-        Find.find("./reports_warehouse/tests/#{params[:test_id]}"){|f|
+        Find.find("/reports_warehouse/tests/#{params[:test_id]}"){|f|
           if f =~ /.*#{default_tenant_uid}\/nav.json/
             data = File.open(f, 'rb').read
             nav_h = JSON.parse(data)
