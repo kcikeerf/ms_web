@@ -116,16 +116,24 @@ module Reports
       params do
         use :authenticate
         requires :test_id, type: String, allow_blank: true
-        requires :tenant_uid, type: String, allow_blank: true
+        optional :tenant_uid, type: String, allow_blank: true
       end
       post :klass_list do
         result = []
 
+        
+        if params[:tenant_uid].blank?
+          accessable_tenant_uids = current_user.accessable_tenants.map(&:uid)
+          default_tenant_uid = accessable_tenant_uids[0]
+        else
+          default_tenant_uid = params[:tenant_uid]
+        end
         accessable_loc_uids = current_user.accessable_locations.map(&:uid)
   
+
         nav_h = {}
         Find.find("./reports_warehouse/tests/#{params[:test_id]}"){|f|
-          if f =~ /.*#{params[:tenant_uid]}\/nav.json/
+          if f =~ /.*#{default_tenant_uid}\/nav.json/
             data = File.open(f, 'rb').read
             nav_h = JSON.parse(data)
             break
