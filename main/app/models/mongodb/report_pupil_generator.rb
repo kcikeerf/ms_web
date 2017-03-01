@@ -1,3 +1,3 @@
-class Mongodb::ReportPupilGenerator
+# -*- coding: UTF-8 -*-
 
-end
+class Mongodb::ReportPupilGenerator; end

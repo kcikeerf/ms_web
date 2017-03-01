@@ -1,3 +1,6 @@
-class Mongodb::ReportConstructor
+# -*- coding: UTF-8 -*-
+#
 
-end
+require 'thwait'
+
+class Mongodb::ReportConstructor; end

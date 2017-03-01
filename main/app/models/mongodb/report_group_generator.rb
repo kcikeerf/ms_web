@@ -1,3 +1,5 @@
-class Mongodb::ReportGroupGenerator
+# -*- coding: UTF-8 -*-
 
-end
+require 'thwait'
+
+class Mongodb::ReportGroupGenerator; end
