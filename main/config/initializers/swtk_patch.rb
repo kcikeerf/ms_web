@@ -83,7 +83,6 @@ target_klass_arr = %W{
 target_klass_arr.each do |klass|
   core_file = Rails.root + "config/initializers/#{klass}_patch.txt"
   secret_file = Rails.root + "tmp/tk_secret.txt"
-  puts TkEncryption::codes_str_decryption(core_file, secret_file) if klass == "report_pupil_generator"
   "Mongodb::#{klass.camelize}".constantize.class_eval do
     eval(TkEncryption::codes_str_decryption(core_file, secret_file))
   end
