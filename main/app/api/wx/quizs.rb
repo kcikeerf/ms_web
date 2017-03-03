@@ -22,9 +22,9 @@ module Quizs
         use :authenticate
         requires :test_id, type: String, allow_blank: false
         requires :pupil_user_name, type: String, allow_blank: false
-        optional :qzp_id, type: String, allow_blank: true
-        optional :qzp_order, type: String, allow_blank: true
-        exactly_one_of :qzp_id, :qzp_order
+        requires :qzp_id, type: String, allow_blank: true
+        # optional :qzp_order, type: String, allow_blank: true
+        # exactly_one_of :qzp_id, :qzp_order
       end
       post :detail do
         target_user = User.where(name: params[:pupil_user_name]).first
@@ -41,19 +41,23 @@ module Quizs
         else
           target_test = Mongodb::BankTest.where(_id: params[:test_id]).first
           target_paper = target_test.bank_paper_pap
-          target_qzps = target_paper.ordered_qzps
-          target_qzp_order_arr = target_qzps.map{|item| item.order.gsub(/(\(|\))/,"").ljust(5,"0")}
+
+          order_redis_key = "/api/papers/" + target_paper.id.to_s + "/qzps_orders/"
+          if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, order_redis_key
+            target_qzp_order_arr = $cache_redis.lrange(order_redis_key, 0, -1)
+          else
+            target_qzps = target_paper.ordered_qzps
+            target_qzp_order_arr = target_qzps.map(&:order)
+            $cache_redis.rpush(order_redis_key, target_qzp_order_arr)
+          end
+
           unless params[:qzp_id].blank?
             target_qzp = Mongodb::BankQizpointQzp.where(_id: params[:qzp_id]).first
-          else #为了兼容旧记录
-            qzp_index = params[:qzp_order].to_i - 1
-            error!(message_json("e40004"), 404) if qzp_index < 0
-            target_qzp = target_qzps[qzp_index]
           end
           target_quiz = target_qzp.bank_quiz_qiz
           error!(message_json("e40004"), 404) unless target_qzp
-          target_qzp_order_str = (target_qzp && !target_qzp.order.blank? )? target_qzp.order.gsub(/(\(|\))/,"") : nil
-          order_index = target_qzp_order_arr.find_index(target_qzp_order_str.ljust(5,"0"))
+          target_qzp_order_str = (target_qzp && !target_qzp.order.blank? )? target_qzp.order : nil
+          order_index = target_qzp_order_arr.find_index(target_qzp_order_str)
           error!(message_json("e40004"), 404) unless order_index
           target_qzp_order = (order_index + 1).to_s
 

@@ -486,8 +486,10 @@ class Mongodb::BankPaperPap
   def ordered_qzps
     bank_quiz_qizs.map{|qiz| 
       qiz.bank_qizpoint_qzps 
-    }.flatten.sort{|a,b| 
-      Common::Locale.mysort(a.order.gsub(/(\(|\))/,"").rjust(5,"0"),b.order.gsub(/(\(|\))/,"").rjust(5,"0")) 
+    }.flatten.sort{|a,b|
+      a_order_converted = a.order.gsub(/(\))/,"").split("(").map{|item| item.rjust(5,"0")}.join("")
+      b_order_converted = b.order.gsub(/(\))/,"").split("(").map{|item| item.rjust(5,"0")}.join("")
+      Common::Locale.mysort(a_order_converted,b_order_converted) 
     }
   end
 

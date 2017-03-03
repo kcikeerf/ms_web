@@ -3,4 +3,6 @@
 
 require 'thwait'
 
-class Mongodb::ReportConstructor; end
+class Mongodb::ReportConstructor
+  include Mongoid::Document
+end

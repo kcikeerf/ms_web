@@ -1,3 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-class Mongodb::ReportPupilGenerator; end
+class Mongodb::ReportPupilGenerator
+	include Mongoid::Document
+end

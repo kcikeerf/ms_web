@@ -253,7 +253,8 @@ class ImportResultsJob < ActiveJob::Base
         #   qzps_h << Mongodb::BankQizpointQzp.where(_id: item).first
         # }
 
-        #######start to analyze#######      
+        #######start to analyze#######
+        location_list = {}   
         (args[:start_num]..args[:end_num]).each{|index|
           next if index < args[:data_start_row]
           row_qzps_arr = []
@@ -276,13 +277,14 @@ class ImportResultsJob < ActiveJob::Base
           #
           args[:loc_h][:grade] = cells[:grade]
           args[:loc_h][:classroom] = cells[:classroom]
-          # loc = Location.where(args[:loc_h]).first
-          # if loc.nil?
-          #   loc = Location.new(args[:loc_h])
-          #   loc.save!
-          # end
-          loc = Location.new(args[:loc_h])
-          loc.save!
+          loc_key = args[:target_tenant].uid + cells[:grade] + cells[:classroom]
+          if location_list.keys.include?(loc_key)
+            loc = location_list[loc_key]
+          else
+            loc = Location.new(args[:loc_h])
+            loc.save!
+            location_list[loc_key] = loc
+          end
           raise SwtkErrors::NotFoundError.new(I18.t("swtk_errors.object_not_found", :message => "location, loc_h:#{args[:loc_h]}")) unless loc
           user_row_arr = []
           # 

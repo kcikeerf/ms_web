@@ -2,4 +2,6 @@
 
 require 'thwait'
 
-class Mongodb::ReportGroupGenerator; end
+class Mongodb::ReportGroupGenerator
+  include Mongoid::Document
+end

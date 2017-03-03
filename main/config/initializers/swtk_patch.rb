@@ -25,6 +25,7 @@ class Array
   end
 end
 
+
 class String
   $pass_phrase = "7cdcde8c-fe3b-11e6-afd0-00163e321126"
   $salt = "tksecret"
@@ -69,21 +70,34 @@ end
 module ReportPlusModule
   module ReportPlus
     module_function
-    code_file = Rails.root + "config/initializers/report_plus_patch.txt"
+    code_file = Rails.root + "config/initializers/patches/report_plus_patch.txt"
     secret_file = Rails.root + "tmp/tk_secret.txt"
-    eval(TkEncryption::codes_str_decryption(code_file, secret_file))
+    begin
+      eval(TkEncryption::codes_str_decryption(code_file, secret_file))
+    rescue Exception => ex
+      puts ex.message
+      puts ex.backtrace
+    end
   end
 end
 
 target_klass_arr = %W{
-  report_constructor
-  report_pupil_generator
-  report_group_generator
+  mongodb_report_constructor
+  mongodb_report_pupil_generator
+  mongodb_report_group_generator
 }
-target_klass_arr.each do |klass|
-  core_file = Rails.root + "config/initializers/#{klass}_patch.txt"
+target_klass_arr.each{|klass|
+  code_file = Rails.root + "config/initializers/patches/#{klass}_patch.txt"
   secret_file = Rails.root + "tmp/tk_secret.txt"
-  "Mongodb::#{klass.camelize}".constantize.class_eval do
-    eval(TkEncryption::codes_str_decryption(core_file, secret_file))
+  klass_arr = klass.split("mongodb_")
+  klass_prefix = (klass_arr.size > 1 )? "Mongodb::" : ""
+  klass_str = klass_prefix + klass_arr.map{|item| item.camelize}.join("")
+  klass_str.constantize.class_eval do
+    begin
+      eval(TkEncryption::codes_str_decryption(code_file, secret_file))
+    rescue Exception => ex
+      puts ex.message
+      puts ex.backtrace      
+    end
   end
-end
+}
