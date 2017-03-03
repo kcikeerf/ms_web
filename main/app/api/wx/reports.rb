@@ -28,16 +28,25 @@ module Reports
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
           target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten
         else
-          target_papers = []
+          target_papers = []          
         end
         target_papers.compact!
         target_papers.uniq!
 
         unless target_papers.blank?
+          if target_user.is_pupil?
+            rpt_type = Common::Report::Group::Pupil
+            rpt_id = target_user.role_obj.uid
+          elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
+            rpt_type = Common::Report::Group::Grade
+            rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
+          else
+            # do nothing
+          end
           target_papers.map{|target_pap|
             next unless target_pap
             next if target_pap.paper_status != Common::Paper::Status::ReportCompleted
-            if target_pap.bank_tests.blank?
+            if target_pap.bank_tests.blank? #兼容旧，适时删除掉
               if target_user.is_pupil? 
                 target_report = Mongodb::PupilReport.where(pup_uid: target_user.role_obj.uid).first
                 rpt_h = JSON.parse(target_report.report_json)
@@ -56,6 +65,10 @@ module Reports
                 }
               end
             else
+              test_id = target_pap.bank_tests[0].id.to_s
+              rpt_type = rpt_type || Common::Report::Group::Project
+              rpt_id = rpt_id || test_id
+              report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
               {
                 :paper_heading => target_pap.heading,
                 :subject => Common::Locale::i18n("dict.#{target_pap.subject}"),
@@ -63,8 +76,8 @@ module Reports
                 :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
                 :score => target_pap.score,
                 :report_version => "00016110",
-                :test_id => target_pap.bank_tests[0].id.to_s,
-                :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(target_pap.bank_tests[0].id.to_s, target_user)
+                :test_id => test_id,
+                :report_url => "/api/wx/v1.1" + report_url
               }
             end
           }.compact
@@ -87,9 +100,11 @@ module Reports
         elsif target_user.is_tenant_administrator?
           target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten
         elsif target_user.is_teacher?
-          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten
+          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten      
         elsif target_user.is_pupil?
           target_tests = target_user.bank_tests
+          rpt_type = Common::Report::Group::Pupil
+          rpt_id = target_user.role_obj.uid
         else
           target_tests = []
         end
@@ -97,15 +112,19 @@ module Reports
         target_tests.uniq!
 
         target_tests.map{|t|
+          test_id = t.id.to_s
           target_pap = t.paper_question
           next unless target_pap
+          rpt_type = rpt_type || Common::Report::Group::Project
+          rpt_id = rpt_id || test_id      
+          report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)          
           {
             :paper_heading => target_pap.heading,
             :quiz_type => Common::Locale::i18n("dict.#{target_pap.quiz_type}"),
             :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
             :report_version => "00016110",
-            :test_id => t.id.to_s,
-            :report_url => "/api/wx/v1.1" + Common::ReportPlus::report_url(t.id.to_s, target_user)
+            :test_id => test_id,
+            :report_url => "/api/wx/v1.1" + report_url
           }
         }.compact
       end
