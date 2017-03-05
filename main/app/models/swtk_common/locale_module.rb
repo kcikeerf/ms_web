@@ -1,7 +1,7 @@
 module LocaleModule
   module Locale
     module_function
-    
+
     def i18n label_str,options={}
       if !label_str.blank?
         arr = label_str.scan(/(.*)(\.)$/).first
@@ -9,6 +9,7 @@ module LocaleModule
       else
         label_str = nil
       end
+      I18n.locale = :zh
       I18n.t(label_str, options.merge!({:default => label_str.blank?? I18n.t("common.minus") : label_str}))
     end
 
