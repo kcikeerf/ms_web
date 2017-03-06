@@ -70,7 +70,6 @@ gem 'httparty'
 
 #page
 gem 'kaminari'
-gem 'kaminari-mongoid'
 
 #job
 gem 'sidekiq'

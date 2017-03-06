@@ -51,10 +51,11 @@ end
 
 module TkEncryption
   module_function
-  def codes_str_decryption code_file, secret_file
+  def codes_str_decryption code_file
     begin
       encrypted_core_str = File.open(code_file, 'rb').read
       secrect_codes = nil
+      secret_file = Rails.root + "tmp/tk_secret.txt"
       if File.exists?(secret_file)
         secrect_codes = File.open(secret_file, 'rb').read
         secrect_codes.strip!
@@ -67,35 +68,29 @@ module TkEncryption
   end
 end
 
-module ReportPlusModule
-  module ReportPlus
-    module_function
-    code_file = Rails.root + "config/initializers/patches/report_plus_patch.txt"
-    secret_file = Rails.root + "tmp/tk_secret.txt"
-    begin
-      eval(TkEncryption::codes_str_decryption(code_file, secret_file))
-    rescue Exception => ex
-      #
-    end
-  end
-end
+# module ReportPlusModule
+#   module ReportPlus
+#     module_function
 
-target_klass_arr = %W{
-  mongodb_report_constructor
-  mongodb_report_pupil_generator
-  mongodb_report_group_generator
-}
-target_klass_arr.each{|klass|
-  code_file = Rails.root + "config/initializers/patches/#{klass}_patch.txt"
-  secret_file = Rails.root + "tmp/tk_secret.txt"
-  klass_arr = klass.split("mongodb_")
-  klass_prefix = (klass_arr.size > 1 )? "Mongodb::" : ""
-  klass_str = klass_prefix + klass_arr.map{|item| item.camelize}.join("")
-  klass_str.constantize.class_eval do
-    begin
-      eval(TkEncryption::codes_str_decryption(code_file, secret_file))
-    rescue Exception => ex
-      #   
-    end
-  end
-}
+#   end
+# end
+
+# target_klass_arr = %W{
+#   mongodb_report_constructor
+#   mongodb_report_pupil_generator
+#   mongodb_report_group_generator
+# }
+# target_klass_arr.each{|klass|
+#   code_file = Rails.root + "config/initializers/patches/#{klass}_patch.txt"
+#   secret_file = Rails.root + "tmp/tk_secret.txt"
+#   klass_arr = klass.split("mongodb_")
+#   klass_prefix = (klass_arr.size > 1 )? "Mongodb::" : ""
+#   klass_str = klass_prefix + klass_arr.map{|item| item.camelize}.join("")
+#   klass_str.constantize.class_eval do
+#     begin
+#       eval(TkEncryption::codes_str_decryption(code_file, secret_file))
+#     rescue Exception => ex
+#       #   
+#     end
+#   end
+# }
