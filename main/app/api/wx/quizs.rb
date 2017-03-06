@@ -63,8 +63,6 @@ module Quizs
           target_qzp_order = (order_index + 1).to_s
 
           # 临时添加
-          hyt_quiz_data = {}
-          hyt_snapshot_data = {}
           if target_current_user.is_pupil?
             hyt_quiz_data_h = {}
             hyt_snapshot_data_h = {}
@@ -80,6 +78,8 @@ module Quizs
               # do nothing
             end
 
+            hyt_quiz_data = {}
+            hyt_snapshot_data = {}
             target_hyt_quiz = hyt_quiz_data_h.find{|item| item["qzp_order"] == target_qzp_order}
             if target_hyt_quiz.blank?
               target_hyt_quiz = hyt_snapshot_data_h.find{|item| item["qzp_order"] == target_qzp_order}
@@ -87,6 +87,9 @@ module Quizs
             else
               hyt_quiz_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["answer"] }
             end
+          else
+            hyt_quiz_data = {}
+            hyt_snapshot_data = {} 
           end
           ###
 
