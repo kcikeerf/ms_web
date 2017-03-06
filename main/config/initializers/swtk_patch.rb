@@ -62,7 +62,7 @@ module TkEncryption
       end
       return (secrect_codes.blank?? encrypted_core_str.decrypt : encrypted_core_str.decrypt(secrect_codes))
     rescue Exception => ex
-      puts "initialization error!"
+      #
     end
   end
 end
@@ -75,8 +75,7 @@ module ReportPlusModule
     begin
       eval(TkEncryption::codes_str_decryption(code_file, secret_file))
     rescue Exception => ex
-      puts ex.message
-      puts ex.backtrace
+      #
     end
   end
 end
@@ -96,8 +95,7 @@ target_klass_arr.each{|klass|
     begin
       eval(TkEncryption::codes_str_decryption(code_file, secret_file))
     rescue Exception => ex
-      puts ex.message
-      puts ex.backtrace      
+      #   
     end
   end
 }
