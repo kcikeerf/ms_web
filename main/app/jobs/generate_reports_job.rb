@@ -121,11 +121,12 @@ class GenerateReportsJob < ActiveJob::Base
           constructor_arr.each{|item|
             pids << Process.fork do
               item.iti_kumigoto_no_kihon_koutiku
+              item.pre_owari
               item.owari
             end
           }
         }
-        job_tracker.update(process: 0.7)
+        job_tracker.update(process: 0.8)
 
         # # 组装2
         # constructor_arr.each{|item|
@@ -141,7 +142,7 @@ class GenerateReportsJob < ActiveJob::Base
           # }
         #  end
         #}
-        job_tracker.update(process: 0.9)
+        # job_tracker.update(process: 0.9)
 
         report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/#{params[:test_id]}/*"
         Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
