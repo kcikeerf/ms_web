@@ -13,7 +13,7 @@ module Quizs
     resource :quizs do
       before do
         set_api_header
-        authenticate!
+        #authenticate!
       end
 
       #
@@ -21,14 +21,15 @@ module Quizs
       params do
         use :authenticate
         requires :test_id, type: String, allow_blank: false
-        requires :pupil_user_name, type: String, allow_blank: false
+        optional :pupil_user_name, type: String, allow_blank: false
         requires :qzp_id, type: String, allow_blank: true
         # optional :qzp_order, type: String, allow_blank: true
         # exactly_one_of :qzp_id, :qzp_order
       end
       post :detail do
-        target_user = User.where(name: params[:pupil_user_name]).first
-        error!(message_json("w21204"), 403) if target_user.blank? || !target_user.is_pupil?
+        target_current_user = current_user
+        target_user = target_current_user.is_pupil?? target_current_user : User.where(name: params[:pupil_user_name]).first
+        error!(message_json("w21204"), 403) if target_user.blank?
         unless params[:qzp_id].blank?
           redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_user.id}/qzp_id/#{params[:qzp_id]}"
         else
@@ -62,28 +63,30 @@ module Quizs
           target_qzp_order = (order_index + 1).to_s
 
           # 临时添加
-          hyt_quiz_data_h = {}
-          hyt_snapshot_data_h = {}
-          begin
-            hyt_quiz_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_user.role_obj.uid + '_hyt_quiz_data.json'].first.to_s
-            hyt_quiz_data = File.open(hyt_quiz_data_f, 'rb').read
-            hyt_quiz_data_h = JSON.parse(hyt_quiz_data) if !hyt_quiz_data.blank?
-
-            hyt_snapshot_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_user.role_obj.uid + '_hyt_snapshot_data.json'].first.to_s
-            hyt_snapshot_data = File.open(hyt_snapshot_data_f, 'rb').read
-            hyt_snapshot_data_h = JSON.parse(hyt_snapshot_data) if !hyt_snapshot_data.blank?
-          rescue Exception => ex
-            # do nothing
-          end
-
           hyt_quiz_data = {}
           hyt_snapshot_data = {}
-          target_hyt_quiz = hyt_quiz_data_h.find{|item| item["qzp_order"] == target_qzp_order}
-          if target_hyt_quiz.blank?
-            target_hyt_quiz = hyt_snapshot_data_h.find{|item| item["qzp_order"] == target_qzp_order}
-            hyt_snapshot_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["image_url"] } unless target_hyt_quiz.blank?
-          else
-            hyt_quiz_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["answer"] }
+          if target_current_user.is_pupil?
+            hyt_quiz_data_h = {}
+            hyt_snapshot_data_h = {}
+            begin
+              hyt_quiz_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_user.role_obj.uid + '_hyt_quiz_data.json'].first.to_s
+              hyt_quiz_data = File.open(hyt_quiz_data_f, 'rb').read
+              hyt_quiz_data_h = JSON.parse(hyt_quiz_data) if !hyt_quiz_data.blank?
+
+              hyt_snapshot_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_user.role_obj.uid + '_hyt_snapshot_data.json'].first.to_s
+              hyt_snapshot_data = File.open(hyt_snapshot_data_f, 'rb').read
+              hyt_snapshot_data_h = JSON.parse(hyt_snapshot_data) if !hyt_snapshot_data.blank?
+            rescue Exception => ex
+              # do nothing
+            end
+
+            target_hyt_quiz = hyt_quiz_data_h.find{|item| item["qzp_order"] == target_qzp_order}
+            if target_hyt_quiz.blank?
+              target_hyt_quiz = hyt_snapshot_data_h.find{|item| item["qzp_order"] == target_qzp_order}
+              hyt_snapshot_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["image_url"] } unless target_hyt_quiz.blank?
+            else
+              hyt_quiz_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["answer"] }
+            end
           end
           ###
 

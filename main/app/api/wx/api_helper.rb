@@ -8,7 +8,8 @@ module ApiHelper
   end
 
   def authenticate!
-    error!(message_json("e41001"), 401) unless current_user
+    current_user
+    #error!(message_json("e41001"), 401) unless current_user
   end
 
   def current_user
@@ -23,6 +24,7 @@ module ApiHelper
         result = target_user
       end
     end
+    error!(message_json("e41001"), 401) unless result
     return result
   end
 
