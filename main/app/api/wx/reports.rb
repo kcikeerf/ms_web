@@ -181,7 +181,7 @@ module Reports
       params do
         use :authenticate
         requires :test_id, type: String, allow_blank: false
-        optional :tenant_uid, type: String, allow_blank: false
+        requires :tenant_uid, type: String, allow_blank: false
       end
       post :klass_list do
         result = []
