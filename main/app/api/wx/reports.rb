@@ -39,13 +39,17 @@ module Reports
         # 获取试卷信息
         tests_index = url_arr.find_index{|item| item == "tests"}
         paper_info_path = Common::Report::WareHouse::ReportLocation + url_arr[0..(tests_index + 1)].join("/") + "/paper_info.json"        
-        result["paper_info"] = read_report_data(paper_info_path)
+        temp_h = read_report_data(paper_info_path)
+        return {} if temp_h.blank?
+        result["paper_info"] = temp_h
 
         # 获取个分组报告信息
         group_arr.each{|group|
           group_index = url_arr.find_index{|item| item == group}
           target_report_path = Common::Report::WareHouse::ReportLocation + url_arr[0..(group_index+1)].join("/") + ".json"
-          result[group] = read_report_data(target_report_path)
+          temp_h = read_report_data(target_report_path)
+          return {} if temp_h.blank?
+          result[group] = temp_h
         }
         return result
       end
