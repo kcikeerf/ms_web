@@ -72,9 +72,6 @@ module ApiAuthHelper
         user_scope_str = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Auth, redis_rkey
         error!(message_json("w21401"), 401) if user_scope_str.blank?
         user_scope_re = Regexp.new user_scope_str
-        puts user_scope_re
-        puts rvalue
-        puts user_scope_re.match(rvalue).blank?
         if user_scope_re.match(rvalue).blank?
           error!(message_json("w21401"), 401)
         end

@@ -523,7 +523,7 @@ class User < ActiveRecord::Base
         when "klass"
           item_re = "(#{locations.map(&:uid).join("|")})"
         when "pupil"
-          item_re = "(#{self.authentication_token})"
+          item_re = "(#{self.role_obj.uid})"
         when "subject"
           item_re = "(#{self.subject})"
         when "grade"
