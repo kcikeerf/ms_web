@@ -198,7 +198,7 @@ zh:
     abbrev:
       subject: "科"
       head_teacher: "主"
-  
+
   #
   tests:
     status:
@@ -214,7 +214,7 @@ zh:
       score_imported: "成绩已导入"
       report_generating: "报告生成中"
       report_completed: "报告生成完毕" 
-  
+
   #
   swtk_errors:
     parameter_invalid_error: "参数无效！"
@@ -225,7 +225,7 @@ zh:
     formats:
       default: "%Y-%m-%d %H:%M"
       long: "%Y-%m-%d %H:%M:%S"
-  
+
   #
   tenants:
     type: "租户类型"

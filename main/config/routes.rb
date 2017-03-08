@@ -252,11 +252,12 @@ Rails.application.routes.draw do
     mount ApiReports::APIV11 => "/"
     mount ApiReportsWarehouse::APIV11 => "/"
     mount ApiMonitoring::APIV11 => "/"
+    mount ApiQuizs::API11 => "/"
 
     # 微信
     mount ApiWxAuth::APIV11 => "/"
     mount ApiWxOnlineTest::APIV11 => "/"
-    mount Quizs::API => "/"
+
   end
 
   #######################################

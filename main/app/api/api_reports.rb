@@ -144,9 +144,9 @@ module ApiReports
         if target_user.is_area_administrator?
           target_tests = target_user.role_obj.area.bank_tests
         elsif target_user.is_tenant_administrator?
-          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten
+          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten          
         elsif target_user.is_teacher?
-          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten      
+          target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten
         elsif target_user.is_pupil?
           target_tests = target_user.bank_tests
           rpt_type = Common::Report::Group::Pupil
@@ -238,7 +238,6 @@ module ApiReports
       ###########
       desc '获取当前用户所在租户的年级班级列表 post /api/wx/v1.1/reports/klass_list' # class_list begin
       params do
-        use :authenticate
         requires :test_id, type: String, allow_blank: false
         requires :tenant_uid, type: String, allow_blank: false
       end
@@ -266,7 +265,6 @@ module ApiReports
 
       desc '获取学生报告 post /api/wx/v1.1/reports/pupil' # pupil report begin
       params do
-        use :authenticate
         requires :report_url, type: String, allow_blank: false
       end
       post :pupil do
@@ -277,7 +275,6 @@ module ApiReports
 
       desc '获取班级报告 post /api/wx/v1.1/reports/klass' # klass report begin
       params do
-        use :authenticate
         requires :report_url, type: String, allow_blank: false
       end
       post :klass do
@@ -288,7 +285,6 @@ module ApiReports
 
       desc '获取年级报告 post /api/wx/v1.1/reports/grade' # grade report begin
       params do
-        use :authenticate
         requires :report_url, type: String, allow_blank: false
       end
       post :grade do
@@ -299,7 +295,6 @@ module ApiReports
 
       desc '获取区域报告 post /api/wx/v1.1/reports/project' # project report begin
       params do
-        use :authenticate
         requires :report_url, type: String, allow_blank: false
       end
       post :project do
