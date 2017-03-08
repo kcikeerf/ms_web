@@ -144,9 +144,13 @@ module ApiReports
         if target_user.is_area_administrator?
           target_tests = target_user.role_obj.area.bank_tests
         elsif target_user.is_tenant_administrator?
-          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten          
+          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten
+          rpt_type = Common::Report::Group::Grade
+          rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid          
         elsif target_user.is_teacher?
           target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten
+          rpt_type = Common::Report::Group::Grade
+          rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid
         elsif target_user.is_pupil?
           target_tests = target_user.bank_tests
           rpt_type = Common::Report::Group::Pupil
