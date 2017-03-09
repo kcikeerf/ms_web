@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   before_create :set_role, :set_authentication_token
 
   validates :role_name, presence: true, on: :create
-  validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,20}\z/ }
+  validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,50}\z/ }
   
   # validates_confirmation_of :password
   # validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
