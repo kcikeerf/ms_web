@@ -998,7 +998,7 @@ $(function(){
                 data = paper.paperData.bank_quiz_qizs[num-1].bank_qizpoint_qzps[index].bank_checkpoints_ckps || undefined;
             $(this).parents(".score_list").addClass("open").siblings().removeClass("open");
             $("#commonDialog").modal({remote:"/checkpoints/dimesion_tree"},"show");
-            $(document).trigger("modal:open",{dataArr:data,tabIndex:tabIndex});
+            $(document).trigger("modal:open",{dataArr:data,tabIndex:tabIndex}); //'modal:open' 在app/assets/javascripts/checkpoints中
         });
         doc.on("modal:close",function(e,obj){
             $(".analysis_sanwei input").val();
