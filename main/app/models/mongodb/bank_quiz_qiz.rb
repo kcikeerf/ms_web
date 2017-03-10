@@ -25,6 +25,7 @@ class Mongodb::BankQuizQiz
   field :ext2, type: Integer
   field :cat, type: String
   field :type, type: String
+  field :optional, type: Boolean
   field :text, type: String
   field :answer, type: String
   field :desc, type: String
@@ -64,6 +65,7 @@ class Mongodb::BankQuizQiz
         :ext2 => params["ext2"] || 0,
         :cat => params["cat"] || "",
         :type => params["type"] || "",
+        :optional => params["optional"] || "",
         :text => params["text"] || "",
         :answer => params["answer"] || "",
         :desc => params["desc"] || "",

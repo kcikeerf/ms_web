@@ -367,6 +367,7 @@ class ImportResultsJob < ActiveJob::Base
           }
 
           (args[:data_start_col]..(args[:total_cols]-1)).each{|qzp_index|
+            next if ( !row[qzp_index].is_a?(Numeric) || row[qzp_index] < 0 )
             col_params.merge!({
               :qzp_uid => args[:hidden_row][qzp_index],
               :order => args[:order_row][qzp_index],

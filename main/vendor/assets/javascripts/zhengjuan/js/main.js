@@ -726,7 +726,7 @@ $(function(){
                     var tempObj = {
                         'selectCategory' : data.cat,
                         'selectFullscore' : data.score,
-                        'selectDegree' : data.levelword2  
+                        'selectDegree' : data.levelword2
                     };
                     for(var k in tempObj){
                         $("." + k + " .optionList li").each(function(){
@@ -743,6 +743,7 @@ $(function(){
                             }
                         });
                     }
+                    (data.optional)? $(".isOptional .textCheckbox").addClass("active") : $(".isOptional .textCheckbox").removeClass("active");
                     $(".remarks").val(data.desc || "");
                     var template = $(".analyze .textLabelWarp").eq(0);
                     var cloneNode = template.clone(false);
@@ -792,6 +793,7 @@ $(function(){
                     $(".analysis_info .info_type span").text(typeObj[paper.paperData.information.subject.name][data.cat] || "");
                     $(".analysis_info .info_difficulty span").text(levelObj[data.levelword2] || "");
                     $(".analysis_info .info_score span").text(data.score ? data.score+"分" : "");
+                    $(".analysis_info .info_optional span").text(data.optional ? "是" : "否");
                     $(".analysis_q .info_right").html(data.text || "");
                     $(".analysis_a .info_right").html(data.answer || "");
                     $(".analysis_describe .info_right").html(data.desc || "");
@@ -837,6 +839,11 @@ $(function(){
                     $(".sanweiSave, .detection").hide();
                 }
             }
+        });
+        //是否选做题
+        doc.on("click",".isOptional .textCheckbox",function(){
+            paper.changeState = true;
+            $(".saveWarp .saveBtn").addClass("active");
         });
         //是否主观题
         doc.on("click","p.textCheckbox",function(){
@@ -909,11 +916,18 @@ $(function(){
             }else{
                 if($(".subNav li").length == $(".subNav li.dispose").length){
                     var fullScore =  paper.paperData.information.score || 0,
-                        scores = 0;
+                        scores = 0,
+                        optional_scores = 0;
                     fullScore = fullScore - 0;
                     for(var i=0; i<paper.paperData.bank_quiz_qizs.length; i++){
-                        scores += parseFloat(paper.paperData.bank_quiz_qizs[i].score || 0);
+                        var target_qiz = paper.paperData.bank_quiz_qizs[i]; 
+                        if(target_qiz.optional){
+                            optional_scores = target_qiz.score;
+                        } else {
+                            scores += parseFloat(paper.paperData.bank_quiz_qizs[i].score || 0);
+                        }
                     };
+                    scores += parseFloat(optional_scores || 0 );
                     if(fullScore == 0 || fullScore != scores){
                         alert("当前的题目分数总和不等于试卷总分值，请重新修改！");
                         return;
@@ -1178,7 +1192,8 @@ $(function(){
         q_html = paper.itemFilter(paper.min_question.getData());
         a_html = paper.itemFilter(paper.min_answer.getData());
         itemObj.cat = $(".selectCategory .selectVal span").attr("values") || "";
-        itemObj.levelword2 = $(".selectDegree .selectVal span").attr("values") || "";
+        itemObj.levelword2 = $(".selectDegree .textCheckbox span") || "";
+        itemObj.optional = $(".isOptional .textCheckbox").hasClass("active") || false;
         itemObj.score = $(".selectFullscore .selectVal input").val() || 0;
         itemObj.text = q_html;
         itemObj.answer = a_html;
