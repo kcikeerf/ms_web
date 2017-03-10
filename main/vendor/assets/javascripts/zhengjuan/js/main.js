@@ -1192,7 +1192,7 @@ $(function(){
         q_html = paper.itemFilter(paper.min_question.getData());
         a_html = paper.itemFilter(paper.min_answer.getData());
         itemObj.cat = $(".selectCategory .selectVal span").attr("values") || "";
-        itemObj.levelword2 = $(".selectDegree .textCheckbox span") || "";
+        itemObj.levelword2 = $(".selectDegree .selectVal span").attr("values") || "";
         itemObj.optional = $(".isOptional .textCheckbox").hasClass("active") || false;
         itemObj.score = $(".selectFullscore .selectVal input").val() || 0;
         itemObj.text = q_html;
