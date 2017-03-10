@@ -862,7 +862,7 @@ class Mongodb::BankPaperPap
         sheet.add_row empty_row, :style => unlocked
         sheet.add_data_validation("A#{line+5}",{
           :type => :list,
-          :formula1 => "gradeList!A1:A#{grade_number}",
+          :formula1 => "grade_list!A$1:A$#{grade_number}",
           :showDropDown => false,
           :showInputMessage => true,
           :promptTitle => Common::Locale::i18n('dict.grade'),
@@ -870,7 +870,7 @@ class Mongodb::BankPaperPap
         })
         sheet.add_data_validation("B#{line+5}",{
           :type => :list,
-          :formula1 => "classroomList!A1:A#{classroom_number}",
+          :formula1 => "classroom_list!A$1:A$#{classroom_number}",
           :showDropDown => false,
           :showInputMessage => true,
           :promptTitle => Common::Locale::i18n('dict.classroom'),
@@ -878,7 +878,7 @@ class Mongodb::BankPaperPap
         })
         sheet.add_data_validation("G#{line+5}",{
           :type => :list,
-          :formula1 => "sexList!A1:A3",
+          :formula1 => "sex_list!A$1:A$3",
           :showDropDown => false,
           :showInputMessage => true,
           :promptTitle => Common::Locale::i18n('dict.sex'),
@@ -887,14 +887,13 @@ class Mongodb::BankPaperPap
         cells= sheet.rows.last.cells[8..cols_count].map{|cell| {:key=> cell.r, :value=> title_row_arr[cell.index].to_s}}
         cells.each{|cell|
           sheet.add_data_validation(cell[:key],{
-            :type => :whole, 
+            :type => :decimal,
             :operator => :between, 
             :formula1 => '0', 
             :formula2 => cell[:value], 
             :showErrorMessage => true, 
             :errorTitle => Common::Locale::i18n("scores.messages.error.wrong_input"), 
             :error => Common::Locale::i18n("scores.messages.info.correct_score", :min => 0, :max =>cell[:value]), 
-            :errorStyle => :information, 
             :showInputMessage => true, 
             :promptTitle => Common::Locale::i18n("scores.messages.warn.score"), 
             :prompt => Common::Locale::i18n("scores.messages.info.correct_score", :min => 0, :max =>cell[:value])
