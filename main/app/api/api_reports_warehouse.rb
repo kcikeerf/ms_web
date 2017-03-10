@@ -21,32 +21,11 @@ module ApiReportsWarehouse
 
       end
       get '*any_path' do
-        target_file_path = "." + request.fullpath.to_s.split("/api/v1.1")[1]
+        target_file_path = request.fullpath.to_s.split("/api/v1.1")[1]
         target_user = @current_user
 
         # 验证Scope
-        auth_path = target_file_path.split("?")[0]
-        path_arr = auth_path.split("/")
-        auth_arr = path_arr[6..-1]
-
-        index = 0
-        arr_len = auth_arr.length
-        current_scope_h = {:resource => {}}
-        while index < arr_len do
-          case auth_arr[index]
-          when "grade"
-            index += 1 
-            current_scope_h[:resource][:tenant] = auth_arr[index]
-          when "klass"
-            index += 1 
-            current_scope_h[:resource][:klass] = auth_arr[index]
-          when "pupil"
-            index += 1 
-            current_scope_h[:resource][:pupil] = auth_arr[index]
-          end
-          index += 1
-        end
-        authenticate_scopes! target_user.id, current_scope_h
+        check_user_scope_to_report!(target_user.id, target_file_path.split("?")[0])
         #
 
         if !params[:any_path].blank? && File.exist?(auth_path)

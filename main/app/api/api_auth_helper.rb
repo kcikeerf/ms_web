@@ -79,6 +79,32 @@ module ApiAuthHelper
     }
   end
 
+  def check_user_scope_to_report! user_id=nil, report_path=nil
+    error!(message_json("e40004"), 404) if report_path.blank? 
+    path_arr = report_path.split("/")
+    auth_arr = path_arr[6..-1]
+
+    index = 0
+    arr_len = auth_arr.length
+    current_scope_h = {:resource => {}}
+    while index < arr_len do
+      case auth_arr[index]
+      when "grade"
+        index += 1 
+        current_scope_h[:resource][:tenant] = auth_arr[index]
+      when "klass"
+        index += 1 
+        current_scope_h[:resource][:klass] = auth_arr[index]
+      when "pupil"
+        index += 1 
+        current_scope_h[:resource][:pupil] = auth_arr[index]
+      end
+      index += 1
+    end
+    authenticate_scopes! user_id, current_scope_h
+    #
+  end 
+
   def current_user
     # if white_list_domain?
     #   authenticate_token!

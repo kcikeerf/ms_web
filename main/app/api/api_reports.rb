@@ -123,7 +123,7 @@ module ApiReports
                 :score => target_pap.score,
                 :report_version => "00016110",
                 :test_id => test_id,
-                :report_url => "/api/wx/v1.1" + report_url
+                :report_url => "/api/v1.1" + report_url
               }
             end
           }.compact
@@ -174,7 +174,7 @@ module ApiReports
             :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
             :report_version => "00016110",
             :test_id => test_id,
-            :report_url => "/api/wx/v1.1" + report_url
+            :report_url => "/api/v1.1" + report_url
           }
         }.compact
       end
@@ -265,47 +265,54 @@ module ApiReports
         result
       end # class_list end
 
-      ###########
+      ####### 获取报告分组, begin #######
 
-      desc '获取学生报告 post /api/wx/v1.1/reports/pupil' # pupil report begin
-      params do
-        requires :report_url, type: String, allow_blank: false
+      group do #来自白名单域名的请求
+        before do
+          check_user_scope_to_report!(@current_user.id, params[:report_url])
+        end
+
+        desc '获取学生报告 post /api/v1.1/reports/pupil' # pupil report begin
+        params do
+          requires :report_url, type: String, allow_blank: false
+        end
+        post :pupil do      
+          construct_report_content(Common::Report::Group::Pupil, params[:report_url])
+        end # pupil report end
+
+        ###########         
+
+        desc '获取班级报告 post /api/v1.1/reports/klass' # klass report begin
+        params do
+          requires :report_url, type: String, allow_blank: false
+        end
+        post :klass do
+          construct_report_content(Common::Report::Group::Klass, params[:report_url])
+        end # klass report end
+
+        ###########
+
+        desc '获取年级报告 post /api/v1.1/reports/grade' # grade report begin
+        params do
+          requires :report_url, type: String, allow_blank: false
+        end
+        post :grade do
+          construct_report_content(Common::Report::Group::Grade, params[:report_url])
+        end # grade report end
+
+        ###########
+
+        desc '获取区域报告 post /api/v1.1/reports/project' # project report begin
+        params do
+          requires :report_url, type: String, allow_blank: false
+        end
+        post :project do
+          construct_report_content(Common::Report::Group::Project, params[:report_url])
+        end # project report end
+
+        ##################
       end
-      post :pupil do
-        construct_report_content(Common::Report::Group::Pupil, params[:report_url])
-      end # pupil report end
-
-      ###########         
-
-      desc '获取班级报告 post /api/wx/v1.1/reports/klass' # klass report begin
-      params do
-        requires :report_url, type: String, allow_blank: false
-      end
-      post :klass do
-        construct_report_content(Common::Report::Group::Klass, params[:report_url])
-      end # klass report end
-
-      ###########
-
-      desc '获取年级报告 post /api/wx/v1.1/reports/grade' # grade report begin
-      params do
-        requires :report_url, type: String, allow_blank: false
-      end
-      post :grade do
-        construct_report_content(Common::Report::Group::Grade, params[:report_url])
-      end # grade report end
-
-      ###########
-
-      desc '获取区域报告 post /api/wx/v1.1/reports/project' # project report begin
-      params do
-        requires :report_url, type: String, allow_blank: false
-      end
-      post :project do
-        construct_report_content(Common::Report::Group::Project, params[:report_url])
-      end # project report end
-
-      ###########
+      ####### 获取报告分组, end #######
 
     end
 
