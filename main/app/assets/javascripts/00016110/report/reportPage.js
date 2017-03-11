@@ -657,7 +657,7 @@ var reportPage = {
 		getQizpointCorrectRaioTable : function(data){
 			var result = { excellent: "", good: "", failed: "" };
 			for(var index in data.paper_qzps){
-				if(qzp.value && qzp.value.weights_score_average_percent){
+				if(qzp.value != undefined && qzp.value && qzp.value.weights_score_average_percent){
 					var qzp = data.paper_qzps[index];
 					var html_str = '<tr><td>' 
 						+ qzp.qzp_order 
