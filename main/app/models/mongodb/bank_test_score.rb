@@ -40,7 +40,7 @@ class Mongodb::BankTestScore
 
   private
   def format_float
-    self.real_score = self.real_score.nil?? 0.0:("%.2f" % self.real_score).to_f
+    # self.real_score = self.real_score.nil?? 0.0:("%.2f" % self.real_score).to_f
   end
 end
 

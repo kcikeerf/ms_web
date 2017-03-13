@@ -658,19 +658,21 @@ var reportPage = {
 			var result = { excellent: "", good: "", failed: "" };
 			for(var index in data.paper_qzps){
 				var qzp = data.paper_qzps[index];
-				var html_str = '<tr><td>' 
-					+ qzp.qzp_order 
-					+ '</td><td>' 
-					+ reportPage.baseFn.formatHundredValue(qzp.value.weights_score_average_percent) 
-					+ '</td><td>' 
-					+ qzp.ckps.knowledge[0].checkpoint 
-					+'</td></tr>';
-				if( qzp.value.weights_score_average_percent >= 0.85 ) {
-					result.excellent += html_str;
-				} else if (qzp.value.weights_score_average_percent >= 0.6 && qzp.value.weights_score_average_percent < 0.85) {
-					result.good += html_str;
-				} else if (qzp.value.weights_score_average_percent >= 0 && qzp.value.weights_score_average_percent < 0.6 ) {
-					result.failed += html_str;
+				if(qzp.value != undefined && qzp.value && qzp.value.weights_score_average_percent){
+					var html_str = '<tr><td>' 
+						+ qzp.qzp_order 
+						+ '</td><td>' 
+						+ reportPage.baseFn.formatHundredValue(qzp.value.weights_score_average_percent) 
+						+ '</td><td>' 
+						+ qzp.ckps.knowledge[0].checkpoint 
+						+'</td></tr>';
+					if( qzp.value.weights_score_average_percent >= 0.85 ) {
+						result.excellent += html_str;
+					} else if (qzp.value.weights_score_average_percent >= 0.6 && qzp.value.weights_score_average_percent < 0.85) {
+						result.good += html_str;
+					} else if (qzp.value.weights_score_average_percent >= 0 && qzp.value.weights_score_average_percent < 0.6 ) {
+						result.failed += html_str;
+					}
 				}
 			}
 

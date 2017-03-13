@@ -185,7 +185,7 @@ class Mongodb::BankQuizQiz
   end
 
   def format_float
-    self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
+    # self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
     self.time = self.time.nil?? 0.0:("%.2f" % self.time).to_f
     self.level = self.level.nil?? 0.0:("%.2f" % self.level).to_f
   end

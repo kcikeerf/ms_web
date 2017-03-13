@@ -101,6 +101,6 @@ class Mongodb::BankQizpointQzp
 
   private
   def format_score
-    self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
+    # self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
   end
 end
