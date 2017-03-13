@@ -498,7 +498,7 @@ class Mongodb::BankPaperPap
   #   1) 查看试卷指标<->试题关联
   #   2) 报告模版生成
   #
-  def associated_checkpoints
+  def associated_checkpoints uniq_flag=false
     result = {
       Common::CheckpointCkp::Dimesion::Knowledge => [],
       Common::CheckpointCkp::Dimesion::Skill => [],
@@ -523,16 +523,20 @@ class Mongodb::BankPaperPap
               :uid => ckp.uid,
               :order => ckp.sort,
               :rid => ckp.rid,
+              :dimesion => ckp.dimesion,
               :checkpoint => ckp.checkpoint,
               :advice => ckp.advice,
               :is_entity => ckp.is_entity,
               :qzps_full_score_total => qzp.score.nil?? 0 : qzp.score,
-              :qzps => [qzp.id.to_s]
+              :qzps => [qzp.id.to_s],
+              :qzp_count => 1
             }
             result[ckp.dimesion] << item
           else
+            next if uniq_flag && !result[ckp.dimesion][index][:qzps].find_index{|item| item == qzp.id.to_s}.blank?
             result[ckp.dimesion][index][:qzps_full_score_total] += qzp.score.nil?? 0 : qzp.score
             result[ckp.dimesion][index][:qzps].push(qzp.id.to_s)
+            result[ckp.dimesion][index][:qzp_count] += 1
           end
         }
       }

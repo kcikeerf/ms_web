@@ -1498,6 +1498,63 @@ namespace :swtk do
       }
     end
 
+    desc "export paper ckp qzps info"
+    task :export_pap_ckpz_qzps,[] => :environment  do |t, args|
+      params_arr = args.extras
+      uniq_flag = (params_arr[-2]=="y")? true : false
+      out_path = params_arr[-1]
+      pap_ids = params_arr[0..-3]
+      # uniq_flag = (uniq_flag =="y")? true : false
+      # out_path = args[:out]
+      # pap_ids = [args[:pap_id]]
+      #写入excel
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+
+      wb.add_worksheet name: "Data" do |sheet|
+
+        cell_style = {
+          :title => wb.styles.add_style(
+            :bg_color => "FF00F7", 
+            :border => { 
+                :style => :thin, 
+                :color => "00" 
+              },
+              :fg_color => "000000", 
+              :sz => 12, 
+              :alignment => { 
+                :horizontal=> :center 
+              }
+            )
+        }
+        # 标题
+        title_row_arr = ["paper","dimension", "level", "layer", "index", "count", "score"]
+        sheet.add_row(
+            title_row_arr,
+            :style => title_row_arr.size.times.map{|item| cell_style[:title]}
+        )
+
+        pap_ids.each{|pap_id|
+          target_paper = Mongodb::BankPaperPap.where(id: pap_id).first
+          next if target_paper.blank?
+          data_row_base_arr = [target_paper.heading]
+          ckps_qzps = target_paper.associated_checkpoints(uniq_flag)
+          ckps_qzps.map{|item| item[1]}.flatten.each{|item|
+            data_row_arr = [
+              item[:dimesion],
+              nil,
+              item[:rid].length/3,
+              item[:checkpoint],
+              item[:qzp_count],
+              item[:qzps_full_score_total]
+            ]
+            sheet.add_row(data_row_base_arr + data_row_arr)
+          }
+        }
+      end
+      out_excel.serialize(out_path)      
+    end
+
     def find_all_pupil_report_urls base_path, search_path, urls=[]
       fdata = File.open(search_path + "/nav.json", 'rb').read
       jdata = JSON.parse(fdata)
