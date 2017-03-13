@@ -29,7 +29,7 @@ module Quizs
       post :detail do
         target_current_user = current_user
         target_user = target_current_user.is_pupil?? target_current_user : User.where(name: params[:pupil_user_name]).first
-        error!(message_json("w21204"), 403) if target_user.blank?
+        #error!(message_json("w21204"), 403) if target_user.blank?
         unless params[:qzp_id].blank?
           redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_user.id}/qzp_id/#{params[:qzp_id]}"
         else
@@ -63,7 +63,7 @@ module Quizs
           target_qzp_order = (order_index + 1).to_s
 
           # 临时添加
-          if target_current_user.is_pupil?
+          if target_user.is_pupil?
             hyt_quiz_data_h = {}
             hyt_snapshot_data_h = {}
             begin
