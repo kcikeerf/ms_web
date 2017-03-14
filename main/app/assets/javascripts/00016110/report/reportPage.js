@@ -118,6 +118,9 @@ var reportPage = {
 							args.data = data[""];
 						} else {
 							args.data = data[args["current_group"]];
+							var target_height = 50 * args.data.length;
+							target_height = (target_height < 520)? "520" : target_height;
+							$('.zy-chart-container.dynamic_change_items').css("height", target_height);
 						}
 						if(options.ajax_type != "nav_only"){
 							reportPage.CurrentBreadCrumbChildren = args.data.slice(0);
