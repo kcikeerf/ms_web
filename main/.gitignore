@@ -22,7 +22,7 @@ Gemfile.lock
 ./tmp/*
 ./config/database.yml
 ./config/mongoid.yml
-./public/
+public/
 ./public/uploads/*
 ./uploads/*
 .DS_Store
