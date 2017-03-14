@@ -259,18 +259,18 @@ class ImportResultsJob < ActiveJob::Base
           next if index < args[:data_start_row]
           row_qzps_arr = []
           row = args[:result_sheet].row(index)
-          grade_pinyin = Common::Locale.hanzi2pinyin(row[0])
-          klass_pinyin = Common::Locale.hanzi2pinyin(row[1])
-          klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[1]
+          grade_pinyin = Common::Locale.hanzi2pinyin(row[0].strip)
+          klass_pinyin = Common::Locale.hanzi2pinyin(row[1].strip)
+          klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[1].strip
           cells = {
             :grade => grade_pinyin,
             :xue_duan => Common::Grade.judge_xue_duan(grade_pinyin),
             :classroom => klass_value,
-            :head_teacher => row[2],
-            :teacher => row[3],
-            :pupil_name => row[4],
-            :stu_number => row[5],
-            :sex => row[6]
+            :head_teacher => row[2].strip,
+            :teacher => row[3].strip,
+            :pupil_name => row[4].strip,
+            :stu_number => row[5].strip,
+            :sex => row[6].strip
           }
           #
           # get location
