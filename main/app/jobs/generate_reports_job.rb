@@ -117,8 +117,11 @@ class GenerateReportsJob < ActiveJob::Base
 
         #pid = fork do 
         # 组装1
+        constructor_arr[0].iti_kumigoto_no_kihon_koutiku
+        constructor_arr[0].pre_owari
+        constructor_arr[0].owari
         Common::process_sync_template(__method__.to_s()) {|pids|
-          constructor_arr.each{|item|
+          constructor_arr[1..-1].each{|item|
             pids << Process.fork do
               item.iti_kumigoto_no_kihon_koutiku
               item.pre_owari
