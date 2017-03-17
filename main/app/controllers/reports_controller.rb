@@ -57,7 +57,8 @@ class ReportsController < ApplicationController
           @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
 
           test_id = @paper.bank_tests[0].id
-
+          target_test = Mongodb::BankTest.where(id: test_id.to_s).first
+          tenant_uids = target_test.tenants.map(&:uid)
           #将数据分组建立job groups， monitoring job
           #job_groups = Common::ReportPlus::sigoto_siwake({ :task_uid => task_uid, :test_id => test_id.to_s, :top_group => "project"})
 
@@ -91,7 +92,6 @@ class ReportsController < ApplicationController
                :top_group => Common::Report::Group::Project
           }
 
-          # JOB的分处理的数量
           job_tracker = JobList.new({
             :name => "generate reports",
             :task_uid => params[:task_uid],
@@ -100,38 +100,37 @@ class ReportsController < ApplicationController
             :process => 0
           })
           job_tracker.save!
+          total_phases = 4 + 6 * tenant_uids.size
+          job_redis_key = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/tasks/" + task_uid + "/jobs/" + job_tracker.uid
+          Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Sidekiq, job_redis_key, 0)
 
-          target_test = Mongodb::BankTest.where(id: test_id.to_s).first
-          tenant_uids = target_test.tenants.map(&:uid)
-          process_per_worker = 100.0/(4 + 6 * tenant_uids.size)
-
-          Superworker.define(:GenerateReportSuperWorker, :test_id, :task_uid, :top_group, :tenant_uids) do
-              PrepareReportsDataWorker :test_id, :task_uid, :top_group
+          Superworker.define(:GenerateReportSuperWorker, :test_id, :task_uid, :top_group, :tenant_uids, :job_redis_key,:total_phases) do
+              PrepareReportsDataWorker :test_id, :task_uid, :top_group, :job_redis_key, :total_phases
               batch tenant_uids: :tenant_uid do
-                GeneratePupilReportsWorker :test_id, :task_uid, :top_group, :tenant_uid
+                GeneratePupilReportsWorker :test_id, :task_uid, :top_group, :tenant_uid, :job_redis_key, :total_phases
               end
               parallel do
                 batch tenant_uids: :tenant_uid do
                   parallel do
-                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid
-                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid
+                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid, :job_redis_key, :total_phases
+                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
                   end
                 end
-                GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project
+                GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
               end
               parallel do
                 batch tenant_uids: :tenant_uid do
                   parallel do
-                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Pupil, :tenant_uid
-                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid
-                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid
+                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Pupil, :tenant_uid, :job_redis_key, :total_phases
+                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid, :job_redis_key, :total_phases
+                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
                   end
                 end
-                ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project
+                ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
               end
-              ClearReportsGarbageWorker :test_id, :task_uid
+              ClearReportsGarbageWorker :test_id, :task_uid, :job_redis_key, :total_phases
           end
-          GenerateReportSuperWorker.perform_async(test_id.to_s, task_uid, Common::Report::Group::Project, tenant_uids)
+          GenerateReportSuperWorker.perform_async(test_id.to_s, task_uid, Common::Report::Group::Project, tenant_uids, job_redis_key, total_phases)
 
           status = 200
           result[:task_uid] = task_uid

@@ -16,7 +16,7 @@ class ClearReportsGarbageWorker
           job_tracker.update(process: 1.0)
           target_test = Mongodb::BankTest.where(id: test_id).first
           target_pap= target_test.bank_paper_pap      	
-          report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/#{test_id}/*"
+          report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/*"
           Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
           target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
         else

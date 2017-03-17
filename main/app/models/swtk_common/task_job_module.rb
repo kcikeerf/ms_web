@@ -16,6 +16,8 @@ module TaskJobModule
   end
 
   module Job
+    module_function
+
     Timeout = 86400 # one day
     LoopInterval = 10 # 10 seconds
 
@@ -37,6 +39,14 @@ module TaskJobModule
       Initialization = "initialization"
       Processing = "processing"
       Completed = "completed"
+    end
+
+    def update_first_job_process_with_redis  _task_uid, _redis_ns, _redis_key,_total_phases
+      Common::SwtkRedis::incr_key(_redis_ns, _redis_key)
+      process_value = Common::SwtkRedis::get_value(_redis_ns, _redis_key).to_f
+      target_task = TaskList.where(uid: _task_uid).first
+      job_tracker = target_task.job_lists.order(dt_update: :desc).first
+      job_tracker.update(process: process_value/_total_phases)  
     end
   end
 end

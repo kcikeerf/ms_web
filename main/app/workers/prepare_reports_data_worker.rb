@@ -22,6 +22,9 @@ class PrepareReportsDataWorker
         else
           raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => ""))
         end
+
+        # 参数：  _task_uid, _redis_ns, _redis_key,_total_phases
+        Common::Job::update_first_job_process_with_redis(args[1], Common::SwtkRedis::Ns::Sidekiq, args[3], args[4])
       end # fork new process, end
     } 
   end
