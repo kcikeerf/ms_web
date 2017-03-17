@@ -73,6 +73,7 @@ gem 'kaminari'
 
 #job
 gem 'sidekiq'
+gem 'sidekiq-superworker'
 gem 'redis'
 gem 'redis-namespace'
 gem 'redis-rails'

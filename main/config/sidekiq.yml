@@ -4,13 +4,8 @@
 
 :queues:
     - default
-    - [generate_pupil_report, 20]
-    - [generate_group_report, 20]
-    - [construct_report, 20]
-    - [import_results, 5]
-    - [generate_reports, 20]
-    - [score, 5]
-    - [monitoring, 1]
+    - [import_results, 1]
+    - [generate_reports, 3]
 
 development:
   :concurrency: 10

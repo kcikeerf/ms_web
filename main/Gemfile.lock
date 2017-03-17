@@ -306,6 +306,10 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.2, >= 3.2.1)
+    sidekiq-superworker (1.2.0)
+      activemodel (>= 3.2)
+      activesupport (>= 3.2)
+      sidekiq (>= 2.1.0)
     simple_form (3.3.1)
       actionpack (> 4, < 5.1)
       activemodel (> 4, < 5.1)
@@ -396,6 +400,7 @@ DEPENDENCIES
   sass-rails
   sdoc
   sidekiq
+  sidekiq-superworker
   simple_form
   snowflake-id
   spring
