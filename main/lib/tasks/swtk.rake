@@ -1542,7 +1542,7 @@ namespace :swtk do
           ckps_qzps.map{|item| item[1]}.flatten.each{|item|
             data_row_arr = [
               item[:dimesion],
-              nil,
+              item[:high_level],
               item[:rid].length/3,
               item[:checkpoint],
               item[:qzp_count],

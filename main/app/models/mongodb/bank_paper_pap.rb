@@ -525,6 +525,7 @@ class Mongodb::BankPaperPap
               :rid => ckp.rid,
               :dimesion => ckp.dimesion,
               :checkpoint => ckp.checkpoint,
+              :high_level => ckp.high_level,
               :advice => ckp.advice,
               :is_entity => ckp.is_entity,
               :qzps_full_score_total => qzp.score.nil?? 0 : qzp.score,
