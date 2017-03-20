@@ -120,6 +120,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         advice: params[:advice],
         weights: params[:weights],
         sort: new_rid,
+        high_level: params[:high_level],
     		is_entity: true)                 
 
     	rid_len = new_rid.size
@@ -179,7 +180,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   #
   #
   def update_ckp params
-    ckp_hash = params.extract!(:checkpoint, :desc, :advice, :weights)
+    ckp_hash = params.extract!(:checkpoint, :desc, :advice, :weights, :high_level)
   	update(ckp_hash)
 
   	return organization_hash
@@ -242,6 +243,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       sort: sort,
       ckp_source: Common::CheckpointCkp::CkpSource::SubjectCkp,
       nocheck: nocheck_flag,
+      high_level: high_level,
       chkDisabled: false
     }
   end
