@@ -25,12 +25,13 @@ module ApiQuizs
         # exactly_one_of :qzp_id, :qzp_order
       end
       post :detail do
-        target_user = @current_user.is_pupil?? @current_user : User.where(name: params[:pupil_user_name]).first
-        error!(message_json("w21204"), 403) if target_user.blank?
+        target_current_user = current_user
+        target_pupil = target_current_user.is_pupil?? target_current_user : User.where(name: params[:pupil_user_name]).first
+        #error!(message_json("w21204"), 403) if target_user.blank?
         unless params[:qzp_id].blank?
-          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_user.id}/qzp_id/#{params[:qzp_id]}"
+          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_current_user.id}/qzp_id/#{params[:qzp_id]}"
         else
-          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_user.id}/qzp_order/#{params[:qzp_order]}"
+          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_current_user.id}/qzp_order/#{params[:qzp_order]}"
         end
 
         if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, redis_key

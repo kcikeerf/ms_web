@@ -11,10 +11,13 @@ class Role < ActiveRecord::Base
 
   validates :name, presence: true
 
-
-  def self.get_role_id(name)
-  	find_by(name: name).try(:id) || 0
+  ########类方法定义：begin#######
+  class << self
+    def get_role_id(name)
+      find_by(name: name).try(:id) || 0
+    end
   end
+  ########类方法定义：end#######
 
   def combine_permissions permission_ids
     begin
@@ -23,8 +26,7 @@ class Role < ActiveRecord::Base
       roles_permissions_links.create(permission_ids.map{|id| {:permission_id => id}})
       return true
     rescue Exception => ex
-      p ex.message
-      p ex.backtrace
+      errors.add(:others, :blank, message: ex.message)
       return false
     end
   end
@@ -36,6 +38,7 @@ class Role < ActiveRecord::Base
       roles_api_permissions_links.create(api_permission_ids.map{|id| {:api_permission_id => id}})
       return true
     rescue Exception => ex
+      errors.add(:others, :blank, message: ex.message)
       return false
     end    
   end

@@ -68,11 +68,11 @@ module ApiReports
 
       end
       get :list do
-        target_user = @current_user
+        target_user = current_user
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
-          target_papers = target_user.role_obj.papers
+          target_papers = target_user.role_obj.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
-          target_papers = target_user.accessable_tenants.map{|item| item.papers }.flatten
+          target_papers = target_user.accessable_tenants.map{|item| item.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score) }.flatten
         else
           target_papers = []          
         end
