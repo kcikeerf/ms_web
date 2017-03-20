@@ -47,43 +47,97 @@ class ReportsController < ApplicationController
       result = {:task_uid => ""}
 
       begin
-        # Task info
-        target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
-        task_uid = target_task.nil?? "" :target_task.uid        
-        target_task.touch(:dt_update)
+        if [Common::Paper::Status::ScoreImported].include?( @paper.paper_status )
+          # Task info
+          target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
+          task_uid = target_task.nil?? "" :target_task.uid        
+          target_task.touch(:dt_update)
 
-        @paper.bank_tests[0].update(:report_version => "1.1")
-        @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
+          @paper.bank_tests[0].update(:report_version => "1.1")
+          @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
 
-        test_id = @paper.bank_tests[0].id
+          test_id = @paper.bank_tests[0].id
+          target_test = Mongodb::BankTest.where(id: test_id.to_s).first
+          tenant_uids = target_test.tenants.map(&:uid)
+          #将数据分组建立job groups， monitoring job
+          #job_groups = Common::ReportPlus::sigoto_siwake({ :task_uid => task_uid, :test_id => test_id.to_s, :top_group => "project"})
 
-        #将数据分组建立job groups， monitoring job
-        #job_groups = Common::ReportPlus::sigoto_siwake({ :task_uid => task_uid, :test_id => test_id.to_s, :top_group => "project"})
+          # job_tracker = JobList.new({
+          #   :name => Common::Job::Type::Monitoring,
+          #   :task_uid => task_uid,
+          #   :job_type => Common::Job::Type::Monitoring,
+          #   :status => Common::Job::Status::NotInQueue,
+          #   :process => 0
+          # })
+          # job_tracker.save!
+          # if current_user.is_project_administrator?
+          #   top_group = Common::Report::Group::Project
+          # else
+          #   top_group = Common::Report::Group::Grade
+          # end
 
-        # job_tracker = JobList.new({
-        #   :name => Common::Job::Type::Monitoring,
-        #   :task_uid => task_uid,
-        #   :job_type => Common::Job::Type::Monitoring,
-        #   :status => Common::Job::Status::NotInQueue,
-        #   :process => 0
-        # })
-        # job_tracker.save!
-        # if current_user.is_project_administrator?
-        #   top_group = Common::Report::Group::Project
-        # else
-        #   top_group = Common::Report::Group::Grade
-        # end
-        Thread.new do
-          GenerateReportsJob.perform_later({
-            :test_id => test_id.to_s,
-            :task_uid => task_uid,
-            :top_group => Common::Report::Group::Project #进一步修改，默认项目,"project"
-            # :job_uid => job_tracker.uid,
-            # :job_groups => job_groups
+          # Thread.new do
+          #   GenerateReportsJob.perform_later({
+          #     :test_id => test_id.to_s,
+          #     :task_uid => task_uid,
+          #     :top_group => Common::Report::Group::Project #进一步修改，默认项目,"project"
+          #     # :job_uid => job_tracker.uid,
+          #     # :job_groups => job_groups
+          #   })
+          # end
+
+          job_base_params = {
+               :test_id => test_id.to_s,
+               :task_uid => task_uid,
+               :top_group => current_user.is_project_administrator?? Common::Report::Group::Project : Common::Report::Group::Grade 
+          }
+
+          job_tracker = JobList.new({
+            :name => "generate reports",
+            :task_uid => params[:task_uid],
+            :job_type => "generate reports",
+            :status => Common::Job::Status::Processing,
+            :process => 0
           })
+          job_tracker.save!
+          total_phases = 4 + 6 * tenant_uids.size
+          job_redis_key = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/tasks/" + task_uid + "/jobs/" + job_tracker.uid
+          Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Sidekiq, job_redis_key, 0)
+
+          Superworker.define(:GenerateReportSuperWorker, :test_id, :task_uid, :top_group, :tenant_uids, :job_redis_key,:total_phases) do
+              PrepareReportsDataWorker :test_id, :task_uid, :top_group, :job_redis_key, :total_phases
+              batch tenant_uids: :tenant_uid do
+                GeneratePupilReportsWorker :test_id, :task_uid, :top_group, :tenant_uid, :job_redis_key, :total_phases
+              end
+              parallel do
+                batch tenant_uids: :tenant_uid do
+                  parallel do
+                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid, :job_redis_key, :total_phases
+                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
+                  end
+                end
+                GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
+              end
+              parallel do
+                batch tenant_uids: :tenant_uid do
+                  parallel do
+                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Pupil, :tenant_uid, :job_redis_key, :total_phases
+                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid, :job_redis_key, :total_phases
+                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
+                  end
+                end
+                ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
+              end
+              ClearReportsGarbageWorker :test_id, :task_uid, :job_redis_key, :total_phases
+          end
+          GenerateReportSuperWorker.perform_async(test_id.to_s, task_uid, Common::Report::Group::Project, tenant_uids, job_redis_key, total_phases)
+
+          status = 200
+          result[:task_uid] = task_uid
+        else
+          status = 403
+          result[:message] = "unknowm error!"
         end
-        status = 200
-        result[:task_uid] = task_uid
       rescue Exception => ex
         status = 500
         result[:task_uid] = ex.message

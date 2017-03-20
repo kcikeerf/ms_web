@@ -11,22 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170221151250) do
-
-  create_table "active_admin_comments", force: :cascade do |t|
-    t.string   "namespace",     limit: 255
-    t.text     "body",          limit: 65535
-    t.string   "resource_id",   limit: 255,   null: false
-    t.string   "resource_type", limit: 255,   null: false
-    t.integer  "author_id",     limit: 4
-    t.string   "author_type",   limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
-  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
-  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+ActiveRecord::Schema.define(version: 20170314005904) do
 
   create_table "analyzers", primary_key: "uid", force: :cascade do |t|
     t.string   "user_id",    limit: 255
@@ -208,9 +193,9 @@ ActiveRecord::Schema.define(version: 20170221151250) do
 
   create_table "bank_subject_checkpoint_ckps", primary_key: "uid", force: :cascade do |t|
     t.string   "dimesion",   limit: 50
-    t.string   "rid",        limit: 36,                   null: false
+    t.string   "rid",        limit: 36,                    null: false
     t.string   "checkpoint", limit: 200
-    t.string   "subject",    limit: 36,                   null: false
+    t.string   "subject",    limit: 36,                    null: false
     t.boolean  "is_entity",  limit: 1,     default: true
     t.text     "advice",     limit: 65535
     t.text     "desc",       limit: 65535
@@ -219,6 +204,7 @@ ActiveRecord::Schema.define(version: 20170221151250) do
     t.datetime "dt_update"
     t.string   "sort",       limit: 255
     t.string   "category",   limit: 255
+    t.boolean  "high_level", limit: 1,     default: false
   end
 
   add_index "bank_subject_checkpoint_ckps", ["subject"], name: "ckp_subject", using: :btree
