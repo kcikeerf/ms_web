@@ -89,7 +89,7 @@ class ReportsController < ApplicationController
           job_base_params = {
                :test_id => test_id.to_s,
                :task_uid => task_uid,
-               :top_group => Common::Report::Group::Project
+               :top_group => current_user.is_project_administrator?? Common::Report::Group::Project : Common::Report::Group::Grade 
           }
 
           job_tracker = JobList.new({
