@@ -116,7 +116,13 @@ module ApiAuthHelper
     # end
     target_token = authenticate_token!
     target_user = User.where(id: target_token.user_id).first
-    target_user.blank?? error!(message_json("e40004"), 401) : target_user
+    # target_user.blank?? error!(message_json("e40004"), 401) : target_user
+    if target_user
+      target_user.refresh_user_auth_redis!
+      target_user
+    else
+      error!(message_json("e40004"), 401)
+    end
   end
 
   ####### 微信 ######
