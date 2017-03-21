@@ -1558,6 +1558,22 @@ namespace :swtk do
       out_excel.serialize(out_path)      
     end
 
+    desc "import permission definition into mysql"
+    task :inport_permission_diffnition, [:file_path] => :environment do |t,args|
+
+      xlsx = Roo::Excelx.new(args[:file_path])
+      permissions = Permission.all.delete_all
+      (3..xlsx.sheet("permissions").last_row).each do |i|     
+        row = xlsx.sheet("permissions").row(i)
+        Permission.new(name: row[1], subject_class: row[2],operation: row[3], description: row[4]).save!
+      end
+      api_permissions = ApiPermission.all.delete_all
+      (2..xlsx.sheet("api_permissions").last_row).each do |j|
+        row = xlsx.sheet("api_permissions").row(j)
+        ApiPermission.new(name: row[1], method: row[2], path: row[3], description: row[4]).save!
+      end
+    end
+
     def find_all_pupil_report_urls base_path, search_path, urls=[]
       fdata = File.open(search_path + "/nav.json", 'rb').read
       jdata = JSON.parse(fdata)
