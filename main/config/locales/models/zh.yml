@@ -156,3 +156,5 @@ zh:
         odd: "必须为单数"
         even: "必须为双数"
         record_invalid: "校验失败: %{errors}"
+        can_not_drag_node_to_this: "不能把本节点拖拽到此节点"
+        can_not_create_node_pleace_checkout: "不能创建新节点请重新检查或压缩节点"

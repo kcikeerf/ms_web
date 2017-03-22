@@ -98,6 +98,55 @@ class BankRid < ActiveRecord::Base
       return result
     end
 
+    # 根据父级rid获取新的bank_rid
+    # [参数]
+    # obj => 满足学科学段三维的所有节点, pid => 父级的rid
+    # [返回值]
+    # 当有子节点的bank_id等于zzz时 返回 "", 否则返回新的rid
+    def get_new_bank_rid obj, pid
+      result = ""
+      pid = pid || ""
+      pid_len = pid.size
+      return result if pid_len == Common::SwtkConstants::CkpDepth * Common::SwtkConstants::CkpStep
+      target_len = pid_len + Common::SwtkConstants::CkpStep
+
+      cond_str = "LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ? "
+
+      last_child_rid = obj.blank? ? [] : obj.where(cond_str, pid_len, target_len, pid_len, pid).order("rid DESC").limit(1).map{|item| item.rid.slice(pid_len, Common::SwtkConstants::CkpStep)}
+      next_bank_rid = "" 
+      if last_child_rid.blank? 
+        next_bank_rid = "000" 
+      else
+        if last_child_rid[0] == "zzz"
+          return result
+          #进行压缩
+        else
+          next_bank_rid =(last_child_rid[0].to_i(36) + 1).to_s(36).rjust(3, '0')          
+        end
+      end
+      result = pid + next_bank_rid
+      return result    
+    end
+
+    # 移动bank_rid 
+    # [参数]
+    # old_bank_id => 原bank_rid, 移动类型  => [向前或向后移动]
+    # [返回值]
+    # 新bank_rid
+    def move_bank_rid(old_bank_id, move_type)
+      case move_type
+      when "move_up"
+        if old_bank_id != "000"
+          new_bank_rid = (old_bank_id.to_i(36) - 1).to_s(36).rjust(3, '0')
+        end
+      when "move_down"
+        if old_bank_id != "zzz"
+          new_bank_rid = (old_bank_id.to_i(36) + 1).to_s(36).rjust(3, '0')
+        end
+      end
+      return new_bank_rid
+    end
+
     # 获取某一范围内的rid的紧邻arid的rid
     def get_next_rid obj=nil, arid, brid
       arid = arid || ""
