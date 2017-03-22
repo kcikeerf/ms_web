@@ -13,11 +13,9 @@ module ApiReports
       def read_report_data report_path
         result = {}
         if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, report_path
-          puts "true"
           target_report_j = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, report_path
           result = JSON.parse(target_report_j)
         else
-          puts "false"
           target_report_f = Dir[report_path].first
           return result if target_report_f.blank?
           target_report_data = File.open(target_report_f, 'rb').read
@@ -46,6 +44,7 @@ module ApiReports
         # 获取个分组报告信息
         group_arr.each{|group|
           group_index = url_arr.find_index{|item| item == group}
+          next if group_index.blank?
           target_report_path = Common::Report::WareHouse::ReportLocation + url_arr[0..(group_index+1)].join("/") + ".json"
           temp_h = read_report_data(target_report_path)
           return {} if temp_h.blank?
