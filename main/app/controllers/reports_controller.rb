@@ -87,9 +87,9 @@ class ReportsController < ApplicationController
           # end
 
           job_base_params = {
-               :test_id => test_id.to_s,
-               :task_uid => task_uid,
-               :top_group => current_user.is_project_administrator?? Common::Report::Group::Project : Common::Report::Group::Grade 
+            :test_id => test_id.to_s,
+            :task_uid => task_uid,
+            :top_group => current_user.is_project_administrator?? Common::Report::Group::Project : Common::Report::Group::Grade 
           }
 
           job_tracker = JobList.new({
@@ -101,14 +101,17 @@ class ReportsController < ApplicationController
           })
           job_tracker.save!
           total_phases = 4 + 6 * tenant_uids.size
-          job_redis_key = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/tasks/" + task_uid + "/jobs/" + job_tracker.uid
+          job_redis_key = Common::SwtkRedis::Prefix::Reports + "tests/" + job_base_params[:test_id] + "/tasks/" + job_base_params[:task_uid] + "/jobs/" + job_tracker.uid
           Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Sidekiq, job_redis_key, 0)
 
           Superworker.define(:GenerateReportSuperWorker, :test_id, :task_uid, :top_group, :tenant_uids, :job_redis_key,:total_phases) do
-              PrepareReportsDataWorker :test_id, :task_uid, :top_group, :job_redis_key, :total_phases
+            PrepareReportsDataWorker :test_id, :task_uid, :top_group, :job_redis_key, :total_phases
+            EmptyWorker do
               batch tenant_uids: :tenant_uid do
                 GeneratePupilReportsWorker :test_id, :task_uid, :top_group, :tenant_uid, :job_redis_key, :total_phases
               end
+            end
+            EmptyWorker do
               parallel do
                 batch tenant_uids: :tenant_uid do
                   parallel do
@@ -118,6 +121,8 @@ class ReportsController < ApplicationController
                 end
                 GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
               end
+            end
+            EmptyWorker do
               parallel do
                 batch tenant_uids: :tenant_uid do
                   parallel do
@@ -128,9 +133,10 @@ class ReportsController < ApplicationController
                 end
                 ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
               end
-              ClearReportsGarbageWorker :test_id, :task_uid, :job_redis_key, :total_phases
+            end
+            ClearReportsGarbageWorker :test_id, :task_uid, :job_redis_key, :total_phases
           end
-          GenerateReportSuperWorker.perform_async(test_id.to_s, task_uid, Common::Report::Group::Project, tenant_uids, job_redis_key, total_phases)
+          GenerateReportSuperWorker.perform_async(job_base_params[:test_id], job_base_params[:task_uid], job_base_params[:top_group], tenant_uids, job_redis_key, total_phases)
 
           status = 200
           result[:task_uid] = task_uid

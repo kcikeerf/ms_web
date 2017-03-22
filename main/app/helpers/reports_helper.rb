@@ -86,7 +86,7 @@ module ReportsHelper
     elsif current_user.is_tenant_administrator? || current_user.is_analyzer? || current_user.is_teacher?
       tenant_uid = current_tenant.nil?? nil : current_tenant.uid
       result[:root_group] = "grade"
-      result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}.json"
+      result[:root_url] = "/reports_warehouse/tests/#{test_id}/grade/#{tenant_uid}.json"
     elsif current_user.is_pupil?
       tenant_uid = current_tenant.nil?? "" : current_tenant.uid
       loc_uid = current_user.pupil.location.nil?? "" : current_user.pupil.location.uid
