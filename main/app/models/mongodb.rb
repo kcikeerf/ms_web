@@ -70,10 +70,10 @@ module Mongodb
     }
 
     online_test_pupil_stat_klass_arr = [
-        "OnlineTestReportTotalBeforeBasePupilStatResult",
-        "OnlineTestReportTotalBeforeLv1CkpPupilStatResult",
-        "OnlineTestReportTotalBeforeLv2CkpPupilStatResult",
-        "OnlineTestReportTotalBeforeLvEndCkpPupilStatResult"
+      "OnlineTestReportTotalBeforeBasePupilStatResult",
+      "OnlineTestReportTotalBeforeLv1CkpPupilStatResult",
+      "OnlineTestReportTotalBeforeLv2CkpPupilStatResult",
+      "OnlineTestReportTotalBeforeLvEndCkpPupilStatResult"
     ]
 
     #
@@ -87,11 +87,29 @@ module Mongodb
     
     klass_arr.each{|klass|
       self.const_set(klass, Class.new)
-      "Mongodb::#{klass}".constantize.class_eval do
+      ("Mongodb::" + klass).constantize.class_eval do
         include Mongoid::Document
         include Mongoid::Attributes::Dynamic
 
         index({_id: 1}, {background: true})
+      end
+    }
+
+
+    others = {
+      "TestReportUrl" => %Q{
+        include Mongoid::Document
+        include Mongoid::Attributes::Dynamic
+
+        index({_id: 1}, {background: true})
+        index({test_id: 1}, {background: true})
+        index({report_url: 1}, {background: true})
+      }
+    }
+    others.each{|klass, core_str|
+      self.const_set(klass, Class.new)
+      ("Mongodb::" + klass).constantize.class_eval do
+        eval(core_str)
       end
     }
   end

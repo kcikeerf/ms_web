@@ -71,7 +71,10 @@ module Reports
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
           target_papers = target_user.role_obj.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
-          target_papers = target_user.accessable_tenants.map{|item| item.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score) }.flatten
+          target_tenant_ids = target_user.accessable_tenants.map(&:uid).uniq.compact
+          target_test_ids = Mongodb::BankTestTenantLink.where(tenant_uid: {"$in" => target_tenant_ids} ).map(&:bank_test_id).uniq.compact
+          target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
+          target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids} ).only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         else
           target_papers = []          
         end
@@ -88,6 +91,7 @@ module Reports
           else
             # do nothing
           end
+
           target_papers.map{|target_pap|
             next unless target_pap
             next if target_pap.paper_status != Common::Paper::Status::ReportCompleted
