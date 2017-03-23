@@ -62,7 +62,11 @@
 			<% @papers.each do |paper| %>
 			<tr>
 				<td class="title">
+<% if !(defined? paper_edittable).blank? && paper_edittable %>
 					<a href="/papers/get_paper?pap_uid=<%=paper._id%>"><%= "#{paper.heading}-#{paper.subheading}".truncate(30) %></a>
+<% else %>
+					<%= "#{paper.heading}-#{paper.subheading}".truncate(30) %>
+<% end %>
 <% if !paper.bank_tests[0] || paper.bank_tests[0].report_version.blank? %>					
 					<%= link_to '[查看报告]', new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
 <% else %>

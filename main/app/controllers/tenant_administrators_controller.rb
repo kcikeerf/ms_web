@@ -44,8 +44,6 @@ class TenantAdministratorsController < ApplicationController
       .page(params[:page])
       .per(10)
       .only(Common::Page::PaperListLeastAttributes)
-
-    puts "#{@papers.count}!!!"
   end
 
   private
