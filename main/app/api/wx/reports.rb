@@ -205,8 +205,10 @@ module Reports
         accessable_loc_uids = current_user.accessable_locations.map(&:uid)
   
         nav_h = {}
-        nav_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/grade/' + params[:tenant_uid] + '/nav.json'].first
-        nav_data = File.open(nav_f, 'rb').read if !nav_f.blank?
+        nav_path = Common::Report::WareHouse::ReportLocation  + "reports_warehouse/tests/" + params[:test_id]+ '/.*grade/' + params[:tenant_uid] + '/nav.json'
+        re = Regexp.new nav_path
+        nav = Mongodb::TestReportUrl.where(test_id: params[:test_id], report_url: re).first
+        nav_data = File.open(nav.report_url, 'rb').read if nav
         nav_h = JSON.parse(nav_data) if !nav_data.blank?
         result = nav_h.values[0].map{|item| item if accessable_loc_uids.include?(item[1]["uid"])}.compact if !nav_h.values.blank?
 
