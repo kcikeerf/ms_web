@@ -88,6 +88,9 @@ module Reports
           elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
             rpt_type = Common::Report::Group::Grade
             rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
+          elsif target_user.is_project_administrator?
+            rpt_type = Common::Report::Group::Project
+            rpt_id = nil
           else
             # do nothing
           end
@@ -116,7 +119,7 @@ module Reports
             else
               test_id = target_pap.bank_tests[0].id.to_s
               rpt_type = rpt_type || Common::Report::Group::Project
-              rpt_id = rpt_id || test_id
+              rpt_id = (rpt_type == Common::Report::Group::Project)? test_id : rpt_id
               report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
               {
                 :paper_heading => target_pap.heading,

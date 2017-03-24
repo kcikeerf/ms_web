@@ -119,7 +119,9 @@ class ReportsController < ApplicationController
                     GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
                   end
                 end
-                GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
+                if job_base_params[:top_group] == Common::Report::Group::Project
+                  GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
+                end
               end
             end
             EmptyWorker do
@@ -131,7 +133,9 @@ class ReportsController < ApplicationController
                     ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
                   end
                 end
-                ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
+                if job_base_params[:top_group] == Common::Report::Group::Project
+                  ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
+                end
               end
             end
             ClearReportsGarbageWorker :test_id, :task_uid, :job_redis_key, :total_phases
