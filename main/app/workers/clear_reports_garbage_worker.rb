@@ -19,9 +19,10 @@ class ClearReportsGarbageWorker
           report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/*"
           target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
           begin
-            Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+            report_redis_keys = Common::SwtkRedis::find_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+            report_redis_keys.each{|key| Common::SwtkRedis::current_redis(Common::SwtkRedis::Ns::Sidekiq).del(key) }
           rescue Exception => ex
-            Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+            # do nothing
           end
         else
           raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => ""))
