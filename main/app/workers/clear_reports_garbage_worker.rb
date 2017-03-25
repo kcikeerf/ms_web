@@ -17,8 +17,12 @@ class ClearReportsGarbageWorker
           target_test = Mongodb::BankTest.where(id: test_id).first
           target_pap= target_test.bank_paper_pap      	
           report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/*"
-          Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
           target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
+          begin
+            Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+          rescue Exception => ex
+            Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+          end
         else
           raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => ""))
         end
