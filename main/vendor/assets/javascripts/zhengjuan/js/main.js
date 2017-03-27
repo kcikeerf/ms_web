@@ -577,8 +577,10 @@ $(function(){
                             tenant_name: v.getAttribute("tenant_name"),
                             tenant_status: "",
                             tenant_status_label: ""}
-                })
+                }),
+                config: $("#paper_test_config").val() || ""
             };
+            console.log($("#paper_test_config").val());
             $(".selecTerm li.active").length && (paper.paperData.information.node_uid=$(".selecTerm li.active").attr("uid"));
             paper.paperData.bank_node_catalogs = [];
             $(".selectKnowledge .optionList li.active").each(function(){
@@ -589,22 +591,25 @@ $(function(){
                 paper.paperData.bank_node_catalogs.push(tempObj);
             });
             
+            var error_item = "";
+            var must_item_arr = [
+                "heading",
+                "school",
+                "subject",
+                "grade",
+                "text_version",
+                "term",
+                "quiz_duration",
+                "quiz_type",
+                "quiz_date",
+                "score",
+                "levelword"
+            ];
             for(var k in paper.paperData.information){
-                if( k == "heading" ||
-                    k == "school" ||
-                    k == "subject" || 
-                    k == "grade" ||
-                    k == "text_version" || 
-                    k == "term" ||
-                    k == "quiz_duration" ||
-                    k == "quiz_type" ||
-                    k == "quiz_date" || 
-                    k == "score" ||
-                    k == "levelword"){
-                    if(!paper.paperData.information[k]){
-                        allowSubmit = false;
-                        break;
-                    } 
+                if( (must_item_arr.indexOf(k) > -1 && !paper.paperData.information[k]) || ( k == "tenants" && paper.paperData.information[k].length == 0) ){
+                    allowSubmit = false;
+                    error_item = k;
+                    break;
                 }
             }
             //!paper.paperData.bank_node_catalogs.length && (allowSubmit = false);
@@ -613,7 +618,7 @@ $(function(){
                 paper.createLoading();
                 paper.dataSave(paper.paperSaveUrl, paper.paperData, paper.gotoPaperChange);
             } else {
-                alert("除了副标题，所有选项都必填！");
+                alert("除了副标题，所有选项都必填！(错误项：" + error_item +")");
             }
         });
         //保存试题和答案的html

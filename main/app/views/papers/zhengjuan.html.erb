@@ -196,8 +196,8 @@
 			</div>
 			<div class="source">
 				<div class="school">
-					<label>学校&nbsp;:</label><label class="school_name"><%= test_organizer_name %></label>
-					<input type="hidden" value="<%= test_organizer_name %>" disabled=true>
+					<label>学校&nbsp;:</label>
+					<input type="hidden" value="<%= test_organizer_name %>" disabled=true><span class="school_name"><%= test_organizer_name %></span>
 				</div>
 			</div>
 			<ul class="infoList">
@@ -391,6 +391,7 @@
 
 <!--项目管理员增加Tenant范围选择域-->
 <%=render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
+<%=render partial: "shared/tests/config" %>
 
 		</div>
 

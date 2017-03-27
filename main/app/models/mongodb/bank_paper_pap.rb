@@ -260,7 +260,7 @@ class Mongodb::BankPaperPap
       # self.bank_tests = [pap_test]
       # save!
     else
-      self.bank_tests[0].bank_test_tenant_links.destroy_all unless params[:information][:tenants].blank?
+      self.bank_tests[0].bank_test_tenant_links.destroy_all if !self.bank_tests[0].bank_test_tenant_links.blank?
     end
 
     test_associated_tenant_uids.each{|tnt_uid|
