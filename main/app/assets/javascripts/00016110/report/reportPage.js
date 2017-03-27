@@ -132,7 +132,6 @@ var reportPage = {
 							var from = (args.data.length == 0 ) ? 0 : args.data.length ;
 							reportPage.CurrentBreadCrumbChildren.splice(from,1);
 						}
-						console.log(reportPage.CurrentBreadCrumbChildren);
 					}
 
 					callback(args);
@@ -159,7 +158,7 @@ var reportPage = {
 						from_type = "grade";
 						break;
 					case "grade":
-						from_type = "project";
+						from_type = (reportPage.rootGroup == "project")? "project" : "grade";
 						break;
 					case "project":
 						from_type = "project";
@@ -213,7 +212,7 @@ var reportPage = {
 					createReportFunc = reportPage.Class.createReport;
 					break;
 				case "grade":
-					next_type = "project";
+					next_type = (reportPage.rootGroup == "project")? "project" : end_type;
 					reportCurrentId = reportPage.CurrentGradeId;
 					reportCurrentUrl = reportPage.CurrentGradeUrl;
 					createReportFunc = reportPage.Grade.createReport;

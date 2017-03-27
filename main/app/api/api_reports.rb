@@ -71,7 +71,10 @@ module ApiReports
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
           target_papers = target_user.role_obj.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
-          target_papers = target_user.accessable_tenants.map{|item| item.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score) }.flatten
+          target_tenant_ids = target_user.accessable_tenants.map(&:uid).uniq.compact
+          target_test_ids = Mongodb::BankTestTenantLink.where(tenant_uid: {"$in" => target_tenant_ids} ).map(&:bank_test_id).uniq.compact
+          target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
+          target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids} ).only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         else
           target_papers = []          
         end
@@ -85,9 +88,13 @@ module ApiReports
           elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
             rpt_type = Common::Report::Group::Grade
             rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
+          elsif target_user.is_project_administrator?
+            rpt_type = Common::Report::Group::Project
+            rpt_id = nil
           else
             # do nothing
           end
+
           target_papers.map{|target_pap|
             next unless target_pap
             next if target_pap.paper_status != Common::Paper::Status::ReportCompleted
@@ -112,7 +119,7 @@ module ApiReports
             else
               test_id = target_pap.bank_tests[0].id.to_s
               rpt_type = rpt_type || Common::Report::Group::Project
-              rpt_id = rpt_id || test_id
+              rpt_id = (rpt_type == Common::Report::Group::Project)? test_id : rpt_id
               report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
               {
                 :paper_heading => target_pap.heading,
@@ -256,8 +263,10 @@ module ApiReports
         accessable_loc_uids = current_user.accessable_locations.map(&:uid)
   
         nav_h = {}
-        nav_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/grade/' + params[:tenant_uid] + '/nav.json'].first
-        nav_data = File.open(nav_f, 'rb').read if !nav_f.blank?
+        nav_path = Common::Report::WareHouse::ReportLocation  + "reports_warehouse/tests/" + params[:test_id]+ '/.*grade/' + params[:tenant_uid] + '/nav.json'
+        re = Regexp.new nav_path
+        nav = Mongodb::TestReportUrl.where(test_id: params[:test_id], report_url: re).first
+        nav_data = File.open(nav.report_url, 'rb').read if nav
         nav_h = JSON.parse(nav_data) if !nav_data.blank?
         result = nav_h.values[0].map{|item| item if accessable_loc_uids.include?(item[1]["uid"])}.compact if !nav_h.values.blank?
 
