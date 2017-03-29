@@ -15,6 +15,14 @@ class Mongodb::BankQuizQiz
   before_save :format_float
 =end
 
+  belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
+  has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
+  has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
+  has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete 
+  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
+
+  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
+
   #field :uid, type: String
   field :subject, type: String
   field :node_uid, type: String
@@ -36,15 +44,11 @@ class Mongodb::BankQuizQiz
   field :levelword, type: String
   field :levelorder, type: Integer
   field :order, type: String
+  field :custom_order, type: String
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
-  has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
-  has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
-  has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete 
-  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
 
-  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
 
   def save_quiz params
     #params = JSON.parse(params["_json"]) if params["_json"]

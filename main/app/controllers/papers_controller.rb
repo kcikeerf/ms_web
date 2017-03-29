@@ -12,7 +12,9 @@ class PapersController < ApplicationController
     :submit_paper, 
     :save_analyze,
     :submit_analyze, 
-    :get_empty_score_file]
+    :get_empty_score_file,
+    :outline_list
+  ]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
@@ -386,11 +388,17 @@ class PapersController < ApplicationController
     render layout: false
   end
 
-  private
-
-  def set_paper
-    @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-    @paper.current_user_id = current_user.id
+  # 获取试卷大纲
+  # [参数]
+  # pap_uid: 试卷id
+  def outline_list
+    render json: @paper.outline_list.to_json
   end
 
+  private
+
+    def set_paper
+      @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+      @paper.current_user_id = current_user.id
+    end
 end

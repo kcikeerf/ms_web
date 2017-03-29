@@ -2,6 +2,7 @@
 $(function(){
     var paper_interval;
     var paper = {
+        id: null,
         paperData : {},     //数据保存时的参数对象
         changeState : false,
         currentQuiz: {}, 
@@ -21,10 +22,12 @@ $(function(){
         generateReports : "/reports/generate_reports",  //生成报告接口        
         get_task_status : "/monitors/get_task_status",  //查询报告进度接口
         paperUrl : "/papers/get_paper",  //访问已生成试卷路径
+        paper_outline_list: "/papers/outline_list",
         init : function(){
             //截取url里的id参数，存在的画根据id取数据，不存在的话，跳到上传模块
             paper.bindEvent();
             var paperId = this.getQueryString(location.href,"pap_uid");
+            paper.id = paperId;
             if(paperId){
                 $.ajax({
                     url: paper.getPaperInfo,
@@ -111,10 +114,31 @@ $(function(){
                 var html_str = "";
                 var quiz_types = quiz_type_list[paper.paperData.information.subject.name];
                 for(k in quiz_types){
-                   html_str += "<li values=" + k + ">" + quiz_types[k] + "</li>";
+                    html_str += "<li values=" + k + ">" + quiz_types[k] + "</li>";
                 }
                 $(".selectCategory .optionList").html("");
                 $(".selectCategory .optionList").html(html_str);
+            },
+            update_paper_outline_list: function(){
+                var html_str = "";
+                $.ajax({
+                    url: paper.paper_outline_list,
+                    type: "post",
+                    data: { pap_uid: paper.id },
+                    dataType: "json",
+                    success: function(data){
+                        for(index in data){
+                            var item = data[index];
+                            disable_str = (item.is_end_point == "true") ? "" : "disabled"
+                            html_str += "<option value='" + item.id + "'" + disable_str + ">" + item.path + "</option>";
+                            $(".selectPaperOutline").html("");
+                            $(".selectPaperOutline").html(html_str);
+                        }
+                    },
+                    error: function(){
+                        
+                    }   
+                });                
             }
         },
         judge : function(data){
@@ -1512,7 +1536,7 @@ $(function(){
         if(paper.paperData.information && paper.paperData.information.paper_outline){
             $(".paper_outline").text(paper.paperData.information.paper_outline);
         }
-        console.log(paper.paperData.test);
+
         if(paper.paperData.test && paper.paperData.test.ext_data_path){
             $(".test_config .report_ext_data_path").val(paper.paperData.test.ext_data_path);
         }        
@@ -1567,6 +1591,7 @@ $(function(){
     }
     //跳转到单题解析模块
     paper.gotoPaperAnalysis = function(){
+        paper.baseFn.update_paper_outline_list();        
         $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 4) $(this).addClass("active");
