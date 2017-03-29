@@ -583,7 +583,7 @@ $(function(){
             };
 
             paper.paperData.test = {
-                ext_path: $(".test_config .report_ext_path").val() || ""
+                ext_data_path: $(".test_config .report_ext_data_path").val() || ""
             };
 
             $(".selecTerm li.active").length && (paper.paperData.information.node_uid=$(".selecTerm li.active").attr("uid"));
@@ -1512,6 +1512,10 @@ $(function(){
         if(paper.paperData.information && paper.paperData.information.paper_outline){
             $(".paper_outline").text(paper.paperData.information.paper_outline);
         }
+        console.log(paper.paperData.test);
+        if(paper.paperData.test && paper.paperData.test.ext_data_path){
+            $(".test_config .report_ext_data_path").val(paper.paperData.test.ext_data_path);
+        }        
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){
