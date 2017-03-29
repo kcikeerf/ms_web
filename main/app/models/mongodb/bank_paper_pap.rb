@@ -255,12 +255,14 @@ class Mongodb::BankPaperPap
         :name => self._id.to_s + "_" +Common::Locale::i18n("activerecord.models.bank_test"),
         :user_id => current_user_id,
         :quiz_date => Time.now,
+        :ext_data_path => params[:test][:ext_data_path],
         :bank_paper_pap_id => self.id.to_s
       })
       pap_test.save!
       # self.bank_tests = [pap_test]
       # save!
     else
+      self.bank_tests[0].update( ext_data_path: params[:test][:ext_data_path] )
       self.bank_tests[0].bank_test_tenant_links.destroy_all if !self.bank_tests[0].bank_test_tenant_links.blank?
     end
 
