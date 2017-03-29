@@ -3,7 +3,8 @@ $(function(){
     var paper_interval;
     var paper = {
         paperData : {},     //数据保存时的参数对象
-        changeState : false, 
+        changeState : false,
+        currentQuiz: {}, 
         modalLastUrl: "",
         // getSubject : "/node_structures/get_subjects",        //请求科目
         // getGrade : "/node_structures/get_grades",        //请求年级
@@ -578,11 +579,16 @@ $(function(){
                             tenant_status: "",
                             tenant_status_label: ""}
                 }),
-                config: $("#paper_test_config").val() || ""
+                paper_outline: $(".paper_outline").val() || ""
             };
-            console.log($("#paper_test_config").val());
+
+            paper.paperData.test = {
+                ext_path: $(".test_config .report_ext_path").val() || ""
+            };
+
             $(".selecTerm li.active").length && (paper.paperData.information.node_uid=$(".selecTerm li.active").attr("uid"));
             paper.paperData.bank_node_catalogs = [];
+
             $(".selectKnowledge .optionList li.active").each(function(){
                 var tempObj = {
                     node : $(this).text(),
@@ -591,6 +597,7 @@ $(function(){
                 paper.paperData.bank_node_catalogs.push(tempObj);
             });
             
+            //基本信息项目检查
             var error_item = "";
             var must_item_arr = [
                 "heading",
@@ -725,9 +732,11 @@ $(function(){
                 $(".part4 .analyze ").html(part4_html.find(".analyze ").html());
                 paper.min_question.setData(question.addClass("analysis").get(0).outerHTML);
                 paper.min_answer.setData(answer.addClass("analysis").get(0).outerHTML);
+                $(".systemQuizOrderDisplay").text(num);
                 //显示已设置过的信息
                 if(paper.paperData.bank_quiz_qizs && paper.paperData.bank_quiz_qizs.length && paper.paperData.bank_quiz_qizs[num-1]){
                     var data = paper.paperData.bank_quiz_qizs[num-1];
+                    paper.currentQuiz = data;
                     var tempObj = {
                         'selectCategory' : data.cat,
                         'selectFullscore' : data.score,
@@ -748,6 +757,7 @@ $(function(){
                             }
                         });
                     }
+                    
                     (data.optional)? $(".isOptional .textCheckbox").addClass("active") : $(".isOptional .textCheckbox").removeClass("active");
                     $(".remarks").val(data.desc || "");
                     var template = $(".analyze .textLabelWarp").eq(0);
@@ -755,7 +765,7 @@ $(function(){
                     $(".analyze .textLabelWarp").remove();
                     for(var k=0; k<data.bank_qizpoint_qzps.length; k++){
                         var thisNode = cloneNode.clone(false);
-                        thisNode.find(".score label").text("得分点"+(k+1)+"：");
+                        thisNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + (k+1) + ")");
                         thisNode.find(".scoreAnswer").val(data.bank_qizpoint_qzps[k].answer||"");
                         data.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find("p.textCheckbox").addClass("active");
                         thisNode.find(".scorePart .optionList li").each(function(){
@@ -869,7 +879,7 @@ $(function(){
         doc.on("click",".addWarp .addScore",function(){
             var scroll_top = $(document).scrollTop()+200,
             cloneNode = $(".analyze .textLabelWarp").eq(0).clone(false);
-            cloneNode.find(".score label").text("得分点"+($(".analyze .textLabelWarp").length+1)+"：");
+            cloneNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + ($(".analyze .textLabelWarp").length+1) + ")");
             cloneNode.find(".selectVal span").text("请选择");
             cloneNode.find(".optionList li").removeClass("active");
             cloneNode.find("textarea").val("");
@@ -1499,7 +1509,9 @@ $(function(){
                 }
             });
         }
-
+        if(paper.paperData.information && paper.paperData.information.paper_outline){
+            $(".paper_outline").text(paper.paperData.information.paper_outline);
+        }
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){

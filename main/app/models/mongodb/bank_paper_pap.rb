@@ -20,6 +20,7 @@ class Mongodb::BankPaperPap
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
   has_many :bank_tests, class_name: "Mongodb::BankTest"
   has_many :online_tests, class_name: "Mongodb::OnlineTest"
+  has_many :paper_outlines, class_name: "Mongodb::PaperOutline"
 
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
@@ -307,6 +308,39 @@ class Mongodb::BankPaperPap
         params["information"]["tasks"][tk] = tkl.uid
         bank_tests[0].bank_test_task_links.push(tkl_link)
       }
+    end
+
+    ##############################
+    #试卷大纲信息保存
+    params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
+    if !params["information"]["paper_outline"].blank?
+      paper_outline_str = params["information"]["paper_outline"]
+      paper_outline_arr = paper_outline_str.split("\n")
+      paper_outline_arr.map!{|item| item.gsub(/\s+$/,'')}
+      rid_arr = []
+      last_level = 0
+      paper_outline_arr.map!{|item|
+        item_name = item.gsub(/^\s+/,'')
+        item_level = item.scan(/\s/).count/4 + 1
+        rid = rid_arr[item_level] || -1
+        rid += 1
+        rid_arr[item_level] = rid
+        item_rid = rid_arr[1..item_level].map{|r| r.to_s.rjust(3, "0") }.join("")
+        {
+          :name => item_name,
+          :rid => item_rid,
+          :order => item_rid,
+          :level => item_level,
+          :is_end_point => false,
+          :bank_paper_pap_id => self.id
+        }
+      }
+      paper_outline_arr.map{|item|
+        rid_re = Regexp.new "^(#{item[:rid]}).*" 
+        item["is_end_point"] = true if !paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
+      }
+      paper_outlines.destroy_all
+      Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
     end
 
     #试卷保存
