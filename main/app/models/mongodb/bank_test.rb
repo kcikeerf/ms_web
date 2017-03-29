@@ -25,6 +25,7 @@ class Mongodb::BankTest
   field :user_id, type: String
   field :report_version, type: String
   field :ext_data_path, type: String
+  field :report_top_group, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
