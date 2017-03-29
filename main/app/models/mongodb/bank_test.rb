@@ -24,6 +24,7 @@ class Mongodb::BankTest
   field :quiz_date, type: DateTime
   field :user_id, type: String
   field :report_version, type: String
+  field :report_top_group, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

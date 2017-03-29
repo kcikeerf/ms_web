@@ -80,21 +80,26 @@ module ReportsHelper
       :root_url => "",
       :paper_info_url => ""      
     }
+    target_test = Mongodb::BankTest.where(id: test_id).first
     if current_user.is_project_administrator?
       result[:root_group] = "project"
-      result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}.json"
+      result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/#{test_id}.json"
     elsif current_user.is_tenant_administrator? || current_user.is_analyzer? || current_user.is_teacher?
       tenant_uid = current_tenant.nil?? nil : current_tenant.uid
       result[:root_group] = "grade"
-      result[:root_url] = "/reports_warehouse/tests/#{test_id}/grade/#{tenant_uid}.json"
+      if target_test.report_top_group == "project"
+        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + ".json"
+      else
+        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/grade/" + tenant_uid + ".json"
+      end
     elsif current_user.is_pupil?
       tenant_uid = current_tenant.nil?? "" : current_tenant.uid
       loc_uid = current_user.pupil.location.nil?? "" : current_user.pupil.location.uid
       pup_uid = current_user.pupil.nil?? "" : current_user.pupil.uid
       result[:root_group] = "pupil"
-      result[:root_url] = "/reports_warehouse/tests/#{test_id}/project/#{test_id}/grade/#{tenant_uid}/klass/#{loc_uid}/pupil/#{pup_uid}.json"
+      result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
     end
-    result[:paper_info_url] = "/reports_warehouse/tests/#{test_id}/paper_info.json"
+    result[:paper_info_url] = "/reports_warehouse/tests/" + test_id + "/paper_info.json"
     return result
   end
 end

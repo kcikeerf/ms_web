@@ -91,6 +91,7 @@ class ReportsController < ApplicationController
             :task_uid => task_uid,
             :top_group => current_user.is_project_administrator?? Common::Report::Group::Project : Common::Report::Group::Grade 
           }
+          @paper.bank_tests[0].update(report_top_group: job_base_params[:top_group])
 
           job_tracker = JobList.new({
             :name => "generate reports",
