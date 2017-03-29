@@ -316,7 +316,7 @@ class Mongodb::BankPaperPap
     #试卷大纲信息保存
     params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
     paper_outline_arr = []
-    if !params["information"]["paper_outline"].blank?
+    if params["information"]["paper_outline_edittable"]
       paper_outline_str = params["information"]["paper_outline"]
       paper_outline_arr = paper_outline_str.split("\n")
       paper_outline_arr.map!{|item| item.gsub(/\s+$/,'')}
@@ -342,9 +342,10 @@ class Mongodb::BankPaperPap
         rid_re = Regexp.new "^(#{item[:rid]}).{3,}" 
         item["is_end_point"] = true if paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
       }
+      paper_outlines.destroy_all
+      Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
     end
-    paper_outlines.destroy_all
-    Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
+
 
     #试卷保存
     self.update_attributes({
@@ -1056,7 +1057,7 @@ class Mongodb::BankPaperPap
     paper_outlines.map{|item|
       ancestors = paper_outlines.find_all{|o| item.ancestor_rids.include?(o.rid) }
       {id: item.id.to_s, name: item.name, is_end_point: item.is_end_point, path: ancestors.map{|item| "/" + item.name}.join("") + "/" + item.name }
-    }
+    }.unshift({id: nil, name: nil, is_end_point: "true", path: "" })
   end
 end
 

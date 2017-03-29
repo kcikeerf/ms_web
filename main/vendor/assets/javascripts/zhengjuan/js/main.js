@@ -5,7 +5,8 @@ $(function(){
         id: null,
         paperData : {},     //数据保存时的参数对象
         changeState : false,
-        currentQuiz: {}, 
+        currentQuiz: {},
+        currentQuizOrder: null,
         modalLastUrl: "",
         // getSubject : "/node_structures/get_subjects",        //请求科目
         // getGrade : "/node_structures/get_grades",        //请求年级
@@ -119,7 +120,7 @@ $(function(){
                 $(".selectCategory .optionList").html("");
                 $(".selectCategory .optionList").html(html_str);
             },
-            update_paper_outline_list: function(){
+            update_paper_outline_list: function(selector, callback){
                 var html_str = "";
                 $.ajax({
                     url: paper.paper_outline_list,
@@ -131,8 +132,9 @@ $(function(){
                             var item = data[index];
                             disable_str = (item.is_end_point == "true") ? "" : "disabled"
                             html_str += "<option value='" + item.id + "'" + disable_str + ">" + item.path + "</option>";
-                            $(".selectPaperOutline").html("");
-                            $(".selectPaperOutline").html(html_str);
+                            $(selector).html("");
+                            $(selector).html(html_str);
+                            callback();
                         }
                     },
                     error: function(){
@@ -559,6 +561,18 @@ $(function(){
             //     $(".selectCounty .optionList").html(html);
             // }
         });
+        //自定义题顺
+        doc.on("keyup",".customQuizOrder > input, .customScoreOrder > input",function(){
+           if($(this).val().length){
+                $(".saveWarp .saveBtn").addClass("active");
+                paper.changeState = true;
+            }
+        });
+        //试卷大纲
+        doc.on("click",".selectQuizPaperOutline, .selectScorePaperOutline",function(){
+            $(".saveWarp .saveBtn").addClass("active");
+            paper.changeState = true;
+        });        
         //提交试卷基本信息
         doc.on("click",".infoBtn",function(){
             var allowSubmit = true; //允许提交
@@ -730,6 +744,7 @@ $(function(){
             var that = $(this);
             if(that.hasClass("active")) return;
             if(paper.changeState){
+                console.log("1");
                 var fullScore =  $(".selectFullscore .selectVal input").val() || 0,
                     scores = 0;
                 fullScore = fullScore - 0;
@@ -743,6 +758,7 @@ $(function(){
                 var target = $(this);
                 paper.needSave(paper.paperSaveUrl,paper.paperData,function(){target.trigger("click")});
             }else{
+                console.log("2");
                 $(".questionType").text(that.parent().siblings("p").text());
                 var html = "",
                     num = that.attr("num"),
@@ -752,19 +768,26 @@ $(function(){
                 $(".remarks").val("");
 
                 $(".part4 .information").html(part4_html.find(".information").html());
+                //更新列表
                 paper.baseFn.update_quiz_type_list();
+                
+
                 $(".part4 .analyze ").html(part4_html.find(".analyze ").html());
                 paper.min_question.setData(question.addClass("analysis").get(0).outerHTML);
                 paper.min_answer.setData(answer.addClass("analysis").get(0).outerHTML);
                 $(".systemQuizOrderDisplay").text(num);
+
+                paper.currentQuizOrder = num;
+                paper.baseFn.update_paper_outline_list(".selectQuizPaperOutline", function(){});
+                paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){});
+                $(".systemScoreOrderDisplay").text( num + "(1)");
                 //显示已设置过的信息
                 if(paper.paperData.bank_quiz_qizs && paper.paperData.bank_quiz_qizs.length && paper.paperData.bank_quiz_qizs[num-1]){
-                    var data = paper.paperData.bank_quiz_qizs[num-1];
-                    paper.currentQuiz = data;
+                    paper.currentQuiz = paper.paperData.bank_quiz_qizs[num-1];
                     var tempObj = {
-                        'selectCategory' : data.cat,
-                        'selectFullscore' : data.score,
-                        'selectDegree' : data.levelword2
+                        'selectCategory' : paper.currentQuiz.cat,
+                        'selectFullscore' : paper.currentQuiz.score,
+                        'selectDegree' : paper.currentQuiz.levelword2
                     };
                     for(var k in tempObj){
                         $("." + k + " .optionList li").each(function(){
@@ -781,27 +804,38 @@ $(function(){
                             }
                         });
                     }
-                    
-                    (data.optional)? $(".isOptional .textCheckbox").addClass("active") : $(".isOptional .textCheckbox").removeClass("active");
-                    $(".remarks").val(data.desc || "");
+                    $(".customQuizOrder > input").val(paper.currentQuiz.custom_order || "");
+                    paper.baseFn.update_paper_outline_list(".selectQuizPaperOutline", function(){
+                        $(".selectQuizPaperOutline").val(paper.currentQuiz.paper_outline || "");
+                    });
+
+                    (paper.currentQuiz.optional)? $(".isOptional .textCheckbox").addClass("active") : $(".isOptional .textCheckbox").removeClass("active");
+                    $(".remarks").val(paper.currentQuiz.desc || "");
                     var template = $(".analyze .textLabelWarp").eq(0);
                     var cloneNode = template.clone(false);
                     $(".analyze .textLabelWarp").remove();
-                    for(var k=0; k<data.bank_qizpoint_qzps.length; k++){
-                        var thisNode = cloneNode.clone(false);
+                    for(var k=0; k<paper.currentQuiz.bank_qizpoint_qzps.length; k++){
+                        var thisNode = cloneNode.clone(true);
                         thisNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + (k+1) + ")");
-                        thisNode.find(".scoreAnswer").val(data.bank_qizpoint_qzps[k].answer||"");
-                        data.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find("p.textCheckbox").addClass("active");
+                        thisNode.find(".scoreAnswer").val(paper.currentQuiz.bank_qizpoint_qzps[k].answer||"");
+                        paper.currentQuiz.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find("p.textCheckbox").addClass("active");
                         thisNode.find(".scorePart .optionList li").each(function(){
-                            $(this).parents(".optionWarp").find(".selectVal input").val(data.bank_qizpoint_qzps[k].score||0);
-                            if($(this).text() == data.bank_qizpoint_qzps[k].score){
+                            $(this).parents(".optionWarp").find(".selectVal input").val(paper.currentQuiz.bank_qizpoint_qzps[k].score||0);
+                            if($(this).text() == paper.currentQuiz.bank_qizpoint_qzps[k].score){
                                 $(this).addClass("active").siblings().removeClass("active").parents(".selectWarp").find(".selectVal span").text($(this).text());
                                 $(this).parents(".optionWarp").find(".selectVal input").val($(this).text());
                                 return false;
                             }
                         });
+                        thisNode.find(".customScoreOrder > input").val(paper.currentQuiz.bank_qizpoint_qzps[k].custom_order || "");
+
                         $(".analyze").append(thisNode);
                     }
+                    paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){
+                        for(var index in paper.currentQuiz.bank_qizpoint_qzps){
+                            $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline;
+                        }
+                    });
                 }
                 $(".subNav li").removeClass("active");
                 that.addClass("active");
@@ -903,7 +937,7 @@ $(function(){
         doc.on("click",".addWarp .addScore",function(){
             var scroll_top = $(document).scrollTop()+200,
             cloneNode = $(".analyze .textLabelWarp").eq(0).clone(false);
-            cloneNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + ($(".analyze .textLabelWarp").length+1) + ")");
+            cloneNode.find(".systemScoreOrderDisplay").text( paper.currentQuizOrder + "(" + ($(".analyze .textLabelWarp").length+1) + ")");
             cloneNode.find(".selectVal span").text("请选择");
             cloneNode.find(".optionList li").removeClass("active");
             cloneNode.find("textarea").val("");
@@ -1237,14 +1271,19 @@ $(function(){
         itemObj.text = q_html;
         itemObj.answer = a_html;
         itemObj.order = $(".subNav li").index($(".subNav li.active"))+1;
+        itemObj.custom_order = $(".customQuizOrder > input").val() || "";
+        itemObj.paper_outline = $(".selectQuizPaperOutline").val() || "";
         itemObj.desc = $(".testAnswer .remarks").val();
         itemObj.bank_qizpoint_qzps = [];
         $(".analyze .textLabelWarp").each(function(i){
-            var cate = $(this).find("p.textCheckbox").hasClass("active") ? "主观" : "客观",
+            var cate = $(this).find("p.textCheckbox").hasClass("active") ? "主观" : "客观";
             tempObj = {
                 type : cate,
                 order : itemObj.order+"("+(i+1)+")",
+                custom_order: $(".customScoreOrder > input")[i].value || "",
+                paper_outline: $(".selectScorePaperOutline")[i].value || "",
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
+
                 answer : $(this).find(".scoreAnswer").val()
             };
             itemObj.bank_qizpoint_qzps.push(tempObj);
@@ -1347,6 +1386,9 @@ $(function(){
     }
     //跳转到试卷信息模块
     paper.gotoPaperInfo = function(){
+        //禁止修改大纲
+        paper.paperData.information.paper_outline_edittable = true;
+        //
         $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 2) $(this).addClass("active");
@@ -1543,6 +1585,9 @@ $(function(){
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){
+        //禁止修改大纲
+        paper.paperData.information.paper_outline_edittable = false;
+        //       
         $(".zhengjuang .container").addClass("auto");
         $(".hide_question, .hide_answer").remove();
         /*$(".navColumn .navList li").each(function(){
@@ -1587,11 +1632,14 @@ $(function(){
             paper.editorControl.caculatequestionCount();
         }else{
             paper.editorControl.init();
-        }   
+        }
     }
     //跳转到单题解析模块
     paper.gotoPaperAnalysis = function(){
-        paper.baseFn.update_paper_outline_list();        
+        //禁止修改大纲
+        paper.paperData.information.paper_outline_edittable = false;
+        //          
+        // paper.baseFn.update_paper_outline_list();
         $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 4) $(this).addClass("active");
@@ -1658,6 +1706,9 @@ $(function(){
 
     //跳转到解析详情模块
     paper.gotoAnalysisDetail = function(){
+        //禁止修改大纲
+        paper.paperData.information.paper_outline_edittable = false;
+        //          
         $(".contentBody").html($(".template_analysis").html());
         paper.abstract();
         $("input#node_uid").val(paper.paperData.information.node_uid || "");
