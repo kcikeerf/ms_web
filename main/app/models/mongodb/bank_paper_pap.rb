@@ -503,10 +503,11 @@ class Mongodb::BankPaperPap
       :paper_status => status
     })
     
-    #update qizpoint ckps json
+    #update qizpoint ckps, paper outline json
     qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
     qzps.each{|qzp|
       qzp.format_ckps_json
+      qzp.format_paper_outline_json
     }
   end
 

@@ -14,6 +14,12 @@ class Mongodb::PaperOutline
   field :level, type: String
   field :is_end_point, type: String
 
+  #获取大纲节点的祖先rid
+  # [参数]
+  #    空
+  # [返回值]
+  #    祖先节点的rid数组
+  #
   def ancestor_rids
     result = []
     rids_arr = rid.scan(/.{3}/)
@@ -22,5 +28,17 @@ class Mongodb::PaperOutline
       result << rids_arr[0..index].join("")
     }
     return result 
+  end
+
+  #获取大纲节点的祖先
+  # [参数]
+  #    空
+  # [返回值]
+  #    祖先节点的数组
+  #
+  def ancestors
+    ancestor_rids.map{|rid|
+      self.class.where(bank_paper_pap_id: self.bank_paper_pap_id, rid: rid).first
+    }
   end
 end

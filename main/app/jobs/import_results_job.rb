@@ -61,10 +61,23 @@ class ImportResultsJob < ActiveJob::Base
             next if Common::valid_json?(qzp.ckps_json)
             qzp.format_ckps_json 
           }
-          ###
+          # 检查大纲，若未生成则生成
+          #
+          paper_qzps.each{|qzp|
+            next if Common::valid_json?(qzp.paper_outline_json)
+            qzp.format_paper_outline_json
+          }
+
+          # 指标mapping
           qzps_ckps_mapping_h = {}
           paper_qzps.each{|qzp|
           	qzps_ckps_mapping_h[qzp.id.to_s] = JSON.parse(qzp.ckps_json)
+          }
+
+          # 大纲mapping
+          qzps_outlines_mapping_h = {}
+          paper_qzps.each{|qzp|
+            qzps_outlines_mapping_h[qzp.id.to_s] = JSON.parse(qzp.paper_outline_json)
           }
 
           logger.info(">>>初始化<<<")
@@ -199,6 +212,7 @@ class ImportResultsJob < ActiveJob::Base
                 :phase_total => phase_total,
                 :target_paper => target_paper,
                 :qzps_ckps_mapping_h => qzps_ckps_mapping_h,
+                :qzps_outlines_mapping_h => qzps_outlines_mapping_h,
                 :target_tenant => target_tenant,
                 :teacher_sheet => teacher_sheet,
                 :pupil_sheet => pupil_sheet
@@ -368,13 +382,16 @@ class ImportResultsJob < ActiveJob::Base
 
           (args[:data_start_col]..(args[:total_cols]-1)).each{|qzp_index|
             next if ( !row[qzp_index].is_a?(Numeric) || row[qzp_index] < 0 )
+
             col_params.merge!({
               :qzp_uid => args[:hidden_row][qzp_index],
               :order => args[:order_row][qzp_index],
               :real_score => row[qzp_index],
               :full_score => args[:title_row][qzp_index]
             })
+
             #qizpoint = qzps_h[qzp_index - args[:data_start_col]]
+            qzp_outline_h = args[:qzps_outlines_mapping_h][args[:hidden_row][qzp_index]]
             qzp_ckp_h = args[:qzps_ckps_mapping_h][args[:hidden_row][qzp_index]]
             qzp_ckp_h.each{|dimesion, ckps|
               col_params[:dimesion] = dimesion
@@ -382,13 +399,13 @@ class ImportResultsJob < ActiveJob::Base
                 col_params[:ckp_uids] = ckp.keys[0]
                 col_params[:ckp_order] = ckp.values[0]["rid"]
                 col_params[:ckp_weights] = ckp.values[0]["weights"]
+                col_params[:outline_ids] = qzp_outline_h["ids"]
+                col_params[:outline_order] = qzp_outline_h["rids"]
                 row_qzps_arr << col_params.clone
-                # test_score = Mongodb::BankTestScore.new(col_params)
-                # test_score.save!
               }
             }
+
           }
-          #Mongodb::BankTestScore.create!(row_qzps_arr)
           Mongodb::BankTestScore.collection.insert_many(row_qzps_arr)
 
           Common::SwtkRedis::incr_key(args[:redis_ns], args[:redis_key])

@@ -24,6 +24,7 @@ class Mongodb::BankQizpointQzp
   field :answer, type: String
   field :desc, type: String
   field :ckps_json, type: String
+  field :paper_outline_json, type: String
   field :score, type: Float
   field :order, type: String
   field :custom_order, type: String
@@ -83,6 +84,17 @@ class Mongodb::BankQizpointQzp
       }
     }
     update_attributes({ckps_json: result.to_json})
+  end
+
+  def format_paper_outline_json
+    return {} if paper_outline.blank?
+    outline_arr = [ paper_outline.ancestors, paper_outline ].flatten
+    outline_ids = "/#{outline_arr.map{|item| item.id.to_s}.join('/')}"
+    outline_rid = "/#{outline_arr.map{|item| item.rid.to_s}.join('/')}"
+    update_attributes(paper_outline_json: {
+      "ids" => outline_ids,
+      "rids" => outline_rid
+    }.to_json)
   end
 
   def save_qizpoint params
