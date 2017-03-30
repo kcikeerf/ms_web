@@ -67,11 +67,11 @@ module Quizs
             hyt_quiz_data_h = {}
             hyt_snapshot_data_h = {}
             begin
-              hyt_quiz_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_user.role_obj.uid + '_hyt_quiz_data.json'].first.to_s
+              hyt_quiz_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_pupil.role_obj.uid + '_hyt_quiz_data.json'].first.to_s
               hyt_quiz_data = File.open(hyt_quiz_data_f, 'rb').read
               hyt_quiz_data_h = JSON.parse(hyt_quiz_data) if !hyt_quiz_data.blank?
 
-              hyt_snapshot_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_user.role_obj.uid + '_hyt_snapshot_data.json'].first.to_s
+              hyt_snapshot_data_f = Dir[Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + params[:test_id]+ '/**/pupil/' + target_pupil.role_obj.uid + '_hyt_snapshot_data.json'].first.to_s
               hyt_snapshot_data = File.open(hyt_snapshot_data_f, 'rb').read
               hyt_snapshot_data_h = JSON.parse(hyt_snapshot_data) if !hyt_snapshot_data.blank?
             rescue Exception => ex
