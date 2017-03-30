@@ -191,17 +191,18 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .scorePart .selectVal input{display: block;width: 120px;height: 34px; padding: 0 10px;border:none;}
 /* 整卷保存后的解析页 */
 .analysis_info{padding:25px 100px;font-size: 0;}
-.analysis_info li{display: inline-block;font-size: 16px;line-height: 30px;color: #000;margin-left:50px;}
+.analysis_info li{display: block;font-size: 16px;line-height: 30px;color: #000;margin-left:0px;}
 .analysis_info li:first-child{margin-left: 0;}
 .analysis_info li label{color: #BFBFBF;}
 .analysis_data{padding:0px 100px;margin-bottom: 25px;}
 .analysis_data .info_left, .score_data .info_left{float: left;color: #BFBFBF;width: 80px;}
 .analysis_data .info_right, .score_data .info_right{display: table-cell;width: 9999px;}
 .score_part .info_left{line-height: 28px;}
-.score_part .info_right p{line-height: 28px;}
+.score_part .info_right{line-height: 28px; width: 60%; display: inline-block; word-break:break-all;}
+.score_part .info_right p{line-height: 28px; width: 9999px; display: inline-block; word-break:break-all;}
 .analysis_sanwei li{height: 30px;margin-bottom: 6px;}
 .analysis_sanwei .info_left{line-height: 30px;}
-.analysis_sanwei li input{height: 30px;width: 250px;border: 1px solid #dcdcdc;border-radius: 3px;padding:0 10px;cursor: pointer;color: #BBB; font-size: 12px;}
+.analysis_sanwei li input{height: 30px;width: 180px;border: 1px solid #dcdcdc;border-radius: 3px;padding:0 10px;cursor: pointer;color: #BBB; font-size: 12px;}
 .topNav .subNav li em{margin-left: 8px;font-size: 12px;}
 .topNav .subNav li span{display: inline-block;vertical-align: top;width: 25px;}
 .score_part{padding: 0 50px 0 100px;}

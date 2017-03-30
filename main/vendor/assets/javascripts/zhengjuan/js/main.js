@@ -806,7 +806,7 @@ $(function(){
                     }
                     $(".customQuizOrder > input").val(paper.currentQuiz.custom_order || "");
                     paper.baseFn.update_paper_outline_list(".selectQuizPaperOutline", function(){
-                        $(".selectQuizPaperOutline").val(paper.currentQuiz.paper_outline || "");
+                        $(".selectQuizPaperOutline").val(paper.currentQuiz.paper_outline_id || "");
                     });
 
                     (paper.currentQuiz.optional)? $(".isOptional .textCheckbox").addClass("active") : $(".isOptional .textCheckbox").removeClass("active");
@@ -833,7 +833,7 @@ $(function(){
                     }
                     paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){
                         for(var index in paper.currentQuiz.bank_qizpoint_qzps){
-                            $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline;
+                            $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline_id;
                         }
                     });
                 }
@@ -859,22 +859,30 @@ $(function(){
                 var num = $(this).attr("num");
                 if(paper.paperData.bank_quiz_qizs && paper.paperData.bank_quiz_qizs.length && paper.paperData.bank_quiz_qizs[num-1]){
                     var html = "",
-                        data = paper.paperData.bank_quiz_qizs[num-1],
+                        quiz = paper.paperData.bank_quiz_qizs[num-1],
                         typeObj = quiz_type_list,//{ting_li_li_jie:"听力理解",dan_xiang_xuan_ze:"单项选择",wan_xing_tian_kong:"完形填空",yue_du_li_jie:"阅读理解",ci_yu_yun_yong:"词语运用",bu_quan_dui_hua:"补全对话",shu_mian_biao_da:"书面表达"},
                         levelObj = {rong_yi:"容易",jiao_yi:"较易",zhong_deng:"中等",jiao_nan:"较难",kun_nan:"困难"};
 
-                    $(".analysis_info .info_type span").text(typeObj[paper.paperData.information.subject.name][data.cat] || "");
-                    $(".analysis_info .info_difficulty span").text(levelObj[data.levelword2] || "");
-                    $(".analysis_info .info_score span").text(data.score ? data.score+"分" : "");
-                    $(".analysis_info .info_optional span").text(data.optional ? "是" : "否");
-                    $(".analysis_q .info_right").html(data.text || "");
-                    $(".analysis_a .info_right").html(data.answer || "");
-                    $(".analysis_describe .info_right").html(data.desc || "");
-                    for(var k=0; k<data.bank_qizpoint_qzps.length; k++){
-                        html += '<div class="score_list clearfix" style="margin-bottom: 15px;"><div class="score_data analysis_score clearfix"><div class="info_left">得分点'+(k+1)+'：</div>';
-                        html += '<div class="info_right"><p>'+data.bank_qizpoint_qzps[k].answer+'</p>';
-                        html += '<p>'+(data.bank_qizpoint_qzps[k].score ? data.bank_qizpoint_qzps[k].score+"分" : "")+'</p>';
-                        html += '<p>'+data.bank_qizpoint_qzps[k].type+'题</p></div></div>';
+                    $(".analysis_info .info_quiz_system_order span").text(quiz.order || "");
+                    $(".analysis_info .info_quiz_custom_order span").text(quiz.custom_order || "");
+                    $(".analysis_info .info_quiz_paper_outline span").text(quiz.paper_outline_id || "");
+                    $(".analysis_info .info_type span").text(typeObj[paper.paperData.information.subject.name][quiz.cat] || "");
+                    $(".analysis_info .info_difficulty span").text(levelObj[quiz.levelword2] || "");
+                    $(".analysis_info .info_score span").text(quiz.score ? quiz.score+"分" : "");
+                    $(".analysis_info .info_optional span").text(quiz.optional ? "是" : "否");
+                    $(".analysis_q .info_right").html(quiz.text || "");
+                    $(".analysis_a .info_right").html(quiz.answer || "");
+                    $(".analysis_describe .info_right").html(quiz.desc || "");
+                    for(var k=0; k<quiz.bank_qizpoint_qzps.length; k++){
+                        html += '<div class="score_list clearfix" style="margin-bottom: 15px;"><div class="score_data analysis_score clearfix"><div class="info_left">得分点'+(k+1)+'：</div><div class="info_right"><ul>';
+                        html += '<li class="info_score_system_order"><label>系统顺序：</label><span>' + quiz.bank_qizpoint_qzps[k].order + '</span></li>';
+                        html += '<li class="info_score_custom_order"><label>自定义顺序：</label><span>' + quiz.bank_qizpoint_qzps[k].custom_order + '</span></li>';
+                        html += '<li class="info_score_paper_outline"><label>试卷大纲：</label><span>' + quiz.bank_qizpoint_qzps[k].paper_outline_id + '</span></li>';
+                        html += '<li class="info_score_answer"><label>答案：</label><span>' + quiz.bank_qizpoint_qzps[k].answer + '</span></li>';
+                        html += '<li class="info_score_point"><label>分数：</label><span>' + (quiz.bank_qizpoint_qzps[k].score ? quiz.bank_qizpoint_qzps[k].score+"分" : "") + '</span></li>';
+                        html += '<li class="info_score_zhu_ke_guan"><label>主客观：</label><span>' + quiz.bank_qizpoint_qzps[k].type + '</span></li>';
+                        html += '</ul></div></div>';
+
                         html += '<div class="score_data analysis_sanwei clearfix"><div class="info_left">三维解析：</div><div class="info_right"><ul>';
                         html += '<li class="info_knowledge"><label>知识：</label><input type="text" readonly="readonly"></li>';
                         html += '<li class="info_skill"><label>技能：</label><input type="text" readonly="readonly"></li>';
@@ -882,10 +890,10 @@ $(function(){
                     }
                     $(".score_part").html(html);
 
-                    for(var m=0; m<data.bank_qizpoint_qzps.length; m++){
-                        if(data.bank_qizpoint_qzps[m].bank_checkpoints_ckps && data.bank_qizpoint_qzps[m].bank_checkpoints_ckps.length){
+                    for(var m=0; m<quiz.bank_qizpoint_qzps.length; m++){
+                        if(quiz.bank_qizpoint_qzps[m].bank_checkpoints_ckps && quiz.bank_qizpoint_qzps[m].bank_checkpoints_ckps.length){
                             var arr1 = [], arr2 = [], arr3 = [],
-                                ckps = data.bank_qizpoint_qzps[m].bank_checkpoints_ckps;
+                                ckps = quiz.bank_qizpoint_qzps[m].bank_checkpoints_ckps;
                             for(var n=0; n<ckps.length; n++){
                                 if(ckps[n].dimesion == "knowledge"){
                                     arr1.push(ckps[n].checkpoint);
@@ -1272,7 +1280,7 @@ $(function(){
         itemObj.answer = a_html;
         itemObj.order = $(".subNav li").index($(".subNav li.active"))+1;
         itemObj.custom_order = $(".customQuizOrder > input").val() || "";
-        itemObj.paper_outline = $(".selectQuizPaperOutline").val() || "";
+        itemObj.paper_outline_id = $(".selectQuizPaperOutline").val() || "";
         itemObj.desc = $(".testAnswer .remarks").val();
         itemObj.bank_qizpoint_qzps = [];
         $(".analyze .textLabelWarp").each(function(i){
@@ -1281,7 +1289,7 @@ $(function(){
                 type : cate,
                 order : itemObj.order+"("+(i+1)+")",
                 custom_order: $(".customScoreOrder > input")[i].value || "",
-                paper_outline: $(".selectScorePaperOutline")[i].value || "",
+                paper_outline_id: $(".selectScorePaperOutline")[i].value || "",
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
 
                 answer : $(this).find(".scoreAnswer").val()

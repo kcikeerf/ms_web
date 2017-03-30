@@ -80,7 +80,9 @@ class Mongodb::BankQuizQiz
         :levelword => params["levelword"] || "",
         :levelorder => params["levelorder"] || "",
 #        :order => (params["order"].to_s || '0').ljust(Common::Paper::Constants::OrderWidth, '0')
-        :order => params["order"] || "0"
+        :order => params["order"] || "0",
+        :custom_order => params["custom_order"] || "",
+        :paper_outline_id => params["paper_outline_id"] || nil
       })
       self.save!
 =begin

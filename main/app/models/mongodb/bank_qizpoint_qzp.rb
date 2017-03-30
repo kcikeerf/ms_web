@@ -95,6 +95,8 @@ class Mongodb::BankQizpointQzp
        self.desc = params[:desc] || ""
        self.score = params[:score] || 0.00
        self.order = params[:order] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
+       self.custom_order = params[:custom_order] || ""
+       self.paper_outline_id = params[:paper_outline_id] || nil
        self.save!
      rescue Exception => ex
        return false
