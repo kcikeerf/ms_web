@@ -1555,6 +1555,60 @@ namespace :swtk do
       out_excel.serialize(out_path)      
     end
 
+    desc "output report status"
+    task :output_rpt_stat,[:target_path,:out] => :environment do |t, args|
+      if args[:out].blank?
+        puts "parameter error!"
+      end
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+
+      wb.add_worksheet name: "Data" do |sheet|
+
+        title_cell = wb.styles.add_style :bg_color => "CBCBCB",
+            :fg_color => "000000",
+            :sz => 14,
+            :alignment => { :horizontal=> :center },
+            :border => Axlsx::STYLE_THIN_BORDER
+        title_arr = ["Tenant", "TestName", "TestType", "TestDate", "Province", "City", "District", "Class Number", "Pupil Number"]
+        sheet.add_row title_arr, :style => title_cell
+
+        test_re = args[:target_path].to_s + "/reports_warehouse/tests/*[^.json]"
+        test_arr = Dir.glob(test_re)
+        test_ids = test_arr.map{|item| item.scan(/[0-9a-z]{1,}$/)}.flatten
+
+        test_ids.each{|id|
+          target_test = Mongodb::BankTest.where(id: id).first
+          next unless target_test
+          target_pap = target_test.bank_paper_pap#.only(:heading, :quiz_type, :quiz_date)
+          next unless target_pap
+          target_tenants = target_test.tenants
+          target_tenants.each{|tnt|
+            next unless tnt
+            target_area = tnt.area_pcd
+            next if target_area.blank?
+            class_arr = Dir[args[:target_path].to_s + "/reports_warehouse/tests/" + id + "/**/grade/" + tnt.uid + "/klass/[0-9a-z]*[^.json]"]
+            pupil_arr = Dir[args[:target_path].to_s + "/reports_warehouse/tests/" + id + "/**/grade/" + tnt.uid + "/**/pupil/[0-9a-z]*"]
+            data_arr = [
+              tnt.name_cn,
+              target_pap.heading+"(#{id})",
+              Common::Locale::i18n("dict." + target_pap.quiz_type),
+              target_pap.quiz_date,
+              target_area[:province_name_cn],
+              target_area[:city_name_cn],
+              target_area[:district],
+              class_arr.size,
+              pupil_arr.size
+            ]
+            sheet.add_row data_arr
+          }
+
+        }
+
+      end
+      out_excel.serialize(args[:out])
+    end
+
     def find_all_pupil_report_urls base_path, search_path, urls=[]
       fdata = File.open(search_path + "/nav.json", 'rb').read
       jdata = JSON.parse(fdata)
