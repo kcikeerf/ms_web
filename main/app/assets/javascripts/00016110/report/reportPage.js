@@ -594,7 +594,9 @@ var reportPage = {
 						max: 100
 					}
 				);
-				arr2.push([arr1[i][value_key]*100]);
+				var temp_val = arr1[i][value_key];
+				temp_val = (typeof temp_val == "undefined") ? 0 : temp_val;
+				arr2.push([temp_val*100]);
 			}
 			obj = {
 				xaxis : {
