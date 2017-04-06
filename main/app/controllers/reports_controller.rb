@@ -95,12 +95,13 @@ class ReportsController < ApplicationController
 
           job_tracker = JobList.new({
             :name => "generate reports",
-            :task_uid => params[:task_uid],
+            :task_uid => task_uid,
             :job_type => "generate reports",
             :status => Common::Job::Status::Processing,
             :process => 0
           })
           job_tracker.save!
+
           total_phases = 4 + 6 * tenant_uids.size
           job_redis_key = Common::SwtkRedis::Prefix::Reports + "tests/" + job_base_params[:test_id] + "/tasks/" + job_base_params[:task_uid] + "/jobs/" + job_tracker.uid
           Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Sidekiq, job_redis_key, 0)

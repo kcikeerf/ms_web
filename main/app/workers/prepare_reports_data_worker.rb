@@ -19,6 +19,8 @@ class PrepareReportsDataWorker
             qzps_ckps_mapping = Common::ReportPlus::data_qzps_ckps_mapping(test_id, Common::Report::CheckPoints::DefaultLevel)
             qzps_ckps_mapping
           }
+
+          Mongodb::TestReportUrl.delete_all(test_id: test_id) if test_id
         else
           raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => ""))
         end
