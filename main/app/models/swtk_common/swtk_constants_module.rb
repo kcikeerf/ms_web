@@ -2,6 +2,8 @@ module SwtkConstantsModule
   module SwtkConstants
     CkpDepth = 100
     CkpStep = 3
+    RidDepth = 100
+    RidStep = 3
     #UploadPrefix = Rails.root.to_s + "/uploads/"
     UploadPrefix = "./paper_files_warehouse/"
     DefaultPage = 1

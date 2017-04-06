@@ -588,6 +588,43 @@ class Mongodb::BankPaperPap
     return result
   end
 
+  # 获取试卷关联大纲的树形结构数据
+  #
+  def associated_outlines uniq_flag=false
+    result = []
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps.each{|qzp| 
+      qzp_outline = qzp.paper_outline
+      next unless qzp_outline
+      outline_arr = qzp_outline.ancestors.to_a + [qzp_outline]
+
+      outline_arr.each{|outline|
+        index = result.find_index{|item| item[:id] == outline.id.to_s}
+        if index.nil?
+          result << {
+            :id => outline.id.to_s,
+            :order => outline.rid,
+            :rid => outline.rid,
+            :level => outline.level,
+            :name => outline.name,
+            :is_end_point => outline.is_end_point,
+            :qzps_full_score_total => qzp.score.nil?? 0 : qzp.score,
+            :qzps => [qzp.id.to_s],
+            :qzp_count => 1
+          }
+        else
+          next if uniq_flag && !result[index][:qzps].find_index{|item| item == qzp.id.to_s}.blank?
+          result[index][:qzps_full_score_total] += qzp.score.nil?? 0 : qzp.score
+          result[index][:qzps].push(qzp.id.to_s)
+          result[index][:qzp_count] += 1
+        end
+      }
+    }
+
+    result.sort!{|a,b| Common::CheckpointCkp::compare_rid(a[:order], b[:order])}
+    return result
+  end
+
   # 返回得分点与指标的Mapping数组
   #
   # [return]: Array
