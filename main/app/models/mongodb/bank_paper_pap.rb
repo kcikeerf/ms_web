@@ -324,7 +324,7 @@ class Mongodb::BankPaperPap
       last_level = 0
       paper_outline_arr.map!{|item|
         item_name = item.gsub(/^\s+/,'')
-        item_level = item.scan(/\s/).count/4 + 1
+        item_level = item.scan(/\+{4}/) + 1
         rid = rid_arr[item_level] || -1
         rid += 1
         rid_arr[item_level] = rid
@@ -651,12 +651,20 @@ class Mongodb::BankPaperPap
           }
         }.uniq
       }
-      result << {
+      item = {
         "qzp_id" => qzp.id.to_s,
         "qzp_order" => (index+1).to_s,
         "qzp_type" => qzp.type,
         "ckps" => target_level_ckp_h
       }
+      item.merge!({
+        "outline" => {
+          "id" => qzp.paper_outline.id.to_s,
+          "order" => qzp.paper_outline.rid.to_s,
+          "name" => qzp.paper_outline.name.to_s
+        }
+      }) if qzp.paper_outline
+      result << item
     }
     return result
   end
