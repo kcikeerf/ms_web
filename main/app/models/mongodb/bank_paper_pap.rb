@@ -316,6 +316,7 @@ class Mongodb::BankPaperPap
     #试卷大纲信息保存
     params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
     paper_outline_arr = []
+
     if params["information"]["paper_outline_edittable"]
       paper_outline_str = params["information"]["paper_outline"]
       paper_outline_arr = paper_outline_str.split("\n")
@@ -323,8 +324,8 @@ class Mongodb::BankPaperPap
       rid_arr = []
       last_level = 0
       paper_outline_arr.map!{|item|
-        item_name = item.gsub(/^\s+/,'')
-        item_level = item.scan(/\+{4}/) + 1
+        item_name = item.gsub(/^\++/,'')
+        item_level = item.scan(/\+{4}/).size + 1
         rid = rid_arr[item_level] || -1
         rid += 1
         rid_arr[item_level] = rid

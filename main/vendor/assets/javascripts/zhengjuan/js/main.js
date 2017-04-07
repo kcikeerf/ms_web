@@ -29,6 +29,7 @@ $(function(){
             paper.bindEvent();
             var paperId = this.getQueryString(location.href,"pap_uid");
             paper.id = paperId;
+
             if(paperId){
                 $.ajax({
                     url: paper.getPaperInfo,
@@ -38,6 +39,8 @@ $(function(){
                     success: function(data){
                         if(data.status == 200){
                             paper.paperData = typeof data.data=="string" ? JSON.parse(data.data) : data.data;
+                            // 初始状态禁止编辑试卷大纲；
+                            paper.paperData.information.paper_outline_edittable = false;                            
                             paper.judge(paper.paperData);
                         }else{
                            alert(data.data.mesg);
@@ -141,7 +144,58 @@ $(function(){
                         
                     }   
                 });                
-            }
+            },
+            preview_paper_outline: function(){
+                var outline_text = $(".paper_outline").val();
+                var outline_arr = ["\n"].concat(outline_text.split("\n"));
+                var zNodes = [];
+                var outline_ids_arr = [];
+
+                for(index in outline_arr){
+                    var item = outline_arr[index];
+                    var level_arr = item.match(/(\+{4})/g);
+                    var level = level_arr ? level_arr.length + 1 : 1;
+
+                    outline_ids_arr[level] = outline_ids_arr[level]? outline_ids_arr[level] + 1 : 10**level;
+                    var parent_level = (level-1 > 0) ? level-1 : 0;
+                    outline_ids_arr[parent_level] = outline_ids_arr[parent_level]? outline_ids_arr[parent_level] : 10**parent_level;
+                    zNodes.push({
+                        id: outline_ids_arr[level],
+                        pId: outline_ids_arr[parent_level],
+                        name: item.substring(4*(parent_level)),
+                        open: true
+                    });
+
+                }
+                var setting = {
+                    data: {
+                        simpleData: {
+                            enable: true
+                        }
+                    }
+                };
+                $.fn.zTree.init($("#paper_outline_tree"), setting, zNodes);
+            },
+            troggle_paper_outline_edit: function(){
+                var btn = $(".paper_outline_edit_lock");
+                var flag = (btn.attr("locked") == "true");
+                var btn_label = flag ? "未锁定" : "锁定中";
+                var locked_message = flag ? " " : "锁定中大纲不会被更新";
+
+                if(!flag){
+                    btn.removeClass("btn-danger");
+                    btn.addClass("btn-success");
+                } else {
+                    btn.removeClass("btn-success");
+                    btn.addClass("btn-danger");
+                }
+                btn.attr("locked", !flag);
+                btn.html(btn_label);
+                $(".paper_outline").attr("disabled", !flag);
+                $(".paper_outline_edit_lock_message").html(locked_message);
+                paper.paperData.information.paper_outline_edittable = flag;
+                console.log(paper.paperData.information.paper_outline_edittable);
+            }         
         },
         judge : function(data){
             $(".zhengjuang .container").hide().after($(".template_detail").html());
@@ -569,12 +623,14 @@ $(function(){
             }
         });
         //试卷大纲
-        doc.on("click",".selectQuizPaperOutline, .selectScorePaperOutline",function(){
+        //doc.on("click",".selectQuizPaperOutline, .selectScorePaperOutline",function(){
+        doc.on("click",".selectQuizPaperOutline",function(){
             $(".saveWarp .saveBtn").addClass("active");
             paper.changeState = true;
         });        
         //提交试卷基本信息
         doc.on("click",".infoBtn",function(){
+            var errors = [];
             var allowSubmit = true; //允许提交
             //paper.createLoading();
             paper.paperData.information = {
@@ -617,7 +673,8 @@ $(function(){
                             tenant_status: "",
                             tenant_status_label: ""}
                 }),
-                paper_outline: $(".paper_outline").val() || ""
+                paper_outline: $(".paper_outline").val() || "",
+                paper_outline_edittable: paper.paperData.information.paper_outline_edittable
             };
 
             paper.paperData.test = {
@@ -636,7 +693,6 @@ $(function(){
             });
             
             //基本信息项目检查
-            var error_item = "";
             var must_item_arr = [
                 "heading",
                 "school",
@@ -653,7 +709,7 @@ $(function(){
             for(var k in paper.paperData.information){
                 if( (must_item_arr.indexOf(k) > -1 && !paper.paperData.information[k]) || ( k == "tenants" && paper.paperData.information[k].length == 0) ){
                     allowSubmit = false;
-                    error_item = k;
+                    errors.push("除了副标题，所有选项都必填！(错误项：" + k +")")
                     break;
                 }
             }
@@ -663,8 +719,13 @@ $(function(){
                 paper.createLoading();
                 paper.dataSave(paper.paperSaveUrl, paper.paperData, paper.gotoPaperChange);
             } else {
-                alert("除了副标题，所有选项都必填！(错误项：" + error_item +")");
+                alert(errors.join("\n"));
             }
+
+            // if($(".paper_outline_edit_lock").attr("locked") == "true"){
+            //     allowSubmit = false;
+            //     errors.push("试卷大纲锁定中!")
+            // }
         });
         //保存试题和答案的html
         doc.on("click",".change .saveHtml",function(){
@@ -744,7 +805,6 @@ $(function(){
             var that = $(this);
             if(that.hasClass("active")) return;
             if(paper.changeState){
-                console.log("1");
                 var fullScore =  $(".selectFullscore .selectVal input").val() || 0,
                     scores = 0;
                 fullScore = fullScore - 0;
@@ -758,7 +818,6 @@ $(function(){
                 var target = $(this);
                 paper.needSave(paper.paperSaveUrl,paper.paperData,function(){target.trigger("click")});
             }else{
-                console.log("2");
                 $(".questionType").text(that.parent().siblings("p").text());
                 var html = "",
                     num = that.attr("num"),
@@ -779,7 +838,7 @@ $(function(){
 
                 paper.currentQuizOrder = num;
                 paper.baseFn.update_paper_outline_list(".selectQuizPaperOutline", function(){});
-                paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){});
+                // paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){});
                 $(".systemScoreOrderDisplay").text( num + "(1)");
                 //显示已设置过的信息
                 if(paper.paperData.bank_quiz_qizs && paper.paperData.bank_quiz_qizs.length && paper.paperData.bank_quiz_qizs[num-1]){
@@ -831,11 +890,11 @@ $(function(){
 
                         $(".analyze").append(thisNode);
                     }
-                    paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){
-                        for(var index in paper.currentQuiz.bank_qizpoint_qzps){
-                            $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline_id;
-                        }
-                    });
+                    // paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){
+                    //     for(var index in paper.currentQuiz.bank_qizpoint_qzps){
+                    //         $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline_id;
+                    //     }
+                    // });
                 }
                 $(".subNav li").removeClass("active");
                 that.addClass("active");
@@ -1123,12 +1182,21 @@ $(function(){
             $(".score_part .score_list.open").removeClass("open");
             $('#commonDialog').modal('hide');
         });
+
         $("#commonDialog").on("hidden.bs.modal",function(e){
             var task_uid = $("input#task_uid").val();
             if(task_uid){
                 paper.paperData.task_uid = task_uid;
             }
-        })
+        });
+
+        doc.on("click", ".preview_paper_outline", function(e){
+            paper.baseFn.preview_paper_outline();
+        });
+
+        doc.on("click", ".paper_outline_edit_lock", function(e){
+            paper.baseFn.troggle_paper_outline_edit();
+        });
     }
     //生成loading
     paper.createLoading = function(){
@@ -1289,7 +1357,8 @@ $(function(){
                 type : cate,
                 order : itemObj.order+"("+(i+1)+")",
                 custom_order: $(".customScoreOrder > input")[i].value || "",
-                paper_outline_id: $(".selectScorePaperOutline")[i].value || "",
+                //paper_outline_id: $(".selectScorePaperOutline")[i].value || "",
+                paper_outline_id: $(".selectQuizPaperOutline").val() || "",
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
 
                 answer : $(this).find(".scoreAnswer").val()
@@ -1394,9 +1463,6 @@ $(function(){
     }
     //跳转到试卷信息模块
     paper.gotoPaperInfo = function(){
-        //禁止修改大纲
-        paper.paperData.information.paper_outline_edittable = true;
-        //
         $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
             if($(this).index() < 2) $(this).addClass("active");
@@ -1593,9 +1659,6 @@ $(function(){
     }
     //跳转到单题切分模块
     paper.gotoPaperChange = function(){
-        //禁止修改大纲
-        paper.paperData.information.paper_outline_edittable = false;
-        //       
         $(".zhengjuang .container").addClass("auto");
         $(".hide_question, .hide_answer").remove();
         /*$(".navColumn .navList li").each(function(){
@@ -1644,9 +1707,6 @@ $(function(){
     }
     //跳转到单题解析模块
     paper.gotoPaperAnalysis = function(){
-        //禁止修改大纲
-        paper.paperData.information.paper_outline_edittable = false;
-        //          
         // paper.baseFn.update_paper_outline_list();
         $(".zhengjuang .container").removeClass("auto");
         /*$(".navColumn .navList li").each(function(){
@@ -1714,9 +1774,6 @@ $(function(){
 
     //跳转到解析详情模块
     paper.gotoAnalysisDetail = function(){
-        //禁止修改大纲
-        paper.paperData.information.paper_outline_edittable = false;
-        //          
         $(".contentBody").html($(".template_analysis").html());
         paper.abstract();
         $("input#node_uid").val(paper.paperData.information.node_uid || "");
