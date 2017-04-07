@@ -1609,6 +1609,24 @@ namespace :swtk do
       out_excel.serialize(args[:out])
     end
 
+    # desc "copy paper"
+    # task :copy_paper,[:from_uid,:to_uid] => :environment do |t, args|
+    #   if args[:from_uid].blank? || args[:to_uid].blank?
+    #     puts "parameter error!"
+    #   end
+
+    #   from_paper = Mongodb::BankPaperPap.find(args[:from_uid])
+    #   to_paper = Mongodb::BankPaperPap.find(args[:to_uid])
+
+    #   temp_paper_h  = to_paper.attributes
+    #   temp_paper_h.extract!(:_id)
+    #   temp_paper_h.bank_quiz_qiz_ids = []
+
+    #   from_paper.update_attributes(temp_paper_h)
+    #   from_paper.update(paper_status: "editting")
+
+    # end
+
     def find_all_pupil_report_urls base_path, search_path, urls=[]
       fdata = File.open(search_path + "/nav.json", 'rb').read
       jdata = JSON.parse(fdata)
