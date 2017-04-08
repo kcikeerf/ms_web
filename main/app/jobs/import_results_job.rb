@@ -43,7 +43,7 @@ class ImportResultsJob < ActiveJob::Base
           result_sheet = filled_file.sheet(Common::Locale::i18n('scores.excel.score_title'))
           raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "result sheet")) unless result_sheet
 
-          paper_qzps = target_paper.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten
+          paper_qzps = target_paper.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten.compact
 
           # 获取Task信息，创建JOB
           target_task = target_paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
@@ -77,6 +77,7 @@ class ImportResultsJob < ActiveJob::Base
           # 大纲mapping
           qzps_outlines_mapping_h = {}
           paper_qzps.each{|qzp|
+            next if qzp.paper_outline_json.blank?
             qzps_outlines_mapping_h[qzp.id.to_s] = JSON.parse(qzp.paper_outline_json)
           }
 
@@ -192,7 +193,7 @@ class ImportResultsJob < ActiveJob::Base
             start_num = th*num_per_th
             end_num = (th+1)*num_per_th + (((th + 1) == th_number)? mod_num : 0) #为保证读取到最后一行，最后一组不减一
             end_num -=1 if (th+1) != th_number
-            th_arr << Thread.new do
+            #th_arr << Thread.new do
               import_score_core({
                 :th_index => th,
                 :redis_key => redis_key,
@@ -218,9 +219,9 @@ class ImportResultsJob < ActiveJob::Base
                 :pupil_sheet => pupil_sheet
 
               })
-            end
+            #end
           }
-          ThreadsWait.all_waits(*th_arr)
+          #ThreadsWait.all_waits(*th_arr)
 
           # create user password file
           file_path = Rails.root.to_s + "/tmp/#{target_paper._id.to_s}_#{params[:score_file_id]}_password.xlsx"
@@ -399,8 +400,8 @@ class ImportResultsJob < ActiveJob::Base
                 col_params[:ckp_uids] = ckp.keys[0]
                 col_params[:ckp_order] = ckp.values[0]["rid"]
                 col_params[:ckp_weights] = ckp.values[0]["weights"]
-                col_params[:outline_ids] = qzp_outline_h["ids"]
-                col_params[:outline_order] = qzp_outline_h["rids"]
+                col_params[:outline_ids] = qzp_outline_h.blank?? "" : qzp_outline_h["ids"]
+                col_params[:outline_order] = qzp_outline_h.blank?? "" : qzp_outline_h["rids"]
                 row_qzps_arr << col_params.clone
               }
             }
