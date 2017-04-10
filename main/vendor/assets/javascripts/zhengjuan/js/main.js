@@ -158,7 +158,7 @@ $(function(){
 
                     outline_ids_arr[level] = outline_ids_arr[level]? outline_ids_arr[level] + 1 : Math.pow(10, level);
                     var parent_level = (level-1 > 0) ? level-1 : 0;
-                    outline_ids_arr[parent_level] = outline_ids_arr[parent_level]? outline_ids_arr[parent_level] : Math.pow(10, lparent_level);
+                    outline_ids_arr[parent_level] = outline_ids_arr[parent_level]? outline_ids_arr[parent_level] : Math.pow(10, parent_level);
                     zNodes.push({
                         id: outline_ids_arr[level],
                         pId: outline_ids_arr[parent_level],
