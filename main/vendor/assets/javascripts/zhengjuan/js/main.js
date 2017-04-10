@@ -156,9 +156,9 @@ $(function(){
                     var level_arr = item.match(/(\+{4})/g);
                     var level = level_arr ? level_arr.length + 1 : 1;
 
-                    outline_ids_arr[level] = outline_ids_arr[level]? outline_ids_arr[level] + 1 : 10**level;
+                    outline_ids_arr[level] = outline_ids_arr[level]? outline_ids_arr[level] + 1 : Math.pow(10, level);
                     var parent_level = (level-1 > 0) ? level-1 : 0;
-                    outline_ids_arr[parent_level] = outline_ids_arr[parent_level]? outline_ids_arr[parent_level] : 10**parent_level;
+                    outline_ids_arr[parent_level] = outline_ids_arr[parent_level]? outline_ids_arr[parent_level] : Math.pow(10, lparent_level);
                     zNodes.push({
                         id: outline_ids_arr[level],
                         pId: outline_ids_arr[parent_level],
