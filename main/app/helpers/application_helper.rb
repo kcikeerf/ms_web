@@ -61,7 +61,7 @@ module ApplicationHelper
   end
 
   def cdn_path version
-    result = "http://#{Common::SwtkConstants::CDNDomain}/assets/"
+    result = "http://#{Common::SwtkConstants::CDNDomain}/zx-pc/"
     case version
     when "1.0"
       result += Common::SwtkConstants::CDNVersion1_0
