@@ -1349,7 +1349,7 @@ $(function(){
         itemObj.order = $(".subNav li").index($(".subNav li.active"))+1;
         itemObj.custom_order = $(".customQuizOrder > input").val() || "";
         itemObj.paper_outline_id = $(".selectQuizPaperOutline").val() || "";
-        itemObj.paper_outline_name = $(".selectQuizPaperOutline option:selected").text();
+        itemObj.paper_outline_name = $(".selectQuizPaperOutline option:selected").text() || "";
         itemObj.desc = $(".testAnswer .remarks").val();
         itemObj.bank_qizpoint_qzps = [];
         $(".analyze .textLabelWarp").each(function(i){
@@ -1360,7 +1360,7 @@ $(function(){
                 custom_order: $(".customScoreOrder > input")[i].value || "",
                 //paper_outline_id: $(".selectScorePaperOutline")[i].value || "",
                 paper_outline_id: $(".selectQuizPaperOutline").val() || "",
-                paper_outline_name: $(".selectQuizPaperOutline option:selected").text(),
+                paper_outline_name: $(".selectQuizPaperOutline option:selected").text() || "",
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
 
                 answer : $(this).find(".scoreAnswer").val()
