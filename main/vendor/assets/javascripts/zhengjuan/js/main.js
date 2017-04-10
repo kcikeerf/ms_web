@@ -924,7 +924,7 @@ $(function(){
 
                     $(".analysis_info .info_quiz_system_order span").text(quiz.order || "");
                     $(".analysis_info .info_quiz_custom_order span").text(quiz.custom_order || "");
-                    $(".analysis_info .info_quiz_paper_outline span").text(quiz.paper_outline_id || "");
+                    $(".analysis_info .info_quiz_paper_outline span").text(quiz.paper_outline_name || "");
                     $(".analysis_info .info_type span").text(typeObj[paper.paperData.information.subject.name][quiz.cat] || "");
                     $(".analysis_info .info_difficulty span").text(levelObj[quiz.levelword2] || "");
                     $(".analysis_info .info_score span").text(quiz.score ? quiz.score+"分" : "");
@@ -1349,6 +1349,7 @@ $(function(){
         itemObj.order = $(".subNav li").index($(".subNav li.active"))+1;
         itemObj.custom_order = $(".customQuizOrder > input").val() || "";
         itemObj.paper_outline_id = $(".selectQuizPaperOutline").val() || "";
+        itemObj.paper_outline_name = $(".selectQuizPaperOutline option:selected").text();
         itemObj.desc = $(".testAnswer .remarks").val();
         itemObj.bank_qizpoint_qzps = [];
         $(".analyze .textLabelWarp").each(function(i){
@@ -1359,6 +1360,7 @@ $(function(){
                 custom_order: $(".customScoreOrder > input")[i].value || "",
                 //paper_outline_id: $(".selectScorePaperOutline")[i].value || "",
                 paper_outline_id: $(".selectQuizPaperOutline").val() || "",
+                paper_outline_name: $(".selectQuizPaperOutline option:selected").text(),
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
 
                 answer : $(this).find(".scoreAnswer").val()
