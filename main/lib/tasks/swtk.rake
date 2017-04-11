@@ -1244,7 +1244,7 @@ namespace :swtk do
           "project",
           target_test.id.to_s
         ]
-        nav_item = [target_test.id.to_s, { :label => target_test.name, :report_url =>  url_arr.join("/") + ".json" }]
+        nav_item = [target_test.id.to_s, { :uid => target_test.id.to_s, :label => target_test.name, :report_url =>  url_arr.join("/") + ".json" }]
         nav_arr = [
           "#{base_path}",
           "reports_warehouse",
@@ -1304,7 +1304,7 @@ namespace :swtk do
             "grade",
             target_tenant.uid
           ]
-          nav_item = [target_tenant.name, { :label => target_tenant.name_cn, :report_url =>  url_arr.join("/") + ".json" }]
+          nav_item = [target_tenant.name, { :uid => target_tenant.uid, :label => target_tenant.name_cn, :report_url =>  url_arr.join("/") + ".json" }]
           nav_arr = [
             "#{base_path}",
             "reports_warehouse",
@@ -1348,7 +1348,7 @@ namespace :swtk do
             "klass",
             target_location.uid
           ]
-          nav_item = [target_location.classroom, { :label => Common::Locale::i18n("dict.#{target_location.classroom}"), :report_url =>  url_arr.join("/") + ".json" }]
+          nav_item = [target_location.classroom, {:uid => target_location.uid,  :label => Common::Locale::i18n("dict.#{target_location.classroom}"), :report_url =>  url_arr.join("/") + ".json" }]
           nav_arr = [
             "#{base_path}",
             "reports_warehouse",
@@ -1394,7 +1394,7 @@ namespace :swtk do
             "pupil",
             target_user.role_obj.uid
           ]
-          nav_item = [target_user.role_obj.stu_number, { :label => target_user.role_obj.name+"(#{target_user.role_obj.stu_number})", :report_url =>  url_arr.join("/") + ".json" }]
+          nav_item = [target_user.role_obj.stu_number, { uid: target_user.role_obj.uid, :label => target_user.role_obj.name+"(#{target_user.role_obj.stu_number})", :report_url =>  url_arr.join("/") + ".json" }]
           nav_arr = [
             "#{base_path}",
             "reports_warehouse",
