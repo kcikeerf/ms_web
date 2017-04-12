@@ -1632,8 +1632,8 @@ namespace :swtk do
           File.write(json_path, jdata.to_json)
         }
         p "=====done====="
-        p "paper_id: #{args[:pap_id]}"
-        p "test_id: #{args[:test_id]}"
+        p "paper_id: #{target_pap.id.to_s}"
+        p "test_id: #{target_test.id.to_s}"
       rescue Exception => ex
         puts "exception: #{ex.message}"
         puts ex.backtrace        
