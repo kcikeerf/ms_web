@@ -1534,13 +1534,9 @@ namespace :swtk do
           user_row = user_source_sheet.row(index)
           user_name = "#{target_tenant.number}#{user_row[5].to_s.strip}#{Common::Locale::hanzi2abbrev(user_row[4].to_s.strip)}"
           target_user = User.where(name: user_name).first
-          unless target_user
-            raise "Pupil not found"
-          end
+          next unless target_user
           target_location = target_user.pupil.location
-          unless target_location
-            raise "Klass not found"
-          end
+          next unless target_location
 
           link_params = {
             :bank_test_id => target_test.id.to_s,
