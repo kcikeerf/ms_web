@@ -14,6 +14,10 @@ module TestModule
       ReportGenerating = "report_generating"
       ReportCompleted = "report_completed" 
     end
+
+    ExtDataCodeArr = [*'0'..'9'] + [*'a'..'z'] + [*'A'..'Z']
+    ExtDataPathLength = 6
+    ExtDataPathDefaultPrefix = "___"    
   end
 
   module OnrineTest

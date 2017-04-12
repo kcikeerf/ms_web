@@ -5,7 +5,7 @@ class Mongodb::BankTest
   include Mongodb::MongodbPatch
   
   before_create :set_create_time_stamp
-  before_save :set_update_time_stamp
+  before_save :set_update_time_stamp, :generate_ext_data_path
 
   belongs_to :bank_paper_pap, class_name: "Mongodb::BankPaperPap"
   belongs_to :paper_question, class_name: "Mongodb::PaperQuestion"
@@ -100,4 +100,16 @@ class Mongodb::BankTest
       logger.debug ex.backtrace
     end
   end
+
+  ###私有方法###
+  private
+
+    # 随机生成6位外挂码，默认生成码以"___"（三个下划线）开头
+    # 
+    def generate_ext_data_path
+      unless self.ext_data_path
+        self.ext_data_path = Common::Test::ExtDataPathDefaultPrefix
+        Common::Test::ExtDataPathLength.times{ self.ext_data_path << Common::Test::ExtDataCodeArr.sample}
+      end
+    end
 end
