@@ -1696,7 +1696,7 @@ namespace :swtk do
             :answer => item
           }
         }
-        hyt_pupil_items[row_data[0].to_s] = temp_arr
+        hyt_pupil_items[row_data[0].to_s.strip] = temp_arr
       }
 
       Find.find(args[:report_path]){|f|
