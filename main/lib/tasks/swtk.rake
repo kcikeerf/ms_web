@@ -1679,7 +1679,7 @@ namespace :swtk do
     end
 
     desc "temporary use: import hyt quiz answers"
-    task :import_hyt_quiz_answer,[:report_path,:hyt_file_path] => :environment do |t, args|
+    task :import_hyt_quiz_answer,[:report_path,:hyt_file_path,:answer_col_number] => :environment do |t, args|
 
       hyt_pupil_items = {}
       hyt_file = Roo::Excelx.new(args[:hyt_file_path])
@@ -1688,7 +1688,7 @@ namespace :swtk do
       [*2..hyt_row_count].each{|index|
         row_data = hyt_sheet.row(index)        
         temp_arr = []
-        answer_str = row_data[8]
+        answer_str = row_data[args[:answer_col_number]]
         answer_arr = answer_str.split(",")
         answer_arr.each_with_index{|item,i|
           temp_arr << {
