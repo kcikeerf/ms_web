@@ -1688,7 +1688,7 @@ namespace :swtk do
       [*2..hyt_row_count].each{|index|
         row_data = hyt_sheet.row(index)        
         temp_arr = []
-        answer_str = row_data[args[:answer_col_number]]
+        answer_str = row_data[args[:answer_col_number].to_i]
         answer_arr = answer_str.split(",")
         answer_arr.each_with_index{|item,i|
           temp_arr << {
