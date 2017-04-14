@@ -5,6 +5,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   include TimePatch
   include InitUid
 
+  belongs_to :checkpoint_system, foreign_key: "checkpoint_system_id"
+  
   has_many :bank_nodestructure_subject_ckps, foreign_key: 'subject_ckp_uid', dependent: :destroy
   has_many :bank_nodestructures, through: :bank_nodestructure_subject_ckps
   has_many :bank_nodestructure_subject_ckps, foreign_key: 'subject_ckp_uid', dependent: :destroy

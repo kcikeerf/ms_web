@@ -26,6 +26,7 @@ class Mongodb::BankTest
   field :report_version, type: String
   field :ext_data_path, type: String
   field :report_top_group, type: String
+  field :checkpoint_system_id, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
@@ -99,6 +100,10 @@ class Mongodb::BankTest
       logger.debug ex.message
       logger.debug ex.backtrace
     end
+  end
+
+  def checkpoint_system
+    CheckpointSytem.where(id: self.checkpoint_system_id).first
   end
 
   ###私有方法###

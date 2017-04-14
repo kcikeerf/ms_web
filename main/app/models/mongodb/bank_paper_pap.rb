@@ -13,14 +13,12 @@ class Mongodb::BankPaperPap
   has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
   has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
   has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz", dependent: :delete 
-  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
   has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
-  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
-  has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
   has_many :bank_tests, class_name: "Mongodb::BankTest"
   has_many :online_tests, class_name: "Mongodb::OnlineTest"
   has_many :paper_outlines, class_name: "Mongodb::PaperOutline"
+  has_many :bank_paper_pap_shadows, class_name: "Mongodb::BankPaperPapShadow"
 
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }

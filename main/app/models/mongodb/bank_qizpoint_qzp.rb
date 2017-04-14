@@ -15,7 +15,7 @@ class Mongodb::BankQizpointQzp
   belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
   belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
-  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
+  has_many :bank_qizpoint_qzp_shadows, class_name: "Mongodb::BankQizpointQzpShadow"
 
   field :quz_uid, type: String
   field :pap_uid, type: String

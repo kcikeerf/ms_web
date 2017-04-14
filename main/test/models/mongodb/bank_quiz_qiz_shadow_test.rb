@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Mongodb::BankPaperPapPointerTest < ActiveSupport::TestCase
+class Mongodb::BankQuizQizShadowTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
