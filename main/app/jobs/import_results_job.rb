@@ -15,8 +15,8 @@ class ImportResultsJob < ActiveJob::Base
 
   def perform(*args)
     logger = Sidekiq::Logging.logger
-    Common::process_sync_template(__method__.to_s()) {|pids|
-      pids << fork do # fork new process, begin
+    #Common::process_sync_template(__method__.to_s()) {|pids|
+      # pids << fork do # fork new process, begin
         begin
           logger.info ">>>>>>>Import Results Job: Begin<<<<<<<"
           params = args[0]
@@ -252,8 +252,8 @@ class ImportResultsJob < ActiveJob::Base
           #GC.start
           logger.info ">>>>>>>Import Result Job: End<<<<<<<"
         end
-      end # fork new process, end
-    }
+      # end # fork new process, end
+    #}
   end
 
   def import_score_core args={}
@@ -407,7 +407,16 @@ class ImportResultsJob < ActiveJob::Base
             }
 
           }
-          Mongodb::BankTestScore.collection.insert_many(row_qzps_arr)
+
+          #Mongodb::BankTestScore.create!(row_qzps_arr)
+          begin
+            Mongodb::BankTestScore.collection.insert_many(row_qzps_arr)
+          rescue Exception => ex
+            p ex.message
+            p ex.backtrace
+            logger.debug ex.message
+            logger.debug ex.backtrace
+          end
 
           Common::SwtkRedis::incr_key(args[:redis_ns], args[:redis_key])
           # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
