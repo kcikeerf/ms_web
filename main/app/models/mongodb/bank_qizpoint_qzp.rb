@@ -17,6 +17,8 @@ class Mongodb::BankQizpointQzp
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
 
+  embeds_one :tk_lock, class_name: "Mongodb::TkLock"
+
   field :quz_uid, type: String
   field :pap_uid, type: String
   field :tbs_sid, type: String

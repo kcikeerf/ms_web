@@ -85,15 +85,18 @@ class PapersController < ApplicationController
     else
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
-    begin
-      current_pap.current_user_id = current_user.id
-      current_pap.save_pap(params)
-      result = response_json(200, {pap_uid: current_pap._id.to_s})
-    rescue Exception => ex
-      #current_pap.save_paper_rollback
-      result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
+#    begin
+    current_pap.current_user_id = current_user.id
+    if current_pap.save_pap(params)
+      render common_json_response(200, {pap_uid: current_pap._id.to_s})
+    else
+      render common_json_response(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> current_pap.errors.messages.values.join(",") )})
     end
-    render :json => result
+#    rescue Exception => ex
+      #current_pap.save_paper_rollback
+      #result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "")})
+#    end
+    # render :json => result
   end
 
   def get_saved_paper

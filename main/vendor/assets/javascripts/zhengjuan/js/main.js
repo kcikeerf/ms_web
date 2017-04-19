@@ -1202,6 +1202,10 @@ $(function(){
         var loading = $('<div class="loadingWarp"><img src="/images/zhengjuan/loading.gif" alt=""></div>');
         $("body").append(loading);
     }
+    //删除loading
+    paper.removeLoading = function(){
+        $("body .loadingWarp").remove();
+    }
     //校验格式
     paper.fileVerify = function(elem){
         var bool = false,
@@ -1255,8 +1259,11 @@ $(function(){
                 paper.changeState = false;
                 typeof callback == "function" && callback(paper.paperData);
             },
-            error: function(){
-                alert("网络错误，请求失败");
+            error: function(data){
+                paper.removeLoading();
+                var resp_data = JSON.parse(data.responseText);
+                var message = resp_data.messages ? resp_data.messages : "发生异常！"; 
+                alert(message);
             }   
         });
     }

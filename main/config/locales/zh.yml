@@ -110,6 +110,8 @@ zh:
       upload_score:
         success: '上传成功'
         fail: '上传失败'
+      warn:
+        is_locked: "试卷已被写锁定！请等待..."
       error:
         no_tenant: "该试卷无所属Tenant"
 
