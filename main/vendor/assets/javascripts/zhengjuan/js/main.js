@@ -3,7 +3,7 @@ $(function(){
     var paper_interval;
     var paper = {
         id: null,
-        paperData : {},     //数据保存时的参数对象
+        paperData : {information: {}},     //数据保存时的参数对象
         changeState : false,
         currentQuiz: {},
         currentQuizOrder: null,
