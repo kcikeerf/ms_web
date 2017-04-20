@@ -176,7 +176,7 @@ $(function(){
                 };
                 $.fn.zTree.init($("#paper_outline_tree"), setting, zNodes);
             },
-            troggle_paper_outline_edit: function(){
+            toggle_paper_outline_edit: function(){
                 var btn = $(".paper_outline_edit_lock");
                 var flag = (btn.attr("locked") == "true");
                 var btn_label = flag ? "未锁定" : "锁定中";
@@ -194,8 +194,14 @@ $(function(){
                 $(".paper_outline").attr("disabled", !flag);
                 $(".paper_outline_edit_lock_message").html(locked_message);
                 paper.paperData.information.paper_outline_edittable = flag;
-                console.log(paper.paperData.information.paper_outline_edittable);
-            }         
+            },
+            check_all_tenants: function(){
+                $(".tenant_range_item_checkbox").addClass("active");
+            },
+            clear_check_all_tenants: function(){
+                $(".tenant_range_item_checkbox").removeClass("active");
+            }
+
         },
         judge : function(data){
             $(".zhengjuang .container").hide().after($(".template_detail").html());
@@ -1194,8 +1200,16 @@ $(function(){
         });
 
         doc.on("click", ".paper_outline_edit_lock", function(e){
-            paper.baseFn.troggle_paper_outline_edit();
+            paper.baseFn.toggle_paper_outline_edit();
         });
+
+        doc.on("click", ".check_all_tenants", function(e){
+            paper.baseFn.check_all_tenants();
+        });
+
+        doc.on("click", ".clear_check_all_tenants", function(e){
+            paper.baseFn.clear_check_all_tenants();
+        });    
     }
     //生成loading
     paper.createLoading = function(){

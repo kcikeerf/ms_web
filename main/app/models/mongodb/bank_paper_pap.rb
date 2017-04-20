@@ -4,7 +4,7 @@ class Mongodb::BankPaperPap
 
   include Mongoid::Document
   include Mongodb::MongodbPatch
-  # include Mongodb::TkLockPatch
+  include Mongodb::TkLockPatch
   
   attr_accessor :current_user_id
 
