@@ -15,7 +15,7 @@ module TestModule
       ReportCompleted = "report_completed" 
     end
 
-    ExtDataCodeArr = [*'0'..'9'] + [*'a'..'z'] + [*'A'..'Z']
+    ExtDataCodeArr = Common::SwtkConstants::AlphabetDownCaseArr + Common::SwtkConstants::AlphabetUpCaseArr + Common::SwtkConstants::NumberArr
     ExtDataPathLength = 6
     ExtDataPathDefaultPrefix = "___"    
   end
