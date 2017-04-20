@@ -362,7 +362,7 @@ class ImportResultsWorker
           current_user = User.where(name: pup_h[:user_name]).first
           current_pupil = current_user.nil?? nil : current_user.pupil
 
-          logger.info ">>>thread index #{args[:th_index]} cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
+          #logger.info ">>>thread index #{args[:th_index]} cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
           # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: row:#{index},  cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
 
           col_params = {
@@ -434,8 +434,8 @@ class ImportResultsWorker
         Common::Role::Teacher.to_sym => {
           :username => item[:user_name],
           :password => "",
-          :classroom => item[:classroom],
-          :subject => item[:subject],
+          :classroom => Common::Klass::List[item[:classroom].to_sym],
+          :subject => Common::Subject::List[item[:subject].to_sym],
           :name => item[:name],
           :report_url => "",
           :op_guide => Common::Locale::i18n('reports.op_guide_details'),
@@ -444,7 +444,7 @@ class ImportResultsWorker
         Common::Role::Pupil.to_sym => {
           :username => item[:user_name],
           :password => "",
-          :classroom => item[:classroom],
+          :classroom => Common::Klass::List[item[:classroom].to_sym],
           :name => item[:name],
           :stu_number => item[:stu_number],
           :report_url => "",#Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
