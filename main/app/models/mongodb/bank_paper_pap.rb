@@ -4,8 +4,9 @@ class Mongodb::BankPaperPap
 
   include Mongoid::Document
   include Mongodb::MongodbPatch
-  include Mongodb::TkLockPatch
-  include Mongodb::UserPatch
+  # include Mongodb::TkLockPatch
+  
+  attr_accessor :current_user_id
 
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
@@ -1033,76 +1034,76 @@ class Mongodb::BankPaperPap
     File.delete(file_path)
   end
 
-  def format_user_name args=[]
-    #args.join("_")
-    args.join(Common::Uzer::UserNameSperator)
-  end
+  # def format_user_name args=[]
+  #   #args.join("_")
+  #   args.join(Common::Uzer::UserNameSperator)
+  # end
 
-  def format_user_password_row role,params_h
-    row_data = {
-      Common::Role::Teacher.to_sym => {
-        :username => params_h[:user_name],
-        :password => "",
-        :name => params_h[:name],
-        :report_url => "",
-        :op_guide => Common::Locale::i18n('reports.op_guide_details'),
-        :tenant_uid => params_h[:tenant_uid]
-      },
-      Common::Role::Pupil.to_sym => {
-        :username => params_h[:user_name],
-        :password => "",
-        :name => params_h[:name],
-        :stu_number => params_h[:stu_number],
-        :report_url => "",#Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
-        :op_guide => Common::Locale::i18n('reports.op_guide_details'),
-        :tenant_uid => params_h[:tenant_uid]
-      }
-    }
+  # def format_user_password_row role,params_h
+  #   row_data = {
+  #     Common::Role::Teacher.to_sym => {
+  #       :username => params_h[:user_name],
+  #       :password => "",
+  #       :name => params_h[:name],
+  #       :report_url => "",
+  #       :op_guide => Common::Locale::i18n('reports.op_guide_details'),
+  #       :tenant_uid => params_h[:tenant_uid]
+  #     },
+  #     Common::Role::Pupil.to_sym => {
+  #       :username => params_h[:user_name],
+  #       :password => "",
+  #       :name => params_h[:name],
+  #       :stu_number => params_h[:stu_number],
+  #       :report_url => "",#Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
+  #       :op_guide => Common::Locale::i18n('reports.op_guide_details'),
+  #       :tenant_uid => params_h[:tenant_uid]
+  #     }
+  #   }
 
-    params_h[:tenant_uid] = (tenant.nil?? "":tenant.uid) if params_h[:tenant_uid].blank?
+  #   params_h[:tenant_uid] = (tenant.nil?? "":tenant.uid) if params_h[:tenant_uid].blank?
 
-    ret = User.add_user params_h[:user_name],role, params_h
+  #   ret = User.add_user params_h[:user_name],role, params_h
 
-    target_username = ""
-    if (ret.is_a? Array) && ret.empty?
-      row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.info.old_user")
-      row_data[role.to_sym][:report_url] = generate_url
-      target_username = ret[0]
-    elsif (ret.is_a? Array) && !ret.empty?
-      row_data[role.to_sym][:password] = ret[1]
-      row_data[role.to_sym][:report_url] = generate_url
-      target_username = ret[0]
-    else
-      row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.error.add_user_failed")
-    end
+  #   target_username = ""
+  #   if (ret.is_a? Array) && ret.empty?
+  #     row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.info.old_user")
+  #     row_data[role.to_sym][:report_url] = generate_url
+  #     target_username = ret[0]
+  #   elsif (ret.is_a? Array) && !ret.empty?
+  #     row_data[role.to_sym][:password] = ret[1]
+  #     row_data[role.to_sym][:report_url] = generate_url
+  #     target_username = ret[0]
+  #   else
+  #     row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.error.add_user_failed")
+  #   end
     
-    associate_user_and_pap role, target_username if (ret.is_a? Array)
-    return row_data[role.to_sym].values
-  end
+  #   associate_user_and_pap role, target_username if (ret.is_a? Array)
+  #   return row_data[role.to_sym].values
+  # end
 
-  def associate_user_and_pap role, username
-    target_user = User.where(name: username).first
-    return false unless target_user
-    case role
-    when "pupil"
-      target_pupil = target_user.pupil
-      return false unless target_pupil
-      pup_uid = target_pupil.uid
-      bpp = Mongodb::BankPupPap.new
-      bpp.save_pup_pap pup_uid, self._id.to_s
-    when "teacher"
-      target_teacher = target_user.teacher
-      return false unless target_teacher
-      tea_uid = target_teacher.uid
-      btp = Mongodb::BankTeaPap.new
-      btp.save_tea_pap tea_uid, self._id.to_s
-    end
-    return true
-  end
+  # def associate_user_and_pap role, username
+  #   target_user = User.where(name: username).first
+  #   return false unless target_user
+  #   case role
+  #   when "pupil"
+  #     target_pupil = target_user.pupil
+  #     return false unless target_pupil
+  #     pup_uid = target_pupil.uid
+  #     bpp = Mongodb::BankPupPap.new
+  #     bpp.save_pup_pap pup_uid, self._id.to_s
+  #   when "teacher"
+  #     target_teacher = target_user.teacher
+  #     return false unless target_teacher
+  #     tea_uid = target_teacher.uid
+  #     btp = Mongodb::BankTeaPap.new
+  #     btp.save_tea_pap tea_uid, self._id.to_s
+  #   end
+  #   return true
+  # end
 
-  def generate_url
-    return Common::SwtkConstants::MyDomain 
-  end
+  # def generate_url
+  #   return Common::SwtkConstants::MyDomain 
+  # end
 
   def is_completed?
     paper_status == Common::Paper::Status::ReportCompleted

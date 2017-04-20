@@ -3,7 +3,6 @@ module TkLockPatch
 
   included do
     def lock! _mode, _user_id
-      p _mode.to_s
       self.tk_lock = Mongodb::TkLock.new(rw: _mode, locked_by: _user_id )
       self.save!
     end
