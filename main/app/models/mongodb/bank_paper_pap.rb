@@ -443,11 +443,19 @@ class Mongodb::BankPaperPap
     # save all quiz
     #begin
     if params[:bank_quiz_qizs]
+      # 所有得分点的题顺数组
+      qizpoint_order_arr = params[:bank_quiz_qizs].map{|qiz| qiz["bank_qizpoint_qzps"] }.flatten.map{|qzp| qzp["order"]}
       params[:bank_quiz_qizs].each_with_index{|quiz,index|
         # store quiz
         qzp_arr = []
         qiz = Mongodb::BankQuizQiz.new
+        
         quiz["subject"] = subject
+        # 单题的试卷中递增题顺
+        quiz["asc_order"] = index + 1
+        # 所有得分点的题顺数组
+        quiz["qizpoint_order_arr"] = qizpoint_order_arr
+
         qzp_arr = qiz.save_quiz quiz
         if qiz.errors.messages.empty?
           params[:bank_quiz_qizs][index][:id]=qiz._id.to_s
