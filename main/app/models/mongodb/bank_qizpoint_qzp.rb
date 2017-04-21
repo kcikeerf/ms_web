@@ -24,6 +24,7 @@ class Mongodb::BankQizpointQzp
   field :tbs_sid, type: String
   field :type, type: String
   field :answer, type: String
+  field :answer_is_image, type: Boolean
   field :desc, type: String
   field :ckps_json, type: String
   field :paper_outline_json, type: String
@@ -106,6 +107,7 @@ class Mongodb::BankQizpointQzp
        self.tbs_sid = params[:tbs_sid] || ""
        self.type = params[:type] || ""
        self.answer = params[:answer] || ""
+       self.answer_is_image = params[:answer_is_image] || ""
        self.desc = params[:desc] || ""
        self.score = params[:score] || 0.00
        self.order = params[:order] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')

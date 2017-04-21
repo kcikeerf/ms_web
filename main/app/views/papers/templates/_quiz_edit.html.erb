@@ -117,6 +117,7 @@
 				<p class="textLabel">试题</p>
 				<div class="textEditor textEditor1">
 					<textarea id="min_question" cols="20" rows="2"></textarea>
+					<p class="text_is_image textCheckbox" style="float: left;"><span></span>图片</p>
 				</div>
 			</div>
 			<div class="testAnswer clearfix">
@@ -124,6 +125,7 @@
 				<div class="textEditor textEditor2">
 					<textarea id="min_answer" cols="20" rows="2"></textarea>
 					<textarea class="remarks" placeholder="请在此输如答案说明（可选）"></textarea>
+					<p class="answer_is_image textCheckbox" style="float: left;"><span></span>图片</p>
 				</div>
 			</div>
 			<div class="analyze clearfix">
@@ -171,8 +173,13 @@
 						</div>
 								
 
-						<div class="selectWarp   clearfix">
+						<div class="selectWarp is_subjective clearfix">
 							<p>主观题</p>
+							<p class="textCheckbox"><span></span></p>
+						</div>
+
+						<div class="selectWarp clearfix score_answer_is_image">
+							<p>图片</p>
 							<p class="textCheckbox"><span></span></p>
 						</div>
 

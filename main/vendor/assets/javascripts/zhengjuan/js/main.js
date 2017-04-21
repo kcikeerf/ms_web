@@ -873,8 +873,13 @@ $(function(){
                     paper.baseFn.update_paper_outline_list(".selectQuizPaperOutline", function(){
                         $(".selectQuizPaperOutline").val(paper.currentQuiz.paper_outline_id || "");
                     });
-
+                    //是否可选
                     (paper.currentQuiz.optional)? $(".isOptional .textCheckbox").addClass("active") : $(".isOptional .textCheckbox").removeClass("active");
+                    //试题是否图片
+                    (paper.currentQuiz.text_is_image)? $(".text_is_image.textCheckbox").addClass("active") : $(".text_is_image.textCheckbox").removeClass("active"); 
+                    //答案是否图片
+                    (paper.currentQuiz.answer_is_image)? $(".answer_is_image.textCheckbox").addClass("active") : $(".answer_is_image.textCheckbox").removeClass("active");
+
                     $(".remarks").val(paper.currentQuiz.desc || "");
                     var template = $(".analyze .textLabelWarp").eq(0);
                     var cloneNode = template.clone(false);
@@ -883,7 +888,12 @@ $(function(){
                         var thisNode = cloneNode.clone(true);
                         thisNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + (k+1) + ")");
                         thisNode.find(".scoreAnswer").val(paper.currentQuiz.bank_qizpoint_qzps[k].answer||"");
-                        paper.currentQuiz.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find("p.textCheckbox").addClass("active");
+
+                        //是否主观题
+                        paper.currentQuiz.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find(".is_subjective .textCheckbox").addClass("active");
+                        //答案是否图片
+                        paper.currentQuiz.bank_qizpoint_qzps[k].answer_is_image && thisNode.find(".score_answer_is_image .textCheckbox").addClass("active");
+
                         thisNode.find(".scorePart .optionList li").each(function(){
                             $(this).parents(".optionWarp").find(".selectVal input").val(paper.currentQuiz.bank_qizpoint_qzps[k].score||0);
                             if($(this).text() == paper.currentQuiz.bank_qizpoint_qzps[k].score){
@@ -985,17 +995,14 @@ $(function(){
                 }
             }
         });
-        //是否选做题
-        doc.on("click",".isOptional .textCheckbox",function(){
-            paper.changeState = true;
-            $(".saveWarp .saveBtn").addClass("active");
-        });
-        //是否主观题
-        doc.on("click","p.textCheckbox",function(){
+
+        //是否选做题, 是否主观题, 是否图片
+        doc.on("click",".textCheckbox",function(){
             paper.changeState = true;
             $(".saveWarp .saveBtn").addClass("active");
             $(this).toggleClass("active");
         });
+
         //Tenant范围各项
         doc.on("click",".tenant_range_item_checkbox",function(){
             $(this).toggleClass("active");
@@ -1014,7 +1021,7 @@ $(function(){
             cloneNode.find(".optionList li").removeClass("active");
             cloneNode.find("textarea").val("");
             cloneNode.find("input").val("0");
-            cloneNode.find("p.textCheckbox").removeClass("active");
+            cloneNode.find(".is_subjective .textCheckbox").removeClass("active");
             $(".analyze").append(cloneNode);
             window.scrollTo(0, scroll_top);
         });
@@ -1365,7 +1372,9 @@ $(function(){
         itemObj.optional = $(".isOptional .textCheckbox").hasClass("active") || false;
         itemObj.score = $(".selectFullscore .selectVal input").val() || 0;
         itemObj.text = q_html;
+        itemObj.text_is_image = $(".text_is_image.textCheckbox").hasClass("active") || false;;
         itemObj.answer = a_html;
+        itemObj.answer_is_image = $(".answer_is_image.textCheckbox").hasClass("active") || false;;
         itemObj.order = $(".subNav li").index($(".subNav li.active"))+1;
         itemObj.custom_order = $(".customQuizOrder > input").val() || "";
         itemObj.paper_outline_id = $(".selectQuizPaperOutline").val() || "";
@@ -1373,9 +1382,9 @@ $(function(){
         itemObj.desc = $(".testAnswer .remarks").val();
         itemObj.bank_qizpoint_qzps = [];
         $(".analyze .textLabelWarp").each(function(i){
-            var cate = $(this).find("p.textCheckbox").hasClass("active") ? "主观" : "客观";
+            // var cate = $(this).find(".is_subjective .textCheckbox").hasClass("active") ? "主观" : "客观";
             tempObj = {
-                type : cate,
+                type : $(this).find(".is_subjective .textCheckbox").hasClass("active") ? "主观" : "客观",
                 order : itemObj.order+"("+(i+1)+")",
                 custom_order: $(".customScoreOrder > input")[i].value || "",
                 //paper_outline_id: $(".selectScorePaperOutline")[i].value || "",
@@ -1383,7 +1392,8 @@ $(function(){
                 paper_outline_name: $(".selectQuizPaperOutline option:selected").text() || "",
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
 
-                answer : $(this).find(".scoreAnswer").val()
+                answer : $(this).find(".scoreAnswer").val(),
+                answer_is_image: $(this).find(".score_answer_is_image .textCheckbox").hasClass("active")
             };
             itemObj.bank_qizpoint_qzps.push(tempObj);
         });

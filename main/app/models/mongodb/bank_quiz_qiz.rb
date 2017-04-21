@@ -36,7 +36,9 @@ class Mongodb::BankQuizQiz
   field :type, type: String
   field :optional, type: Boolean
   field :text, type: String
+  field :text_is_image, type: Boolean
   field :answer, type: String
+  field :answer_is_image, type: Boolean
   field :desc, type: String
   field :score, type: Float
   field :time, type: Float
@@ -72,7 +74,9 @@ class Mongodb::BankQuizQiz
         :type => params["type"] || "",
         :optional => params["optional"] || "",
         :text => params["text"] || "",
+        :text_is_image => params["text_is_image"] || "",
         :answer => params["answer"] || "",
+        :answer_is_image => params["answer_is_image"] || "",
         :desc => params["desc"] || "",
         :score => params["score"] || 0.00,
         :time => params["time"] || 0.00,
