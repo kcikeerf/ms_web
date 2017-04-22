@@ -1,6 +1,17 @@
 // JavaScript Document
 $(function(){
     var paper_interval;
+    var ckeditor_common_params = {
+            toolbar : [
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
+                { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Undo', 'Redo'] },
+                { name: 'styles', items: ['Font', 'FontSize', 'lineheight', 'TextColor', 'BGColor', 'Source'] }
+            ],
+            resize_enabled : false,
+            allowedContent: true,
+            removePlugins : "elementspath,magicline,link,anchor",
+            height : 500
+    };
     var paper = {
         id: null,
         paperData : {information: {}},     //数据保存时的参数对象
@@ -8,6 +19,11 @@ $(function(){
         currentQuiz: {},
         currentQuizOrder: null,
         modalLastUrl: "",
+        ckeditor_params: {
+            quiz_split: Object.assign({}, ckeditor_common_params, {contentsCss : "/assets/zhengjuan/css/paper.css"}),
+            quiz_edit: ckeditor_common_params,
+            qzp_edit: Object.assign({}, ckeditor_common_params, {height : 100 })
+        },
         // getSubject : "/node_structures/get_subjects",        //请求科目
         // getGrade : "/node_structures/get_grades",        //请求年级
         // getTextbook : "/node_structures/get_versions",        //请求教材
@@ -904,8 +920,15 @@ $(function(){
                         });
                         thisNode.find(".customScoreOrder > input").val(paper.currentQuiz.bank_qizpoint_qzps[k].custom_order || "");
 
+                        // 页面添加得分点HTML
                         $(".analyze").append(thisNode);
+                        // 修改得分点区块ID，并更新
+                        var qzp_ckeditor_id = "scoreAnswerText" + k;
+                        thisNode.find(".scoreAnswerText").attr("id", qzp_ckeditor_id);                        
+                        var qzp_editor = CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
+                        qzp_editor.setData(paper.currentQuiz.bank_qizpoint_qzps[k].answer);
                     }
+
                     // paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){
                     //     for(var index in paper.currentQuiz.bank_qizpoint_qzps){
                     //         $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline_id;
@@ -1014,15 +1037,20 @@ $(function(){
         });
         //添加得分点
         doc.on("click",".addWarp .addScore",function(){
-            var scroll_top = $(document).scrollTop()+200,
+            var scroll_top = $(document).scrollTop()+200;
+            var qzp_order = $(".analyze .textLabelWarp").length + 1;
+            var qzp_ckeditor_id = "scoreAnswerText" + qzp_order;
             cloneNode = $(".analyze .textLabelWarp").eq(0).clone(false);
-            cloneNode.find(".systemScoreOrderDisplay").text( paper.currentQuizOrder + "(" + ($(".analyze .textLabelWarp").length+1) + ")");
+            cloneNode.find(".systemScoreOrderDisplay").text( paper.currentQuizOrder + "(" + qzp_order + ")");
             cloneNode.find(".selectVal span").text("请选择");
             cloneNode.find(".optionList li").removeClass("active");
             cloneNode.find("textarea").val("");
             cloneNode.find("input").val("0");
             cloneNode.find(".is_subjective .textCheckbox").removeClass("active");
+            cloneNode.find(".scoreAnswerText").attr("id", qzp_ckeditor_id);
             $(".analyze").append(cloneNode);
+
+            CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
             window.scrollTo(0, scroll_top);
         });
         //删除得分点
@@ -1699,20 +1727,20 @@ $(function(){
         });*/
         $(".contentBody").html($(".template_part3").html());
         paper.abstract();
-        var parameter = {
-            toolbar : [
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
-                { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Undo', 'Redo'] },
-                { name: 'styles', items: ['Font', 'FontSize', 'lineheight', 'TextColor', 'BGColor'] }
-            ],
-            contentsCss : "/assets/zhengjuan/css/paper.css",
-            resize_enabled : false,
-            allowedContent: true,
-            removePlugins : "elementspath,magicline,link,anchor",
-            height : 500
-        };
-        paper.questionEditor = CKEDITOR.replace('questionEditor',parameter);
-        paper.answerEditor = CKEDITOR.replace('answerEditor',parameter);
+        // var parameter = {
+        //     toolbar : [
+        //         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
+        //         { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Undo', 'Redo'] },
+        //         { name: 'styles', items: ['Font', 'FontSize', 'lineheight', 'TextColor', 'BGColor'] }
+        //     ],
+        //     contentsCss : "/assets/zhengjuan/css/paper.css",
+        //     resize_enabled : false,
+        //     allowedContent: true,
+        //     removePlugins : "elementspath,magicline,link,anchor",
+        //     height : 500
+        // };
+        paper.questionEditor = CKEDITOR.replace('questionEditor',paper.ckeditor_params.quiz_split);
+        paper.answerEditor = CKEDITOR.replace('answerEditor',paper.ckeditor_params.quiz_split);
         paper.questionEditor.on("change",function(){paper.editorControl.caculatequestionCount();});
         paper.answerEditor.on("change",function(){paper.editorControl.caculatequestionCount();});
         //绑定事件
@@ -1747,19 +1775,19 @@ $(function(){
         });*/
         $(".contentBody").html($(".template_part4").html());
         paper.abstract();
-        var parameter = {
-            toolbar : [
-                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
-                { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                { name: 'styles', items: ['Font', 'FontSize', 'TextColor', 'BGColor'] }
-            ],
-            resize_enabled : false,
-            allowedContent: true,
-            removePlugins : "elementspath,magicline,link,anchor",
-            height : 130
-        };
-        paper.min_question = CKEDITOR.replace('min_question',parameter);
-        paper.min_answer = CKEDITOR.replace('min_answer',parameter);
+        // var parameter = {
+        //     toolbar : [
+        //         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
+        //         { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+        //         { name: 'styles', items: ['Font', 'FontSize', 'TextColor', 'BGColor'] }
+        //     ],
+        //     resize_enabled : false,
+        //     allowedContent: true,
+        //     removePlugins : "elementspath,magicline,link,anchor",
+        //     height : 130
+        // };
+        paper.min_question = CKEDITOR.replace('min_question', paper.ckeditor_params.quiz_edit);
+        paper.min_answer = CKEDITOR.replace('min_answer', paper.ckeditor_params.quiz_edit);
         CKEDITOR.instances["min_question"].on("instanceReady", function(){   
             $(this.document).on("keyup", function(e){
                 paper.changeState = true;
