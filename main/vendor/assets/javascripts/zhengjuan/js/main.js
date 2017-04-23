@@ -1420,7 +1420,8 @@ $(function(){
                 paper_outline_name: $(".selectQuizPaperOutline option:selected").text() || "",
                 score : $(this).find(".scorePart .selectVal input").val() || 0,
 
-                answer : $(this).find(".scoreAnswer").val(),
+                //answer : $(this).find(".scoreAnswer").val(),
+                answer: CKEDITOR.instances["scoreAnswerText" + i].getData(),
                 answer_is_image: $(this).find(".score_answer_is_image .textCheckbox").hasClass("active")
             };
             itemObj.bank_qizpoint_qzps.push(tempObj);
