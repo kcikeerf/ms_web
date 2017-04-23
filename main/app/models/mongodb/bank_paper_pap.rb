@@ -879,7 +879,9 @@ class Mongodb::BankPaperPap
         "grade",
         "classroom",
         "head_teacher",
+        "teacher_number",
         "subject_teacher",
+        "teacher_number",
         "name",
         "pupil_number",
         "sex",
@@ -896,6 +898,8 @@ class Mongodb::BankPaperPap
         "",
         "",
         "",
+        "",
+        "",
         Common::Locale::i18n('quizs.order')
       ]
 
@@ -905,7 +909,9 @@ class Mongodb::BankPaperPap
         Common::Locale::i18n('dict.grade'),
         Common::Locale::i18n('dict.classroom'),
         Common::Locale::i18n('dict.head_teacher'),
+        Common::Locale::i18n('dict.teacher_number'),
         Common::Locale::i18n('dict.subject_teacher'),
+        Common::Locale::i18n('dict.teacher_number'),
         Common::Locale::i18n('dict.name'),
         Common::Locale::i18n('dict.pupil_number'),
         Common::Locale::i18n('dict.sex'),
@@ -1011,7 +1017,7 @@ class Mongodb::BankPaperPap
           :promptTitle => Common::Locale::i18n('dict.sex'),
           :prompt => ""
         })
-        cells= sheet.rows.last.cells[8..cols_count].map{|cell| {:key=> cell.r, :value=> title_row_arr[cell.index].to_s}}
+        cells= sheet.rows.last.cells[10..cols_count].map{|cell| {:key=> cell.r, :value=> title_row_arr[cell.index].to_s}}
         cells.each{|cell|
           sheet.add_data_validation(cell[:key],{
             :type => :decimal,
