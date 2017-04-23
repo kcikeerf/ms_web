@@ -903,7 +903,7 @@ $(function(){
                     for(var k=0; k<paper.currentQuiz.bank_qizpoint_qzps.length; k++){
                         var thisNode = cloneNode.clone(true);
                         thisNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + (k+1) + ")");
-                        thisNode.find(".scoreAnswer").val(paper.currentQuiz.bank_qizpoint_qzps[k].answer||"");
+                        thisNode.find(".scoreTestAnswer").val(paper.currentQuiz.bank_qizpoint_qzps[k].test_answer||"");
 
                         //是否主观题
                         paper.currentQuiz.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find(".is_subjective .textCheckbox").addClass("active");
@@ -976,6 +976,7 @@ $(function(){
                         html += '<li class="info_score_system_order"><label>系统顺序：</label><span>' + quiz.bank_qizpoint_qzps[k].order + '</span></li>';
                         html += '<li class="info_score_custom_order"><label>自定义顺序：</label><span>' + quiz.bank_qizpoint_qzps[k].custom_order + '</span></li>';
                         html += '<li class="info_score_answer"><label>得分点</label><span>' + quiz.bank_qizpoint_qzps[k].answer + '</span></li>';
+                        html += '<li class="info_score_answer"><label>测试答案</label><span>' + quiz.bank_qizpoint_qzps[k].test_answer + '</span></li>';
                         html += '<li class="info_score_point"><label>分数：</label><span>' + (quiz.bank_qizpoint_qzps[k].score ? quiz.bank_qizpoint_qzps[k].score+"分" : "") + '</span></li>';
                         html += '<li class="info_score_zhu_ke_guan"><label>主客观：</label><span>' + quiz.bank_qizpoint_qzps[k].type + '</span></li>';
                         html += '</ul></div></div>';
@@ -1038,8 +1039,9 @@ $(function(){
         //添加得分点
         doc.on("click",".addWarp .addScore",function(){
             var scroll_top = $(document).scrollTop()+200;
-            var qzp_order = $(".analyze .textLabelWarp").length + 1;
-            var qzp_ckeditor_id = "scoreAnswerText" + qzp_order;
+            var qzp_index = $(".analyze .textLabelWarp").length;
+            var qzp_order = qzp_index + 1;
+            var qzp_ckeditor_id = "scoreAnswerText" + qzp_index;
             cloneNode = $(".analyze .textLabelWarp").eq(0).clone(false);
             cloneNode.find(".systemScoreOrderDisplay").text( paper.currentQuizOrder + "(" + qzp_order + ")");
             cloneNode.find(".selectVal span").text("请选择");
@@ -1050,7 +1052,7 @@ $(function(){
             cloneNode.find(".scoreAnswerText").attr("id", qzp_ckeditor_id);
             $(".analyze").append(cloneNode);
 
-            CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
+            //CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
             window.scrollTo(0, scroll_top);
         });
         //删除得分点
@@ -1422,7 +1424,8 @@ $(function(){
 
                 //answer : $(this).find(".scoreAnswer").val(),
                 answer: CKEDITOR.instances["scoreAnswerText" + i].getData(),
-                answer_is_image: $(this).find(".score_answer_is_image .textCheckbox").hasClass("active")
+                answer_is_image: $(this).find(".score_answer_is_image .textCheckbox").hasClass("active"),
+                test_answer:  $(this).find(".scoreTestAnswer").val()
             };
             itemObj.bank_qizpoint_qzps.push(tempObj);
         });

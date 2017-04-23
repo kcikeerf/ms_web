@@ -25,6 +25,7 @@ class Mongodb::BankQizpointQzp
   field :type, type: String
   field :answer, type: String
   field :answer_is_image, type: Boolean
+  field :test_answer, type: String
   field :desc, type: String
   field :ckps_json, type: String
   field :paper_outline_json, type: String
@@ -109,6 +110,7 @@ class Mongodb::BankQizpointQzp
        self.type = params[:type] || ""
        self.answer = params[:answer] || ""
        self.answer_is_image = params[:answer_is_image] || ""
+       self.test_answer = params[:test_answer] || ""
        self.desc = params[:desc] || ""
        self.score = params[:score] || 0.00
        self.order = params[:order] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
