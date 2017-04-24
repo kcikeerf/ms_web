@@ -162,7 +162,9 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 //.scoreRemark .score{font-size: 0;padding:0 12px;}
 .scoreRemark .score label{color: #999;font-size: 14px; vertical-align: top;}
 
-.scoreRemark .scoreAnswer{display: inline-block;background-color: #f9f9f9; width: 450px;font-size: 12px;margin-left: 8px; resize:none;border:1px solid #dcdcdc;border-radius: 3px;height: 75px;padding:10px 15px;}
+.scoreRemark .scoreAnswer,
+.scoreRemark .scoreTestAnswer
+{display: inline-block;background-color: #f9f9f9; margin: 10px 0 0 0 ;width: 100%;font-size: 12px;margin-left: 8px; resize:none;border:1px solid #dcdcdc;border-radius: 3px;height: 75px;padding:10px 15px;}
 
 .textCheckbox{float: right;line-height: 36px;cursor: pointer;}
 .textCheckbox span{display: inline-block;vertical-align: top;position: relative;top: 11px;margin-right: 8px; width: 14px;height: 14px;border:1px solid #e1e1e1;border-radius: 2px;}

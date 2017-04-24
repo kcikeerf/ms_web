@@ -20,7 +20,7 @@ module Quizs
       desc ''
       params do
         use :authenticate
-        requires :test_id, type: String, allow_blank: false
+        optional :test_id, type: String, allow_blank: true
         optional :pupil_user_name, type: String, allow_blank: false
         requires :qzp_id, type: String, allow_blank: true
         # optional :qzp_order, type: String, allow_blank: true
@@ -30,37 +30,47 @@ module Quizs
         target_current_user = current_user
         target_pupil = target_current_user.is_pupil?? target_current_user : User.where(name: params[:pupil_user_name]).first
         #error!(message_json("w21204"), 403) if target_user.blank?
-        unless params[:qzp_id].blank?
-          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_current_user.id}/qzp_id/#{params[:qzp_id]}"
-        else
-          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_current_user.id}/qzp_order/#{params[:qzp_order]}"
-        end
+        redis_user_id = target_pupil.blank?? target_current_user.id : target_pupil.id
+        redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{redis_user_id}/qzp_id/#{params[:qzp_id]}"
+        # unless params[:qzp_id].blank?
+        #   redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{redis_user_id}/qzp_id/#{params[:qzp_id]}"
+        # else
+        #   redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{redis_user_id}/qzp_order/#{params[:qzp_order]}"
+        # end
 
         if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, redis_key
           result = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, redis_key
           JSON.parse(result)
         else
           target_test = Mongodb::BankTest.where(_id: params[:test_id]).first
-          target_paper = target_test.bank_paper_pap
+          error!(message_json("e40004"), 404) unless target_test
+          # target_paper = target_test.bank_paper_pap
+          # error!(message_json("e40004"), 404) unless target_paper
 
-          order_redis_key = "/api/papers/" + target_paper.id.to_s + "/qzps_orders/"
-          if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, order_redis_key
-            target_qzp_order_arr = $cache_redis.lrange(order_redis_key, 0, -1)
-          else
-            target_qzps = target_paper.ordered_qzps
-            target_qzp_order_arr = target_qzps.map(&:order)
-            $cache_redis.rpush(order_redis_key, target_qzp_order_arr)
-          end
-
-          unless params[:qzp_id].blank?
-            target_qzp = Mongodb::BankQizpointQzp.where(_id: params[:qzp_id]).first
-          end
-          target_quiz = target_qzp.bank_quiz_qiz
+          target_qzp = Mongodb::BankQizpointQzp.where(_id: params[:qzp_id]).first
           error!(message_json("e40004"), 404) unless target_qzp
-          target_qzp_order_str = (target_qzp && !target_qzp.order.blank? )? target_qzp.order : nil
-          order_index = target_qzp_order_arr.find_index(target_qzp_order_str)
-          error!(message_json("e40004"), 404) unless order_index
-          target_qzp_order = (order_index + 1).to_s
+          target_qzp_asc_order = target_qzp.asc_order
+          target_quiz = target_qzp.bank_quiz_qiz
+          error!(message_json("e40004"), 404) unless target_quiz
+
+          # order_redis_key = "/api/papers/" + target_paper.id.to_s + "/qzps_orders/"
+          # if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, order_redis_key
+          #   target_qzp_order_arr = $cache_redis.lrange(order_redis_key, 0, -1)
+          # else
+          #   target_qzps = target_paper.ordered_qzps
+          #   target_qzp_order_arr = target_qzps.map(&:order)
+          #   $cache_redis.rpush(order_redis_key, target_qzp_order_arr)
+          # end
+
+          # unless params[:qzp_id].blank?
+          #   target_qzp = Mongodb::BankQizpointQzp.where(_id: params[:qzp_id]).first
+          # end
+          # target_quiz = target_qzp.bank_quiz_qiz
+          # error!(message_json("e40004"), 404) unless target_qzp
+          # target_qzp_order_str = (target_qzp && !target_qzp.order.blank? )? target_qzp.order : nil
+          # order_index = target_qzp_order_arr.find_index(target_qzp_order_str)
+          # error!(message_json("e40004"), 404) unless order_index
+          # target_qzp_order = (order_index + 1).to_s
 
           # 临时添加
           if !target_pupil.blank?
@@ -80,9 +90,9 @@ module Quizs
 
             hyt_quiz_data = {}
             hyt_snapshot_data = {}
-            target_hyt_quiz = hyt_quiz_data_h.find{|item| item["qzp_order"] == target_qzp_order}
+            target_hyt_quiz = hyt_quiz_data_h.find{|item| item["qzp_order"] == target_qzp_asc_order}
             if target_hyt_quiz.blank?
-              target_hyt_quiz = hyt_snapshot_data_h.find{|item| item["qzp_order"] == target_qzp_order}
+              target_hyt_quiz = hyt_snapshot_data_h.find{|item| item["qzp_order"] == target_qzp_asc_order}
               hyt_snapshot_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["image_url"] } unless target_hyt_quiz.blank?
             else
               hyt_quiz_data = { target_hyt_quiz["qzp_order"].to_sym => target_hyt_quiz["answer"] }
@@ -97,7 +107,9 @@ module Quizs
             :id => target_qzp.id.to_s,
             :quiz_cat => target_quiz.cat,
             :quiz_body => target_quiz.text,
-            :qzp_order => target_qzp_order,
+            :qzp_order => target_qzp.order,
+            :qzp_asc_order => target_qzp_asc_order,
+            :qzp_custom_order => target_qzp.custom_order,
             :qzp_type => Common::Locale::hanzi2pinyin(target_qzp.type),
             :full_score => target_qzp.score,
             :qzp_answer => target_qzp.answer,

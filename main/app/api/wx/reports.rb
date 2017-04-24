@@ -118,6 +118,7 @@ module Reports
               end
             else
               test_id = target_pap.bank_tests[0].id.to_s
+              test_ext_data_path = target_pap.bank_tests[0].ext_data_path
               rpt_type = rpt_type || Common::Report::Group::Project
               rpt_id = (rpt_type == Common::Report::Group::Project)? test_id : rpt_id
               report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
@@ -129,6 +130,7 @@ module Reports
                 :score => target_pap.score,
                 :report_version => "00016110",
                 :test_id => test_id,
+                :test_ext_data_path => test_ext_data_path,
                 :report_url => "/api/wx/v1.1" + report_url
               }
             end
