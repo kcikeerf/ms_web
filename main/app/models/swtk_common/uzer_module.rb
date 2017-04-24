@@ -2,9 +2,10 @@ module UzerModule
   module Uzer
     module_function
 
-    PasswdRandLength = 8
-    PasswdRandArr = [*'1'..'9']
+    PasswdRandLength = 6
+    PasswdRandArr = Common::SwtkConstants::NumberArr
     UserNameSperator = ""
+    UserNameRandArr = Common::SwtkConstants::AlphabetDownCaseArr
 
     def get_tenant user_id 
       tenant = nil

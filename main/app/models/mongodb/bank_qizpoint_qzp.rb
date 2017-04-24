@@ -17,17 +17,22 @@ class Mongodb::BankQizpointQzp
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
 
+  embeds_one :tk_lock, class_name: "Mongodb::TkLock"
+
   field :quz_uid, type: String
   field :pap_uid, type: String
   field :tbs_sid, type: String
   field :type, type: String
   field :answer, type: String
+  field :answer_is_image, type: Boolean
+  field :test_answer, type: String
   field :desc, type: String
   field :ckps_json, type: String
   field :paper_outline_json, type: String
   field :score, type: Float
-  field :order, type: String
-  field :custom_order, type: String
+  field :order, type: String #系统顺序
+  field :asc_order, type: Integer #递增顺序
+  field :custom_order, type: String #自定义顺序
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
@@ -104,9 +109,12 @@ class Mongodb::BankQizpointQzp
        self.tbs_sid = params[:tbs_sid] || ""
        self.type = params[:type] || ""
        self.answer = params[:answer] || ""
+       self.answer_is_image = params[:answer_is_image] || ""
+       self.test_answer = params[:test_answer] || ""
        self.desc = params[:desc] || ""
        self.score = params[:score] || 0.00
        self.order = params[:order] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
+       self.asc_order = params[:asc_order] || 0
        self.custom_order = params[:custom_order] || ""
        self.paper_outline_id = params[:paper_outline_id] || nil
        self.save!

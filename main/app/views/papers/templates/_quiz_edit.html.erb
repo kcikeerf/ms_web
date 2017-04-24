@@ -117,6 +117,7 @@
 				<p class="textLabel">试题</p>
 				<div class="textEditor textEditor1">
 					<textarea id="min_question" cols="20" rows="2"></textarea>
+					<p class="text_is_image textCheckbox" style="float: left;"><span></span>图片</p>
 				</div>
 			</div>
 			<div class="testAnswer clearfix">
@@ -124,13 +125,14 @@
 				<div class="textEditor textEditor2">
 					<textarea id="min_answer" cols="20" rows="2"></textarea>
 					<textarea class="remarks" placeholder="请在此输如答案说明（可选）"></textarea>
+					<p class="answer_is_image textCheckbox" style="float: left;"><span></span>图片</p>
 				</div>
 			</div>
 			<div class="analyze clearfix">
 				<p class="textLabel">分析</p>
 				<div class="textLabelWarp">
 
-				<div class="scoreRemark clearfix">
+					<div class="scoreRemark clearfix">
 						<div class="selectWarp   clearfix">
 							<p>系统顺序：</p>
 							<div class="systemScoreOrderDisplay"></div>
@@ -171,16 +173,27 @@
 						</div>
 								
 
-						<div class="selectWarp   clearfix">
+						<div class="selectWarp is_subjective clearfix">
 							<p>主观题</p>
 							<p class="textCheckbox"><span></span></p>
 						</div>
 
-					<div class="score   clearfix">
-						<label>得分点：</label>
-						<textarea class="scoreAnswer" placeholder="得分点标准答案"></textarea>
+						<div class="selectWarp clearfix score_answer_is_image">
+							<p>图片</p>
+							<p class="textCheckbox"><span></span></p>
+						</div>
+
+						<div class="score   clearfix">
+							<label>得分点：</label>
+							<!--textarea class="scoreAnswer" placeholder="得分点标准"></textarea-->
+							<textarea class="scoreAnswerText" cols="20" rows="2"></textarea>
+						</div>
+
+						<div class="score   clearfix">
+							<label>测试答案：</label>
+							<textarea class="scoreTestAnswer" placeholder=""></textarea>
+						</div>
 					</div>
-				</div>
 
 					<!--<div class="threeDimensional clearfix">
 						<p class="dimensional">三维解析</p>

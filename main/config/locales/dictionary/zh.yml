@@ -16,6 +16,7 @@ zh:
     subject_teacher: "学科教师"
     head_teacher: "班主任"
     teacher: "老师"
+    teacher_number: "编号"
     analyzer: "分析员"
     pupil: "学生"
     tenant_administrator: "Tenant管理员"
