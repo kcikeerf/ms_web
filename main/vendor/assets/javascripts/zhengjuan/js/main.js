@@ -1052,7 +1052,8 @@ $(function(){
             cloneNode.find(".scoreAnswerText").attr("id", qzp_ckeditor_id);
             $(".analyze").append(cloneNode);
 
-            //CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
+            cloneNode.find("#cke_" + "scoreAnswerText" + (qzp_index-1)).remove();
+            CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
             window.scrollTo(0, scroll_top);
         });
         //删除得分点
