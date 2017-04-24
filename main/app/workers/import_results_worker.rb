@@ -16,6 +16,28 @@ class ImportResultsWorker
           }
           logger.info "#{params}"
 
+          @cols = {
+            :grade => 0,
+            :classroom => 1,
+            :head_teacher_name => 2,
+            :head_teacher_number => 3,
+            :subject_teacher_name => 4,
+            :subject_teacher_number => 5,
+            :pupil_name => 6,
+            :pupil_number => 7,
+            :pupil_gender => 8,
+            :pupil_full_score => 9,
+            :data_start => 10,
+          }
+
+          @rows = {
+            :loc_row => 1,
+            :hidden_row => 2,
+            :order_row => 3,
+            :title_row => 4,
+            :data_start => 5
+          }
+
           # 获取试卷信息
           @target_paper = Mongodb::BankPaperPap.where(id: params[:pap_uid]).first 
           raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "paper id: #{params[:pap_uid]}")) unless @target_paper
@@ -38,16 +60,16 @@ class ImportResultsWorker
           filled_file = Roo::Excelx.new(score_file.filled_file.current_path)
           raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "score file path: #{score_file.filled_file.current_path}")) unless filled_file
 
-          result_sheet = filled_file.sheet(Common::Locale::i18n('scores.excel.score_title'))
-          raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "result sheet")) unless result_sheet
+          @result_sheet = filled_file.sheet(Common::Locale::i18n('scores.excel.score_title'))
+          raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "result sheet")) unless @result_sheet
 
           paper_qzps = @target_paper.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten.compact
 
           # 获取Task信息，创建JOB
           target_task = @target_test.tasks.by_task_type(Common::Task::Type::ImportResult).first
           raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "task uid: #{target_task.uid}")) unless target_task
-          job_tracker = JobList.where(uid: params[:job_uid]).first
-          raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "job uid: #{params[:job_uid]}")) unless job_tracker
+          @job_tracker = JobList.where(uid: params[:job_uid]).first
+          raise SwtkErrors::NotFoundError.new(Common::Locale::i18n("swtk_errors.object_not_found", :message => "job uid: #{params[:job_uid]}")) unless @job_tracker
 
           # 检查指标mapping，若未生成则生成
           paper_qzps.each{|qzp|
@@ -83,21 +105,21 @@ class ImportResultsWorker
           # 更新Task, Job的信息
           target_task.touch(:dt_update)
           # JOB的分处理的数量
-          phase_total = 15
-          job_tracker.update({
+          @phase_total = 15
+          @job_tracker.update({
             :status => Common::Job::Status::InQueue,
-            :process => 1/phase_total.to_f
+            :process => 1/@phase_total.to_f
           })
 
           #为了记录处理的进度
-          redis_key = Common::SwtkRedis::Prefix::ImportResult + job_tracker.uid
-          redis_ns = Common::SwtkRedis::Ns::Sidekiq
-          Common::SwtkRedis::set_key(redis_ns,redis_key, 0)
+          @redis_key = Common::SwtkRedis::Prefix::ImportResult + @job_tracker.uid
+          @redis_ns = Common::SwtkRedis::Ns::Sidekiq
+          Common::SwtkRedis::set_key(@redis_ns,@redis_key, 0)
 
           # temp = target_paper.bank_tests[0].bank_test_tenant_links.where(:tenant_uid => params[:tenant_uid]).first
           # temp.update({
           #   :tenant_status => Common::Test::Status::ScoreImporting,
-          #   :job_uid => job_tracker.uid
+          #   :job_uid => @job_tracker.uid
           # })
 
           #delete old scores
@@ -110,14 +132,14 @@ class ImportResultsWorker
 
           ###
           logger.info ">>> 读取excel title <<<"
-          job_tracker.update(status: Common::Job::Status::Processing)
-          job_tracker.update(process: 2/phase_total.to_f)
+          @job_tracker.update(status: Common::Job::Status::Processing)
+          @job_tracker.update(process: 2/@phase_total.to_f)
 
           # read title
-          # loc_row = result_sheet.row(1)
-          hidden_row = result_sheet.row(2)
-          order_row = result_sheet.row(3)
-          title_row = result_sheet.row(4)
+          # loc_row = @result_sheet.row(1)
+          @hidden_row = @result_sheet.row(@rows[:hidden_row])
+          @order_row = @result_sheet.row(@rows[:order_row])
+          @title_row = @result_sheet.row(@rows[:title_row])
           # target_area = Area.get_area_by_name({
           #   :province => Common::Locale.hanzi2pinyin(loc_row[1]),
           #   :city => Common::Locale.hanzi2pinyin(loc_row[3]),
@@ -132,36 +154,46 @@ class ImportResultsWorker
             
           ###
           logger.info ">>> 确定读取范围 <<<"
-          job_tracker.update(process: 3/phase_total.to_f)
+          @job_tracker.update(process: 3/@phase_total.to_f)
 
-          data_start_row = 5
-          data_start_col = 8
-          total_row = result_sheet.count
-          total_cols = hidden_row.size
+          @total_row = @result_sheet.count
+          @total_cols = @hidden_row.size
 
           ###
           logger.info ">>> 老师及学生sheet初始化 <<<"
-          job_tracker.update(process: 4/phase_total.to_f)
+          @job_tracker.update(process: 4/@phase_total.to_f)
 
           out_excel = Axlsx::Package.new
           wb = out_excel.workbook
-          teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.teacher_password_title'))
-          pupil_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.pupil_password_title'))
-          teacher_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
-          pupil_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+          
+          @head_teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.head_teacher_password_title'))
+          @teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.teacher_password_title'))
+          @pupil_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.pupil_password_title'))
 
-          teacher_title_row = [
+          @head_teacher_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+          @teacher_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+          @pupil_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+
+          @head_teacher_sheet.add_row [
               Common::Locale::i18n('activerecord.attributes.user.name'),
               Common::Locale::i18n('activerecord.attributes.user.password'),
               Common::Locale::i18n('dict.classroom'),
-              Common::Locale::i18n('dict.subject'),           
               Common::Locale::i18n('dict.name'),
               Common::Locale::i18n('reports.generic_url'),
               Common::Locale::i18n('reports.op_guide')
           ]
-          teacher_sheet.add_row teacher_title_row
 
-          pupil_title_row = [
+          @teacher_sheet.add_row [
+              Common::Locale::i18n('activerecord.attributes.user.name'),
+              Common::Locale::i18n('activerecord.attributes.user.password'),
+              Common::Locale::i18n('dict.classroom'),
+              Common::Locale::i18n('dict.subject'),
+              Common::Locale::i18n('dict.name'),
+              Common::Locale::i18n('reports.generic_url'),
+              Common::Locale::i18n('reports.op_guide')
+          ]
+
+          @pupil_sheet.add_row [
               Common::Locale::i18n('activerecord.attributes.user.name'),
               Common::Locale::i18n('activerecord.attributes.user.password'),
               Common::Locale::i18n('dict.classroom'),
@@ -170,19 +202,18 @@ class ImportResultsWorker
               Common::Locale::i18n('reports.generic_url'),
               Common::Locale::i18n('reports.op_guide')
           ]
-          pupil_sheet.add_row pupil_title_row
 
           ###
           logger.info ">>> 读取表格数据 <<<"
-          job_tracker.update(process: 5/phase_total.to_f)
+          @job_tracker.update(process: 5/@phase_total.to_f)
 
           #上传成绩多线程处理
           logger.info ">>>多线程读取<<<"
           
           th_number = Common::Score::Thread::ThNum
-          num_per_th = total_row/Common::Score::Thread::ThNum
-          mod_num = total_row%num_per_th
-          logger.info "线程数量: #{th_number}, 行数: #{total_row}"
+          num_per_th = @total_row/Common::Score::Thread::ThNum
+          mod_num = @total_row%num_per_th
+          logger.info "线程数量: #{th_number}, 行数: #{@total_row}"
 
           th_arr = []
           th_number.times.each{|th|
@@ -192,28 +223,8 @@ class ImportResultsWorker
             #th_arr << Thread.new do
               import_score_core({
                 :th_index => th,
-                :redis_key => redis_key,
-                :redis_ns => redis_ns,
-                :result_sheet => result_sheet,
-                :hidden_row => hidden_row,
-                :order_row => order_row,
-                :title_row => title_row,
-                :total_row => total_row,
                 :start_num => start_num,
                 :end_num => end_num,
-                :data_start_row => data_start_row,
-                :data_start_col => data_start_col,
-                :total_cols => total_cols,
-                # :loc_h => loc_h,
-                :job_tracker => job_tracker,
-                :phase_total => phase_total,
-                # :target_paper => target_paper,
-                # :qzps_ckps_mapping_h => qzps_ckps_mapping_h,
-                # :qzps_outlines_mapping_h => qzps_outlines_mapping_h,
-                # :target_tenant => target_tenant,
-                :teacher_sheet => teacher_sheet,
-                :pupil_sheet => pupil_sheet
-
               })
             #end
           }
@@ -225,7 +236,7 @@ class ImportResultsWorker
           file_h = {:score_file_id => params[:score_file_id], :file_path => file_path}
           score_file = Common::Score.create_usr_pwd file_h
 
-          job_tracker.update(process: 1.0)
+          @job_tracker.update(process: 1.0)
           @target_test.update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImported, {:job_uid => params[:job_uid]})
           # temp.update({ :tenant_status => Common::Test::Status::ScoreImported })
           File.delete(file_path)
@@ -238,8 +249,8 @@ class ImportResultsWorker
           logger.info "[backtrace]"
           logger.info ex.backtrace
         ensure
-          logger.info("redis 计数值: #{Common::SwtkRedis::get_value(redis_ns,redis_key)}")
-          Common::SwtkRedis::del_keys(redis_ns, redis_key)
+          logger.info("redis 计数值: #{Common::SwtkRedis::get_value(@redis_ns,@redis_key)}")
+          Common::SwtkRedis::del_keys(@redis_ns, @redis_key)
           #compare = nil
           #GC.start
           logger.info ">>>>>>>Import Result Job: End<<<<<<<"
@@ -256,29 +267,33 @@ class ImportResultsWorker
         teacher_username_in_sheet = []
         pupil_username_in_sheet = []
         # qzps_h = []
-        # args[:hidden_row][args[:data_start_col]..(args[:total_cols]-1)].each{|item|
+        # @hidden_row[@cols[:data_start]..(@total_cols-1)].each{|item|
         #   qzps_h << Mongodb::BankQizpointQzp.where(_id: item).first
         # }
 
         #######start to analyze#######
         location_list = {}   
         (args[:start_num]..args[:end_num]).each{|index|
-          next if index < args[:data_start_row]
+          next if index < @rows[:data_start]
           row_qzps_arr = []
-          row = args[:result_sheet].row(index)
-          grade_pinyin = Common::Locale.hanzi2pinyin(row[0].to_s.strip)
-          klass_pinyin = Common::Locale.hanzi2pinyin(row[1].to_s.strip)
-          klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[1].to_s.strip
+          row = @result_sheet.row(index)
+          grade_pinyin = Common::Locale.hanzi2pinyin(row[@cols[:grade]].to_s.strip)
+          klass_pinyin = Common::Locale.hanzi2pinyin(row[@cols[:classroom]].to_s.strip)
+          klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[@cols[:classroom]].to_s.strip
+          
           cells = {
             :grade => grade_pinyin,
             :xue_duan => Common::Grade.judge_xue_duan(grade_pinyin),
             :classroom => klass_value,
-            :head_teacher => row[2].to_s.strip,
-            :teacher => row[3].to_s.strip,
-            :pupil_name => row[4].to_s.strip,
-            :stu_number => row[5].to_s.strip,
-            :sex => row[6].to_s.strip
+            :head_teacher => row[@cols[:head_teacher_name]].to_s.strip,
+            :head_teacher_number => row[@cols[:head_teacher_number]].to_s.strip,
+            :teacher => row[@cols[:subject_teacher_name]].to_s.strip,
+            :teacher_number => row[@cols[:subject_teacher_number]].to_s.strip,
+            :pupil_name => row[@cols[:pupil_name]].to_s.strip,
+            :stu_number => row[@cols[:pupil_number]].to_s.strip,
+            :sex => row[@cols[:pupil_gender]].to_s.strip
           }
+
           #
           # get location
           #
@@ -299,39 +314,41 @@ class ImportResultsWorker
           #
           head_tea_h = {
             :loc_uid => loc.uid,
-            :tenant_uid => @target_tenant_uid,
+            :tenant_uid => @target_tenant.uid,
             :name => cells[:head_teacher],
             :classroom => cells[:classroom],
-            :subject => @target_paper.subject,
+            # :subject => @target_paper.subject,
             :head_teacher => true,
-            :user_name => format_user_name([
+            :user_name =>format_user_name([
               @target_tenant.number,
-              Common::Subject::Abbrev[@target_paper.subject.to_sym],
+              #Common::Subject::Abbrev[@target_paper.subject.to_sym],
+              cells[:head_teacher_number],
               Common::Locale.hanzi2abbrev(cells[:head_teacher])
             ])
           }
           user_row_arr = format_user_password_row(Common::Role::Teacher, head_tea_h)
           unless teacher_username_in_sheet.include?(user_row_arr[0])
-            args[:teacher_sheet].add_row user_row_arr
+            @head_teacher_sheet.add_row user_row_arr
             teacher_username_in_sheet << user_row_arr[0]
           end
           
           tea_h = {
             :loc_uid => loc.uid,
-            :tenant_uid => @target_tenant_uid,
+            :tenant_uid => @target_tenant.uid,
             :name => cells[:teacher],
             :classroom => cells[:classroom],
             :subject => @target_paper.subject,
             :head_teacher => false,
             :user_name => format_user_name([
               @target_tenant.number,
-              Common::Subject::Abbrev[@target_paper.subject.to_sym],
+              #Common::Subject::Abbrev[@target_paper.subject.to_sym],
+              cells[:teacher_number],
               Common::Locale.hanzi2abbrev(cells[:teacher])
             ])
           }
           user_row_arr = format_user_password_row(Common::Role::Teacher, tea_h)
           unless teacher_username_in_sheet.include?(user_row_arr[0])
-            args[:teacher_sheet].add_row user_row_arr
+            @teacher_sheet.add_row user_row_arr
             teacher_username_in_sheet << user_row_arr[0]
           end
 
@@ -355,15 +372,15 @@ class ImportResultsWorker
           }
           user_row_arr = format_user_password_row(Common::Role::Pupil, pup_h)
           unless pupil_username_in_sheet.include?(user_row_arr[0])
-            args[:pupil_sheet].add_row user_row_arr
+            @pupil_sheet.add_row user_row_arr
             pupil_username_in_sheet << user_row_arr[0]
           end
 
           current_user = User.where(name: pup_h[:user_name]).first
           current_pupil = current_user.nil?? nil : current_user.pupil
 
-          #logger.info ">>>thread index #{args[:th_index]} cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
-          # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: row:#{index},  cols range: #{args[:data_start_col]},#{args[:total_cols]} <<<"
+          #logger.info ">>>thread index #{args[:th_index]} cols range: #{@cols[:data_start]},#{@total_cols} <<<"
+          # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: row:#{index},  cols range: #{@cols[:data_start]},#{@total_cols} <<<"
 
           col_params = {
             :area_uid => @loc_h[:area_uid],
@@ -375,19 +392,19 @@ class ImportResultsWorker
             :pap_uid => @target_paper_id
           }
 
-          (args[:data_start_col]..(args[:total_cols]-1)).each{|qzp_index|
+          (@cols[:data_start]..(@total_cols-1)).each{|qzp_index|
             next if ( !row[qzp_index].is_a?(Numeric) || row[qzp_index] < 0 )
 
             col_params.merge!({
-              :qzp_uid => args[:hidden_row][qzp_index],
-              :order => args[:order_row][qzp_index],
+              :qzp_uid => @hidden_row[qzp_index],
+              :order => @order_row[qzp_index],
               :real_score => row[qzp_index],
-              :full_score => args[:title_row][qzp_index]
+              :full_score => @title_row[qzp_index]
             })
 
-            #qizpoint = qzps_h[qzp_index - args[:data_start_col]]
-            qzp_outline_h = @qzps_outlines_mapping_h[args[:hidden_row][qzp_index]]
-            qzp_ckp_h = @qzps_ckps_mapping_h[args[:hidden_row][qzp_index]]
+            #qizpoint = qzps_h[qzp_index - @cols[:data_start]]
+            qzp_outline_h = @qzps_outlines_mapping_h[@hidden_row[qzp_index]]
+            qzp_ckp_h = @qzps_ckps_mapping_h[@hidden_row[qzp_index]]
             qzp_ckp_h.each{|dimesion, ckps|
               col_params[:dimesion] = dimesion
               ckps.each{|ckp|
@@ -405,12 +422,12 @@ class ImportResultsWorker
           #Mongodb::BankTestScore.create!(row_qzps_arr)
           Mongodb::BankTestScore.collection.insert_many(row_qzps_arr)
 
-          Common::SwtkRedis::incr_key(args[:redis_ns], args[:redis_key])
-          # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(args[:redis_key])}"
-          redis_count = Common::SwtkRedis::get_value(args[:redis_ns], args[:redis_key]).to_f
-          process_value = 5 + 9*redis_count/(args[:total_row]-args[:data_start_row]).to_f
+          Common::SwtkRedis::incr_key(@redis_ns, @redis_key)
+          # p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: redis count=>#{Common::SwtkRedis::get_value(@redis_key)}"
+          redis_count = Common::SwtkRedis::get_value(@redis_ns, @redis_key).to_f
+          process_value = 5 + 9*redis_count/(@total_row-@rows[:data_start]).to_f
           #p "线程（#{args[:target_tenant]}）：>>>thread index #{args[:th_index]}: process_value => #{process_value}"
-          args[:job_tracker].update(process: process_value/args[:phase_total].to_f)
+          @job_tracker.update(process: process_value/@phase_total.to_f)
         }
       rescue Exception => ex
         logger.info ">>>thread index #{args[:th_index]}: Exception Message (#{ex.message})<<<"
@@ -435,7 +452,7 @@ class ImportResultsWorker
           :username => item[:user_name],
           :password => "",
           :classroom => Common::Klass::List[item[:classroom].to_sym],
-          :subject => Common::Subject::List[item[:subject].to_sym],
+          # :subject => Common::Subject::List[item[:subject].to_sym],
           :name => item[:name],
           :report_url => "",
           :op_guide => Common::Locale::i18n('reports.op_guide_details'),
@@ -452,6 +469,7 @@ class ImportResultsWorker
           :tenant_uid => item[:tenant_uid]
         }
       }
+      row_data[Common::Role::Teacher.to_sym][:subject] = Common::Subject::List[item[:subject].to_sym] if item[:subject]
 
       ret = User.add_user item[:user_name],role, item
 

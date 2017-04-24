@@ -177,6 +177,7 @@ zh:
     grade_rank: "年级排名"
     excel:
       score_title: "成绩录入表"
+      head_teacher_password_title: "班主任老师的用户名密码"
       teacher_password_title: "老师的用户名密码"
       pupil_password_title: "学生的用户名密码"
     messages:
