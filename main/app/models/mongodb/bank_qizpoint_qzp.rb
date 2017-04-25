@@ -27,6 +27,8 @@ class Mongodb::BankQizpointQzp
   belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
+  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid", dependent: :delete
+ 
 
   #
   def bank_checkpoint_ckps
@@ -85,14 +87,14 @@ class Mongodb::BankQizpointQzp
 
   def save_qizpoint params
      begin
-       self.quz_uid = params[:quz_uid] || ""
-       self.pap_uid = params[:pap_uid] || ""
-       self.tbs_sid = params[:tbs_sid] || ""
-       self.type = params[:type] || ""
-       self.answer = params[:answer] || ""
-       self.desc = params[:desc] || ""
-       self.score = params[:score] || 0.00
-       self.order = params[:order] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
+       self.quz_uid = params["quz_uid"] || ""
+       self.pap_uid = params["pap_uid"] || ""
+       self.tbs_sid = params["tbs_sid"] || ""
+       self.type = params["type"] || ""
+       self.answer = params["answer"] || ""
+       self.desc = params["desc"] || ""
+       self.score = params["score"] || 0.00
+       self.order = params["order"] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
        self.save!
      rescue Exception => ex
        return false

@@ -13,6 +13,7 @@ zh:
     list: "列表"
     save: "保存"
     cancel: "取消"
+    rollback: "回退"
   areas:
     list:
       all: "全部"
@@ -99,19 +100,25 @@ zh:
         fail: "试卷（原因：%{message}）保存失败!"
         debug: "保存试卷过程中发生异常: %{message}"
       submit_paper:
-        success: "试卷（标题；%{heading}）提交成功!"
-        fail: "试卷（标题；%{heading}）提交失败!"
+        success: "试卷（标题：%{heading}）提交成功!"
+        fail: "试卷（标题：%{heading}）提交失败!"
       save_analyze:
-        success: "试卷解析（标题；%{heading}）保存成功!"
-        fail: "试卷解析（标题；%{heading}）保存失败!"
+        success: "试卷解析（标题：%{heading}）保存成功!"
+        fail: "试卷解析（标题：%{heading}）保存失败!"
       submit_analyze:
-        success: "试卷解析（标题；%{heading}）提交成功!"
-        fail: "试卷解析（标题；%{heading}）提交失败!"
+        success: "试卷解析（标题：%{heading}）提交成功!"
+        fail: "试卷解析（标题：%{heading}）提交失败!"
       upload_score:
         success: '上传成功'
         fail: '上传失败'
+      delete_paper:
+        paper_not_found: "试卷不存在"
+        success: "试卷（标题：%{heading}）删除成功！"
+        fail: "试卷（原因：%{heading}）删除失败！"
+        debug: "删除试卷失败发生异常：%{message}"
       error:
         no_tenant: "该试卷无所属Tenant"
+        no_choose_status: "未选择回滚状态"
 
   quizs:
     nosource: "自编"
@@ -335,6 +342,7 @@ zh:
       jiao_cai_ji_mu_lu_guan_li: "教材及目录管理"
       jiao_cai_ji_mu_lu_zhi_biao_ti_xi_guan_li: "教材及目录指标体系管理"
       ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
+      shi_juan_guan_li: "试卷管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
       tenant:
