@@ -3,7 +3,7 @@
 class Mongodb::BankPaperPap
 
   attr_accessor :current_user_id
-  attr_accessor :test_associated_tenant_uids, :status, :target_area, :old_status, :old_tenant_links
+  attr_accessor :test_associated_tenant_uids, :status, :target_area, :old_status, :old_tenant_links, :old_paper_outline_arr
 
   include Mongoid::Document
   include Mongodb::MongodbPatch
@@ -21,9 +21,11 @@ class Mongodb::BankPaperPap
   has_many :bank_paper_pap_pointers, class_name: "Mongodb::BankPaperPapPointer", dependent: :delete
   has_many :bank_tests, class_name: "Mongodb::BankTest", dependent: :delete
   has_many :online_tests, class_name: "Mongodb::OnlineTest", dependent: :delete
+  has_many :paper_outlines, class_name: "Mongodb::PaperOutline",dependent: :delete
   has_many :bank_tnt_paps, class_name: "Mongodb::BankTntPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
+
 
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
@@ -98,6 +100,7 @@ class Mongodb::BankPaperPap
   ########类方法定义：begin#######
   class << self
 
+    #获取试卷信息
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
@@ -288,13 +291,15 @@ class Mongodb::BankPaperPap
         :name => self._id.to_s + "_" +Common::Locale::i18n("activerecord.models.bank_test"),
         :user_id => current_user_id,
         :quiz_date => Time.now,
+        :ext_data_path => params[:test][:ext_data_path],
         :bank_paper_pap_id => self.id.to_s
       })
       pap_test.save!
       # self.bank_tests = [pap_test]
       # save!
     else
-      self.bank_tests[0].bank_test_tenant_links.destroy_all unless params[:information][:tenants].blank?
+      self.bank_tests[0].update( ext_data_path: params[:test][:ext_data_path] )
+      self.bank_tests[0].bank_test_tenant_links.destroy_all if !self.bank_tests[0].bank_test_tenant_links.blank?
     end
       
     test_associated_tenant_uids.each{|tnt_uid|
@@ -343,6 +348,42 @@ class Mongodb::BankPaperPap
         bank_tests[0].bank_test_task_links.push(tkl_link)
       }
     end      
+
+    ##############################
+    #试卷大纲信息保存
+    params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
+    paper_outline_arr = []
+
+    if params["information"]["paper_outline_edittable"]
+      paper_outline_str = params["information"]["paper_outline"]
+      paper_outline_arr = paper_outline_str.split("\n")
+      paper_outline_arr.map!{|item| item.gsub(/\s+$/,'')}
+      rid_arr = []
+      last_level = 0
+      paper_outline_arr.map!{|item|
+        item_name = item.gsub(/^\++/,'')
+        item_level = item.scan(/\+{4}/).size + 1
+        rid = rid_arr[item_level] || -1
+        rid += 1
+        rid_arr[item_level] = rid
+        item_rid = rid_arr[1..item_level].map{|r| r.to_s.rjust(3, "0") }.join("")
+        {
+          :name => item_name,
+          :rid => item_rid,
+          :order => item_rid,
+          :level => item_level,
+          :is_end_point => false,
+          :bank_paper_pap_id => self.id
+        }
+      }
+      paper_outline_arr.map{|item|
+        rid_re = Regexp.new "^(#{item[:rid]}).{3,}" 
+        item["is_end_point"] = true if paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
+      }
+      paper_outlines.destroy_all
+      Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
+    end
+
 
     #试卷保存
     self.update_attributes({
@@ -507,10 +548,11 @@ class Mongodb::BankPaperPap
       :paper_status => status
     })
     
-    #update qizpoint ckps json
+    #update qizpoint ckps, paper outline json
     qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
     qzps.each{|qzp|
       qzp.format_ckps_json
+      qzp.format_paper_outline_json
     }
   end
 
@@ -591,6 +633,43 @@ class Mongodb::BankPaperPap
     return result
   end
 
+  # 获取试卷关联大纲的树形结构数据
+  #
+  def associated_outlines uniq_flag=false
+    result = []
+    qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
+    qzps.each{|qzp| 
+      qzp_outline = qzp.paper_outline
+      next unless qzp_outline
+      outline_arr = qzp_outline.ancestors.to_a + [qzp_outline]
+
+      outline_arr.each{|outline|
+        index = result.find_index{|item| item[:id] == outline.id.to_s}
+        if index.nil?
+          result << {
+            :id => outline.id.to_s,
+            :order => outline.rid,
+            :rid => outline.rid,
+            :level => outline.level,
+            :name => outline.name,
+            :is_end_point => outline.is_end_point,
+            :qzps_full_score_total => qzp.score.nil?? 0 : qzp.score,
+            :qzps => [qzp.id.to_s],
+            :qzp_count => 1
+          }
+        else
+          next if uniq_flag && !result[index][:qzps].find_index{|item| item == qzp.id.to_s}.blank?
+          result[index][:qzps_full_score_total] += qzp.score.nil?? 0 : qzp.score
+          result[index][:qzps].push(qzp.id.to_s)
+          result[index][:qzp_count] += 1
+        end
+      }
+    }
+
+    result.sort!{|a,b| Common::CheckpointCkp::compare_rid(a[:order], b[:order])}
+    return result
+  end
+
   # 返回得分点与指标的Mapping数组
   #
   # [return]: Array
@@ -617,12 +696,22 @@ class Mongodb::BankPaperPap
           }
         }.uniq
       }
-      result << {
+      item = {
         "qzp_id" => qzp.id.to_s,
         "qzp_order" => (index+1).to_s,
+        "qzp_system_order" => qzp.order,
+        "qzp_custom_order" => qzp.custom_order,
         "qzp_type" => qzp.type,
         "ckps" => target_level_ckp_h
       }
+      item.merge!({
+        "outline" => {
+          "id" => qzp.paper_outline.id.to_s,
+          "order" => qzp.paper_outline.rid.to_s,
+          "name" => qzp.paper_outline.name.to_s
+        }
+      }) if qzp.paper_outline
+      result << item
     }
     return result
   end
@@ -1057,14 +1146,13 @@ class Mongodb::BankPaperPap
     return params
   end
 
-
   # => ###############################################################
-  # =>  save_pap_plus
+  # =>  save_pap_plus 知识点拆分
   # => ###############################################################
 
   def save_pap_plus params
 
-    phase_arr = %w{phase1 phase2 phase3 phase4}
+    phase_arr = %w{phase1 phase2 phase3 phase4 phase5}
     params[:pap_uid] = id.to_s
     self.status = Common::Paper::Status::None
 
@@ -1106,10 +1194,10 @@ class Mongodb::BankPaperPap
     end
   end
 
+  ##############################
+  #临时处理，伴随试卷保存
+  #创建测试
   def save_pap_phase1 params
-    ##############################
-    #临时处理，伴随试卷保存
-    #创建测试
     # step1 new_bank_tests
     begin
       if self.bank_tests.blank?
@@ -1132,6 +1220,8 @@ class Mongodb::BankPaperPap
     end   
   end
 
+  ##############################
+  #试卷状态更新
   def save_pap_phase2 params
     #更改tenant状态
     begin
@@ -1142,8 +1232,6 @@ class Mongodb::BankPaperPap
         test_tenant_link.save!
         self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
       }
-      ##############################
-      #试卷状态更新
       if params[:information][:heading] && params[:bank_quiz_qizs].blank?
         self.status = Common::Paper::Status::New
       elsif params[:information][:heading] && params[:bank_quiz_qizs] && self.bank_quiz_qizs.blank?
@@ -1165,11 +1253,11 @@ class Mongodb::BankPaperPap
     end    
   end
 
+  ##############################
+  #Task List创建： 上传成绩， 生成报告
+  # step3 params["information"]["tasks"]不存在时 创建bank_test_task_links, tasklist
   def save_pap_phase3 params
     begin
-    ##############################
-    #Task List创建： 上传成绩， 生成报告
-    # step3 params["information"]["tasks"]不存在时 创建bank_test_task_links, tasklist
       params["information"]["tasks"] = params["information"]["tasks"] || {}
       if params["information"]["tasks"].blank?
         self.bank_tests[0].bank_test_task_links.destroy_all
@@ -1202,10 +1290,57 @@ class Mongodb::BankPaperPap
     end
   end
 
+  ##############################
+  #试卷大纲信息保存
   def save_pap_phase4 params
     begin
-      #试卷保存
-      # step4 save/update paper
+      params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
+      paper_outline_arr = []
+
+      if params["information"]["paper_outline_edittable"]
+        #备份以前的paperoutlines
+        self.old_paper_outline_arr = paper_outlines.map{|a| a.attributes}
+        
+        paper_outline_str = params["information"]["paper_outline"]
+        paper_outline_arr = paper_outline_str.split("\n")
+        paper_outline_arr.map!{|item| item.gsub(/\s+$/,'')}
+        rid_arr = []
+        last_level = 0
+        paper_outline_arr.map!{|item|
+          item_name = item.gsub(/^\++/,'')
+          item_level = item.scan(/\+{4}/).size + 1
+          rid = rid_arr[item_level] || -1
+          rid += 1
+          rid_arr[item_level] = rid
+          item_rid = rid_arr[1..item_level].map{|r| r.to_s.rjust(3, "0") }.join("")
+          {
+            :name => item_name,
+            :rid => item_rid,
+            :order => item_rid,
+            :level => item_level,
+            :is_end_point => false,
+            :bank_paper_pap_id => self.id
+          }
+        }
+
+        paper_outline_arr.map{|item|
+          rid_re = Regexp.new "^(#{item[:rid]}).{3,}" 
+          item["is_end_point"] = true if paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
+        }
+        paper_outlines.destroy_all
+        Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
+      end
+      return params  
+    rescue Exception => e
+      raise e.message 
+    end
+    
+  end
+
+  #试卷保存
+  # step5 save/update paper
+  def save_pap_phase5 params
+    begin
       target_tenant = Common::Uzer.get_tenant current_user_id
       self.update_attributes({
         :user_id => current_user_id || "",
@@ -1229,7 +1364,7 @@ class Mongodb::BankPaperPap
   #第一步发生异常时调用的回调
   def save_pap_phase1_rollback 
     #delete bank_test
-    if bank_test[0].present?
+    if bank_tests[0].present?
       old_tenant_links.each{|tnt_uid|
         test_tenant_link = Mongodb::BankTestTenantLink.new({
           :tenant_uid => tnt_uid
@@ -1238,23 +1373,26 @@ class Mongodb::BankPaperPap
         self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
       }
     end
+    params = JSON.parse(self.paper_json)
     if params["information"]["tasks"].blank?
       self.bank_tests[0].destroy_all if self.bank_tests
     end
 
     #delete bank_paper_pap    
   end
+
   #第二步发生的回滚
   def save_pap_phase2_rollback 
     #delete bank_test_tenant_links
     self.bank_tests[0].bank_test_tenant_links.destroy_all if self.bank_tests[0].present? && self.bank_tests[0].bank_test_tenant_links 
   end
+
   #第三步发生回滚
   def save_pap_phase3_rollback 
 
-    paper_h = JSON.parse(self.paper_json)
+    params = JSON.parse(self.paper_json)
 
-    if paper_h["information"]["tasks"].blank?
+    if params["information"]["tasks"].blank?
       self.bank_tests[0].tasks.destroy_all if self.bank_tests[0].present? && self.bank_tests[0].tasks.present?
       #delete test task list
       self.bank_tests[0].bank_test_task_links.destroy_all if self.bank_tests[0].present? && self.bank_tests[0].bank_test_task_links.present?
@@ -1262,12 +1400,21 @@ class Mongodb::BankPaperPap
   end
 
   #第四步发生回滚
-  def save_pap_phase4_rollback params
+  def save_pap_phase4_rollback 
+    params = JSON.parse(self.paper_json)
+    if params["information"]["paper_outline_edittable"]
+      paper_outlines.destroy_all
+      Mongodb::PaperOutline.collection.insert_many(old_paper_outline_arr)
+    end
+
   end
 
+  #第五步发生回滚
+  def save_pap_phase5_rollback 
+  end
 
   # => ###############################################################
-  # =>  submit_pap_plus
+  # =>  submit_pap_plus 试卷保存拆分
   # => ###############################################################
   def submit_pap_plus params
     params = params.deep_dup
@@ -1279,19 +1426,17 @@ class Mongodb::BankPaperPap
     begin      
       phase_arr.each_with_index do |phase, index|
         error_index = index
-        p error_index
         send("submit_pap_#{phase}")
       end
     rescue Exception => e
       phase_arr = phase_arr[0..error_index].reverse
       phase_arr.each_with_index do |phase, index|
-        p phase
         send("submit_pap_#{phase}_rollback")
       end
       raise SwtkErrors::SavePaperHasError.new(I18n.t("papers.messages.save_paper.debug", :message => e.message))
     end
   end
-
+  #试卷保存1
   def submit_pap_phase1 
      begin 
        #########
@@ -1323,7 +1468,7 @@ class Mongodb::BankPaperPap
      end
    
   end
-
+  #试卷保存2
   def submit_pap_phase2 
     begin
       # update node catalogs of paper
@@ -1339,7 +1484,7 @@ class Mongodb::BankPaperPap
     end
 
   end
-
+  #试卷保存3
   def submit_pap_phase3 
     begin   
       # save all quiz
@@ -1371,7 +1516,7 @@ class Mongodb::BankPaperPap
       raise e.message       
     end
   end
-
+  #试卷保存回滚1
   def submit_pap_phase1_rollback 
     self.update_attributes({
       :order => "",
@@ -1391,7 +1536,7 @@ class Mongodb::BankPaperPap
       :score => 0.00,
     })
   end
-
+  #试卷保存回滚2
   def submit_pap_phase2_rollback 
     # if params[:bank_node_catalogs]
     #   params[:bank_node_catalogs].each_with_index{|cat,index|
@@ -1400,7 +1545,7 @@ class Mongodb::BankPaperPap
     #   }
     # end
   end
-
+  #试卷保存回滚3
   def submit_pap_phase3_rollback 
     paper_h = JSON.parse(self.paper_json)
 
@@ -1415,6 +1560,7 @@ class Mongodb::BankPaperPap
     })  
   end
 
+  #回滚到修订完成
   def save_ckp_all_rollback
     paper_h = JSON.parse(self.paper_json)
     paper_h["bank_quiz_qizs"].each{|qiz| qiz["bank_qizpoint_qzps"].each{|qzp| qzp["bank_checkpoints_ckps"] = "" }}
@@ -1424,6 +1570,7 @@ class Mongodb::BankPaperPap
     })
   end
 
+  #保存指标+
   def submit_ckp_plus params
     phase_arr = %w{ phase1 phase2 phase3 phase4 }
     self.status = Common::Paper::Status::Analyzed
@@ -1442,6 +1589,7 @@ class Mongodb::BankPaperPap
     end
   end
 
+  #保存指标回滚第一步
   def submit_ckp_phase1 
     begin
       paper_h = JSON.parse(self.paper_json)
@@ -1463,6 +1611,7 @@ class Mongodb::BankPaperPap
     end
   end
 
+  #保存指标第二步
   def submit_ckp_phase2
     begin
       paper_h = JSON.parse(self.paper_json)    
@@ -1483,6 +1632,7 @@ class Mongodb::BankPaperPap
     end
   end
 
+  #保存指标第三步
   def submit_ckp_phase3
     begin      
       self.update_attributes({
@@ -1493,6 +1643,7 @@ class Mongodb::BankPaperPap
     end
   end
 
+  #保存指标第一步
   def submit_ckp_phase4 
     #update qizpoint ckps json
     begin      
@@ -1505,6 +1656,7 @@ class Mongodb::BankPaperPap
     end
   end
 
+  #保存指标回滚第一步
   def submit_ckp_phase1_rollback
     paper_h = JSON.parse(self.paper_json)
  
@@ -1520,6 +1672,7 @@ class Mongodb::BankPaperPap
     end
   end
 
+  #保存指标回滚第二步
   def submit_ckp_phase2_rollback 
     paper_h = JSON.parse(self.paper_json)
     paper_h["information"]["paper_status"] = Common::Paper::Status::Analyzing
@@ -1533,19 +1686,20 @@ class Mongodb::BankPaperPap
     }) 
   end
 
+  #保存指标回滚第三步
   def submit_ckp_phase3_rollback 
     self.update_attributes({
       :paper_status => Common::Paper::Status::Analyzing
     })        
   end
-
+  #保存指标回滚第四步
   def submit_ckp_phase4_rollback 
     qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
     qzps.each{|qzp|
       qzp.update_attributes({ckps_json: ""})
     }
   end
-
+  #状态回滚 目标状态，是否保留解析
   def rollback_status target_status, flag
     return false unless %{ editting editted analyzing}.include?(target_status)
     status_hash = Common::Locale::StatusOrder
@@ -1578,14 +1732,14 @@ class Mongodb::BankPaperPap
       return false
     end
   end
-
+  #回滚到正在解析状态
   def submit_ckp_rollback
     phase_arr = %w{ phase1 phase2 phase3 phase4 }
     phase_arr.reverse.each_with_index do |phase, index|
       send("submit_ckp_#{phase}_rollback")
     end  
   end
-
+  #回滚到正在修订状态
   def submit_pap_rollback
     phase_arr = %w{ phase1 phase2 phase3 }
     phase_arr.reverse.each_with_index do |phase, index|
@@ -1593,6 +1747,8 @@ class Mongodb::BankPaperPap
     end 
   end
 
+
+  #删除相关试卷的上传文件，删除试卷及依赖
   def delete_paper_pap
     begin
       if bank_tests[0].present? 
@@ -1620,12 +1776,16 @@ class Mongodb::BankPaperPap
         file_upload.delete
       end
       self.delete
-      return  true
     rescue Exception => e
       raise SwtkErrors::DeletePaperError.new(I18n.t("papers.messages.delete_paper.debug", :message => e.message))
-      return false
     end
   end
 
+  def outline_list
+    paper_outlines.map{|item|
+      ancestors = paper_outlines.find_all{|o| item.ancestor_rids.include?(o.rid) }
+      {id: item.id.to_s, name: item.name, is_end_point: item.is_end_point, path: ancestors.map{|item| "/" + item.name}.join("") + "/" + item.name }
+    }.unshift({id: nil, name: nil, is_end_point: "true", path: "" })
+  end
 end
 
