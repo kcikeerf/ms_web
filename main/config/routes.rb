@@ -123,6 +123,7 @@ Rails.application.routes.draw do
       match 'import_filled_result', via: [:get, :post, :patch]
       get 'download'
       get 'download_page'
+      post 'outline_list'
     end 
   end
 

@@ -1,7 +1,7 @@
 module TenantModule
   module Tenant
     NumberLength = 5
-    NumberRandArr = [*'A'..'Z']
+    NumberRandArr = Common::SwtkConstants::AlphabetDownCaseArr
     TypeList = {
       :gong_ban_xue_xiao => Common::Locale::i18n("tenants.types.gong_ban_xue_xiao"),
       :min_ban_xue_xiao => Common::Locale::i18n("tenants.types.min_ban_xue_xiao"),

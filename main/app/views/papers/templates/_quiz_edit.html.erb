@@ -1,0 +1,230 @@
+<!-- 单题解析模版 -->
+<script type="text/template" class="template_part4">
+	<div class="part4 clearfix">
+		<div class="sideMenu">
+			<p class="sideTitle">题目列表</p>
+			<ul class="topNav">
+				<li>
+					<p>一、填一填</p>
+					<ol class="subNav">
+						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+					</ol>
+				</li>
+				<li>
+					<p>二、判断</p>
+					<ol class="subNav">
+						<li>4</li>
+						<li>5</li>
+						<li>6</li>
+					</ol>
+				</li>
+				<li>
+					<p>三、选择</p>
+					<ol class="subNav">
+						<li>7</li>
+						<li>8</li>
+						<li>9</li>
+					</ol>
+				</li>
+			</ul>
+			<!--a class="detection" href="javascript:;">检测</a-->
+		</div>
+		<div class="attribute">
+			<div class="paperModify">
+				<h5 class="paper_title">2016年第一学期实验一小期末数学试卷</h5>
+				<h3 class="paper_subtitle">高考零分回家了购房计划</h3>
+				<p class="description"></p>
+			</div>
+                        <div class="questionType" style="padding:0 50px;"></div>
+			<div class="information clearfix">
+				<p class="infoText">基本信息</p>		
+				<div class="information1">
+					<div class="selectWarp systemQuizOrder  clearfix">
+						<p>系统顺序&nbsp;:</p>
+						<div class="systemQuizOrderDisplay display_text"></div>
+					</div>
+					<div class="selectWarp different clearfix">
+						<p>试卷大纲&nbsp;:</p>
+						<select class="selectpicker selectQuizPaperOutline">
+  							<option></option>
+						</select>
+					</div>								
+					<div class="selectWarp selectCategory different selectCommon clearfix">
+						<p><%=LABEL("dict.question_type")%>&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp different selectFullscore clearfix">
+						<p>满分&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<input type="text" value="0">
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li>4</li>
+								<li>5</li>
+								<li>6</li>
+								<li>7</li>
+								<li>8</li>
+								<li>9</li>
+								<li>10</li>
+								<li>15</li>
+								<li>20</li>
+								<li>40</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+				<div class="information1">
+					<div class="selectWarp customQuizOrder clearfix">
+					    <p>自定义顺序&nbsp;:</p>
+						<input type="text" name="customQuizOrder" value="">
+					</div>					
+					<div class="selectWarp selectDegree different selectCommon clearfix">
+						<p>难度预估&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% difficulty_list.each do |k,v|%>
+                                    <li values="<%=k%>"><%=v%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp isOptional different selectCommon clearfix">
+					    <p>选做题&nbsp;:</p>
+						<p class="textCheckbox"><span></span></p>
+					</div>					
+				</div>
+			</div>
+			<div class="testQuestions clearfix">
+				<p class="textLabel">试题</p>
+				<div class="textEditor textEditor1">
+					<textarea id="min_question" cols="20" rows="2"></textarea>
+					<p class="text_is_image textCheckbox" style="float: left;"><span></span>图片</p>
+				</div>
+			</div>
+			<div class="testAnswer clearfix">
+				<p class="textLabel">答案</p>
+				<div class="textEditor textEditor2">
+					<textarea id="min_answer" cols="20" rows="2"></textarea>
+					<textarea class="remarks" placeholder="请在此输如答案说明（可选）"></textarea>
+					<p class="answer_is_image textCheckbox" style="float: left;"><span></span>图片</p>
+				</div>
+			</div>
+			<div class="analyze clearfix">
+				<p class="textLabel">分析</p>
+				<div class="textLabelWarp">
+
+					<div class="scoreRemark clearfix">
+						<div class="selectWarp   clearfix">
+							<p>系统顺序：</p>
+							<div class="systemScoreOrderDisplay"></div>
+						</div>
+						<div class="selectWarp customScoreOrder clearfix">
+							<p>自定义顺序：</p>
+							<input type="text" name="customScoreOrder" value="">
+						</div>
+						<!--div class="selectWarp different clearfix">
+							<p>试卷大纲&nbsp;:</p>
+							<select class="selectpicker selectScorePaperOutline">
+	  							<option></option>
+							</select>
+						</div-->
+						<div class="selectWarp different scorePart clearfix">
+							<p>小分&nbsp;:</p>
+							<div class="optionWarp">
+								<div class="selectVal">
+									<input type="text" value="0">
+									<i class="icon"></i>
+								</div>
+								<ol class="optionList">
+									<li>1</li>
+									<li>2</li>
+									<li>3</li>
+									<li>4</li>
+									<li>5</li>
+									<li>6</li>
+									<li>7</li>
+									<li>8</li>
+									<li>9</li>
+									<li>10</li>
+									<li>15</li>
+									<li>20</li>
+									<li>40</li>
+								</ol>
+							</div>
+						</div>
+								
+
+						<div class="selectWarp is_subjective clearfix">
+							<p>主观题</p>
+							<p class="textCheckbox"><span></span></p>
+						</div>
+
+						<div class="selectWarp clearfix score_answer_is_image">
+							<p>图片</p>
+							<p class="textCheckbox"><span></span></p>
+						</div>
+
+						<div class="score   clearfix">
+							<label>得分点：</label>
+							<!--textarea class="scoreAnswer" placeholder="得分点标准"></textarea-->
+							<textarea class="scoreAnswerText" cols="20" rows="2"></textarea>
+						</div>
+
+						<div class="score   clearfix">
+							<label>测试答案：</label>
+							<textarea class="scoreTestAnswer" placeholder=""></textarea>
+						</div>
+					</div>
+
+					<!--<div class="threeDimensional clearfix">
+						<p class="dimensional">三维解析</p>
+						<ul class="typeList">
+							<li>
+								<label>知识：</label>
+								<input class="knowledge" type="text">
+							</li>
+							<li>
+								<label>技能：</label>
+								<input class="skill" type="text">
+							</li>
+							<li>
+								<label>能力：</label>
+								<input class="ability" type="text">
+							</li>
+						</ul>
+					</div>-->
+					<a href="javascript:;" class="deleteIcon"></a>
+				</div>
+			</div>
+			<div class="addWarp">
+				<a href="javascript:;" class="addScore">+&nbsp;&nbsp;添加</a>
+			</div>
+			<div class="saveWarp">
+				<a href="javascript:;" class="saveBtn">保存</a>
+			</div>
+			<div class="analysis historyBtn clearfix">
+				<a class="nextBtn" href="javascript:void(0);">提交</a>
+				<a class="prevBtn" href="javascript:void(0);">上一步</a>
+			</div>
+		</div>
+	</div>
+</script>

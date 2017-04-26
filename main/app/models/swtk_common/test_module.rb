@@ -14,6 +14,10 @@ module TestModule
       ReportGenerating = "report_generating"
       ReportCompleted = "report_completed" 
     end
+
+    ExtDataCodeArr = Common::SwtkConstants::AlphabetDownCaseArr + Common::SwtkConstants::AlphabetUpCaseArr + Common::SwtkConstants::NumberArr
+    ExtDataPathLength = 6
+    ExtDataPathDefaultPrefix = "___"    
   end
 
   module OnrineTest

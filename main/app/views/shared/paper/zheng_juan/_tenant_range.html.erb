@@ -3,94 +3,113 @@
 <% else %>
   <% target_tenants = [current_user.role_obj.tenant].compact %>
 <% end %>
-	<div class="hint"><%=LABEL("page.paper.test_range")%></div>
-	<div class="table-responsive">
-	<table class="table">
-		<thead>
-			<tr>
-				<th><%= LABEL("page.order_index") %></th>
-				<th><%= LABEL("activerecord.attributes.default.name") %></th>
-  				<th><%= LABEL("activerecord.attributes.default.status") %></th>
-				<th><%= LABEL("page.action") %></th>
-			</tr>
-		</thead>
-		
-<% if edittable %>
-		<tbody class="tenant_range_check_list">
- 	<% unless target_tenants.blank? %>
-		<% target_tenants.each_with_index do |t,index| %>
-				<tr>
-					<td><%=index+1%></td>
-					<td>
-					<div class="tenant_range_item_checkbox" 
-						 tenant_uid="<%=t.uid%>"
-						 tenant_name="<%= t.name_cn %>"
-						 tenant_status="">
-						<span></span><%= t.name_cn %></div>
-					</td>
- 					<td>-</td>
-					<td>-</td>
-				</tr>
-		<% end %>
-	<% end %>
-		</tbody>
-<% else %>
-		<tbody class="tenant_range_display_list">
-    <% unless (target_tenants.blank? && @current_test && @current_test.tenants.blank?) %>
-		<% @current_test_tenant_list.each_with_index do |t,index| %>
- 			<tr class="tenant_result_list">
-				<td><%=index+1%></td>
-				<td><%= t[:tenant_name] %></td>
- 				<td>
-					<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
-						<%= LABEL("tests.status.#{t[:tenant_status]}") %>
-					<% else %>
-						<div class="progress <%= t[:tenant_status] %>" style="float: left; width: 100px;height:20px;">
-							<div class="progress-bar progress-bar-success" 
-								job-uid="<%= t[:job_uid] %>"
-								role="progressbar" 
-								aria-valuenow="0" 
-								aria-valuemin="0" 
-								aria-valuemax="100" 
-								style="width: <%= t[:job_progress] %>%; font-size: 10px;color: #000000;">
-								<%= t[:job_progress] %>%
-							</div>
-						</div>
-					<% end %>
-				</td>
-				<td>
-					<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
-						<div style="font-size: 10px;">
-							<a href="javascript:;" 
-								geturl="/papers/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" 
-								class="download_link link_grade" 
-								style="font-size: 14px;">
-							学生成绩表下载</a>
-						</div>
-						<div style="font-size: 10px;">
-							<a href="javascript:;" 
-								geturl="/papers/download_page?type=user_password_reporturl&tenant_uid=<%= t[:tenant_uid]%>" 
-								class="download_link link_user"
-								style="font-size: 14px;">
-							用户名、密码、报告链接汇总表下载</a>
-						</div>
-					<% elsif [Common::Test::Status::Analyzed].include?(t[:tenant_status]) %>
-						<div style="float: left;">
-							<button type="button" 
-									class="btn btn-default btn-xs" 
-									geturl="/papers/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
-									href="javascript:;">
-							导入成绩表
-							</button>
-						</div>
-						<div style="float: left; width: 20px;display: block;">&nbsp;
-						</div>
-					<% end %>
-				</td>
-			</tr>
-		<% end if @current_test%>
-	<% end %>
-		</tbody>
+	<!--学校列表表头-->
+	<div class="hint">
+		<span style="width: 15%; text-align: left;float: left;">
+			<%=LABEL("page.paper.test_range")%>
+		</span>
+<% if edittable %>	
+		<span style="float: left;">
+			<button type="button" class="btn btn-primary btn-xs check_all_tenants">
+				全选
+			</button>
+			<button type="button" class="btn btn-primary btn-xs clear_check_all_tenants">
+				重置
+			</button>			
+		</span>
 <% end %>
-	</table>
+	</div>
+
+	<!--学校列表-->
+
+	<br><br>
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th><%= LABEL("page.order_index") %></th>
+					<th><%= LABEL("activerecord.attributes.default.name") %></th>
+	  				<th><%= LABEL("activerecord.attributes.default.status") %></th>
+					<th><%= LABEL("page.action") %></th>
+				</tr>
+			</thead>
+			
+	<% if edittable %>
+			<tbody class="tenant_range_check_list">
+	 	<% unless target_tenants.blank? %>
+			<% target_tenants.each_with_index do |t,index| %>
+					<tr>
+						<td><%=index+1%></td>
+						<td>
+						<div class="tenant_range_item_checkbox" 
+							 tenant_uid="<%=t.uid%>"
+							 tenant_name="<%= t.name_cn %>"
+							 tenant_status="">
+							<span></span><%= t.name_cn %></div>
+						</td>
+	 					<td>-</td>
+						<td>-</td>
+					</tr>
+			<% end %>
+		<% end %>
+			</tbody>
+	<% else %>
+			<tbody class="tenant_range_display_list">
+	    <% unless (target_tenants.blank? && @current_test && @current_test.tenants.blank?) %>
+			<% @current_test_tenant_list.each_with_index do |t,index| %>
+	 			<tr class="tenant_result_list">
+					<td><%=index+1%></td>
+					<td><%= t[:tenant_name] %></td>
+	 				<td>
+						<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
+							<%= LABEL("tests.status.#{t[:tenant_status]}") %>
+						<% else %>
+							<div class="progress <%= t[:tenant_status] %>" style="float: left; width: 100px;height:20px;">
+								<div class="progress-bar progress-bar-success" 
+									job-uid="<%= t[:job_uid] %>"
+									role="progressbar" 
+									aria-valuenow="0" 
+									aria-valuemin="0" 
+									aria-valuemax="100" 
+									style="width: <%= t[:job_progress] %>%; font-size: 10px;color: #000000;">
+									<%= t[:job_progress] %>%
+								</div>
+							</div>
+						<% end %>
+					</td>
+					<td>
+						<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
+							<div style="font-size: 10px;">
+								<a href="javascript:;" 
+									geturl="/papers/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" 
+									class="download_link link_grade" 
+									style="font-size: 14px;">
+								学生成绩表下载</a>
+							</div>
+							<div style="font-size: 10px;">
+								<a href="javascript:;" 
+									geturl="/papers/download_page?type=user_password_reporturl&tenant_uid=<%= t[:tenant_uid]%>" 
+									class="download_link link_user"
+									style="font-size: 14px;">
+								用户名、密码、报告链接汇总表下载</a>
+							</div>
+						<% elsif [Common::Test::Status::Analyzed].include?(t[:tenant_status]) %>
+							<div style="float: left;">
+								<button type="button" 
+										class="btn btn-default btn-xs" 
+										geturl="/papers/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
+										href="javascript:;">
+								导入成绩表
+								</button>
+							</div>
+							<div style="float: left; width: 20px;display: block;">&nbsp;
+							</div>
+						<% end %>
+					</td>
+				</tr>
+			<% end if @current_test%>
+		<% end %>
+			</tbody>
+	<% end %>
+		</table>
 	</div>

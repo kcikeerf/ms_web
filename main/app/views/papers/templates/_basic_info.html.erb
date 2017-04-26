@@ -1,0 +1,220 @@
+<!-- 试卷信息模版 -->
+<script type="text/template" class="template_part2">
+	<div class="part2">
+		<div class="wordUpdate">
+			<div class="updateTitle">试卷入库 - 基本信息</div>
+		</div>
+		<div class="infoWarp">
+			<div class="paperTitle paperTitle1">
+				<label>试卷主标题&nbsp;:&nbsp;</label><input type="text">
+			</div>
+			<div class="paperTitle paperTitle2">
+				<label>试卷副标题&nbsp;:&nbsp;</label><input type="text">
+			</div>
+			<div class="source">
+				<div class="school">
+					<label>学校&nbsp;:</label>
+					<input type="hidden" value="<%= test_organizer_name %>" disabled=true><span class="school_name"><%= test_organizer_name %></span>
+				</div>
+			</div>
+			<ul class="infoList">
+				<li>
+					<!--div class="selectWarp selectProvince clearfix">
+						<p>省&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selectSubject different clearfix">
+						<p>科目&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% subject_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selecTerm different clearfix">
+						<p>适用学期&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% term_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
+					<!--div class="selectWarp selectTime clearfix">
+						<p>考试时长&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>90分钟</li>
+								<li>120分钟</li>
+								<li>150分钟</li>
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selectTestdate clearfix">
+						<p>考试时间&nbsp;:</p>
+						<input class="date_input" type="text"/>
+					</div>
+				</li>
+				<li>
+					<!--div class="selectWarp selectCity clearfix">
+						<p>市&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selecGrade different clearfix">
+						<p>年级&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% grade_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
+					<!--div class="selectWarp selectKnowledge different clearfix">
+						<p>知识点范围&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selectTime clearfix">
+						<p>考试时长&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>90分钟</li>
+								<li>120分钟</li>
+								<li>150分钟</li>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selectScore different clearfix">
+						<p>满分&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<input type="text" value="0">
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+								<li>100</li>
+								<li>120</li>
+								<li>150</li>
+							</ol>
+						</div>
+					</div>
+				</li>
+				<li>
+					<!--div class="selectWarp selectCounty clearfix">
+						<p>区/县&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							</ol>
+						</div>
+					</div-->
+					<div class="selectWarp selectVersion different clearfix">
+						<p>教材版本&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% node_version_list.each do |k,v|%>
+                                    <li nameid="<%=k%>"><%=v%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selecType different selectCommon clearfix">
+						<p><%=LABEL("dict.quiz_type")%>&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+							    <li values="qi_chu_ce_shi"><%=LABEL("dict.qi_chu_ce_shi")%></li>
+								<li values="qi_zhong_ce_shi"><%=LABEL("dict.qi_zhong_ce_shi")%></li>
+								<li values="qi_mo_ce_shi"><%=LABEL("dict.qi_mo_ce_shi")%></li>
+								<li values="mo_ni_ce_shi"><%=LABEL("dict.mo_ni_ce_shi")%></li>
+								<li values="yue_kao"><%=LABEL("dict.yue_kao")%></li>
+								<li values="dan_yuan_ce_shi"><%=LABEL("dict.dan_yuan_ce_shi")%></li>
+								<li values="xiao_sheng_chu_ce_shi"><%=LABEL("dict.xiao_sheng_chu_ce_shi")%></li>
+								<li values="xue_ke_neng_li_ce_ping"><%=LABEL("dict.xue_ke_neng_li_ce_ping")%></li>
+							</ol>
+						</div>
+					</div>
+					<div class="selectWarp selectDifficulty different selectCommon clearfix">
+						<p><%=LABEL("dict.levelword2")%>&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% difficulty_list.each do |k,v|%>
+                                    <li values="<%=k%>"><%=v%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
+				</li>
+			</ul>
+
+
+<!--项目管理员增加Tenant范围选择域-->
+<%=render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
+<%=render partial: "papers/paper_outline" %>
+<%=render partial: "shared/tests/config" %>
+		</div>
+
+		<div class="submitInfoWarp clearfix">
+			<p>注：您已成功上传试卷文件和答案文件<i></i></p>
+			<a class="infoBtn" href="javascript:void(0);">保存</a>
+		</div>
+	</div>
+</script>

@@ -1,0 +1,49 @@
+<div class="hint">
+	<span style="width: 15%; float: left; text-align: left;">
+		试卷大纲
+	</span>
+<!-- 	<span class="textCheckbox paper_outline_edittable active"><span></span></span> -->
+	<span style="float: left;">
+		<button type="button" 
+			class="btn btn-success btn-xs paper_outline_edit_lock"
+			locked=true>
+			锁定中
+		</button>
+	</span>
+	<span style="float: left;">&nbsp;&nbsp;&nbsp;</span>
+	<span style="float: left;">
+		<button type="button" 
+			class="btn btn-primary btn-xs preview_paper_outline" 
+			data-toggle="modal" 
+			data-target="#paper_outline_modal">
+			预览
+		</button>
+	</span>
+	<span style="float: left;">&nbsp;&nbsp;&nbsp;</span>
+	<span class="paper_outline_edit_lock_message" style="float: left; color: red;text-align: left;">
+		锁定中大纲不会被更新
+	</span>	
+</div>
+<div class="form-group">
+	<textarea class="form-control paper_outline" rows="20" disabled></textarea>
+	<br>
+	<div style="color: blue; font-style: italic;">* 请用“++++”（四个加号）间隔分级，并在分级符之后追加标题，例：第一层左侧置顶，第二层“++++标题”，第三层“+++++++++标题”。</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="paper_outline_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">预览</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span id="paper_outline_tree" class="ztree" style="display: block ; width: 100%;"></span>
+      </div>
+    </div>
+  </div>
+</div>
+

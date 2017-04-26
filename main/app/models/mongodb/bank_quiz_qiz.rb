@@ -15,6 +15,15 @@ class Mongodb::BankQuizQiz
   before_save :format_float
 =end
 
+  belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
+  has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
+  has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
+  has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete 
+  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
+  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
+
+  embeds_one :tk_lock, class_name: "Mongodb::TkLock"
+
   #field :uid, type: String
   field :subject, type: String
   field :node_uid, type: String
@@ -27,7 +36,9 @@ class Mongodb::BankQuizQiz
   field :type, type: String
   field :optional, type: Boolean
   field :text, type: String
+  field :text_is_image, type: Boolean
   field :answer, type: String
+  field :answer_is_image, type: Boolean
   field :desc, type: String
   field :score, type: Float
   field :time, type: Float
@@ -35,16 +46,13 @@ class Mongodb::BankQuizQiz
   field :level, type: Float
   field :levelword, type: String
   field :levelorder, type: Integer
-  field :order, type: String
+  field :order, type: String #系统顺序
+  field :asc_order, type: Integer #递增顺序
+  field :custom_order, type: String #自定义顺序
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
-  has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
-  has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
-  has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete 
-  has_many :bank_quiz_qiz_histories, class_name: "Mongodb::BankQuizQizHistory"
 
-  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
 
   def save_quiz params, paper_status=nil
     #params = JSON.parse(params["_json"]) if params["_json"]
@@ -66,7 +74,9 @@ class Mongodb::BankQuizQiz
         :type => params["type"] || "",
         :optional => params["optional"] || "",
         :text => params["text"] || "",
+        :text_is_image => params["text_is_image"] || "",
         :answer => params["answer"] || "",
+        :answer_is_image => params["answer_is_image"] || "",
         :desc => params["desc"] || "",
         :score => params["score"] || 0.00,
         :time => params["time"] || 0.00,
@@ -75,7 +85,10 @@ class Mongodb::BankQuizQiz
         :levelword => params["levelword"] || "",
         :levelorder => params["levelorder"] || "",
 #        :order => (params["order"].to_s || '0').ljust(Common::Paper::Constants::OrderWidth, '0')
-        :order => params["order"] || "0"
+        :order => params["order"] || "0",
+        :asc_order => params["asc_order"] || 0,
+        :custom_order => params["custom_order"] || "",
+        :paper_outline_id => params["paper_outline_id"] || nil
       })
       self.save!
 =begin
@@ -104,6 +117,10 @@ class Mongodb::BankQuizQiz
   def save_all_qzps quiz, params, status
     result = []
     params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
+      # 算出得分点的递增题顺
+      qzp_index = params["qizpoint_order_arr"].find_index(bqq["order"])
+      bqq[:asc_order] = qzp_index.blank?? 0 : qzp_index + 1
+
       qiz_point = Mongodb::BankQizpointQzp.new
       qiz_point.save_qizpoint bqq
       result << qiz_point._id.to_s

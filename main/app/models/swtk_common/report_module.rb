@@ -40,6 +40,14 @@ module ReportModule
       Levels = 2
     end
 
+    module PaperOutlines
+      DefaultLevel = 2
+      DefaultLevelFrom = 1
+      DefaultLevelTo = 2
+      DefaultLevelEnd = 3
+      Levels = 2
+    end
+
     module ScoreLevel
       LevelNone = -1
       Level0 = 0

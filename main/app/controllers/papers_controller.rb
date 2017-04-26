@@ -12,7 +12,9 @@ class PapersController < ApplicationController
     :submit_paper, 
     :save_analyze,
     :submit_analyze, 
-    :get_empty_score_file]
+    :get_empty_score_file,
+    :outline_list
+  ]
   before_action do
     check_resource_tenant(@paper) if @paper
   end
@@ -36,8 +38,9 @@ class PapersController < ApplicationController
       :answer => params[:answer_path]
     })
     result[:orig_file_id] = f_uploaded.id
-    result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
-    result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    
+    result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
+    result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
 
     render :json => result.to_json
   end
@@ -85,13 +88,14 @@ class PapersController < ApplicationController
     end
     begin
       current_pap.current_user_id = current_user.id
-      current_pap.save_pap(params)
-      result = response_json(200, {pap_uid: current_pap._id.to_s})
+      current_pap.save_pap_plus(params)
+      render common_json_response(200, {pap_uid: current_pap._id.to_s})
     rescue Exception => ex
+      p ex.backtrace
       #current_pap.save_paper_rollback
-      result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
+      #result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
+      render common_json_response(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}" )})
     end
-    render :json => result
   end
 
   def get_saved_paper
@@ -386,11 +390,17 @@ class PapersController < ApplicationController
     render layout: false
   end
 
-  private
-
-  def set_paper
-    @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-    @paper.current_user_id = current_user.id
+  # 获取试卷大纲
+  # [参数]
+  # pap_uid: 试卷id
+  def outline_list
+    render json: @paper.outline_list.to_json
   end
 
+  private
+
+    def set_paper
+      @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+      @paper.current_user_id = current_user.id
+    end
 end

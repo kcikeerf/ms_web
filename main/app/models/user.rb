@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-    :recoverable, :rememberable, :trackable, :validatable#, :lockable
+    :recoverable, :rememberable, :trackable, :validatable, # :lockable
+    password_length: 6..128
 
   belongs_to :role
   has_one :image_upload
@@ -33,10 +34,8 @@ class User < ActiveRecord::Base
 
   ########类方法定义：begin#######
   class << self
-    def generate_rand_password
-      result = "" 
-      Common::Uzer::PasswdRandLength.times{ result << Common::Uzer::PasswdRandArr.sample }
-      result
+    def generate_rand_password len=6
+      len.times.map{ Common::Uzer::PasswdRandArr.sample }.join("")
     end
 
     def find_for_database_authentication(warden_conditions)
@@ -51,7 +50,7 @@ class User < ActiveRecord::Base
     #teacher: User.add_user('xxx', 'teacher', {loc_uid: '1111111', name: 'xx', subject: 'english', head_teacher: true})
     def add_user(name, role_name, options={})
       begin
-        password = generate_rand_password
+        password = generate_rand_password(Common::Uzer::PasswdRandLength)
         transaction do 
           user = find_by(name: name)
           if user
