@@ -1835,6 +1835,7 @@ $(function(){
         $(".sideMenu .topNav > li:first-child").find("ol li:first-child").trigger("click");
 
         paper.baseFn.update_quiz_type_list();
+        CKEDITOR.replace('scoreAnswerText0', paper.ckeditor_params.qzp_edit);
     }
 
     //跳转到解析详情模块
