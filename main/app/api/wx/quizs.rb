@@ -30,18 +30,22 @@ module Quizs
         target_current_user = current_user
         target_pupil = target_current_user.is_pupil?? target_current_user : User.where(name: params[:pupil_user_name]).first
         #error!(message_json("w21204"), 403) if target_user.blank?
-        unless params[:qzp_id].blank?
-          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_current_user.id}/qzp_id/#{params[:qzp_id]}"
-        else
-          redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{target_current_user.id}/qzp_order/#{params[:qzp_order]}"
-        end
+        redis_user_id = target_pupil.blank?? target_current_user.id : target_pupil.id
+        redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{redis_user_id}/qzp_id/#{params[:qzp_id]}"
+        # unless params[:qzp_id].blank?
+        #   redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{redis_user_id}/qzp_id/#{params[:qzp_id]}"
+        # else
+        #   redis_key = "/api/quizs/test/#{params[:test_id]}/user/#{redis_user_id}/qzp_order/#{params[:qzp_order]}"
+        # end
 
         if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, redis_key
           result = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, redis_key
           JSON.parse(result)
         else
           target_test = Mongodb::BankTest.where(_id: params[:test_id]).first
+          error!(message_json("e40004"), 404) unless target_test
           target_paper = target_test.bank_paper_pap
+          error!(message_json("e40004"), 404) unless target_paper
 
           order_redis_key = "/api/papers/" + target_paper.id.to_s + "/qzps_orders/"
           if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, order_redis_key
