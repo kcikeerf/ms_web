@@ -1052,7 +1052,7 @@ $(function(){
             cloneNode.find(".scoreAnswerText").attr("id", qzp_ckeditor_id);
             $(".analyze").append(cloneNode);
 
-            cloneNode.find("#cke_" + "scoreAnswerText" + (qzp_index-1)).remove();
+            cloneNode.find("#cke_" + "scoreAnswerText0").remove();
             CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
             window.scrollTo(0, scroll_top);
         });
@@ -1835,6 +1835,7 @@ $(function(){
         $(".sideMenu .topNav > li:first-child").find("ol li:first-child").trigger("click");
 
         paper.baseFn.update_quiz_type_list();
+        CKEDITOR.replace('scoreAnswerText0', paper.ckeditor_params.qzp_edit);
     }
 
     //跳转到解析详情模块
