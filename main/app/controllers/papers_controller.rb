@@ -133,12 +133,14 @@ class PapersController < ApplicationController
       #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
       begin
         #current_pap.current_user_id = current_user.id
-        @paper.submit_pap params
+        @paper.submit_pap_plus params
         @paper.generate_empty_score_file
 
         result = response_json(200, {pap_uid: @paper._id.to_s})
         #result = response_json(200, {messages: I18n.t("papers.messages.submit_paper.success", current_pap.heading)})
       rescue Exception => ex
+        logger.debug(ex.backtrace)
+
         #@paper.submit_pap_rollback
         result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.message)})
       end
@@ -188,7 +190,7 @@ class PapersController < ApplicationController
 
     if params[:pap_uid]
       #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      if @paper.submit_ckp params
+      if @paper.submit_ckp_plus params
         result = response_json(200, {messages: I18n.t("papers.messages.submit_analyze.success", @paper.heading)})
       else
         result = response_json(500, {messages: I18n.t("papers.messages.submit_analyze.fail", @paper.heading)})

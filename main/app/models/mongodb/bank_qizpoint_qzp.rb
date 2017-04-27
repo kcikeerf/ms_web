@@ -12,6 +12,11 @@ class Mongodb::BankQizpointQzp
   # validates :tbs_sid,:type, length: {maximum: 50}
   # validates :answer, :desc, length: {maximum: 500}
 
+  belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
+  belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
+  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
+  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
+
   field :quz_uid, type: String
   field :pap_uid, type: String
   field :tbs_sid, type: String
@@ -19,8 +24,10 @@ class Mongodb::BankQizpointQzp
   field :answer, type: String
   field :desc, type: String
   field :ckps_json, type: String
+  field :paper_outline_json, type: String
   field :score, type: Float
   field :order, type: String
+  field :custom_order, type: String
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
@@ -29,7 +36,6 @@ class Mongodb::BankQizpointQzp
   has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
   has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid", dependent: :delete
  
-
   #
   def bank_checkpoint_ckps
     result_arr =[]
@@ -85,6 +91,17 @@ class Mongodb::BankQizpointQzp
     update_attributes({ckps_json: result.to_json})
   end
 
+  def format_paper_outline_json
+    return {} if paper_outline.blank?
+    outline_arr = [ paper_outline.ancestors, paper_outline ].flatten
+    outline_ids = "/#{outline_arr.map{|item| item.id.to_s}.join('/')}"
+    outline_rid = "/#{outline_arr.map{|item| item.rid.to_s}.join('/')}"
+    update_attributes(paper_outline_json: {
+      "ids" => outline_ids,
+      "rids" => outline_rid
+    }.to_json)
+  end
+
   def save_qizpoint params
      begin
        self.quz_uid = params["quz_uid"] || ""
@@ -95,6 +112,8 @@ class Mongodb::BankQizpointQzp
        self.desc = params["desc"] || ""
        self.score = params["score"] || 0.00
        self.order = params["order"] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
+       self.custom_order = params["custom_order"] || ""
+       self.paper_outline_id = params["paper_outline_id"] || nil       
        self.save!
      rescue Exception => ex
        return false

@@ -116,6 +116,8 @@ zh:
         success: "试卷（标题：%{heading}）删除成功！"
         fail: "试卷（原因：%{heading}）删除失败！"
         debug: "删除试卷失败发生异常：%{message}"
+      warn:
+        is_locked: "试卷已被写锁定！请等待..."
       error:
         no_tenant: "该试卷无所属Tenant"
         no_choose_status: "未选择回滚状态"
@@ -182,6 +184,7 @@ zh:
     grade_rank: "年级排名"
     excel:
       score_title: "成绩录入表"
+      head_teacher_password_title: "班主任老师的用户名密码"
       teacher_password_title: "老师的用户名密码"
       pupil_password_title: "学生的用户名密码"
     messages:

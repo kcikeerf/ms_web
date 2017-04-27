@@ -2,11 +2,12 @@
 
 class Mongodb::BankPaperPap
 
-  attr_accessor :current_user_id
-  attr_accessor :test_associated_tenant_uids, :status, :target_area, :old_status, :old_tenant_links, :old_paper_outline_arr
-
   include Mongoid::Document
   include Mongodb::MongodbPatch
+  include TkLockPatch
+  
+  attr_accessor :current_user_id
+  attr_accessor :test_associated_tenant_uids, :status, :target_area, :old_status, :old_tenant_links, :old_paper_outline_arr
 
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
@@ -26,6 +27,7 @@ class Mongodb::BankPaperPap
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
 
+  embeds_one :tk_lock, class_name: "Mongodb::TkLock"
 
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
@@ -127,7 +129,6 @@ class Mongodb::BankPaperPap
       end
       return paper_result, self.count
     end
- 
 
 
     def ckp_weights_modification args={}
@@ -257,162 +258,179 @@ class Mongodb::BankPaperPap
   ########类方法定义：end#######
 
   def save_pap params
-    params[:pap_uid] = id.to_s
-    ##############################
-    #地理位置信息
-    current_user = Common::Uzer.get_user current_user_id
-    target_tenant = Common::Uzer.get_tenant current_user_id
-    test_associated_tenant_uids = []
-    if current_user.is_project_administrator?
-      target_area = Area.where(rid: current_user.role_obj.area_rid).first
-      params[:information][:province] = target_area.pcd_h[:province][:name_cn]
-      params[:information][:city] = target_area.pcd_h[:city][:name_cn]
-      params[:information][:district] = target_area.pcd_h[:district][:name_cn]
-      params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
-      test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
-    else
-      target_area = Area.get_area params[:information]
-      if target_tenant
-        params[:information][:province] = target_tenant.area_pcd[:province_name_cn]
-        params[:information][:city] = target_tenant.area_pcd[:city_name_cn]
-        params[:information][:district] = target_tenant.area_pcd[:district_name_cn]
-        params[:information][:school] = target_tenant.name_cn
-        test_associated_tenant_uids = [target_tenant.uid]
+    result = false
+    begin
+      # 锁定
+      if self.tk_lock
+        result = false
+        raise Common::Locale::i18n("papers.messages.warn.is_locked")
+      else
+        self.lock!(TkLockModule::TkLock::ReadOnly, current_user_id)
       end
-    end
-    raise if test_associated_tenant_uids.blank?
-    ##############################
 
-    ##############################
-    #临时处理，伴随试卷保存
-    #创建测试    
-    if self.bank_tests.blank?
-      pap_test = Mongodb::BankTest.new({
-        :name => self._id.to_s + "_" +Common::Locale::i18n("activerecord.models.bank_test"),
-        :user_id => current_user_id,
-        :quiz_date => Time.now,
-        :ext_data_path => params[:test][:ext_data_path],
-        :bank_paper_pap_id => self.id.to_s
-      })
-      pap_test.save!
-      # self.bank_tests = [pap_test]
-      # save!
-    else
-      self.bank_tests[0].update( ext_data_path: params[:test][:ext_data_path] )
-      self.bank_tests[0].bank_test_tenant_links.destroy_all if !self.bank_tests[0].bank_test_tenant_links.blank?
-    end
-      
-    test_associated_tenant_uids.each{|tnt_uid|
-      test_tenant_link = Mongodb::BankTestTenantLink.new({
-        :tenant_uid => tnt_uid
-      })
-      test_tenant_link.save!
-      self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
-    } 
+      params[:pap_uid] = id.to_s
+      ##############################
+      #地理位置信息
+      current_user = Common::Uzer.get_user current_user_id
+      target_tenant = Common::Uzer.get_tenant current_user_id
+      test_associated_tenant_uids = []
+      if current_user.is_project_administrator?
+        target_area = Area.where(rid: current_user.role_obj.area_rid).first
+        params[:information][:province] = target_area.pcd_h[:province][:name_cn]
+        params[:information][:city] = target_area.pcd_h[:city][:name_cn]
+        params[:information][:district] = target_area.pcd_h[:district][:name_cn]
+        params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
+        test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
+      else
+        target_area = Area.get_area params[:information]
+        if target_tenant
+          params[:information][:province] = target_tenant.area_pcd[:province_name_cn]
+          params[:information][:city] = target_tenant.area_pcd[:city_name_cn]
+          params[:information][:district] = target_tenant.area_pcd[:district_name_cn]
+          params[:information][:school] = target_tenant.name_cn
+          test_associated_tenant_uids = [target_tenant.uid]
+        end
+      end
+      raise if test_associated_tenant_uids.blank?
+      ##############################
 
-
-    ##############################
-    #试卷状态更新
-    status = Common::Paper::Status::None
-    if params[:information][:heading] && params[:bank_quiz_qizs].blank?
-      status = Common::Paper::Status::New
-    elsif params[:information][:heading] && params[:bank_quiz_qizs] && self.bank_quiz_qizs.blank?
-      status = Common::Paper::Status::Editting  
-    else
-      # do nothing
-    end
-    params["information"]["paper_status"] = status
-
-    #测试各Tenant的状态更新
-    params = update_test_tenants_status(params,
-      Common::Test::Status::NotStarted,
-      self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
-    )
-
-    ##############################
-    #Task List创建： 上传成绩， 生成报告
-    params["information"]["tasks"] = params["information"]["tasks"] || {}
-    if params["information"]["tasks"].blank?
-      self.bank_tests[0].bank_test_task_links.destroy_all
-      [Common::Task::Type::ImportResult, Common::Task::Type::CreateReport].each{|tk|
-        tkl = TaskList.new({
-          :name => id.to_s + "_" + Common::Locale::i18n("tasks.type." + tk),
-          :task_type => tk,
-          #:pap_uid => id.to_s,
-          :status => Common::Task::Status::InActive
+      ##############################
+      #临时处理，伴随试卷保存
+      #创建测试
+      ext_data_path = (params[:test] && params[:test][:ext_data_path]) ? params[:test][:ext_data_path] : ""
+      if self.bank_tests.blank?
+        pap_test = Mongodb::BankTest.new({
+          :name => self._id.to_s + "_" +Common::Locale::i18n("activerecord.models.bank_test"),
+          :user_id => current_user_id,
+          :quiz_date => Time.now,
+          :ext_data_path => ext_data_path,
+          :bank_paper_pap_id => self.id.to_s
         })
-        tkl.save!
-        tkl_link = Mongodb::BankTestTaskLink.new(:task_uid => tkl.uid)
-        tkl_link.save!
-        params["information"]["tasks"][tk] = tkl.uid
-        bank_tests[0].bank_test_task_links.push(tkl_link)
-      }
-    end      
+        pap_test.save!
+        # self.bank_tests = [pap_test]
+        # save!
+      else
+        self.bank_tests[0].update( ext_data_path: ext_data_path )
+        self.bank_tests[0].bank_test_tenant_links.destroy_all if !self.bank_tests[0].bank_test_tenant_links.blank?
+      end
 
-    ##############################
-    #试卷大纲信息保存
-    params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
-    paper_outline_arr = []
+      test_associated_tenant_uids.each{|tnt_uid|
+        test_tenant_link = Mongodb::BankTestTenantLink.new({
+          :tenant_uid => tnt_uid
+        })
+        test_tenant_link.save!
+        self.bank_tests[0].bank_test_tenant_links.push(test_tenant_link)
+      } 
 
-    if params["information"]["paper_outline_edittable"]
-      paper_outline_str = params["information"]["paper_outline"]
-      paper_outline_arr = paper_outline_str.split("\n")
-      paper_outline_arr.map!{|item| item.gsub(/\s+$/,'')}
-      rid_arr = []
-      last_level = 0
-      paper_outline_arr.map!{|item|
-        item_name = item.gsub(/^\++/,'')
-        item_level = item.scan(/\+{4}/).size + 1
-        rid = rid_arr[item_level] || -1
-        rid += 1
-        rid_arr[item_level] = rid
-        item_rid = rid_arr[1..item_level].map{|r| r.to_s.rjust(3, "0") }.join("")
-        {
-          :name => item_name,
-          :rid => item_rid,
-          :order => item_rid,
-          :level => item_level,
-          :is_end_point => false,
-          :bank_paper_pap_id => self.id
+      ##############################
+      #试卷状态更新
+      status = Common::Paper::Status::None
+      if params[:information][:heading] && params[:bank_quiz_qizs].blank?
+        status = Common::Paper::Status::New
+      elsif params[:information][:heading] && params[:bank_quiz_qizs] && self.bank_quiz_qizs.blank?
+        status = Common::Paper::Status::Editting  
+      else
+        # do nothing
+      end
+      params["information"]["paper_status"] = status
+
+      #测试各Tenant的状态更新
+      params = update_test_tenants_status(params,
+        Common::Test::Status::NotStarted,
+        self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
+      )
+
+      ##############################
+      #Task List创建： 上传成绩， 生成报告
+      params["information"]["tasks"] = params["information"]["tasks"] || {}
+      if params["information"]["tasks"].blank?
+        self.bank_tests[0].bank_test_task_links.destroy_all
+        [Common::Task::Type::ImportResult, Common::Task::Type::CreateReport].each{|tk|
+          tkl = TaskList.new({
+            :name => id.to_s + "_" + Common::Locale::i18n("tasks.type." + tk),
+            :task_type => tk,
+            #:pap_uid => id.to_s,
+            :status => Common::Task::Status::InActive
+          })
+          tkl.save!
+          tkl_link = Mongodb::BankTestTaskLink.new(:task_uid => tkl.uid)
+          tkl_link.save!
+          params["information"]["tasks"][tk] = tkl.uid
+          bank_tests[0].bank_test_task_links.push(tkl_link)
         }
-      }
-      paper_outline_arr.map{|item|
-        rid_re = Regexp.new "^(#{item[:rid]}).{3,}" 
-        item["is_end_point"] = true if paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
-      }
-      paper_outlines.destroy_all
-      Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
-    end
+      end
+
+      ##############################
+      #试卷大纲信息保存
+      params["information"]["paper_outline"] = params["information"]["paper_outline"] || {}
+      paper_outline_arr = []
+
+      if params["information"]["paper_outline_edittable"]
+        paper_outline_str = params["information"]["paper_outline"]
+        paper_outline_arr = paper_outline_str.split("\n")
+        paper_outline_arr.map!{|item| item.gsub(/\s+$/,'')}
+        rid_arr = []
+        last_level = 0
+        paper_outline_arr.map!{|item|
+          item_name = item.gsub(/^\++/,'')
+          item_level = item.scan(/\+{4}/).size + 1
+          rid = rid_arr[item_level] || -1
+          rid += 1
+          rid_arr[item_level] = rid
+          item_rid = rid_arr[1..item_level].map{|r| r.to_s.rjust(3, "0") }.join("")
+          {
+            :name => item_name,
+            :rid => item_rid,
+            :order => item_rid,
+            :level => item_level,
+            :is_end_point => false,
+            :bank_paper_pap_id => self.id
+          }
+        }
+        paper_outline_arr.map{|item|
+          rid_re = Regexp.new "^(#{item[:rid]}).{3,}" 
+          item["is_end_point"] = true if paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
+        }
+        paper_outlines.destroy_all
+        Mongodb::PaperOutline.collection.insert_many(paper_outline_arr)
+      end
 
 
-    #试卷保存
-    self.update_attributes({
-      :user_id => current_user_id || "",
-      :area_uid => target_area.nil?? "" : target_area.uid,
-      :tenant_uid => target_tenant.nil?? "" : target_tenant.uid,
-      :heading => params[:information][:heading] || "",
-      :subheading => params[:information][:subheading] || "",
-      :orig_file_id => params[:orig_file_id] || "",
-      :paper_json => params.to_json || "",
-      :paper_html => params[:paper_html] || "",
-      :answer_html => params[:answer_html] || "",
-      :paper_status => status
-    })
+      #试卷保存
+      self.update_attributes({
+        :user_id => current_user_id || "",
+        :area_uid => target_area.nil?? "" : target_area.uid,
+        :tenant_uid => target_tenant.nil?? "" : target_tenant.uid,
+        :heading => params[:information][:heading] || "",
+        :subheading => params[:information][:subheading] || "",
+        :orig_file_id => params[:orig_file_id] || "",
+        :paper_json => params.to_json || "",
+        :paper_html => params[:paper_html] || "",
+        :answer_html => params[:answer_html] || "",
+        :paper_status => status
+      })
 
-
-    ##############################
-    #有异常，抛出
-    unless self.errors.messages.empty?
-      raise SwtkErrors::SavePaperHasError.new(I18n.t("papers.messages.save_paper.debug", :message => self.errors.messages)) 
+      #有异常，抛出
+      # result = false unless self.errors.messages.empty?
+      #   raise SwtkErrors::SavePaperHasError.new(I18n.t("papers.messages.save_paper.debug", :message => self.errors.messages)) 
+      # end
+      result = self.errors.messages.empty?
+    rescue Exception => ex
+      self.errors.add(:base, ex.message)
+      result = false
+    ensure
+      #解锁
+      self.unlock! if result
+      return result
     end
   end
 
-  # def save_pap_rollback
-  #   #delete bank_test_tenant_links
-  #   #delete bank_test
-  #   #delete test task list
-  #   #delete bank_paper_pap
-  # end
+  def save_pap_rollback
+    #delete bank_test_tenant_links
+    #delete bank_test
+    #delete test task list
+    #delete bank_paper_pap
+  end
 
   def submit_pap params
     params = params.deep_dup
@@ -459,11 +477,19 @@ class Mongodb::BankPaperPap
     # save all quiz
     #begin
     if params[:bank_quiz_qizs]
+      # 所有得分点的题顺数组
+      qizpoint_order_arr = params[:bank_quiz_qizs].map{|qiz| qiz["bank_qizpoint_qzps"] }.flatten.map{|qzp| qzp["order"]}
       params[:bank_quiz_qizs].each_with_index{|quiz,index|
         # store quiz
         qzp_arr = []
         qiz = Mongodb::BankQuizQiz.new
+        
         quiz["subject"] = subject
+        # 单题的试卷中递增题顺
+        quiz["asc_order"] = index + 1
+        # 所有得分点的题顺数组
+        quiz["qizpoint_order_arr"] = qizpoint_order_arr
+
         qzp_arr = qiz.save_quiz quiz
         if qiz.errors.messages.empty?
           params[:bank_quiz_qizs][index][:id]=qiz._id.to_s
@@ -487,18 +513,20 @@ class Mongodb::BankPaperPap
     })
   end
 
-  # def submit_pap_rollback
-  #   #
-  #   #
-  # end
+  def submit_pap_rollback
+    #
+    #
+  end
 
   def save_ckp params
-    status = Common::Paper::Status::Analyzing
+    self.status = Common::Paper::Status::Analyzing
     #return result if params[:infromation].blank?
     old_paper_h = JSON.parse(self.paper_json).clone
+
     paper_h = JSON.parse(self.paper_json)
     paper_h["information"]["paper_status"] = status
     paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
+
     begin      
       self.update_attributes({
         :paper_json => paper_h.to_json || "",
@@ -510,10 +538,10 @@ class Mongodb::BankPaperPap
   end
 
   def save_ckp_rollback paper_h
-    self.update_attributes({
-      :paper_json => paper_h.to_json || "",
-    })
-    #
+     self.update_attributes({
+       :paper_json => paper_h.to_json || "",
+      :paper_status => self.status
+     })
   end
 
   def submit_ckp params
@@ -556,9 +584,9 @@ class Mongodb::BankPaperPap
     }
   end
 
-  # def submit_ckp_rollback
+  def submit_ckp_rollback
 
-  # end
+  end
 
   def bank_node_catalogs
     cat_uids = self.bank_pap_cats.map{|cat| cat.uid }
@@ -893,7 +921,9 @@ class Mongodb::BankPaperPap
         "grade",
         "classroom",
         "head_teacher",
+        "teacher_number",
         "subject_teacher",
+        "teacher_number",
         "name",
         "pupil_number",
         "sex",
@@ -910,6 +940,8 @@ class Mongodb::BankPaperPap
         "",
         "",
         "",
+        "",
+        "",
         Common::Locale::i18n('quizs.order')
       ]
 
@@ -919,7 +951,9 @@ class Mongodb::BankPaperPap
         Common::Locale::i18n('dict.grade'),
         Common::Locale::i18n('dict.classroom'),
         Common::Locale::i18n('dict.head_teacher'),
+        Common::Locale::i18n('dict.teacher_number'),
         Common::Locale::i18n('dict.subject_teacher'),
+        Common::Locale::i18n('dict.teacher_number'),
         Common::Locale::i18n('dict.name'),
         Common::Locale::i18n('dict.pupil_number'),
         Common::Locale::i18n('dict.sex'),
@@ -1025,7 +1059,7 @@ class Mongodb::BankPaperPap
           :promptTitle => Common::Locale::i18n('dict.sex'),
           :prompt => ""
         })
-        cells= sheet.rows.last.cells[8..cols_count].map{|cell| {:key=> cell.r, :value=> title_row_arr[cell.index].to_s}}
+        cells= sheet.rows.last.cells[10..cols_count].map{|cell| {:key=> cell.r, :value=> title_row_arr[cell.index].to_s}}
         cells.each{|cell|
           sheet.add_data_validation(cell[:key],{
             :type => :decimal,
@@ -1056,76 +1090,76 @@ class Mongodb::BankPaperPap
     File.delete(file_path)
   end
 
-  def format_user_name args=[]
-    #args.join("_")
-    args.join(Common::Uzer::UserNameSperator)
-  end
+  # def format_user_name args=[]
+  #   #args.join("_")
+  #   args.join(Common::Uzer::UserNameSperator)
+  # end
 
-  def format_user_password_row role,params_h
-    row_data = {
-      Common::Role::Teacher.to_sym => {
-        :username => params_h[:user_name],
-        :password => "",
-        :name => params_h[:name],
-        :report_url => "",
-        :op_guide => Common::Locale::i18n('reports.op_guide_details'),
-        :tenant_uid => params_h[:tenant_uid]
-      },
-      Common::Role::Pupil.to_sym => {
-        :username => params_h[:user_name],
-        :password => "",
-        :name => params_h[:name],
-        :stu_number => params_h[:stu_number],
-        :report_url => "",#Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
-        :op_guide => Common::Locale::i18n('reports.op_guide_details'),
-        :tenant_uid => params_h[:tenant_uid]
-      }
-    }
+  # def format_user_password_row role,params_h
+  #   row_data = {
+  #     Common::Role::Teacher.to_sym => {
+  #       :username => params_h[:user_name],
+  #       :password => "",
+  #       :name => params_h[:name],
+  #       :report_url => "",
+  #       :op_guide => Common::Locale::i18n('reports.op_guide_details'),
+  #       :tenant_uid => params_h[:tenant_uid]
+  #     },
+  #     Common::Role::Pupil.to_sym => {
+  #       :username => params_h[:user_name],
+  #       :password => "",
+  #       :name => params_h[:name],
+  #       :stu_number => params_h[:stu_number],
+  #       :report_url => "",#Common::SwtkConstants::MyDomain + "/reports/new_square?username=",
+  #       :op_guide => Common::Locale::i18n('reports.op_guide_details'),
+  #       :tenant_uid => params_h[:tenant_uid]
+  #     }
+  #   }
 
-    params_h[:tenant_uid] = (tenant.nil?? "":tenant.uid) if params_h[:tenant_uid].blank?
+  #   params_h[:tenant_uid] = (tenant.nil?? "":tenant.uid) if params_h[:tenant_uid].blank?
 
-    ret = User.add_user params_h[:user_name],role, params_h
+  #   ret = User.add_user params_h[:user_name],role, params_h
 
-    target_username = ""
-    if (ret.is_a? Array) && ret.empty?
-      row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.info.old_user")
-      row_data[role.to_sym][:report_url] = generate_url
-      target_username = ret[0]
-    elsif (ret.is_a? Array) && !ret.empty?
-      row_data[role.to_sym][:password] = ret[1]
-      row_data[role.to_sym][:report_url] = generate_url
-      target_username = ret[0]
-    else
-      row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.error.add_user_failed")
-    end
+  #   target_username = ""
+  #   if (ret.is_a? Array) && ret.empty?
+  #     row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.info.old_user")
+  #     row_data[role.to_sym][:report_url] = generate_url
+  #     target_username = ret[0]
+  #   elsif (ret.is_a? Array) && !ret.empty?
+  #     row_data[role.to_sym][:password] = ret[1]
+  #     row_data[role.to_sym][:report_url] = generate_url
+  #     target_username = ret[0]
+  #   else
+  #     row_data[role.to_sym][:password] = Common::Locale::i18n("scores.messages.error.add_user_failed")
+  #   end
     
-    associate_user_and_pap role, target_username if (ret.is_a? Array)
-    return row_data[role.to_sym].values
-  end
+  #   associate_user_and_pap role, target_username if (ret.is_a? Array)
+  #   return row_data[role.to_sym].values
+  # end
 
-  def associate_user_and_pap role, username
-    target_user = User.where(name: username).first
-    return false unless target_user
-    case role
-    when "pupil"
-      target_pupil = target_user.pupil
-      return false unless target_pupil
-      pup_uid = target_pupil.uid
-      bpp = Mongodb::BankPupPap.new
-      bpp.save_pup_pap pup_uid, self._id.to_s
-    when "teacher"
-      target_teacher = target_user.teacher
-      return false unless target_teacher
-      tea_uid = target_teacher.uid
-      btp = Mongodb::BankTeaPap.new
-      btp.save_tea_pap tea_uid, self._id.to_s
-    end
-    return true
-  end
+  # def associate_user_and_pap role, username
+  #   target_user = User.where(name: username).first
+  #   return false unless target_user
+  #   case role
+  #   when "pupil"
+  #     target_pupil = target_user.pupil
+  #     return false unless target_pupil
+  #     pup_uid = target_pupil.uid
+  #     bpp = Mongodb::BankPupPap.new
+  #     bpp.save_pup_pap pup_uid, self._id.to_s
+  #   when "teacher"
+  #     target_teacher = target_user.teacher
+  #     return false unless target_teacher
+  #     tea_uid = target_teacher.uid
+  #     btp = Mongodb::BankTeaPap.new
+  #     btp.save_tea_pap tea_uid, self._id.to_s
+  #   end
+  #   return true
+  # end
 
-  def generate_url
-    return Common::SwtkConstants::MyDomain 
-  end
+  # def generate_url
+  #   return Common::SwtkConstants::MyDomain 
+  # end
 
   def is_completed?
     paper_status == Common::Paper::Status::ReportCompleted
@@ -1146,52 +1180,77 @@ class Mongodb::BankPaperPap
     return params
   end
 
+  # 获取大纲列表
+  #
+  def outline_list
+    paper_outlines.map{|item|
+      ancestors = paper_outlines.find_all{|o| item.ancestor_rids.include?(o.rid) }
+      {id: item.id.to_s, name: item.name, is_end_point: item.is_end_point, path: ancestors.map{|item| "/" + item.name}.join("") + "/" + item.name }
+    }.unshift({id: nil, name: nil, is_end_point: "true", path: "" })
+  end
+
   # => ###############################################################
   # =>  save_pap_plus 知识点拆分
   # => ###############################################################
-
-  def save_pap_plus params
-
+  def save_pap_plus params      
+    result = false
     phase_arr = %w{phase1 phase2 phase3 phase4 phase5}
-    params[:pap_uid] = id.to_s
-    self.status = Common::Paper::Status::None
-
-    ##############################
-    #地理位置信息
-    current_user = Common::Uzer.get_user current_user_id
-    target_tenant = Common::Uzer.get_tenant current_user_id
-    if current_user.is_project_administrator?
-      self.target_area = Area.where(rid: current_user.role_obj.area_rid).first
-      params[:information][:province] = target_area.pcd_h[:province][:name_cn]
-      params[:information][:city] = target_area.pcd_h[:city][:name_cn]
-      params[:information][:district] = target_area.pcd_h[:district][:name_cn]
-      params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
-      self.test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
-    else
-      self.target_area = Area.get_area params[:information]
-      if target_tenant
-        params[:information][:province] = target_tenant.area_pcd[:province_name_cn]
-        params[:information][:city] = target_tenant.area_pcd[:city_name_cn]
-        params[:information][:district] = target_tenant.area_pcd[:district_name_cn]
-        params[:information][:school] = target_tenant.name_cn
-        self.test_associated_tenant_uids = [target_tenant.uid]
-      end
-    end
-    raise if test_associated_tenant_uids.blank?
-    begin
     error_index = 0
+    self.status = Common::Paper::Status::None
+    begin
+      # 锁定
+      if self.tk_lock
+        result = false
+        raise Common::Locale::i18n("papers.messages.warn.is_locked")
+      else
+        self.lock!(TkLockModule::TkLock::ReadOnly, current_user_id)
+      end
+
+      params[:pap_uid] = id.to_s
+      ##############################
+      #地理位置信息
+      current_user = Common::Uzer.get_user current_user_id
+      target_tenant = Common::Uzer.get_tenant current_user_id
+      test_associated_tenant_uids = []
+      if current_user.is_project_administrator?
+        target_area = Area.where(rid: current_user.role_obj.area_rid).first
+        params[:information][:province] = target_area.pcd_h[:province][:name_cn]
+        params[:information][:city] = target_area.pcd_h[:city][:name_cn]
+        params[:information][:district] = target_area.pcd_h[:district][:name_cn]
+        params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
+        self.test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
+      else
+        target_area = Area.get_area params[:information]
+        if target_tenant
+          params[:information][:province] = target_tenant.area_pcd[:province_name_cn]
+          params[:information][:city] = target_tenant.area_pcd[:city_name_cn]
+          params[:information][:district] = target_tenant.area_pcd[:district_name_cn]
+          params[:information][:school] = target_tenant.name_cn
+          self.test_associated_tenant_uids = [target_tenant.uid]
+        end
+      end
+      raise if self.test_associated_tenant_uids.blank?
+      ##############################
       phase_arr.each_with_index do |value,index|
         error_index = index
         params = send("save_pap_#{value}", params)
       end 
-    rescue Exception => e
+      result = self.errors.messages.empty?
+      self.unlock!
+    rescue Exception => ex
+      p ex.message
       arr = phase_arr[0..error_index].reverse
-
       arr.each_with_index do |value, index|
+        p value + ">>>>>>>>>>>>>>><<<<<<<<<<<<"
         send("save_pap_#{value}_rollback")
       end
-      raise SwtkErrors::SavePaperHasError.new(I18n.t("papers.messages.save_paper.debug", :message => e.message))
-    end
+      raise ex.message
+    # ensure
+    #   p result
+    #   #解锁
+    #   self.unlock!
+    #   return result
+    end  
   end
 
   ##############################
@@ -1225,7 +1284,7 @@ class Mongodb::BankPaperPap
   def save_pap_phase2 params
     #更改tenant状态
     begin
-      test_associated_tenant_uids.each{|tnt_uid|
+      self.test_associated_tenant_uids.each{|tnt_uid|
         test_tenant_link = Mongodb::BankTestTenantLink.new({
           :tenant_uid => tnt_uid
         })
@@ -1322,7 +1381,6 @@ class Mongodb::BankPaperPap
             :bank_paper_pap_id => self.id
           }
         }
-
         paper_outline_arr.map{|item|
           rid_re = Regexp.new "^(#{item[:rid]}).{3,}" 
           item["is_end_point"] = true if paper_outline_arr.find{|o| o[:rid] =~ rid_re }.blank?
@@ -1333,8 +1391,7 @@ class Mongodb::BankPaperPap
       return params  
     rescue Exception => e
       raise e.message 
-    end
-    
+    end  
   end
 
   #试卷保存
@@ -1352,7 +1409,7 @@ class Mongodb::BankPaperPap
         :paper_json => params.to_json || "",
         :paper_html => params[:paper_html] || "",
         :answer_html => params[:answer_html] || "",
-        :paper_status => status
+        :paper_status => self.status
       })
       return params
     rescue Exception => e
@@ -1365,6 +1422,7 @@ class Mongodb::BankPaperPap
   def save_pap_phase1_rollback 
     #delete bank_test
     if bank_tests[0].present?
+      old_tenant_links ||= []
       old_tenant_links.each{|tnt_uid|
         test_tenant_link = Mongodb::BankTestTenantLink.new({
           :tenant_uid => tnt_uid
@@ -1378,6 +1436,7 @@ class Mongodb::BankPaperPap
       self.bank_tests[0].destroy_all if self.bank_tests
     end
 
+    self.unlock!
     #delete bank_paper_pap    
   end
 
@@ -1418,14 +1477,13 @@ class Mongodb::BankPaperPap
   # => ###############################################################
   def submit_pap_plus params
     params = params.deep_dup
-
-
     phase_arr = %w{ phase1 phase2 phase3}
     error_index = 0
     self.old_status = self.paper_status.clone
     begin      
       phase_arr.each_with_index do |phase, index|
         error_index = index
+        p phase
         send("submit_pap_#{phase}")
       end
     rescue Exception => e
@@ -1491,27 +1549,37 @@ class Mongodb::BankPaperPap
       #begin
       params = JSON.parse(self.paper_json)
       if params["bank_quiz_qizs"]
+        # 所有得分点的题顺数组    
+        qizpoint_order_arr = params["bank_quiz_qizs"].map{|qiz| qiz["bank_qizpoint_qzps"] }.flatten.map{|qzp| qzp["order"]}
         params["bank_quiz_qizs"].each_with_index{|quiz,index|
           # store quiz
           qzp_arr = []
           qiz = Mongodb::BankQuizQiz.new
           quiz["subject"] = subject
+          # 单题的试卷中递增题顺
+          quiz["asc_order"] = index + 1
+          # 所有得分点的题顺数组
+          quiz["qizpoint_order_arr"] = qizpoint_order_arr
           qzp_arr = qiz.save_quiz quiz, self.paper_status
-          params["bank_quiz_qizs"][index]["id"]=qiz._id.to_s
-          unless qzp_arr.empty?
-            qzp_arr.each_with_index{|qzp_uid,qzp_index|
-              params["bank_quiz_qizs"][index]["bank_qizpoint_qzps"][qzp_index]["id"] = qzp_uid
-            }
-          end
+          if qiz.errors.messages.empty?
+            params["bank_quiz_qizs"][index]["id"] = qiz._id.to_s
+            unless qzp_arr.empty?
+              qzp_arr.each_with_index{|qzp_uid,qzp_index|
+                params["bank_quiz_qizs"][index]["bank_qizpoint_qzps"][qzp_index]["id"] = qzp_uid
+              }
+            end
+          else
+            raise qiz.errors.messges
+          end          
           self.bank_quiz_qizs.push(qiz)
         }
-        status = Common::Paper::Status::Editted
-        params["information"]["paper_status"] = status
-        self.update_attributes({
-          :paper_json => params.to_json || "",
-          :paper_status => status
-        })
       end
+      status = Common::Paper::Status::Editted
+      params["information"]["paper_status"] = status
+      self.update_attributes({
+        :paper_json => params.to_json || "",
+        :paper_status => status
+      })
     rescue Exception => e
       raise e.message       
     end
@@ -1553,6 +1621,7 @@ class Mongodb::BankPaperPap
       self.bank_quiz_qizs.destroy_all
     end
     old_status = Common::Paper::Status::Editting
+    paper_h["information"]["paper_status"] = old_status
 
     self.update_attributes({
       :paper_status => old_status,
@@ -1560,7 +1629,7 @@ class Mongodb::BankPaperPap
     })  
   end
 
-  #回滚到修订完成
+  #清空指标
   def save_ckp_all_rollback
     paper_h = JSON.parse(self.paper_json)
     paper_h["bank_quiz_qizs"].each{|qiz| qiz["bank_qizpoint_qzps"].each{|qzp| qzp["bank_checkpoints_ckps"] = "" }}
@@ -1615,7 +1684,6 @@ class Mongodb::BankPaperPap
   def submit_ckp_phase2
     begin
       paper_h = JSON.parse(self.paper_json)    
-      #paper_h["bank_quiz_qizs"] = params[:bank_quiz_qizs]
 
       #测试各Tenant的状态更新
       paper_h = update_test_tenants_status(
@@ -1781,11 +1849,5 @@ class Mongodb::BankPaperPap
     end
   end
 
-  def outline_list
-    paper_outlines.map{|item|
-      ancestors = paper_outlines.find_all{|o| item.ancestor_rids.include?(o.rid) }
-      {id: item.id.to_s, name: item.name, is_end_point: item.is_end_point, path: ancestors.map{|item| "/" + item.name}.join("") + "/" + item.name }
-    }.unshift({id: nil, name: nil, is_end_point: "true", path: "" })
-  end
 end
 

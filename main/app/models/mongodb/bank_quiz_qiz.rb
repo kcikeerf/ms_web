@@ -126,7 +126,7 @@ class Mongodb::BankQuizQiz
       result << qiz_point._id.to_s
       quiz.bank_qizpoint_qzps.push(qiz_point)
       unless bqq["bank_checkpoints_ckps"].blank?
-        if status == Common::Paper::Status::Common::Paper::Status::Analyzing
+        if status == Common::Paper::Status::Analyzing
           save_qzp_all_ckps qiz_point,bqq#["bank_checkpoints_ckps"]
         end
       end
