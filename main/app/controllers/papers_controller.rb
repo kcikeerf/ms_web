@@ -356,17 +356,24 @@ class PapersController < ApplicationController
           @paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
           @paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImporting, {:job_uid =>job_tracker.uid} )
 
-          # backend job
-          #Thread.new do
-            ImportResultsJob.perform_later({
-              #:task_uid => target_task.uid,
-              :score_file_id => score_file.id,
-              :tenant_uid => params[:tenant_uid],
-              :pap_uid => params[:pap_uid],
-              :job_uid => job_tracker.uid 
-            })
-          #end
+          # # backend job
+          # #Thread.new do
+          #   ImportResultsJob.perform_later({
+          #     #:task_uid => target_task.uid,
+          #     :score_file_id => score_file.id,
+          #     :tenant_uid => params[:tenant_uid],
+          #     :pap_uid => params[:pap_uid],
+          #     :job_uid => job_tracker.uid 
+          #   })
+          # #end
 
+          ImportResultsWorker.perform_async({
+            :score_file_id => score_file.id,
+            :tenant_uid => params[:tenant_uid],
+            :pap_uid => params[:pap_uid],
+            :job_uid => job_tracker.uid 
+          })
+          
           status = 200
           result[:status] = status
           current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
