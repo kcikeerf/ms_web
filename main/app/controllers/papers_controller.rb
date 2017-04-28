@@ -39,8 +39,10 @@ class PapersController < ApplicationController
     })
     result[:orig_file_id] = f_uploaded.id
     
-    result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
-    result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
+    result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    # result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    # result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)
 
     render :json => result.to_json
   end
@@ -373,7 +375,7 @@ class PapersController < ApplicationController
             :pap_uid => params[:pap_uid],
             :job_uid => job_tracker.uid 
           })
-          
+
           status = 200
           result[:status] = status
           current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
