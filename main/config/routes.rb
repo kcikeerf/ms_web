@@ -198,6 +198,11 @@ Rails.application.routes.draw do
     post 'users/passwords/user_captcha_validate'
   end
 
+  use_doorkeeper do
+    skip_controllers :authorizations, :applications,
+      :authorized_applications
+  end
+
   #######################################
   ### errors
   
@@ -241,7 +246,7 @@ Rails.application.routes.draw do
   #######################################
 
   #######################################
-  ### Swtk API
+  ### API V1.1
   constraints do
     mount Auths::API => "/"
     mount PaperOnlineTest::API => "/"
@@ -251,6 +256,15 @@ Rails.application.routes.draw do
     mount Tenants::API => "/"
     mount Quizs::API => "/"
   end
+
+  ### API V1.2
+  mount ApiV12Auths::API => "/api/v1.2/"
+  mount ApiV12OnlineTests::API => "/api/v1.2/"
+  mount ApiV12Reports::API => "/api/v1.2/"
+  mount ApiV12ReportsWarehouse::API => "/api/v1.2/"
+  mount ApiV12Monitoring::API => "/api/v1.2/"
+  mount ApiV12Tenants::API => "/api/v1.2/"
+  mount ApiV12Quizs::API => "/api/v1.2/"
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all

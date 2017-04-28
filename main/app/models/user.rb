@@ -98,7 +98,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def find_user(login, conditions)
+    def find_user(login, conditions={})
       user = 
         case judge_type(login)
         when 'mobile'
@@ -111,6 +111,19 @@ class User < ActiveRecord::Base
 
       user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     end
+
+    # 给doorkeeper验证用户
+    def authenticate(login, option_h)
+      user = find_user(login)
+      if !option_h[:password].blank?
+        user.try(:valid_password?, option_h[:password]) ? user : nil
+      elsif !option_h[:wx_openid].blank?
+        wx_openids = user.wx_users.map(&:wx_openid)
+        wx_openids.include?(option_h[:wx_openid]) ? user : nil
+      else
+        nil
+      end
+    end    
   end
   ########类方法定义：end#######
 
