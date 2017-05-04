@@ -17,10 +17,10 @@ class User < ActiveRecord::Base
   before_create :set_role#, :check_existed?
 
   validates :role_name, presence: true, on: :create
-  validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,50}\z/ }
+  validates :name, presence: true, uniqueness: true, format: { with: /\A[a-zA-Z]{1,1}[a-zA-Z0-9_]{5,127}\z/ }
   
   validates_confirmation_of :password
-  validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
+  validates :password, length: { in: 6..128 }, presence: true, confirmation: true, if: :password_required?
 
   validates :email, format: { with: /\A[^@\s]+@[^@\s]+\z/ }, allow_blank: true
   validates :phone, format: { with: /\A1\d{10}\z/ }, allow_blank: true
@@ -285,6 +285,11 @@ class User < ActiveRecord::Base
 
   def bank_tests
     Mongodb::BankTestUserLink.where(user_id: self.id).map{|item| item.bank_test}.compact
+  end
+
+  # 是否已绑定微信
+  def wx_binded?
+    !wx_users.blank?
   end
 
   ########私有方法: begin#######

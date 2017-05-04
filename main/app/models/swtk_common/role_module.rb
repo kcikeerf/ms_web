@@ -8,6 +8,7 @@ module RoleModule
     TenantAdministrator="tenant_administrator"
     ProjectAdministrator="project_administrator"
     AreaAdministrator="area_administrator"
+    Guest="guest"
 
     NAME_ARR = %w(
     	pupil 

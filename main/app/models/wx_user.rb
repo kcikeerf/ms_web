@@ -29,4 +29,9 @@ class WxUser < ActiveRecord::Base
     online_test_ids = links.map(&:online_test_id)
     Mongodb::OnlineTest.where(id: online_test_ids).to_a
   end
+
+  # 是否已绑定用户
+  def binded?
+    !users.blank?
+  end  
 end
