@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170428012149) do
+ActiveRecord::Schema.define(version: 20170505053719) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -559,6 +559,7 @@ ActiveRecord::Schema.define(version: 20170428012149) do
     t.string   "initial_password",       limit: 255
     t.boolean  "locked",                 limit: 1,   default: true
     t.datetime "expired_at"
+    t.string   "tk_token",               limit: 255
   end
 
   add_index "users", ["name"], name: "index_users_on_name", unique: true, using: :btree
