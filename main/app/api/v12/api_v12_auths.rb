@@ -21,7 +21,7 @@ module ApiV12Auths
 
       ###########
 
-      desc '获取绑定的用户列表 post /api/wx/v1.1/auths/binded_users_list'
+      desc '获取绑定的用户列表 post /api/v1.2/auths/binded_users_list'
       params do
         #
       end
