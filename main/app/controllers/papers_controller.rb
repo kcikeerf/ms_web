@@ -38,11 +38,11 @@ class PapersController < ApplicationController
       :answer => params[:answer_path]
     })
     result[:orig_file_id] = f_uploaded.id
-    
-    result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
-    result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
-    # result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)
-    # result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)
+
+    # result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
+    # result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)
 
     render :json => result.to_json
   end
@@ -91,9 +91,8 @@ class PapersController < ApplicationController
     begin
       current_pap.current_user_id = current_user.id
       current_pap.save_pap_plus(params)
-      render common_json_response(200, {pap_uid: current_pap._id.to_s})
+      render common_json_response(200, {data: { pap_uid: current_pap._id.to_s } })
     rescue Exception => ex
-      p ex.backtrace
       #current_pap.save_paper_rollback
       #result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
       render common_json_response(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}" )})
