@@ -10,7 +10,8 @@ module ApiV12Helper
   end
 
   def current_user
-    User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+    target_user = User.where(id: doorkeeper_token.resource_owner_id).first if doorkeeper_token
+    error!(message_json("e40004"), 404) unless target_user
   end
 
   def current_tenant

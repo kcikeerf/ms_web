@@ -342,8 +342,8 @@ ActiveRecord::Schema.define(version: 20170505053719) do
     t.string   "scopes",            limit: 255
   end
 
-  add_index "oauth_access_grants", ["application_id"], name: "fk_rails_0d7ffca377", using: :btree
-  add_index "oauth_access_grants", ["resource_owner_id"], name: "fk_rails_16ba35e2af", using: :btree
+  add_index "oauth_access_grants", ["application_id"], name: "fk_rails_7fef5ea241", using: :btree
+  add_index "oauth_access_grants", ["resource_owner_id"], name: "fk_rails_5f6f8fc88c", using: :btree
   add_index "oauth_access_grants", ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
 
   create_table "oauth_access_tokens", force: :cascade do |t|
@@ -358,13 +358,13 @@ ActiveRecord::Schema.define(version: 20170505053719) do
     t.string   "previous_refresh_token", limit: 255, default: "", null: false
   end
 
-  add_index "oauth_access_tokens", ["application_id"], name: "fk_rails_c23a2cdebd", using: :btree
+  add_index "oauth_access_tokens", ["application_id"], name: "fk_rails_433d46d8ea", using: :btree
   add_index "oauth_access_tokens", ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, using: :btree
   add_index "oauth_access_tokens", ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", using: :btree
   add_index "oauth_access_tokens", ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
 
   create_table "oauth_applications", force: :cascade do |t|
-    t.integer  "resource_owner_id", limit: 4,                  null: false
+    t.integer  "resource_owner_id", limit: 4
     t.string   "name",              limit: 255,                null: false
     t.string   "uid",               limit: 255,                null: false
     t.string   "secret",            limit: 255,                null: false
@@ -374,7 +374,7 @@ ActiveRecord::Schema.define(version: 20170505053719) do
     t.datetime "updated_at",                                   null: false
   end
 
-  add_index "oauth_applications", ["resource_owner_id"], name: "fk_rails_0332f1a867", using: :btree
+  add_index "oauth_applications", ["resource_owner_id"], name: "fk_rails_018b99a7e2", using: :btree
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
 
   create_table "permissions", force: :cascade do |t|

@@ -16,10 +16,6 @@ class Mongodb::BankTestScore
   field :loc_uid, type: String
   field :test_id, type: String
   field :pup_uid, type: String
-  # 非项目用户的token
-  field :tk_token, type: String
-
-  #######
   # 微信在线测试，公开测试的时候，使用用户的token
   field :tk_token, type: String
 
