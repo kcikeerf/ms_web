@@ -11,6 +11,7 @@ module RoleModule
     Guest="guest"
 
     NAME_ARR = %w(
+      guest
     	pupil 
     	teacher 
     	analyzer 

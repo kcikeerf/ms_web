@@ -13,6 +13,10 @@ class User < ActiveRecord::Base
   has_many :wx_user_mappings, foreign_key: "user_id"
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
+  has_many :oauth_access_tokens, foreign_key: "resource_owner_id", dependent: :destroy
+  has_many :oauth_access_grants, foreign_key: "resource_owner_id", dependent: :destroy
+  has_many :oauth_applications, foreign_key: "resource_owner_id", dependent: :destroy
+
 
   before_create :set_role,:generate_token #, :check_existed?
 

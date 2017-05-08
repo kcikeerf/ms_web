@@ -51,18 +51,4 @@ module ApiV12Helper
     }
   end
 
-  # 对于未注册用户，创建Guest用户
-  def create_guest_user!
-    unless current_wx_user.binded?
-      option_h = {
-        :name => Common::Uzer::GuestUserNamePrefix + current_wx_user.wx_openid,
-        :password => current_wx_user.wx_openid,
-        :role_name => Common::Role::Guest
-      }
-      guest_user = User.new(option_h)
-      unless guest_user.save
-        error!(message_json("e41500"), 500)
-      end
-    end
-  end
 end

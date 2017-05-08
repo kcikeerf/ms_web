@@ -19,8 +19,11 @@ class Mongodb::BankTestScore
   # 非项目用户的token
   field :tk_token, type: String
 
-  ### 
-  # wx在线测试
+  #######
+  # 微信在线测试，公开测试的时候，使用用户的token
+  field :tk_token, type: String
+
+  # wx在线测试，检讨中
   field :online_test_id, type: String
   field :wx_user_id, type: String
   ###

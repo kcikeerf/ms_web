@@ -14,6 +14,7 @@ class WxUser < ActiveRecord::Base
   end
 
   def binded_users_list
+    guest_user!
     users.map{|u|
       {
         :id => u.id,
@@ -33,5 +34,25 @@ class WxUser < ActiveRecord::Base
   # 是否已绑定用户
   def binded?
     !users.blank?
-  end  
+  end
+
+  # Guest用户
+  def guest_user
+    users.find{|u| u.is_guest? }
+  end
+
+  # 无Guest用户，则创建Guest用户
+  def guest_user!
+    return guest_user if self.guest_user
+
+    option_h = {
+      :name => Common::Uzer::GuestUserNamePrefix + self.wx_openid,
+      :password => self.wx_openid,
+      :role_name => Common::Role::Guest
+    }
+    target_user = User.new(option_h)
+    return nil unless target_user.save!
+    self.users << target_user
+  end
+
 end
