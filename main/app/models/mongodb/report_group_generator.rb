@@ -9,5 +9,5 @@ class Mongodb::ReportGroupGenerator
     eval(TkEncryption::codes_str_decryption(code_file))
   rescue Exception => ex
     #
-  end   
+  end
 end
