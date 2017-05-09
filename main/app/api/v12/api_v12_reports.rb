@@ -260,6 +260,16 @@ module ApiV12Reports
 
       ###########
 
+      desc '获取综合素质报告 post /api/v1.2/reports/zh_my_report' # zh_my_report begin
+      params do
+
+      end
+      post :project do
+
+      end # zh_my_report end
+
+      ###########
+
     end
 
    end

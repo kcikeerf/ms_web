@@ -21,7 +21,7 @@ module ApiV12Monitoring
 
       ###########
 
-      desc '获取测试状态 get /api/v1.2/monitorings/check_status'
+      desc '获取测试状态 post /api/v1.2/monitorings/check_status'
       params do
         requires :task_uid, type: String, allow_blank: false
       end
