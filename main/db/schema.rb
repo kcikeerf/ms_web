@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170505053719) do
+ActiveRecord::Schema.define(version: 20170508070047) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -577,12 +577,20 @@ ActiveRecord::Schema.define(version: 20170505053719) do
   add_index "wx_user_mappings", ["wx_uid"], name: "index_wx_user_mappings_on_wx_uid", using: :btree
 
   create_table "wx_users", primary_key: "uid", force: :cascade do |t|
-    t.string   "name",      limit: 255
-    t.string   "wx_openid", limit: 255
-    t.string   "wx_token",  limit: 255
-    t.string   "comment",   limit: 255
+    t.string   "name",       limit: 255
+    t.string   "wx_openid",  limit: 255
+    t.string   "wx_token",   limit: 255
+    t.string   "comment",    limit: 255
     t.datetime "dt_add"
     t.datetime "dt_update"
+    t.string   "wx_unionid", limit: 255
+    t.string   "nickname",   limit: 255
+    t.string   "sex",        limit: 255
+    t.string   "headimgurl", limit: 255
+    t.string   "country",    limit: 255
+    t.string   "province",   limit: 255
+    t.string   "city",       limit: 255
+    t.string   "area_uid",   limit: 255
   end
 
   add_index "wx_users", ["wx_openid"], name: "index_wx_users_on_wx_openid", using: :btree

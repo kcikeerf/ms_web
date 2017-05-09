@@ -119,11 +119,17 @@ class User < ActiveRecord::Base
     # 给doorkeeper验证用户
     def authenticate(login, option_h)
       user = find_user(login)
+      # 通常密码认证
       if !option_h[:password].blank?
         user.try(:valid_password?, option_h[:password]) ? user : nil
+      # 微信openid认证
       elsif !option_h[:wx_openid].blank?
         wx_openids = user.wx_users.map(&:wx_openid)
         wx_openids.include?(option_h[:wx_openid]) ? user : nil
+      # 微信的unionid认证
+      elsif !option_h[:wx_unionid].blank?
+        wx_unionids = user.wx_users.map(&:wx_unionid)
+        wx_unionids.include?(option_h[:wx_unionid]) ? user : nil   
       else
         nil
       end
