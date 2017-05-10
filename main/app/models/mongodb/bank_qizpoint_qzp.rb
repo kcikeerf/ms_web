@@ -15,7 +15,6 @@ class Mongodb::BankQizpointQzp
   belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
   belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
-  has_many :bank_qizpoint_qzp_shadows, class_name: "Mongodb::BankQizpointQzpShadow"
 
   embeds_one :tk_lock, class_name: "Mongodb::TkLock"
 

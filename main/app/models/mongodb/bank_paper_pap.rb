@@ -19,7 +19,6 @@ class Mongodb::BankPaperPap
   has_many :bank_tests, class_name: "Mongodb::BankTest"
   has_many :online_tests, class_name: "Mongodb::OnlineTest"
   has_many :paper_outlines, class_name: "Mongodb::PaperOutline"
-  has_many :bank_paper_pap_shadows, class_name: "Mongodb::BankPaperPapShadow"
   
   embeds_one :tk_lock, class_name: "Mongodb::TkLock"
 
