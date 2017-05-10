@@ -1,7 +1,7 @@
 class CreateDoorkeeperTables < ActiveRecord::Migration
   def change
     create_table :oauth_applications do |t|
-      t.integer :resource_owner_id, null: false
+      t.integer :resource_owner_id, null: true, default: ''
       t.string  :name,         null: false
       t.string  :uid,          null: false
       t.string  :secret,       null: false

@@ -21,7 +21,7 @@ module ApiV12Tenants
 
       ###########
       
-      desc '获取当前用户所在租户的年级班级列表 post /api/wx/v1.1/tenants/grade_klass_list' # grade_class_list begin
+      desc '获取当前用户所在租户的年级班级列表 post /api/v1.2/tenants/grade_klass_list' # grade_class_list begin
       params do
         optional :grade, type: String, allow_blank: true
       end
@@ -47,7 +47,7 @@ module ApiV12Tenants
 
       ###########
 
-      desc '获取当前用户的班级的学生列表 post /api/wx/v1.1/tenants/klass_pupil_list' # grade_class_list begin
+      desc '获取当前用户的班级的学生列表 post /api/v1.2/tenants/klass_pupil_list' # grade_class_list begin
       params do
         optional :klass_uids, type: Array, allow_blank: false
       end

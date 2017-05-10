@@ -23,7 +23,7 @@ module ApiV12ReportsWarehouse
         #
       end
       post '*any_path' do
-        target_file_path = request.fullpath.to_s.split("/api/wx/v1.1")[1]
+        target_file_path = request.fullpath.to_s.split("/api/v1.2")[1]
         target_file_path = target_file_path.split("?")[0] if target_file_path
         target_user = current_user
         if !params[:any_path].blank? && File.exist?(target_file_path)

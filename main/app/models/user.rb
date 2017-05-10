@@ -13,14 +13,18 @@ class User < ActiveRecord::Base
   has_many :wx_user_mappings, foreign_key: "user_id"
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
+  has_many :oauth_access_tokens, foreign_key: "resource_owner_id", dependent: :destroy
+  has_many :oauth_access_grants, foreign_key: "resource_owner_id", dependent: :destroy
+  has_many :oauth_applications, foreign_key: "resource_owner_id", dependent: :destroy
 
-  before_create :set_role#, :check_existed?
+
+  before_create :set_role,:generate_token #, :check_existed?
 
   validates :role_name, presence: true, on: :create
-  validates :name, presence: true, uniqueness: true, format: { with: /\A([a-zA-Z_]+|(?![^a-zA-Z_]+$)(?!\D+$)).{6,50}\z/ }
+  validates :name, presence: true, uniqueness: true, format: { with: /\A[a-zA-Z]{1,1}[a-zA-Z0-9_]{5,127}\z/ }
   
   validates_confirmation_of :password
-  validates :password, length: { in: 6..19 }, presence: true, confirmation: true, if: :password_required?
+  validates :password, length: { in: 6..128 }, presence: true, confirmation: true, if: :password_required?
 
   validates :email, format: { with: /\A[^@\s]+@[^@\s]+\z/ }, allow_blank: true
   validates :phone, format: { with: /\A1\d{10}\z/ }, allow_blank: true
@@ -115,11 +119,17 @@ class User < ActiveRecord::Base
     # 给doorkeeper验证用户
     def authenticate(login, option_h)
       user = find_user(login)
+      # 通常密码认证
       if !option_h[:password].blank?
         user.try(:valid_password?, option_h[:password]) ? user : nil
+      # 微信openid认证
       elsif !option_h[:wx_openid].blank?
         wx_openids = user.wx_users.map(&:wx_openid)
         wx_openids.include?(option_h[:wx_openid]) ? user : nil
+      # 微信的unionid认证
+      elsif !option_h[:wx_unionid].blank?
+        wx_unionids = user.wx_users.map(&:wx_unionid)
+        wx_unionids.include?(option_h[:wx_unionid]) ? user : nil   
       else
         nil
       end
@@ -287,6 +297,11 @@ class User < ActiveRecord::Base
     Mongodb::BankTestUserLink.where(user_id: self.id).map{|item| item.bank_test}.compact
   end
 
+  # 是否已绑定微信
+  def wx_binded?
+    !wx_users.blank?
+  end
+
   ########私有方法: begin#######
   private
 
@@ -307,6 +322,13 @@ class User < ActiveRecord::Base
       if self.class.find_user(email.presence || phone, {})
         self.errors.add(:base, I18.t("activerecord.errors.messages.exited_user"))
         raise SwtkErrors::UserExistedError.new(I18.t("activerecord.errors.messages.exited_user"))
+      end
+    end
+
+    def generate_token
+      self.tk_token = loop do
+        random_token = SecureRandom.urlsafe_base64(nil, false)
+        break random_token unless self.class.exists?(tk_token: random_token)
       end
     end
   ########私有方法: end#######

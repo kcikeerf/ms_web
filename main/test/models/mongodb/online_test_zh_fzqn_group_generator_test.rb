@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Mongodb::ReportProjectStoreTest < ActiveSupport::TestCase
+class Mongodb::OnlineTestZhFzqnGroupGeneratorTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

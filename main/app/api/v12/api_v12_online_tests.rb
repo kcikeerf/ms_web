@@ -12,6 +12,7 @@ module ApiV12OnlineTests
       use :oauth
     end
 
+    
     resource :online_tests do
 
       before do
@@ -21,7 +22,29 @@ module ApiV12OnlineTests
 
       ###########
 
-      desc '随机获取任一试卷 get /api/wx/v1.1/online_tests/sample'
+      desc '获取综合测试列表 post /api/v1.2/online_tests/zh_list'
+      params do
+
+      end
+      post :zh_list do
+        []
+      end
+
+      ###########
+
+      desc '提交综合测试结果 post /api/v1.2/online_tests/zh_result'
+      params do
+        
+      end
+      post :zh_result do
+        # 结果保存
+
+        # 个人报告生成
+      end
+
+      ###########
+
+      desc '随机获取任一试卷 post /api/v1.2/online_tests/sample'
       params do
         requires :grade, type: String, allow_blank: false
         requires :term, type: String, allow_blank: false
@@ -61,7 +84,7 @@ module ApiV12OnlineTests
 
       ###########
 
-      desc '获取测试列表 get /api/wx/v1.1/online_tests/list'
+      desc '获取测试列表 post /api/v1.2/online_tests/list'
       params do
         requires :wx_openid, type: String, allow_blank: false
       end
@@ -85,7 +108,7 @@ module ApiV12OnlineTests
 
       ########### 
 
-      desc '上传测试成绩 post /api/wx/v1.1/online_tests/submit'
+      desc '上传测试成绩 post /api/v1.2/online_tests/submit'
       params do
         requires :wx_openid, type: String, allow_blank: false
         requires :pap_uid, type: String, allow_blank: false
@@ -134,8 +157,6 @@ module ApiV12OnlineTests
         })
       end
 
-      ###########
-
-    end
-  end
-end
+    end # resource online test
+  end # class
+end # module

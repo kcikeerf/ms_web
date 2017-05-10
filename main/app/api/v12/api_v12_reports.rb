@@ -134,7 +134,7 @@ module ApiV12Reports
                 :report_version => "00016110",
                 :test_id => test_id,
                 :test_ext_data_path => test_ext_data_path,
-                :report_url => "/api/wx/v1.1" + report_url
+                :report_url => "/api/v1.2" + report_url
               }
             end
           }.compact
@@ -184,14 +184,14 @@ module ApiV12Reports
             :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
             :report_version => "00016110",
             :test_id => test_id,
-            :report_url => "/api/wx/v1.1" + report_url
+            :report_url => "/api/v1.2" + report_url
           }
         }.compact
       end
 
       ###########
 
-      desc '获取当前用户所在租户的年级班级列表 post /api/wx/v1.1/reports/klass_list' # class_list begin
+      desc '获取当前用户所在租户的年级班级列表 post /api/v1.2/reports/klass_list' # class_list begin
       params do
         requires :test_id, type: String, allow_blank: false
         requires :tenant_uid, type: String, allow_blank: false
@@ -220,7 +220,7 @@ module ApiV12Reports
 
       ###########
 
-      desc '获取学生报告 post /api/wx/v1.1/reports/pupil' # pupil report begin
+      desc '获取学生报告 post /api/v1.2/reports/pupil' # pupil report begin
       params do
         requires :report_url, type: String, allow_blank: false
       end
@@ -230,7 +230,7 @@ module ApiV12Reports
 
       ###########         
 
-      desc '获取班级报告 post /api/wx/v1.1/reports/klass' # klass report begin
+      desc '获取班级报告 post /api/v1.2/reports/klass' # klass report begin
       params do
         requires :report_url, type: String, allow_blank: false
       end
@@ -240,7 +240,7 @@ module ApiV12Reports
 
       ###########
 
-      desc '获取年级报告 post /api/wx/v1.1/reports/grade' # grade report begin
+      desc '获取年级报告 post /api/v1.2/reports/grade' # grade report begin
       params do
         requires :report_url, type: String, allow_blank: false
       end
@@ -250,13 +250,23 @@ module ApiV12Reports
 
       ###########
 
-      desc '获取区域报告 post /api/wx/v1.1/reports/project' # project report begin
+      desc '获取区域报告 post /api/v1.2/reports/project' # project report begin
       params do
         requires :report_url, type: String, allow_blank: false
       end
       post :project do
         construct_report_content(Common::Report::Group::Project, params[:report_url])
       end # project report end
+
+      ###########
+
+      desc '获取综合素质报告 post /api/v1.2/reports/zh_my_report' # zh_my_report begin
+      params do
+
+      end
+      post :project do
+
+      end # zh_my_report end
 
       ###########
 

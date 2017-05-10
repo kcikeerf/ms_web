@@ -6,6 +6,8 @@ module UzerModule
     PasswdRandArr = Common::SwtkConstants::NumberArr
     UserNameSperator = ""
     UserNameRandArr = Common::SwtkConstants::AlphabetDownCaseArr
+    GuestUserNamePrefix = "guest_"
+    WxUserNamePrefix = "wx_"
 
     def get_tenant user_id 
       tenant = nil

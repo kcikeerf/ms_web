@@ -10,7 +10,8 @@ module ApiV12Helper
   end
 
   def current_user
-    User.find(doorkeeper_token.resource_owner_id) if doorkeeper_token
+    target_user = User.where(id: doorkeeper_token.resource_owner_id).first if doorkeeper_token
+    error!(message_json("e40004"), 404) unless target_user
   end
 
   def current_tenant
@@ -25,10 +26,22 @@ module ApiV12Helper
 
   # 获取登录的微信账户 
   def current_wx_user
-    target_wx_user = WxUser.where(:wx_openid => params[:wx_openid]).first
+    if params[:wx_openid]
+      option_h = {
+        :wx_openid => params[:wx_openid]
+      }
+    elsif params[:wx_unionid]
+      option_h = {
+        :wx_unionid => params[:wx_unionid]
+      }
+    else
+      error!(message_json("e40400"), 400) unless target_wx_user
+    end
+
+    target_wx_user = WxUser.where(option_h).first
     unless target_wx_user
       begin
-        target_wx_user = WxUser.new({:wx_openid => params[:wx_openid]})
+        target_wx_user = WxUser.new(option_h)
         target_wx_user.save!
       rescue Exception => ex
         error!(message_json("e41002"), 403) unless target_wx_user
@@ -50,4 +63,5 @@ module ApiV12Helper
       message: I18n.t("api.wx.#{code}")
     }
   end
+
 end

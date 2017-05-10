@@ -11,8 +11,8 @@ class Mongodb::BankPaperPap
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
 
-  has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
-  has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
+  # has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
+  # has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
   has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz", dependent: :delete 
   has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
