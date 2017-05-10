@@ -32,12 +32,14 @@ module ApiV12OnlineTests
 
       ###########
 
-      desc '提交综合测试结果 post /api/v1.2/online_tests/zh_list'
+      desc '提交综合测试结果 post /api/v1.2/online_tests/zh_result'
       params do
         
       end
       post :zh_result do
-        
+        # 结果保存
+
+        # 个人报告生成
       end
 
       ###########

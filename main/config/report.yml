@@ -1,0 +1,14 @@
+report_plus2:
+  score_level:
+    xy:
+      default:
+        excellent: [0.85,1]
+        good: [0.6,0.85]
+        fail: [0,0.6]
+    zh:
+      fzqn:
+        hen_qiang: [0.8,1]
+        shang_ke: [0.6,0.8]
+        yi_ban: [0.4,0.6]
+        ruo: [0.2,0.4]
+        hen_ruo: [0,0.2]
