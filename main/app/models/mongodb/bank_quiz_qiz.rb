@@ -48,6 +48,10 @@ class Mongodb::BankQuizQiz
   field :order, type: String #系统顺序
   field :asc_order, type: Integer #递增顺序
   field :custom_order, type: String #自定义顺序
+
+  #是否为空
+  field :is_empty, type: Boolean, default: false
+
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 

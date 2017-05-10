@@ -81,6 +81,9 @@ class Mongodb::BankPaperPap
   field :can_test, type: Boolean, default: false
   field :can_online_test, type: Boolean, default: false
 
+  #是否为空
+  field :is_empty, type: Boolean, default: false
+
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
