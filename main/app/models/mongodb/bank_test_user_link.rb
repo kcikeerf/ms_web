@@ -7,6 +7,7 @@ class Mongodb::BankTestUserLink
   belongs_to :bank_test, class_name: "Mongodb::BankTest"
 
   field :user_id, type: String
+  field :test_times, type: Integer # 测试次数
   
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
