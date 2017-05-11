@@ -19,7 +19,6 @@ class Mongodb::BankPaperPap
   has_many :bank_tests, class_name: "Mongodb::BankTest"
   has_many :online_tests, class_name: "Mongodb::OnlineTest"
   has_many :paper_outlines, class_name: "Mongodb::PaperOutline"
-  has_many :bank_paper_pap_shadows, class_name: "Mongodb::BankPaperPapShadow"
   
   embeds_one :tk_lock, class_name: "Mongodb::TkLock"
 
@@ -81,6 +80,9 @@ class Mongodb::BankPaperPap
   #是否可用于测试／在线测试
   field :can_test, type: Boolean, default: false
   field :can_online_test, type: Boolean, default: false
+
+  #是否为空
+  field :is_empty, type: Boolean, default: false
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

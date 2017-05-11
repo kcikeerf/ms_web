@@ -20,7 +20,6 @@ class Mongodb::BankQuizQiz
   # has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
   has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
-  has_many :bank_quiz_qiz_shadows, class_name: "Mongodb::BankQuizQizShadow"
 
   embeds_one :tk_lock, class_name: "Mongodb::TkLock"
 
@@ -49,6 +48,10 @@ class Mongodb::BankQuizQiz
   field :order, type: String #系统顺序
   field :asc_order, type: Integer #递增顺序
   field :custom_order, type: String #自定义顺序
+
+  #是否为空
+  field :is_empty, type: Boolean, default: false
+
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
