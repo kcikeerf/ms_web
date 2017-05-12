@@ -5,4 +5,5 @@ module SwtkErrors
  class UserExistedError < StandardError;end
  class SaveOnlineTestError < StandardError;end
  class TestTenantNotAssociatedError < StandardError;end
+ class DeletePaperError < StandardError; end
 end

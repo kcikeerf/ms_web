@@ -57,14 +57,13 @@ class Mongodb::BankQuizQiz
 
 
 
-  def save_quiz params
+  def save_quiz params, paper_status=nil
     #params = JSON.parse(params["_json"]) if params["_json"]
     qzp_arr = []
    
 #    begin
       original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
       delete_all_related_qizpoints original_qzp_ids
-
 #      self.bank_qizpoint_qzps=[]
       self.update_attributes({
         :subject => params["subject"] || "",
@@ -111,14 +110,14 @@ class Mongodb::BankQuizQiz
       } unless params["bank_qizpoint_qzps"].blank?
 =end
       if params["bank_qizpoint_qzps"]
-        qzp_arr = save_all_qzps self,params
+        qzp_arr = save_all_qzps self,params, paper_status
       end
 #    rescue Exception => ex
 #      return false
 #    end
   end
 
-  def save_all_qzps quiz, params
+  def save_all_qzps quiz, params, status
     result = []
     params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
       # 算出得分点的递增题顺
@@ -130,7 +129,9 @@ class Mongodb::BankQuizQiz
       result << qiz_point._id.to_s
       quiz.bank_qizpoint_qzps.push(qiz_point)
       unless bqq["bank_checkpoints_ckps"].blank?
-        save_qzp_all_ckps qiz_point,bqq#["bank_checkpoints_ckps"]
+        if status == Common::Paper::Status::Analyzing
+          save_qzp_all_ckps qiz_point,bqq#["bank_checkpoints_ckps"]
+        end
       end
     }
     return result
