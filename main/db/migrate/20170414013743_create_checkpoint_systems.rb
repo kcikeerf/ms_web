@@ -1,8 +1,8 @@
 class CreateCheckpointSystems < ActiveRecord::Migration
   def change
-    create_table :checkpoint_systems do |t|
+    create_table :checkpoint_systems, id: false do |t|
+      t.column :rid, "VARCHAR(255) PRIMARY KEY", limit: 50
       t.string :name
-      t.string :rid
       t.boolean :is_group
       t.string :sys_type
       t.string :version

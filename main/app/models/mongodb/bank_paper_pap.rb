@@ -58,6 +58,8 @@ class Mongodb::BankPaperPap
   field :levelword, type: String
   field :levelword2, type: String
   field :score, type: Float
+  field :ckp_type, type: String
+  field :system_type, type: String
   
 #  field :orig_paper, type: String
 #  field :orig_answer, type: String
@@ -408,6 +410,8 @@ class Mongodb::BankPaperPap
       :district => params[:information][:district] || "",
       :school => params[:information][:school] || "",
       :subject => params[:information][:subject].blank? ? "": params[:information][:subject][:name],
+      :ckp_type => params[:information][:ckp_system].blank? ? "": params[:information][:ckp_system][:label],
+      :system_type => params[:information][:ckp_system].blank? ? "": params[:information][:ckp_system][:name],
       :grade => params[:information][:grade].blank? ? "": params[:information][:grade][:name],
       :term => params[:information][:term].blank? ? "": params[:information][:term][:name],
       :quiz_type => params[:information][:quiz_type] || "",

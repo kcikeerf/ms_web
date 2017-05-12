@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       get 'dimesion_tree'
       get 'get_ckp_data'
       get 'get_tree_data_by_subject'
+      get 'get_ckp_type_system'
     end
   end
 

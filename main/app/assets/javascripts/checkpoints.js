@@ -35,11 +35,12 @@ $(document).on('ready page:load', function (){
 	    $(document).on('modal:open',function(e,arr){
 //		  	var $nodeUid = $("input#node_uid").val();
 			var pap_uid = $("input#pap_uid").val();
+			var sys_item_id = $("input#checkpoint_system_rid").val();
 		  	if(!$("#skill_tree").children().length){
 		  		$.ajax({
 					type:"GET",
 					url:"/checkpoints/get_ckp_data",
-					data: {'pap_uid':pap_uid},//{'node_uid':$nodeUid},//咱不做更改，只是用此参数
+					data: {'pap_uid':pap_uid, 'checkpoint_system_rid': sys_item_id},//{'node_uid':$nodeUid},//咱不做更改，只是用此参数
 					async:true,
 					success:function(data){
 						uncheck(data);

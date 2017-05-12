@@ -26,7 +26,7 @@ class Mongodb::BankTest
   field :report_version, type: String
   field :ext_data_path, type: String
   field :report_top_group, type: String
-  field :checkpoint_system_id, type: String
+  field :checkpoint_system_rid, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

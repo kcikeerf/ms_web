@@ -103,7 +103,7 @@ class BankRid < ActiveRecord::Base
     # obj => 满足学科学段三维的所有节点, pid => 父级的rid
     # [返回值]
     # 当有子节点的bank_id等于zzz时 返回 "", 否则返回新的rid
-    def get_new_bank_rid obj, pid
+    def get_new_bank_rid obj, pid="", start=nil
       result = ""
       pid = pid || ""
       pid_len = pid.size
@@ -111,17 +111,26 @@ class BankRid < ActiveRecord::Base
       target_len = pid_len + Common::SwtkConstants::CkpStep
 
       cond_str = "LENGTH(rid) > ? and LENGTH(rid) <= ? and SUBSTR(rid, 1, ?) = ? "
+      #cond_str += " and rid >= '#{start}'" if start
 
       last_child_rid = obj.blank? ? [] : obj.where(cond_str, pid_len, target_len, pid_len, pid).order("rid DESC").limit(1).map{|item| item.rid.slice(pid_len, Common::SwtkConstants::CkpStep)}
       next_bank_rid = "" 
-      if last_child_rid.blank? 
-        next_bank_rid = "000" 
+      if last_child_rid.blank?
+        if start.blank?       
+          next_bank_rid = "000" #没传起始位置时 起始从000开始
+        else
+          next_bank_rid = '100' #起始位置从100开始
+        end
       else
         if last_child_rid[0] == "zzz"
           return result
           #进行压缩
         else
-          next_bank_rid =(last_child_rid[0].to_i(36) + 1).to_s(36).rjust(3, '0')          
+          if start.blank? || (start.to_i(36) <= last_child_rid[0].to_i(36))
+            next_bank_rid = (last_child_rid[0].to_i(36) + 1).to_s(36).rjust(3, '0')
+          else start.to_i(36) > last_child_rid[0].to_i(36)
+            next_bank_rid = '100' #起始位置从100开始
+          end          
         end
       end
       result = pid + next_bank_rid

@@ -76,6 +76,20 @@
 						<p>考试时间&nbsp;:</p>
 						<input class="date_input" type="text"/>
 					</div>
+					<div class="selectWarp selectCkpType different clearfix">
+						<p><%=LABEL("activerecord.models.checkpoint_system")%>&nbsp;:</p>
+						<div class="optionWarp">
+							<div class="selectVal">
+								<span>请选择</span>
+								<i class="icon"></i>
+							</div>
+							<ol class="optionList">
+                                <% default_checkpoint_type_list.each do |ckp|%>
+                                    <li nameid="<%=ckp.rid%>"><%= ckp.name%></li>
+                                <% end %>
+							</ol>
+						</div>
+					</div>
 				</li>
 				<li>
 					<!--div class="selectWarp selectCity clearfix">
@@ -203,6 +217,7 @@
 						</div>
 					</div>
 				</li>
+
 			</ul>
 
 

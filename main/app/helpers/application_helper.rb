@@ -46,6 +46,14 @@ module ApplicationHelper
     Common::Paper::Difficulty
   end
 
+  def checkpoint_type_list
+    Common::Paper::Type
+  end
+
+  def default_checkpoint_type_list
+    CheckpointSystem.xy_default
+  end
+
   #地区列表
   def area_list
     country_rid = Common::Area::CountryRids["zhong_guo"]

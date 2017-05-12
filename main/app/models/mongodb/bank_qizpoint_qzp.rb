@@ -93,7 +93,7 @@ class Mongodb::BankQizpointQzp
 
   def format_paper_outline_json
     return {} if paper_outline.blank?
-    outline_arr = [ paper_outline.ancestors, paper_outline ].flatten
+    outline_arr = [ paper_outline.ancestors, paper_outline ].flatten.compact!
     outline_ids = "/#{outline_arr.map{|item| item.id.to_s}.join('/')}"
     outline_rid = "/#{outline_arr.map{|item| item.rid.to_s}.join('/')}"
     update_attributes(paper_outline_json: {

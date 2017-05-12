@@ -502,6 +502,13 @@ $(function(){
             //     $(".selecGrade .optionList").html(html);
             // });
         });
+          //ckp类型选择
+        doc.on("click",".selectCkpType .optionList li",function(){
+            //if($(this).hasClass("active")) return;
+            $(this).addClass("active").siblings().removeClass("active");
+            $(this).parents(".optionWarp").removeClass("active").find(".selectVal span").text($(this).text()).attr("values",$(this).attr("nameid"));
+        });
+
         //年级下拉选择
         doc.on("click",".selecGrade .optionList li",function(){
             //if($(this).hasClass("active")) return;
@@ -684,6 +691,10 @@ $(function(){
                     label : $(".selecTerm  .selectVal span").text(),
                     name : $(".selecTerm  li.active").attr("nameid")
                 } : "", //适用学期
+                ckp_system: $(".selectCkpType .selectVal span").attr("values") ? {
+                    label : "xy_default",
+                    name: $(".selectCkpType li.active").attr('nameid')
+                } : "", //指标系统
 
                 quiz_type : $(".selecType .selectVal span").attr("values") || "",   //考试类型
                 levelword : $(".selectDifficulty .selectVal span").attr("values") || "",    //难度
@@ -726,7 +737,9 @@ $(function(){
                 "quiz_type",
                 "quiz_date",
                 "score",
-                "levelword"
+                "levelword",
+                "ckp_system"
+
             ];
             for(var k in paper.paperData.information){
                 if( (must_item_arr.indexOf(k) > -1 && !paper.paperData.information[k]) || ( k == "tenants" && paper.paperData.information[k].length == 0) ){
@@ -1557,6 +1570,12 @@ $(function(){
                 t_active = $(".selecTerm .optionList li[nameid="+term+"]");
                 t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",term).text(t_active.text());
             }
+            if(paper.paperData.information.ckp_system){
+                var ckp = paper.paperData.information.ckp_system.name,
+                t_active = $(".selectCkpType .optionList li[nameid="+ckp+"]");
+                t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",ckp).text(t_active.text());
+            }
+
         }
 
         // var html = "";
@@ -1844,6 +1863,7 @@ $(function(){
         paper.abstract();
         $("input#node_uid").val(paper.paperData.information.node_uid || "");
         $("input#pap_uid").val(paper.paperData.pap_uid || "");
+        $("input#checkpoint_system_rid").val(paper.paperData.information.ckp_system.name || "");
         var menu1 = "", count = 0,
             tempObj = $("<div></div>").html(paper.paperData.paper_html);
         tempObj.find(".my-group").each(function(i){
