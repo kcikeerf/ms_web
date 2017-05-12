@@ -51,11 +51,18 @@ end
 
 module TkEncryption
   module_function
-  def codes_str_decryption code_file
+  def codes_str_decryption code_file, secret_code=0
     begin
       encrypted_core_str = File.open(code_file, 'rb').read
       secrect_codes = nil
-      secret_file = Rails.root + "tmp/tk_secret.txt"
+      case secret_code
+      when 0
+        secret_file = Rails.root + "tmp/tk_secret.txt"
+      when 1
+        secret_file = Rails.root + "tmp/tk1_secret.txt"
+      else
+        secret_file = Rails.root + "tmp/tk_secret.txt"
+      end
       if File.exists?(secret_file)
         secrect_codes = File.open(secret_file, 'rb').read
         secrect_codes.strip!

@@ -16,11 +16,10 @@ class Mongodb::BankQuizQiz
 =end
 
   belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
-  has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
-  has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
+  # has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
+  # has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
   has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
-  has_many :bank_quiz_qiz_shadows, class_name: "Mongodb::BankQuizQizShadow"
 
   embeds_one :tk_lock, class_name: "Mongodb::TkLock"
 
@@ -49,19 +48,22 @@ class Mongodb::BankQuizQiz
   field :order, type: String #系统顺序
   field :asc_order, type: Integer #递增顺序
   field :custom_order, type: String #自定义顺序
+
+  #是否为空
+  field :is_empty, type: Boolean, default: false
+
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
 
 
-  def save_quiz params
+  def save_quiz params, paper_status=nil
     #params = JSON.parse(params["_json"]) if params["_json"]
     qzp_arr = []
    
 #    begin
       original_qzp_ids = self.bank_qizpoint_qzps.map{|qzp| qzp._id.to_s}
       delete_all_related_qizpoints original_qzp_ids
-
 #      self.bank_qizpoint_qzps=[]
       self.update_attributes({
         :subject => params["subject"] || "",
@@ -108,14 +110,14 @@ class Mongodb::BankQuizQiz
       } unless params["bank_qizpoint_qzps"].blank?
 =end
       if params["bank_qizpoint_qzps"]
-        qzp_arr = save_all_qzps self,params
+        qzp_arr = save_all_qzps self,params, paper_status
       end
 #    rescue Exception => ex
 #      return false
 #    end
   end
 
-  def save_all_qzps quiz, params
+  def save_all_qzps quiz, params, status
     result = []
     params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
       # 算出得分点的递增题顺
@@ -127,7 +129,9 @@ class Mongodb::BankQuizQiz
       result << qiz_point._id.to_s
       quiz.bank_qizpoint_qzps.push(qiz_point)
       unless bqq["bank_checkpoints_ckps"].blank?
-        save_qzp_all_ckps qiz_point,bqq#["bank_checkpoints_ckps"]
+        if status == Common::Paper::Status::Analyzing
+          save_qzp_all_ckps qiz_point,bqq#["bank_checkpoints_ckps"]
+        end
       end
     }
     return result

@@ -100,7 +100,7 @@ module KlassModule
       jiu_shi_liu_ban
       jiu_shi_qi_ban
       jiu_shi_ba_ban
-      jiu_shi_jiu_ba
+      jiu_shi_jiu_ban
       yi_bai_ban 
     }
 

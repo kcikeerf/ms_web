@@ -89,6 +89,12 @@ module PaperModule
       ReportCompleted = "report_completed"
     end
 
+    RollbackStatus = {
+      Status::Editting => I18n.t("papers.status.#{Status::Editting}"),
+      Status::Editted => I18n.t("papers.status.#{Status::Editted}"),
+      Status::Analyzing => I18n.t("papers.status.#{Status::Analyzing}")
+    }
+
     def quiz_order(x,y)
       x_arr = destruct_order x
       y_arr = destruct_order y

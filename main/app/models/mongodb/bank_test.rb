@@ -27,15 +27,27 @@ class Mongodb::BankTest
   field :ext_data_path, type: String
   field :report_top_group, type: String
   field :checkpoint_system_rid, type: String
+  field :is_public, type: Boolean
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
   index({_id: 1}, {background: true})
   index({bank_paper_pap_id: 1}, {background: true})
-  
+
+  def area_uids
+    bank_test_area_links.map(&:area_uid)
+  end
+
+  def areas
+    Area.where(uid: area_uids)
+  end
+
+  def tenant_uids
+    bank_test_tenant_links.map(&:tenant_uid)
+  end
+
   def tenants
-    tenant_uids = bank_test_tenant_links.map(&:tenant_uid)
     Tenant.where(uid: tenant_uids)
   end
 
@@ -50,6 +62,14 @@ class Mongodb::BankTest
         :job_progress => job.nil?? 0 : (job.process*100).to_i
       } 
     }
+  end
+
+  def loc_uids
+    bank_test_location_links.map(&:loc_uid)
+  end
+
+  def locations
+    Location.where(uid: loc_uids)
   end
 
   def tasks

@@ -38,8 +38,11 @@ class PapersController < ApplicationController
       :answer => params[:answer_path]
     })
     result[:orig_file_id] = f_uploaded.id
+
     result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
     result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    # result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    # result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)
 
     render :json => result.to_json
   end
@@ -85,18 +88,15 @@ class PapersController < ApplicationController
     else
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
-#    begin
-    current_pap.current_user_id = current_user.id
-    if current_pap.save_pap(params)
-      render common_json_response(200, {pap_uid: current_pap._id.to_s})
-    else
-      render common_json_response(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> current_pap.errors.messages.values.join(",") )})
-    end
-#    rescue Exception => ex
+    begin
+      current_pap.current_user_id = current_user.id
+      current_pap.save_pap_plus(params)
+      render common_json_response(200, {data: { pap_uid: current_pap._id.to_s } })
+    rescue Exception => ex
       #current_pap.save_paper_rollback
-      #result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "")})
-#    end
-    # render :json => result
+      #result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
+      render common_json_response(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}" )})
+    end
   end
 
   def get_saved_paper
@@ -134,12 +134,14 @@ class PapersController < ApplicationController
       #@paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
       begin
         #current_pap.current_user_id = current_user.id
-        @paper.submit_pap params
+        @paper.submit_pap_plus params
         @paper.generate_empty_score_file
 
         result = response_json(200, {pap_uid: @paper._id.to_s})
         #result = response_json(200, {messages: I18n.t("papers.messages.submit_paper.success", current_pap.heading)})
       rescue Exception => ex
+        logger.debug(ex.backtrace)
+
         #@paper.submit_pap_rollback
         result = response_json(500, {messages: I18n.t("papers.messages.submit_paper.fail", :heading => ex.message)})
       end
@@ -189,7 +191,7 @@ class PapersController < ApplicationController
 
     if params[:pap_uid]
       #current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
-      if @paper.submit_ckp params
+      if @paper.submit_ckp_plus params
         result = response_json(200, {messages: I18n.t("papers.messages.submit_analyze.success", @paper.heading)})
       else
         result = response_json(500, {messages: I18n.t("papers.messages.submit_analyze.fail", @paper.heading)})
@@ -247,13 +249,9 @@ class PapersController < ApplicationController
     #文件对象
     file = nil
     if %w{filled_file usr_pwd_file empty_file}.include?(type)
-      # V1.0版，无测试概念时数据
       if @paper.score_file_id
-        file = ScoreUpload.find(@paper.score_file_id)
-      end
-
-      # V1.1版，有测试概念后
-      if @paper.bank_tests[0]
+        file = ScoreUpload.find(@paper.score_file_id) 
+      else
         file = @paper.bank_tests[0].score_uploads.by_tenant_uid(params[:tenant_uid]).first
       end
     elsif %w{paper answer revise_paper revise_answer empty_result}.include?(type)
@@ -359,16 +357,16 @@ class PapersController < ApplicationController
           @paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
           @paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImporting, {:job_uid =>job_tracker.uid} )
 
-          # backend job
-          #Thread.new do
-            # ImportResultsJob.perform_later({
-            #   #:task_uid => target_task.uid,
-            #   :score_file_id => score_file.id,
-            #   :tenant_uid => params[:tenant_uid],
-            #   :pap_uid => params[:pap_uid],
-            #   :job_uid => job_tracker.uid 
-            # })
-          #end
+          # # backend job
+          # #Thread.new do
+          #   ImportResultsJob.perform_later({
+          #     #:task_uid => target_task.uid,
+          #     :score_file_id => score_file.id,
+          #     :tenant_uid => params[:tenant_uid],
+          #     :pap_uid => params[:pap_uid],
+          #     :job_uid => job_tracker.uid 
+          #   })
+          # #end
 
           ImportResultsWorker.perform_async({
             :score_file_id => score_file.id,
@@ -412,7 +410,7 @@ class PapersController < ApplicationController
   private
 
     def set_paper
-      @paper = Mongodb::BankPaperPap.where(id: params[:pap_uid]).first
+      @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
       @paper.current_user_id = current_user.id
     end
 end

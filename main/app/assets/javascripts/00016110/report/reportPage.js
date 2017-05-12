@@ -1900,7 +1900,7 @@ var reportPage = {
 			return {
 				class_average_percent: reportPage.baseFn.get_key_values(reportPage.KlassData.data[dimesion].lv_n, "weights_score_average_percent")[1],
 				class_median_percent: reportPage.baseFn.get_key_values(reportPage.KlassData.data[dimesion].lv_n, "klass_median_percent")[1],
-				diff_degree: reportPage.baseFn.get_key_values(reportPage.KlassData.data[dimesion].lv_n, "klass_median_percent")[1],
+				diff_degree: reportPage.baseFn.get_key_values(reportPage.KlassData.data[dimesion].lv_n, "diff_degree")[1],
 				grade_average_percent: reportPage.baseFn.get_key_values(reportPage.GradeData.data[dimesion].lv_n, "weights_score_average_percent")[1]
 			}
 		},

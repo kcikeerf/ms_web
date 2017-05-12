@@ -691,7 +691,7 @@ $(function(){
                     label : $(".selecTerm  .selectVal span").text(),
                     name : $(".selecTerm  li.active").attr("nameid")
                 } : "", //适用学期
-                ckp_system: $(".selectCkpType .selectVal span").attr("values") ? {
+                checkpoint_system: $(".selectCkpType .selectVal span").attr("values") ? {
                     label : "xy_default",
                     name: $(".selectCkpType li.active").attr('nameid')
                 } : "", //指标系统
@@ -738,7 +738,7 @@ $(function(){
                 "quiz_date",
                 "score",
                 "levelword",
-                "ckp_system"
+                "checkpoint_system"
 
             ];
             for(var k in paper.paperData.information){
@@ -1570,8 +1570,8 @@ $(function(){
                 t_active = $(".selecTerm .optionList li[nameid="+term+"]");
                 t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",term).text(t_active.text());
             }
-            if(paper.paperData.information.ckp_system){
-                var ckp = paper.paperData.information.ckp_system.name,
+            if(paper.paperData.information.checkpoint_system){
+                var ckp = paper.paperData.information.checkpoint_system.name,
                 t_active = $(".selectCkpType .optionList li[nameid="+ckp+"]");
                 t_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",ckp).text(t_active.text());
             }
@@ -1863,7 +1863,7 @@ $(function(){
         paper.abstract();
         $("input#node_uid").val(paper.paperData.information.node_uid || "");
         $("input#pap_uid").val(paper.paperData.pap_uid || "");
-        $("input#checkpoint_system_rid").val(paper.paperData.information.ckp_system.name || "");
+        $("input#checkpoint_system").val(paper.paperData.information.checkpoint_system.name || "");
         var menu1 = "", count = 0,
             tempObj = $("<div></div>").html(paper.paperData.paper_html);
         tempObj.find(".my-group").each(function(i){
