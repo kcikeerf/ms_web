@@ -26,8 +26,9 @@ class Mongodb::BankQizpointQzp
   field :ckps_json, type: String
   field :paper_outline_json, type: String
   field :score, type: Float
-  field :order, type: String
-  field :custom_order, type: String
+  field :order, type: String #系统顺序
+  field :asc_order, type: Integer #递增顺序
+  field :custom_order, type: String #自定义顺序
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
