@@ -210,7 +210,7 @@ module Reports
         nav_path = Common::Report::WareHouse::ReportLocation  + "reports_warehouse/tests/" + params[:test_id]+ '/.*grade/' + params[:tenant_uid] + '/nav.json(\\?ext_data_path=[0-9A-Za-z_]{1,})?$'
         re = Regexp.new nav_path
         nav = Mongodb::TestReportUrl.where(test_id: params[:test_id], report_url: re).first
-        nav_data = File.open(nav.report_url, 'rb').read if nav
+        nav_data = File.open(nav.report_url.split("?ext_data_path=")[0], 'rb').read if nav
         nav_h = JSON.parse(nav_data) if !nav_data.blank?
         result = nav_h.values[0].map{|item| item if accessable_loc_uids.include?(item[1]["uid"])}.compact if !nav_h.values.blank?
 
