@@ -6,7 +6,11 @@ class Mongodb::BankTestUserLink
 
   belongs_to :bank_test, class_name: "Mongodb::BankTest"
 
+  scope :by_user, ->(user_id) { where(user_id: user_id) }
+
   field :user_id, type: String
+  field :test_date, type: DateTime
+  field :test_duation, type: Integer # 测试持续时间
   field :test_times, type: Integer # 测试次数
   
   field :dt_add, type: DateTime

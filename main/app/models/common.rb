@@ -12,6 +12,7 @@ module Common
   include PaperModule
   include PageModule
   include ReportModule
+  include Report2Module
   include ReportPlusModule
   include RoleModule
   include ScoreModule
