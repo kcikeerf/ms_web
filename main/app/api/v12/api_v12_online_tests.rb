@@ -38,8 +38,10 @@ module ApiV12OnlineTests
       end
       post :zh_result do
         # 结果保存
-
+        Common::ReportPlus2::online_test_import_results params[:test_id], current_user.id, params, {:user_model => "WxUser", :wx_openid => params[:wx_openid]}
+        
         # 个人报告生成
+
       end
 
       ###########
