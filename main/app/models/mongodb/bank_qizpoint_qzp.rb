@@ -36,7 +36,6 @@ class Mongodb::BankQizpointQzp
 
   belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
-  has_many :bank_qizpoint_qzp_histories, class_name: "Mongodb::BankQizpointQzpHistory"
   has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid", dependent: :delete
  
   #
@@ -55,13 +54,18 @@ class Mongodb::BankQizpointQzp
   def format_ckps_json
     ckps = bank_checkpoint_ckps
     return {} if ckps.blank?
-
-    result = {
-      Common::CheckpointCkp::Dimesion::Knowledge => [], 
-      Common::CheckpointCkp::Dimesion::Skill => [],
-      Common::CheckpointCkp::Dimesion::Ability => []
-    }
-
+    checkpoint_system = bank_checkpoint_ckps[0].checkpoint_system
+    if checkpoint_system.sys_type == "xy_default"
+      result = {
+        Common::CheckpointCkp::Dimesion::Knowledge => [], 
+        Common::CheckpointCkp::Dimesion::Skill => [],
+        Common::CheckpointCkp::Dimesion::Ability => []
+      }
+    else
+      result = {
+        "other" => []
+      }
+    end
     ckps.each{|ckp|
       next unless ckp
 
@@ -76,12 +80,16 @@ class Mongodb::BankQizpointQzp
       ckp_uid_path = "/#{ckps_arr.map(&:uid).join('/')}"
       ckp_rid_path = "/#{ckps_arr.map(&:rid).join('/')}"
       weights_arr = ckps_arr.map{|ckp|
-        Mongodb::BankPaperPap.ckp_weights_modification({
-          :subject => ckp.subject,
-          :dimesion=> ckp.dimesion, 
-          :weights => ckp.weights, 
-          :difficulty=> bank_quiz_qiz.blank?? nil : bank_quiz_qiz.levelword2
-        })
+        if checkpoint_system.sys_type == "xy_default"
+          Mongodb::BankPaperPap.ckp_weights_modification({
+            :subject => ckp.subject,
+            :dimesion=> ckp.dimesion, 
+            :weights => ckp.weights, 
+            :difficulty=> bank_quiz_qiz.blank?? nil : bank_quiz_qiz.levelword2
+          })
+        else
+          ckp.weights.present? ? ckp.weights*Common::CheckpointCkp::DifficultyModifier[:default] : 1
+        end
       }
       ckp_weights_path = "/#{weights_arr.join('/')}"
       result[ckp.dimesion] << { 
@@ -116,9 +124,10 @@ class Mongodb::BankQizpointQzp
        self.score = params["score"] || 0.00
        self.order = params["order"] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
        self.custom_order = params["custom_order"] || ""
-       self.paper_outline_id = params["paper_outline_id"] || nil       
+       self.paper_outline_id = params["paper_outline_id"] || nil 
        self.save!
      rescue Exception => ex
+        p ex.message
        return false
      end
      return true

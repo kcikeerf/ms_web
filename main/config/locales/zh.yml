@@ -346,6 +346,7 @@ zh:
       jiao_cai_ji_mu_lu_zhi_biao_ti_xi_guan_li: "教材及目录指标体系管理"
       ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
       shi_juan_guan_li: "试卷管理"
+      zhi_biao_xi_tong_guan_li: "指标系统管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
       tenant:

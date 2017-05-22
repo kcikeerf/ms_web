@@ -1884,4 +1884,169 @@ namespace :swtk do
     end
 
   end
+
+  namespace :v1_2 do
+
+    desc "import paper quiz qizpoint"
+    task :import_paper_structure, [:paper_file, :heading, :subheading, :checkpoint_system_rid] => :environment do |t, args|
+      if args[:paper_file].nil? || args[:heading].nil? ||  args[:subheading].nil? || args[:checkpoint_system_rid].nil?
+        puts "Command format not correct, Usage: #rake swtk:v1_2:import_paper_structure[:paper_file,:heading,:subheading, :checkpoint_system_rid]"
+        exit 
+      end
+      order = 1
+      point_order = 1
+      quiz_qiz = nil
+
+      bank_paper = Mongodb::BankPaperPap.new
+      bank_paper.heading = args[:heading]
+      bank_paper.subheading = args[:subheading]
+      bank_paper.checkpoint_system_rid = args[:checkpoint_system_rid]
+      bank_paper.is_empty = true
+      bank_paper.save!
+      p bank_paper
+      File.open(args[:paper_file],"r") do |file|
+        file.each do |line|
+          arr = line.split("\r");
+          arr.each do |item|
+            str = item.chomp
+            if str
+              p str
+              arr = str.split(",")
+              if str.scan(/\+{4}/).size < 1
+                quiz = Mongodb::BankQuizQiz.new
+                quiz.order = order
+                quiz.asc_order = order
+                quiz.custom_order = arr[1]
+                quiz.is_empty = true
+                quiz.save!
+                quiz_qiz = quiz
+                point_order = 1
+                bank_paper.bank_quiz_qizs.push(quiz)
+                order += 1
+                p quiz
+              else
+                qizpoint = Mongodb::BankQizpointQzp.new
+                qizpoint.asc_order = quiz_qiz.order
+                qizpoint.order = "#{quiz_qiz.order}(#{point_order})"
+                qizpoint.custom_order = arr[1]
+                qizpoint.answer = arr[2]
+                qizpoint.score = arr[3]
+                qizpoint.is_empty = true
+                qizpoint.save!
+                quiz_qiz.bank_qizpoint_qzps.push(qizpoint)
+                p qizpoint
+                point_order += 1
+              end
+            end
+          end
+        end
+      end
+      p "done"
+    end
+
+    desc "export paper strucutre"
+    task :export_paper_strucutre, [:paper_uid,:export_type] => :environment do |t, args|
+      if args[:paper_uid].nil? || args[:export_type].nil?
+        puts "Command format not correct, Usage: #rake swtk:v1_2:export_paper_strucutre[:paper_uid,:export_type]"
+        exit 
+      end
+      p "begin"
+
+      paper = Mongodb::BankPaperPap.where(_id: args[:paper_uid]).first
+      if paper
+        qizpoints = paper.bank_quiz_qizs.map {|quiz| quiz.bank_qizpoint_qzps}.flatten
+        ckp = {}
+        bank_subject_checkpoint_ckps = BankSubjectCheckpointCkp.where(checkpoint_system_rid: paper.checkpoint_system_rid).order("rid ASC")
+        ckp_hash = {}
+        if args[:export_type] == "xlsx"
+          bank_subject_checkpoint_ckps.each do |ckp|
+            checkpoint_arr = [ckp.checkpoint]
+            if ckp.parent
+              p_ckp = ckp.parent
+              checkpoint_arr.unshift("++++")
+              if p_ckp.parent
+                checkpoint_arr.unshift("++++")
+              end
+            end
+            ckp_hash[ckp.uid] = checkpoint_arr.join("")
+          end
+          out_excel = Axlsx::Package.new
+          wb = out_excel.workbook
+          file_path = Rails.root.to_s + "/tmp/#{paper._id.to_s}_ckp.xlsx"
+          wb.add_worksheet name: "ckp_list", state: :hidden do |sheet|
+            ckp_hash.each do |key, value|
+              sheet.add_row([[value,key].join(",")], :types => [:string])
+            end
+          end
+          wb.add_worksheet name: "题顺" do |sheet|
+            qizpoints.each do |point|
+              arr = [point.order,point._id.to_s,nil,nil,nil,nil,nil]
+              sheet.add_row(arr)
+            end
+            sheet.column_info[1].hidden = true
+
+            qizpoints.size.times.each {|line|
+              area_arr = %W{C D E F G}
+              area_arr.each do |area|
+                sheet.add_data_validation("#{area}#{line+1}",{
+                  :type => :list,
+                  :formula1 => "ckp_list!A$1:A$#{ckp_hash.size}",
+                  :showDropDown => false,
+                  :showInputMessage => true,
+                  :promptTitle => "指标",
+                  :prompt => ""
+                })
+              end
+            }
+          end
+          out_excel.serialize(file_path)
+        elsif args[:export_type] == "json"
+          file_path = Rails.root.to_s + "/tmp/#{paper._id.to_s}.json"
+          json_arr = []
+          object_arr = []
+          qizpoints.each do |qiz|
+            qiz_obj = {
+                id: qiz._id.to_s,
+                order: qiz.order
+              }
+    
+            object_arr << qiz_obj
+          end
+          result = object_arr.to_json
+         File.open(file_path, 'w') do |f|
+            f << result
+          end
+
+          p result
+        end
+      else
+        p "paper not found "
+      end
+      p 'end'
+    end
+
+    desc "combine paper structure checkpoint"
+    task :combine_paper_structure_checkpoint, [:file_path] => :environment do |t, args|
+      if args[:file_path].nil?
+        puts "Command format not correct, Usage: #rake swtk:v1_2:combine_paper_structure_checkpoint[:paper_file]"
+        exit 
+      end
+      p "begin"
+      paper_xlsx = Roo::Excelx.new(args[:file_path])
+      (1..paper_xlsx.last_row).each do |j|
+        score_row = paper_xlsx.sheet(1).row(j)
+        score_row = score_row.compact
+        qizpoint = Mongodb::BankQizpointQzp.where(_id: score_row[1]).first
+        Mongodb::BankCkpQzp.where(qzp_uid: score_row[1]).destroy_all
+        score_row.compact[2..-1].each do |ckp_str|
+          ckp_info_arr = ckp_str.split(',')
+          ckp = Mongodb::BankCkpQzp.new
+          ckp.save_ckp_qzp score_row[1], ckp_info_arr[1], "BankSubjectCheckpointCkp"
+        end
+        qizpoint.format_ckps_json
+      end
+      p 'end'
+    end
+
+  end
 end
