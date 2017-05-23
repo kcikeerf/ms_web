@@ -60,7 +60,7 @@ module ApiV12Helper
   def message_json code
     {
       code: code,
-      message: I18n.t("api.wx.#{code}")
+      message: I18n.t("api.#{code}")
     }
   end
 

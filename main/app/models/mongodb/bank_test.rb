@@ -18,10 +18,11 @@ class Mongodb::BankTest
 
   scope :by_user, ->(id) { where(user_id: id) }
   scope :by_type, ->(str) { where(quiz_type: str) }
+  scope :by_public, ->(flag) { where(is_public: flag) }
 
   field :name, type: String
   field :quiz_type, type: String
-  field :quiz_date, type: DateTime
+  field :quiz_date, type: DateTime #默认为截止日期
   field :user_id, type: String
   field :report_version, type: String
   field :ext_data_path, type: String
