@@ -7,10 +7,10 @@ class Mongodb::BankTestUserLink
   belongs_to :bank_test, class_name: "Mongodb::BankTest"
 
   scope :by_user, ->(user_id) { where(user_id: user_id) }
-  scope :lt_times, ->(num) { where(test_times: {"$lt": num }) }
-  scope :gt_times, ->(num) { where(test_times: {"$gt": num }) }
-  scope :lte_times, ->(num) { where(test_times: {"$lte": num }) }
-  scope :gte_times, ->(num) { where(test_times: {"$gte": num }) }
+  scope :lt_times, ->(num) { where(test_times: {"$lt" => num }) }
+  scope :gt_times, ->(num) { where(test_times: {"$gt" => num }) }
+  scope :lte_times, ->(num) { where(test_times: {"$lte" => num }) }
+  scope :gte_times, ->(num) { where(test_times: {"$gte" => num }) }
 
   field :user_id, type: String
   field :test_date, type: DateTime

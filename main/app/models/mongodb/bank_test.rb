@@ -22,6 +22,7 @@ class Mongodb::BankTest
 
   field :name, type: String
   field :quiz_type, type: String
+  field :start_date, type: DateTime
   field :quiz_date, type: DateTime #默认为截止日期
   field :user_id, type: String
   field :report_version, type: String

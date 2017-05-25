@@ -2048,5 +2048,94 @@ namespace :swtk do
       p 'end'
     end
 
+    # 创建定时执行Job
+    desc "create scheduled group report generate"
+    task :schedule_online_test_group_report_generator, [:test_id,:group_type] => :environment do |t, args|
+      begin
+        target_test = Mongodb::BankTest.where(id: args[:test_id]).first
+        end_date = target_test.quiz_date
+        cron_minute = end_date.strftime("%M").to_i + 1 #前端截止日期后，不可从测试列表中查看之后，开始执行群体报告生成
+        cron_hour = end_date.strftime("%H").to_i
+        cron_date = end_date.strftime("%d").to_i
+        cron_month = end_date.strftime("%m").to_i
+        cron_str = "#{cron_minute} #{cron_hour} #{cron_date} #{cron_month} *"
+        # cron_str = "0-59 * * * *"
+        worker_class = 'OnlineTestScheduledGenerateGroupReportsWorker'
+        sjob = ScheduledJob.new(
+          name: args[:test_id] + args[:group_type],
+          cron: cron_str,
+          klass: worker_class,
+          start_date: target_test.start_date ? target_test.start_date.strftime("%Y%m%d %H:%M") : nil,
+          end_date: target_test.quiz_date ? target_test.quiz_date.strftime("%Y%m%d %H:%M") : nil
+        )
+        sjob.save!
+        Sidekiq::Cron::Job.create(
+          name: sjob.uid, 
+          cron: cron_str, 
+          class: worker_class,
+          args: {:test_id => args[:test_id], :group_type => args[:group_type]}
+        )
+      rescue Exception => ex
+        puts "Error(#{ex.message})"
+        puts ex.backtrace 
+      end
+    end
+
+    # 创建清理过期JOB的JOB
+    desc "create clear expired job worker"
+    task schedule_clear_expired_scheduled_jobs_worker: :environment do |t, args|
+      begin
+        worker_class = 'ClearExpiredScheduledJobsWorker'
+        raise "ALready existed!" if ScheduledJob.where(name: worker_class).first
+        cron_str = "0-59 * * * * *"
+        sjob = ScheduledJob.new(
+          name: "ClearExpiredScheduledJobsWorker",
+          cron: cron_str,
+          klass: worker_class,
+        )
+        sjob.save!
+        Sidekiq::Cron::Job.create(
+          name: sjob.uid, 
+          cron: cron_str, 
+          class: worker_class
+        )
+      rescue Exception => ex
+        puts "Error(#{ex.message})"
+        puts ex.backtrace 
+      end
+    end
+
+    # 查看定时执行Job
+    desc "show scheduled jobs"
+    task :show_scheduled_jobs, [:start_date,:end_date] => :environment do |t, args|
+      begin
+        cond_arr = []
+        cond_arr << "start_date > #{args[:start_date]}" if !args[:start_date].blank?
+        cond_arr << "end_date > #{args[:end_date]}" if !args[:start_date].blank?
+        format_str = "%-5s | %-32s | %-50s | %-20s | %-20s | %-20s "
+        puts format_str % [
+          "index",
+          "uid",
+          "class",
+          "start_date",
+          "end_date",
+          "updated_at"
+        ]        
+        ScheduledJob.where(cond_arr.join(" and ")).order(updated_at: :desc).each_with_index{|item, index|
+          puts format_str % [
+            index, 
+            item.uid, 
+            item.klass, 
+            item.start_date ? item.start_date.strftime("%Y/%m/%d %H:%M") : "-",
+            item.end_date ? item.end_date.strftime("%Y/%m/%d %H:%M") : "-",
+            item.updated_at.strftime("%Y/%m/%d %H:%M")
+          ]
+        }
+      rescue Exception => ex
+        puts "Error(#{ex.message})"
+        puts ex.backtrace 
+      end
+    end 
+
   end
 end
