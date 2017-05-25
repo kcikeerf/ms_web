@@ -7,7 +7,20 @@ class OnlineTestConstructReportsWorker
     logger = Sidekiq::Logging.logger
     Common::process_sync_template(__method__.to_s()) {|pids|
       pids << fork do # fork new process, begin
- 		logger.info "OnlineTestConstructReportsWorker"
+        logger.info "#{args}"
+        if !args.blank?
+          paramsh = {
+            :test_id => args[0],
+            :group_type => args[1]
+          }
+          paramsh.merge!({:tenant_uids => [args[1]]}) if !args[1].blank?
+          process_ins = Mongodb::OnlineTestZhFzqnGroupConstructor.new(paramsh)
+          process_ins.construct_round_1
+          process_ins.pre_owari
+          process_ins.owari
+        else
+          raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => ""))
+        end
       end # fork new process, end
     } 
   end

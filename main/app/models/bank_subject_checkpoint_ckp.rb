@@ -487,8 +487,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
   private
 
-  def get_nodes(length, rid, subject, dimesion, category, system_id="000")
-    self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and left(rid, ?) = ?', subject, dimesion, category, system_id, length, rid)
+  def get_nodes(length, rid, subject, dimesion, category, system_rid="000")
+    self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and left(rid, ?) = ?', subject, dimesion, category, system_rid, length, rid)
   end 
 
   def delete_children
