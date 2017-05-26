@@ -30,12 +30,79 @@ class Mongodb::BankTest
   field :report_top_group, type: String
   field :checkpoint_system_rid, type: String
   field :is_public, type: Boolean
+  field :area_rid, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
   index({_id: 1}, {background: true})
   index({bank_paper_pap_id: 1}, {background: true})
+
+  class << self
+    def get_list params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      test_result = []
+
+      result.each_with_index{|item, index|
+        h  = item.add_value_to_item
+        test_result[index] = h
+      }
+      return test_result, self.count
+    end
+
+  end
+
+  def add_value_to_item
+    #获得地区信息
+    area_h = {
+      :province_rid => "",
+      :city_rid => "",
+      :district_rid => ""
+    }
+    target_area = Area.where(rid: self.area_rid).first
+    if target_area
+      area_h[:province_rid] = target_area.pcd_h[:province][:rid]
+      area_h[:city_rid] = target_area.pcd_h[:city][:rid]
+      area_h[:district_rid] = target_area.pcd_h[:district][:rid]
+    end
+    h = {
+      "uid" => self._id.to_s,
+      "tenant_uids[]" => self.bank_test_tenant_links.map(&:tenant_uid),
+      "tenants_range" => self.bank_test_tenant_links.nil? ? "" : self.tenants.map(&:name_cn).join("<br>"),
+      "paper_name" => self.bank_paper_pap.present? ? self.bank_paper_pap.heading : nil,
+      "paper_id" => self.bank_paper_pap_id.to_s,
+    }
+    h.merge!(area_h)
+    h.merge!(self.attributes)
+    h["start_date"]= self.start_date.strftime("%Y-%m-%d %H:%M:%S") if self.start_date.present?
+    h["quiz_date"]= self.quiz_date.strftime("%Y-%m-%d %H:%M:%S") if self.quiz_date.present?
+    h["dt_update"]=h["dt_update"].strftime("%Y-%m-%d %H:%M:%S")
+    return h
+  end
+
+
+  def save_bank_test params
+    area_ird = params[:province_rid] unless params[:province_rid].blank?
+    area_rid = params[:city_rid] unless params[:city_rid].blank?
+    area_rid = params[:district_rid] unless params[:district_rid].blank?
+    paramsh = {
+      :name => params[:name],
+      :start_date => params[:start_date],
+      :quiz_date => params[:quiz_date],
+      :quiz_type => params[:quiz_type],
+      :is_public => params[:is_public],
+      :checkpoint_system_rid => params[:checkpoint_system_rid],
+      :area_rid => area_rid
+    }
+    update_attributes(paramsh)
+    bank_test_tenant_links.destroy_all
+    params[:tenant_uids].each {|tenant|
+        bank_test_tenant_link = Mongodb::BankTestTenantLink.new(tenant_uid: tenant, bank_test_id: self._id)
+        bank_test_tenant_link.save
+    }
+  end
 
   def area_uids
     bank_test_area_links.map(&:area_uid)
@@ -125,7 +192,7 @@ class Mongodb::BankTest
   end
 
   def checkpoint_system
-    CheckpointSytem.where(id: self.checkpoint_system_id).first
+    CheckpointSystem.where(rid: self.checkpoint_system_rid).first
   end
 
   ###私有方法###

@@ -126,6 +126,7 @@ class Mongodb::BankPaperPap
         h["grade_label"] = Common::Locale::i18n("dict.#{h["grade"]}")
         h["term_label"] = Common::Locale::i18n("dict.#{h["term"]}")
         h["status_label"] = Common::Locale::i18n("papers.status.#{h["paper_status"]}")
+        h["has_bank_test"] = item.bank_tests.present?
         paper_result[index] = h
       end
       return paper_result, self.count

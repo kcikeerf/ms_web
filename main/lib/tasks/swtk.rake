@@ -2028,15 +2028,17 @@ namespace :swtk do
     desc "combine paper structure checkpoint"
     task :combine_paper_structure_checkpoint, [:file_path] => :environment do |t, args|
       if args[:file_path].nil?
-        puts "Command format not correct, Usage: #rake swtk:v1_2:combine_paper_structure_checkpoint[:paper_file]"
+        puts "Command format not correct, Usage: #rake swtk:v1_2:combine_paper_structure_checkpoint[:file_path]"
         exit 
       end
       p "begin"
+      paper = nil
       paper_xlsx = Roo::Excelx.new(args[:file_path])
       (1..paper_xlsx.last_row).each do |j|
         score_row = paper_xlsx.sheet(1).row(j)
         score_row = score_row.compact
         qizpoint = Mongodb::BankQizpointQzp.where(_id: score_row[1]).first
+        paper = qizpoint.bank_quiz_qiz.bank_paper_paps[0]
         Mongodb::BankCkpQzp.where(qzp_uid: score_row[1]).destroy_all
         score_row.compact[2..-1].each do |ckp_str|
           ckp_info_arr = ckp_str.split(',')
@@ -2045,6 +2047,8 @@ namespace :swtk do
         end
         qizpoint.format_ckps_json
       end
+      paper.paper_status = "analyzed"
+      paper.save!
       p 'end'
     end
 
