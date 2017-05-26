@@ -347,6 +347,7 @@ zh:
       ke_mu_zhi_biao_ti_xi_guan_li: "科目指标体系管理"
       shi_juan_guan_li: "试卷管理"
       zhi_biao_xi_tong_guan_li: "指标系统管理"
+      bank_test: "测试管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
       tenant:
@@ -598,6 +599,3 @@ zh:
       search_placeholder: '请输入关键字进行搜索'
     reports:
       report: "报告"
-
-
-

@@ -294,7 +294,7 @@ class User < ActiveRecord::Base
   end
 
   def bank_tests
-    Mongodb::BankTestUserLink.where(user_id: self.id).map{|item| item.bank_test}.compact
+    Mongodb::BankTestUserLink.by_user(self.id).map{|item| item.bank_test}.compact
   end
 
   # 是否已绑定微信

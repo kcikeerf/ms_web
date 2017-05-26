@@ -7,11 +7,16 @@ class Mongodb::BankTestUserLink
   belongs_to :bank_test, class_name: "Mongodb::BankTest"
 
   scope :by_user, ->(user_id) { where(user_id: user_id) }
+  scope :lt_times, ->(num) { where(test_times: {"$lt" => num }) }
+  scope :gt_times, ->(num) { where(test_times: {"$gt" => num }) }
+  scope :lte_times, ->(num) { where(test_times: {"$lte" => num }) }
+  scope :gte_times, ->(num) { where(test_times: {"$gte" => num }) }
 
   field :user_id, type: String
   field :test_date, type: DateTime
   field :test_duation, type: Integer # 测试持续时间
-  field :test_times, type: Integer # 测试次数
+  field :test_times, type: Integer, default: 0 # 测试次数
+  field :test_status, type: String, default: nil 
   
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

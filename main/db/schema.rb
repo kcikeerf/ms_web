@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170508070047) do
+ActiveRecord::Schema.define(version: 20170524032840) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace",     limit: 255
@@ -198,20 +198,21 @@ ActiveRecord::Schema.define(version: 20170508070047) do
   end
 
   create_table "bank_subject_checkpoint_ckps", primary_key: "uid", force: :cascade do |t|
-    t.string   "dimesion",            limit: 50
-    t.string   "rid",                 limit: 255,                   null: false
-    t.string   "checkpoint",          limit: 200
-    t.string   "subject",             limit: 36,                    null: false
-    t.boolean  "is_entity",           limit: 1,     default: true
-    t.text     "advice",              limit: 65535
-    t.text     "desc",                limit: 65535
-    t.float    "weights",             limit: 24
+    t.string   "dimesion",              limit: 50
+    t.string   "rid",                   limit: 255,                   null: false
+    t.string   "checkpoint",            limit: 200
+    t.string   "subject",               limit: 36,                    null: false
+    t.boolean  "is_entity",             limit: 1,     default: true
+    t.text     "advice",                limit: 65535
+    t.text     "desc",                  limit: 65535
+    t.float    "weights",               limit: 24
     t.datetime "dt_add"
     t.datetime "dt_update"
-    t.string   "sort",                limit: 255
-    t.string   "category",            limit: 255
-    t.boolean  "high_level",          limit: 1,     default: false
-    t.string   "checkpoint_sytem_id", limit: 255
+    t.string   "sort",                  limit: 255
+    t.string   "category",              limit: 255
+    t.boolean  "high_level",            limit: 1,     default: false
+    t.string   "checkpoint_sytem_id",   limit: 255
+    t.string   "checkpoint_system_rid", limit: 255
   end
 
   add_index "bank_subject_checkpoint_ckps", ["subject"], name: "ckp_subject", using: :btree
@@ -450,6 +451,21 @@ ActiveRecord::Schema.define(version: 20170508070047) do
     t.integer  "permission_id", limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "scheduled_jobs", primary_key: "uid", force: :cascade do |t|
+    t.string   "name",                 limit: 255
+    t.string   "cron",                 limit: 255
+    t.string   "klass",                limit: 255
+    t.string   "queue",                limit: 255
+    t.text     "args",                 limit: 65535
+    t.boolean  "active_job",           limit: 1
+    t.string   "queue_name_prefix",    limit: 255
+    t.string   "queue_name_delimiter", limit: 255
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
   create_table "score_uploads", force: :cascade do |t|
