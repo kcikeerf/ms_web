@@ -86,14 +86,14 @@ module ApiV12Reports
 
         unless target_papers.blank?
           if target_user.is_pupil?
-            rpt_type = Common::Report::Group::Pupil
-            rpt_id = target_user.role_obj.uid
+            _rpt_type = Common::Report::Group::Pupil
+            _rpt_id = target_user.role_obj.uid
           elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
-            rpt_type = Common::Report::Group::Grade
-            rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
+            _rpt_type = Common::Report::Group::Grade
+            _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
           elsif target_user.is_project_administrator?
-            rpt_type = Common::Report::Group::Project
-            rpt_id = nil
+            _rpt_type = Common::Report::Group::Project
+            _rpt_id = nil
           else
             # do nothing
           end
@@ -122,8 +122,8 @@ module ApiV12Reports
             else
               test_id = target_pap.bank_tests[0].id.to_s
               test_ext_data_path = target_pap.bank_tests[0].ext_data_path
-              rpt_type = rpt_type || Common::Report::Group::Project
-              rpt_id = (rpt_type == Common::Report::Group::Project)? test_id : rpt_id
+              rpt_type = _rpt_type || Common::Report::Group::Project
+              rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
               report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
               {
                 :paper_heading => target_pap.heading,
@@ -155,16 +155,16 @@ module ApiV12Reports
           target_tests = target_user.role_obj.area.bank_tests
         elsif target_user.is_tenant_administrator?
           target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten
-          rpt_type = Common::Report::Group::Grade
-          rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid          
+          _rpt_type = Common::Report::Group::Grade
+          _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid          
         elsif target_user.is_teacher?
           target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten
-          rpt_type = Common::Report::Group::Grade
-          rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid
+          _rpt_type = Common::Report::Group::Grade
+          _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid
         elsif target_user.is_pupil?
           target_tests = target_user.bank_tests
-          rpt_type = Common::Report::Group::Pupil
-          rpt_id = target_user.role_obj.uid
+          _rpt_type = Common::Report::Group::Pupil
+          _rpt_id = target_user.role_obj.uid
         else
           target_tests = []
         end
@@ -175,8 +175,8 @@ module ApiV12Reports
           test_id = t.id.to_s
           target_pap = t.paper_question
           next unless target_pap
-          rpt_type = rpt_type || Common::Report::Group::Project
-          rpt_id = rpt_id || test_id      
+          rpt_type = _rpt_type || Common::Report::Group::Project
+          rpt_id = _rpt_id || test_id      
           report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)          
           {
             :paper_heading => target_pap.heading,
@@ -191,6 +191,40 @@ module ApiV12Reports
 
       ###########
 
+      desc ''
+      params do
+        requires :is_public, type: Boolean, default: true 
+      end
+      post :my_list do
+        target_user = current_user
+        if params[:is_public]
+          target_tests = target_user.bank_tests.find_all{|item| item.is_public }
+          _group_arr = Common::Report2::List1Arr
+        else
+          target_tests = target_user.accessable_tests.find_all{|item| !item.is_public }
+          _group_arr = Common::Report2::List2Arr
+        end
+        _rpt_type,_rpt_id = target_user.report_top_group_kv(params[:is_public])
+
+        target_tests.map{|item|
+          next unless item
+          test_id = item.id.to_s
+          rpt_type = _rpt_type || _group_arr[-1]
+          rpt_id = _rpt_id || test_id
+          report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)          
+          {
+            :name => item.name,
+            :quiz_type => Common::Locale::i18n("dict.#{item.quiz_type}"),
+            :start_date => item.start_date ? item.start_date.strftime('%Y/%m/%d %H:%M') : nil,
+            :end_date => item.quiz_date ? item.quiz_date.strftime('%Y/%m/%d %H:%M') : nil,
+            :report_version => "1.2",
+            :test_id => test_id,
+            :report_url => "/api/v1.2" + report_url
+          }
+        }
+      end
+
+      ###########
       desc '获取当前用户所在租户的年级班级列表 post /api/v1.2/reports/klass_list' # class_list begin
       params do
         requires :test_id, type: String, allow_blank: false

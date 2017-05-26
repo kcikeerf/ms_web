@@ -260,6 +260,7 @@ class User < ActiveRecord::Base
     result
   end
 
+  # 可访问Tenant
   def accessable_tenants
     result = []
     if self.is_area_administrator?
@@ -269,9 +270,10 @@ class User < ActiveRecord::Base
     else
       result = [self.tenant]
     end
-    result
+    result.sort{|a,b| b.name <=> a.name }
   end
 
+  # 可访问班级（分组）
   def accessable_locations
     result = []
     target_tenants = self.accessable_tenants
@@ -289,8 +291,46 @@ class User < ActiveRecord::Base
     result
   end
 
-  def paper_questions
-    Mongodb::BankTestUserLink.where(user_id: self.id).map{|item| item.bank_test.paper_question if item.bank_test}.compact
+  # 可访问测试
+  def accessable_tests
+    result = []
+    if self.is_area_administrator?
+      result = self.role_obj.area.bank_tests
+    elsif self.is_tenant_administrator?
+      result = self.accessable_tenants.map{|t| t.bank_tests}.flatten     
+    elsif self.is_teacher?
+      result = self.accessable_locations.map{|l| l.bank_tests}.flatten
+    elsif self.is_pupil?
+      result = self.bank_tests
+    else
+      result = []
+    end
+    result.compact!
+    result.uniq!
+    result.sort{|a,b| b.dt_update <=> a.dt_update}
+  end
+
+  # 用户当前所属分组
+  def report_top_group_kv is_public=true
+    if is_public
+      rpt_type = Common::Report2::Group::Individual
+      rpt_id = self.tk_token
+    else
+      rpt_type = nil
+      rpt_id = nil
+      if self.is_area_administrator? || self.is_project_administrator?
+        #
+      elsif self.is_tenant_administrator? || self.is_teacher?
+        rpt_type = Common::Report::Group::Grade
+        rpt_id = self.accessable_tenants.blank?? nil : self.accessable_tenants.first.uid
+      elsif self.is_pupil?
+        rpt_type = Common::Report::Group::Pupil
+        rpt_id = self.role_obj.uid
+      else
+        #
+      end
+    end
+    rpt_type,rpt_id
   end
 
   def bank_tests

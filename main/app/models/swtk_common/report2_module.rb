@@ -3,13 +3,13 @@ module Report2Module
     module_function
     
     module Group
-      List1Arr = ["individual", "overall"]
-      List2Arr = ["pupil", "klass", "grade", "overall"]
+      List1Arr = ["individual", "project"]
+      List2Arr = ["pupil", "klass", "grade", "project"]
       Individual = "individual"
       Pupil = "pupil" 
       Klass = "klass"
       Grade = "grade"
-      Overall = "overall"
+      Project = "project"
     end
 
   end

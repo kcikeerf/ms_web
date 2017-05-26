@@ -12,8 +12,8 @@ class OnlineTestScheduledGenerateGroupReportsWorker
         if target_test.is_public
           Superworker.define(:GeneratePublicOnlineTestGroupReportsSuperWorker, :test_id) do
             OnlineTestPrepareReportsDataWorker :test_id
-            OnlineTestGenerateGroupReportsWorker :test_id, "overall"
-            OnlineTestConstructReportsWorker :test_id, "overall"
+            OnlineTestGenerateGroupReportsWorker :test_id, "project"
+            OnlineTestConstructReportsWorker :test_id, "project"
             OnlineTestClearReportsGarbageWorker :test_id
           end
           GenerateOnlineTestGroupReportsSuperWorker.perform_async(params["test_id"])
@@ -33,8 +33,8 @@ class OnlineTestScheduledGenerateGroupReportsWorker
                     OnlineTestGenerateGroupReportsWorker :test_id, Common::Report2::Group::Grade, :tenant_uid
                   end
                 end
-                if job_base_params[:top_group] == Common::Report2::Group::Overall
-                  OnlineTestGenerateGroupReportsWorker :test_id, Common::Report2::Group::Overall, nil
+                if job_base_params[:top_group] == Common::Report2::Group::Project
+                  OnlineTestGenerateGroupReportsWorker :test_id, Common::Report2::Group::Project, nil
                 end
               end
             end
@@ -46,8 +46,8 @@ class OnlineTestScheduledGenerateGroupReportsWorker
                     OnlineTestConstructReportsWorker :test_id, Common::Report2::Group::Grade, :tenant_uid
                   end
                 end
-                if job_base_params[:top_group] == Common::Report2::Group::Overall
-                  OnlineTestConstructReportsWorker :test_id, Common::Report2::Group::Overall, nil
+                if job_base_params[:top_group] == Common::Report2::Group::Project
+                  OnlineTestConstructReportsWorker :test_id, Common::Report2::Group::Project, nil
                 end
               end
             end

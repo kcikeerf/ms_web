@@ -26,7 +26,7 @@ module ApiV12OnlineTests
       params do
         requires :test_id, type: String, allow_blank: false
       end
-      post :zh_todo_list do
+      post :todo_list do
         pub_tests = Mongodb::BankTest.by_public(true)
         priv_tests = Mongodb::BankTestUserLink.by_user(current_user.id).lt_times(1).map{|item| item.bank_test}
         {
@@ -57,7 +57,7 @@ module ApiV12OnlineTests
       params do
         requires :test_id, type: String, allow_blank: false
       end
-      post :zh_tested_list do
+      post :tested_list do
         target_tests = Mongodb::BankTestUserLink.by_user(current_user.id).gte_times(1).map{|item| item.bank_test}
         target_tests.map{|item|
           {
@@ -67,7 +67,7 @@ module ApiV12OnlineTests
             :ext_data_path => item.ext_data_path,
             :start_date => item.start_date,
             :end_date => item.end_date,
-            :report_url => target_url
+            :is_public => item.is_public
           }
         }
       end
