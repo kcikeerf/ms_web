@@ -201,9 +201,12 @@ class Mongodb::BankTest
     # 随机生成6位外挂码，默认生成码以"___"（三个下划线）开头
     # 
     def generate_ext_data_path
-      unless self.ext_data_path
-        self.ext_data_path = Common::Test::ExtDataPathDefaultPrefix
-        Common::Test::ExtDataPathLength.times{ self.ext_data_path << Common::Test::ExtDataCodeArr.sample}
+      if self.ext_data_path.blank?
+        self.ext_data_path = loop do
+          random_str = Common::Test::ExtDataPathDefaultPrefix
+          random_str += Common::Test::ExtDataPathLength.times.map{ Common::Test::ExtDataCodeArr.sample }.join("")
+          break random_str unless self.class.where(ext_data_path: random_str).exists?
+        end
       end
     end
 end

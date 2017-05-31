@@ -219,12 +219,18 @@ namespace :swtk do
   #针对默认类型指标
   desc "import subject checkpoints, temporary use"
     task :read_subject_checkpoint,[:file_path,:subject,:xue_duan,:dimesion,:checkpoint_system_rid]=> :environment do |t, args|
-    if args[:file_path].nil? ||  args[:subject].nil? || args[:xue_duan].nil? || args[:dimesion].nil? || args[:checkpoint_system_rid].nil?
+    if args[:file_path].nil? || args[:checkpoint_system_rid].nil?
       puts "Command format not correct."
       exit 
     end
 
-    if BankSubjectCheckpointCkp.where(subject: args[:subject], dimesion: args[:dimesion], category: args[:xue_duan], checkpoint_system_rid: args[:checkpoint_system_rid]).count > 0
+    cond_h = {}
+    cond_h[:subject] = args[:subject] if !args[:subject].blank?
+    cond_h[:category] = args[:xue_duan] if !args[:xue_duan].blank?
+    cond_h[:dimesion] = args[:dimesion] if !args[:dimesion].blank?
+    cond_h[:checkpoint_system_rid] = args[:checkpoint_system_rid] if !args[:checkpoint_system_rid].blank?
+
+    if BankSubjectCheckpointCkp.where(cond_h).count > 0
       puts "#{args[:subject]}, #{args[:xue_duan]} not empty"
       exit
     end
@@ -249,20 +255,22 @@ namespace :swtk do
         checkpoint = ckp_desc_arr[0].nil?? "":ckp_desc_arr[0].strip
         desc = ckp_desc_arr[1].nil?? "":ckp_desc_arr[1].strip
 
-        ckp = BankSubjectCheckpointCkp.new({
-          :dimesion => args[:dimesion].strip,
-          :category => args[:xue_duan],
-          :subject => args[:subject],
+        paramh = {
           :rid=>rid || "",
           :checkpoint => checkpoint || "",
           :desc =>desc || "",
           :advice => "建议",
           :weights => weights,
           :sort => rid,
-          :is_entity => false,
-          :checkpoint_system_rid => args[:checkpoint_system_rid]
-        })
+          :is_entity => false
+        }
 
+        paramh[:subject] = args[:subject].strip if !args[:subject].blank?
+        paramh[:category] = args[:xue_duan].strip if !args[:xue_duan].blank?
+        paramh[:dimesion] = args[:dimesion].strip if !args[:dimesion].blank?
+        paramh[:checkpoint_system_rid] = args[:checkpoint_system_rid].strip if !args[:checkpoint_system_rid].blank?
+
+        ckp = BankSubjectCheckpointCkp.new(paramh)
         ckp.save
       end
     end

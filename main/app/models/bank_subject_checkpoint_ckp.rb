@@ -12,6 +12,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   has_many :bank_nodestructure_subject_ckps, foreign_key: 'subject_ckp_uid', dependent: :destroy
   has_many :bank_node_catalogs, through: :bank_nodestructure_subject_ckps
 
+  before_save :set_subject, :set_xue_duan, :set_dimesion
+  
   scope :not_equal_rid, ->(rid) { where.not(rid: rid) }
   scope :by_subject, ->(subject) { where(subject: subject) }
   scope :by_dimesion, ->(dimesion) { where(dimesion: dimesion) }
@@ -39,7 +41,6 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       #all_nodes = node_structure.bank_subject_checkpoint_ckps.where(dimesion: dimesion)
       target_subject, target_category = BankCheckpointCkp.get_subject_ckp_params params
       dim_all_nodes = self.where(:subject => target_subject, :category => target_category, :dimesion => dimesion,  :checkpoint_system_rid => checkpoint_system_rid)
-
       node_level_first = level_config.first
       first_level_nodes = get_nodes_by_rid_length(dim_all_nodes, node_level_first)
 
@@ -433,7 +434,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   # end
 
   def parent
-    get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category, checkpoint_system_rid).find_by(rid: parent_node_rid)
+    get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category, checkpoint_system_id).find_by(rid: parent_node_rid)
   end
 
   def parent_node_rid
@@ -451,6 +452,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       nodes = parent.children
     else
       nodes = self.class.where(subject: subject, category: category, dimesion: dimesion, checkpoint_system_rid: checkpoint_system_rid)
+      nodes = self.class.where(subject: subject, category: category, dimesion: dimesion, checkpoint_system_id: checkpoint_system_id)
     end
     nodes.where('LENGTH(rid) = ? and SUBSTRING(rid, ?) > ?', rid.size, 0 - Common::SwtkConstants::CkpStep, bank_node_rid).order("rid ASC").first
   end
@@ -487,17 +489,28 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
   private
 
-  def get_nodes(length, rid, subject, dimesion, category, system_rid="000")
-    self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and left(rid, ?) = ?', subject, dimesion, category, system_rid, length, rid)
-  end 
+    def get_nodes(length, rid, subject, dimesion, category, system_id="000")
+      self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and left(rid, ?) = ?', subject, dimesion, category, system_id, length, rid)
+    end 
 
-  def delete_children
-    children_nodes = children
-    parent_node = parent
-    parent_node.update(is_entity: true) if parent_node && parent_node.children.blank?
+    def delete_children
+      children_nodes = children
+      parent_node = parent
+      parent_node.update(is_entity: true) if parent_node && parent_node.children.blank?
 
-    return false if children_nodes.blank?
-    children.destroy_all
-  end
+      return false if children_nodes.blank?
+      children.destroy_all
+    end
 
+    def set_subject
+      self.subject = self.subject || "all"
+    end
+
+    def set_xue_duan
+      self.category = self.category || "all"
+    end
+
+    def set_dimesion
+      self.dimesion = self.dimesion || "other"
+    end
 end

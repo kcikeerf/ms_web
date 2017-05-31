@@ -330,7 +330,7 @@ class User < ActiveRecord::Base
         #
       end
     end
-    rpt_type,rpt_id
+    return rpt_type,rpt_id
   end
 
   def bank_tests
