@@ -2016,22 +2016,34 @@ namespace :swtk do
           out_excel.serialize(file_path)
         elsif args[:export_type] == "json"
           file_path = Rails.root.to_s + "/tmp/#{paper._id.to_s}.json"
-          json_arr = []
+          target_test = paper.bank_tests[0]
+          result = {
+            :basic =>{
+              :test => {
+                :id => target_test.id.to_s,
+                :name => target_test.name,
+                :quiz_duration => paper.quiz_duration,
+                :start_date => paper.bank_tests[0].start_date.strftime("%Y%m%d %H:%M"),
+                :end_date => paper.bank_tests[0].quiz_date.strftime("%Y%m%d %H:%M")
+              }
+            },
+            :result => []
+          }
+          # json_arr = []
           object_arr = []
           qizpoints.each do |qiz|
-            qiz_obj = {
-                id: qiz._id.to_s,
-                order: qiz.order
-              }
-    
-            object_arr << qiz_obj
+            result[:result] << {
+              id: qiz._id.to_s,
+              order: qiz.order,
+              full_score: qiz.score,
+              answer: "",
+              real_score: "",
+              type: ""
+            }
           end
-          result = object_arr.to_json
          File.open(file_path, 'w') do |f|
-            f << result
+            f << result.to_json
           end
-
-          p result
         end
       else
         p "paper not found "
@@ -2051,7 +2063,9 @@ namespace :swtk do
       (1..paper_xlsx.last_row).each do |j|
         score_row = paper_xlsx.sheet(1).row(j)
         score_row = score_row.compact
+        next if score_row.blank?
         qizpoint = Mongodb::BankQizpointQzp.where(_id: score_row[1]).first
+        next unless qizpoint
         paper = qizpoint.bank_quiz_qiz.bank_paper_paps[0]
         Mongodb::BankCkpQzp.where(qzp_uid: score_row[1]).destroy_all
         score_row.compact[2..-1].each do |ckp_str|
