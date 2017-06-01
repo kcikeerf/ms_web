@@ -118,7 +118,7 @@ module PaperOnlineTest
            [ Common::OnrineTest::Status::ScoreImporting, 
              Common::OnrineTest::Status::report_generating 
            ].include?(target_test_user_link.target_test_status)
-          error!(message_json("e43002"), 403)
+          error!(message_json("e44002"), 403)
         else
           # 创建跟踪Task，Job
           target_task = TaskList.new({
