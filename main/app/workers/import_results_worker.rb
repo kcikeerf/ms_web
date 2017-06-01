@@ -442,7 +442,7 @@ class ImportResultsWorker
   private
     # 组装用户名
     def format_user_name args=[]
-      args.join(Common::Uzer::UserNameSperator)
+      'u' + args.join(Common::Uzer::UserNameSperator)
     end
 
     # 组装用户名密码行数据
@@ -471,7 +471,7 @@ class ImportResultsWorker
       }
       row_data[Common::Role::Teacher.to_sym][:subject] = Common::Subject::List[item[:subject].to_sym] if item[:subject]
 
-      ret = User.add_user item[:user_name],role, item
+      ret, flag = User.add_user item[:user_name],role, item
 
       target_username = ""
       if (ret.is_a? Array) && ret.empty?

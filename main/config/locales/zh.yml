@@ -187,6 +187,7 @@ zh:
       head_teacher_password_title: "班主任老师的用户名密码"
       teacher_password_title: "老师的用户名密码"
       pupil_password_title: "学生的用户名密码"
+      new_user_title: "新增用户列表"
     messages:
       info:
         old_user: "用户已存在，请使用当前密码"

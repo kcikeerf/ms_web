@@ -2066,6 +2066,214 @@ namespace :swtk do
       p 'end'
     end
 
+    desc "import user info link test "
+    task :import_user_info_link_test, [:file_path,:bank_test_id] => :environment do |t,args|
+      if args[:file_path].nil? || args[:bank_test_id].nil?
+        puts "Command format not correct, Usage: #rake swtk:v1_2:import_user_info_link_test[:file_path,:bank_test_id]"
+        exit 
+      end
+      p 'begin'
+      begin       
+        teacher_username_in_sheet = []
+        pupil_username_in_sheet = []
+        location_list = {}   
+        user_info_xlsx = Roo::Excelx.new(args[:file_path])
+        out_excel = Axlsx::Package.new
+        wb = out_excel.workbook
+
+        head_teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.head_teacher_password_title'))
+        teacher_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.teacher_password_title'))
+        pupil_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.pupil_password_title'))
+        new_user_sheet = wb.add_worksheet(:name => Common::Locale::i18n('scores.excel.new_user_title'))
+
+          # head_teacher_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+          # teacher_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+          # pupil_sheet.sheet_protection.password = Common::SwtkConstants::DefaultSheetPassword
+
+        head_teacher_sheet.add_row Common::Uzer::UserAccountTitle[:head_teacher]
+        teacher_sheet.add_row Common::Uzer::UserAccountTitle[:teacher]
+        pupil_sheet.add_row Common::Uzer::UserAccountTitle[:pupil]
+        new_user_sheet.add_row Common::Uzer::UserAccountTitle[:new_user]
+
+        cols = {
+          :tenant_name => 0,
+          :tenant_uid => 1,
+          :grade => 2,
+          :grade_code => 3,
+          :classroom =>4,
+          :classroom_code => 5,
+          :head_teacher_name => 6,
+          :head_teacher_number => 7,
+          :subject_teacher_name => 8,
+          :subject_teacher_number => 9,
+          :subject_teacher_subject => 10,
+          :pupil_name => 11,
+          :pupil_number => 12,
+          :pupil_gender => 13
+        }
+        user_info_xlsx.sheet(0).each{|row|
+          p row
+          next if row[0] == "学校"
+          next if row[0].gsub(/\s/,"").empty?
+          target_tenant = Tenant.where(uid: row[cols[:tenant_uid]]).first
+          exit -1 if target_tenant.blank?
+
+          grade_pinyin = Common::Locale.hanzi2pinyin(row[cols[:grade]].to_s.strip)
+          klass_pinyin = Common::Locale.hanzi2pinyin(row[cols[:classroom]].to_s.strip)
+          klass_value = Common::Klass::List.keys.include?(klass_pinyin.to_sym) ? klass_pinyin : row[cols[:classroom]].to_s.strip
+          target_tenant_uid = target_tenant.try(:uid)
+
+          cells = {
+            :grade => grade_pinyin,
+            :xue_duan => Common::Grade.judge_xue_duan(grade_pinyin),
+            :classroom => klass_value,
+            :head_teacher => row[cols[:head_teacher_name]].to_s.strip,
+            :head_teacher_number => row[cols[:head_teacher_number]].to_s.strip,
+            :teacher => row[cols[:subject_teacher_name]].to_s.strip,
+            :teacher_number => row[cols[:subject_teacher_number]].to_s.strip,
+            :pupil_name => row[cols[:pupil_name]].to_s.strip,
+            :stu_number => row[cols[:pupil_number]].to_s.strip,
+            :sex => row[cols[:pupil_gender]].to_s.strip
+          }
+          loc_h = { :tenant_uid => target_tenant_uid }
+          target_area = target_tenant.area
+          loc_h.merge!({
+            :area_uid => target_area.uid,
+            :area_rid => target_area.rid
+          }) if target_area
+
+          loc_h[:grade] = cells[:grade]
+          loc_h[:classroom] = cells[:classroom]
+          loc_key = target_tenant_uid + cells[:grade] + cells[:classroom]
+          if location_list.keys.include?(loc_key)
+            loc = location_list[loc_key]
+          else
+            loc = Location.new(loc_h)
+            loc.save!
+            location_list[loc_key] = loc
+          end
+          user_row_arr = []
+          # 
+          # create teacher user 
+          #
+          head_tea_h = {
+            :loc_uid => loc.uid,
+            :tenant_uid => target_tenant_uid,
+            :name => cells[:head_teacher],
+            :classroom => cells[:classroom],
+            # :subject => @target_paper.subject,
+            :head_teacher => true,
+            :user_name =>Common::Uzer.format_user_name([
+              target_tenant.number,
+              #Common::Subject::Abbrev[@target_paper.subject.to_sym],
+              cells[:head_teacher_number],
+              Common::Locale.hanzi2abbrev(cells[:head_teacher])
+            ])
+          }
+          user_row_arr = Common::Uzer.format_user_password_row(Common::Role::Teacher, head_tea_h)
+          unless teacher_username_in_sheet.include?(user_row_arr[0])
+            head_teacher_sheet.add_row(user_row_arr, :types => [:string,:string,:string,:string,:string,:string,:string]) 
+            teacher_username_in_sheet << user_row_arr[0]
+            Common::Uzer.link_user_and_bank_test(user_row_arr[0], args[:bank_test_id])
+            if !user_row_arr[-1] 
+              user = User.find_by(name: user_row_arr[0])
+              if user.present?
+                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]])
+              end
+            end          
+          end
+          #
+          # create pupil user
+          #
+          tea_h = {
+            :loc_uid => loc.uid,
+            :tenant_uid => target_tenant_uid,
+            :name => cells[:teacher],
+            :classroom => cells[:classroom],
+            :subject => row[cols[:subject_teacher_subject]],
+            :head_teacher => false,
+            :user_name => Common::Uzer.format_user_name([
+              target_tenant.number,
+              #Common::Subject::Abbrev[@target_paper.subject.to_sym],
+              cells[:teacher_number],
+              Common::Locale.hanzi2abbrev(cells[:teacher])
+            ])
+          }
+          user_row_arr = Common::Uzer.format_user_password_row(Common::Role::Teacher, tea_h)
+          unless teacher_username_in_sheet.include?(user_row_arr[0])
+            teacher_sheet.add_row(user_row_arr, :types => [:string,:string,:string,:string,:string,:string,:string]) 
+            teacher_username_in_sheet << user_row_arr[0]
+            Common::Uzer.link_user_and_bank_test(user_row_arr[0], args[:bank_test_id])          
+            if !user_row_arr[-1]
+              user = User.where(name: user_row_arr[0]).first
+              if user.present?
+                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]])
+              end          
+            end 
+          end
+
+          #
+          # create pupil user
+          #
+          pup_h = {
+            :loc_uid => loc.uid,
+            :tenant_uid => target_tenant_uid,
+            :name => cells[:pupil_name],
+            :stu_number => cells[:stu_number],
+            :grade => cells[:grade],
+            :classroom => cells[:classroom],
+            :subject => row[cols[:subject_teacher_subject]],
+            :sex => Common::Locale.hanzi2pinyin(cells[:sex]),
+            :user_name => Common::Uzer.format_user_name([
+              target_tenant.number,
+              cells[:stu_number],
+              Common::Locale.hanzi2abbrev(cells[:pupil_name])
+            ])
+          }
+          user_row_arr = Common::Uzer.format_user_password_row(Common::Role::Pupil, pup_h)
+          unless pupil_username_in_sheet.include?(user_row_arr[0])
+            pupil_sheet.add_row(user_row_arr, :types => [:string,:string,:string,:string,:string,:string,:string,:string]) 
+            pupil_username_in_sheet << user_row_arr[0]
+            Common::Uzer.link_user_and_bank_test(user_row_arr[0], args[:bank_test_id])          
+            if !user_row_arr[-1] 
+              user = User.find_by(name: user_row_arr[0])
+              if user.present?
+                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]])
+              end
+            end 
+          end
+        }
+      rescue Exception => e
+        p e.message
+      ensure
+       file_path = Rails.root.to_s + "/tmp/#{args[:bank_test_id]}_bank_test_password.xlsx"
+        out_excel.serialize(file_path)
+      end
+      p 'end'
+    end
+
+    desc "rollback import user info link test "
+    task :import_user_info_link_test_rollback, [:file_path] => :environment do |t,args|
+      if args[:file_path].nil? 
+        puts "Command format not correct, Usage: #rake swtk:v1_2:import_user_info_link_test_rollback[:file_path]"
+        exit 
+      end
+      p 'begin'
+      user_info_xlsx = Roo::Excelx.new(args[:file_path])
+      (2..user_info_xlsx.sheet(3).last_row).each do |i|
+        user = User.where(id: row[0]).first
+        bank_test = Mongodb::BankTest.where(_id: row[1]).first
+        if bank_test
+          bank_test.bank_test_user_links.destroy_all
+          #Mongodb::BankTestUserLink.where(user_id: row[0], bank_test_id: row[1]).destroy_all
+        end
+        #user.role_obj.destroy
+        user.destroy
+      end
+  
+      p 'end'
+    end
+
     # 创建定时执行Job
     desc "create scheduled group report generate"
     task :schedule_online_test_group_report_generator, [:test_id,:group_type] => :environment do |t, args|
