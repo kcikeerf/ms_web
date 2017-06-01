@@ -101,3 +101,17 @@ end
 #     end
 #   end
 # }
+
+module Doorkeeper
+  class AccessGrant
+    belongs_to :user, foreign_key: "resource_owner_id", class_name: "User"
+  end
+
+  class AccessToken
+    belongs_to :user, foreign_key: "resource_owner_id", class_name: "User"
+  end
+
+  class Application
+    belongs_to :user, foreign_key: "resource_owner_id", class_name: "User"
+  end
+end
