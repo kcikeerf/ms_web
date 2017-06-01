@@ -434,7 +434,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   # end
 
   def parent
-    get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category, checkpoint_system_id).find_by(rid: parent_node_rid)
+    get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category, checkpoint_system_rid).find_by(rid: parent_node_rid)
   end
 
   def parent_node_rid
@@ -489,8 +489,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
   private
 
-    def get_nodes(length, rid, subject, dimesion, category, system_id="000")
-      self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and left(rid, ?) = ?', subject, dimesion, category, system_id, length, rid)
+    def get_nodes(length, rid, subject, dimesion, category, system_rid="000")
+      self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and left(rid, ?) = ?', subject, dimesion, category, system_rid, length, rid)
     end 
 
     def delete_children
