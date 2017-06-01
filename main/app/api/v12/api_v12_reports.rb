@@ -54,7 +54,7 @@ module ApiV12Reports
     end
 
     params do
-      use :oauth
+      #use :oauth
     end
 
     resource :reports do
@@ -69,7 +69,7 @@ module ApiV12Reports
       params do
         #
       end
-      get :list do
+      post :list do
         target_user = current_user
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
           target_papers = target_user.role_obj.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
@@ -193,16 +193,16 @@ module ApiV12Reports
 
       desc ''
       params do
-        requires :is_public, type: Boolean, default: true 
+        optional :private, type: Boolean, default: false 
       end
       post :my_list do
         target_user = current_user
-        if params[:is_public]
+        if !params[:private]
           target_tests = target_user.bank_tests.find_all{|item| item.is_public }
-          _group_arr = Common::Report2::List1Arr
+          _group_arr = Common::Report2::Group::List1Arr
         else
           target_tests = target_user.accessable_tests.find_all{|item| !item.is_public }
-          _group_arr = Common::Report2::List2Arr
+          _group_arr = Common::Report2::Group::List2Arr
         end
         _rpt_type,_rpt_id = target_user.report_top_group_kv(params[:is_public])
 
