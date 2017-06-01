@@ -1902,55 +1902,60 @@ namespace :swtk do
         puts "Command format not correct, Usage: #rake swtk:v1_2:import_paper_structure[:paper_file,:heading,:subheading, :checkpoint_system_rid]"
         exit 
       end
-      order = 1
-      point_order = 1
-      quiz_qiz = nil
 
-      bank_paper = Mongodb::BankPaperPap.new
-      bank_paper.heading = args[:heading]
-      bank_paper.subheading = args[:subheading]
-      bank_paper.checkpoint_system_rid = args[:checkpoint_system_rid]
-      bank_paper.is_empty = true
-      bank_paper.save!
-      p bank_paper
-      File.open(args[:paper_file],"r") do |file|
-        file.each do |line|
-          arr = line.split("\r");
-          arr.each do |item|
-            str = item.chomp
-            if str
-              p str
-              arr = str.split(",")
-              if str.scan(/\+{4}/).size < 1
-                quiz = Mongodb::BankQuizQiz.new
-                quiz.order = order
-                quiz.asc_order = order
-                quiz.custom_order = arr[1]
-                quiz.is_empty = true
-                quiz.save!
-                quiz_qiz = quiz
-                point_order = 1
-                bank_paper.bank_quiz_qizs.push(quiz)
-                order += 1
-                p quiz
-              else
-                qizpoint = Mongodb::BankQizpointQzp.new
-                qizpoint.asc_order = quiz_qiz.order
-                qizpoint.order = "#{quiz_qiz.order}(#{point_order})"
-                qizpoint.custom_order = arr[1]
-                qizpoint.answer = arr[2]
-                qizpoint.score = arr[3]
-                qizpoint.is_empty = true
-                qizpoint.save!
-                quiz_qiz.bank_qizpoint_qzps.push(qizpoint)
-                p qizpoint
-                point_order += 1
+      begin
+        order = 1
+        point_order = 1
+        quiz_qiz = nil
+
+        bank_paper = Mongodb::BankPaperPap.new
+        bank_paper.heading = args[:heading]
+        bank_paper.subheading = args[:subheading]
+        bank_paper.checkpoint_system_rid = args[:checkpoint_system_rid]
+        bank_paper.is_empty = true
+        bank_paper.save!
+        File.open(args[:paper_file],"r") do |file|
+          file.each do |line|
+            arr = line.split("\r");
+            arr.each do |item|
+              str = item.chomp
+              if str
+                p str
+                arr = str.split(",")
+                if str.scan(/\+{4}/).size < 1
+                  quiz = Mongodb::BankQuizQiz.new
+                  quiz.order = order
+                  quiz.asc_order = order
+                  quiz.custom_order = arr[1]
+                  quiz.is_empty = true
+                  quiz.save!
+                  quiz_qiz = quiz
+                  point_order = 1
+                  bank_paper.bank_quiz_qizs.push(quiz)
+                  order += 1
+                else
+                  qizpoint = Mongodb::BankQizpointQzp.new
+                  qizpoint.asc_order = quiz_qiz.order
+                  qizpoint.order = "#{quiz_qiz.order}(#{point_order})"
+                  qizpoint.custom_order = arr[1]
+                  qizpoint.answer = arr[2]
+                  qizpoint.score = arr[3]
+                  qizpoint.is_empty = true
+                  qizpoint.save!
+                  quiz_qiz.bank_qizpoint_qzps.push(qizpoint)
+                  point_order += 1
+                end
               end
             end
           end
         end
+        p "Paper ID: #{bank_paper.id.to_s}"
+        p "done"
+      rescue Exception => ex
+        bank_paper.destroy
+        p ex.message
+        p "failed"
       end
-      p "done"
     end
 
     desc "export paper strucutre"
