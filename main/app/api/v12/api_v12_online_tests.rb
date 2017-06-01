@@ -24,9 +24,10 @@ module ApiV12OnlineTests
 
       desc '获取综合测试列表 post /api/v1.2/online_tests/zh_list'
       params do
-        requires :test_id, type: String, allow_blank: false
+        #requires :test_id, type: String, allow_blank: false
       end
       post :todo_list do
+        p current_user
         pub_tests = Mongodb::BankTest.by_public(true)
         priv_tests = Mongodb::BankTestUserLink.by_user(current_user.id).lt_times(1).map{|item| item.bank_test}
         {
@@ -45,7 +46,7 @@ module ApiV12OnlineTests
               :quiz_type_label => Common::Test::Type[item.quiz_type.to_sym],
               :ext_data_path => item.ext_data_path,
               :start_date => item.start_date,
-              :end_date => item.end_date
+              :end_date => item.quiz_date
             }
           }
         }
@@ -55,7 +56,7 @@ module ApiV12OnlineTests
 
       desc '获取已测试过综合列表 post /api/v1.2/online_tests/zh_result'
       params do
-        requires :test_id, type: String, allow_blank: false
+        #requires :test_id, type: String, allow_blank: false
       end
       post :tested_list do
         target_tests = Mongodb::BankTestUserLink.by_user(current_user.id).gte_times(1).map{|item| item.bank_test}

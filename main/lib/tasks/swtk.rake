@@ -2126,7 +2126,6 @@ namespace :swtk do
           :pupil_gender => 13
         }
         user_info_xlsx.sheet(0).each{|row|
-          p row
           next if row[0] == "学校"
           next if row[0].gsub(/\s/,"").empty?
           target_tenant = Tenant.where(uid: row[cols[:tenant_uid]]).first
