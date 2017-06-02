@@ -2076,7 +2076,9 @@ namespace :swtk do
       begin       
         teacher_username_in_sheet = []
         pupil_username_in_sheet = []
-        location_list = {}   
+        location_list = {}
+        tenant_list = {}
+        area_list = {}  
         user_info_xlsx = Roo::Excelx.new(args[:file_path])
         out_excel = Axlsx::Package.new
         wb = out_excel.workbook
@@ -2112,11 +2114,20 @@ namespace :swtk do
           :pupil_gender => 13
         }
         user_info_xlsx.sheet(0).each{|row|
-          p row
           next if row[0] == "学校"
           next if row[0].gsub(/\s/,"").empty?
           target_tenant = Tenant.where(uid: row[cols[:tenant_uid]]).first
-          exit -1 if target_tenant.blank?
+          next if target_tenant.blank?
+          tenant_key = cols[:tenant_uid]
+          tenant_area = target_tenant.area
+          unless tenant_list.keys.include?(tenant_key)
+            bank_test_tenant_link = Mongodb::BankTestTenantLink.new(bank_test_id: args[:bank_test_id], tenant_uid: target_tenant.uid).save!
+            tenant_list[tenant_key] = tenant_key
+          end
+          unless area_list.keys.include?(tenant_area.uid)
+            bank_test_area_link = Mongodb::BankTestAreaLink.new(bank_test_id: args[:bank_test_id], area_uid: target_tenant.area_uid).save!
+            tenant_list[tenant_area.uid] = tenant_area.uid
+          end
 
           grade_pinyin = Common::Locale.hanzi2pinyin(row[cols[:grade]].to_s.strip)
           klass_pinyin = Common::Locale.hanzi2pinyin(row[cols[:classroom]].to_s.strip)
@@ -2150,6 +2161,7 @@ namespace :swtk do
           else
             loc = Location.new(loc_h)
             loc.save!
+            bank_test_location_link = Mongodb::BankTestLocationLink.new(bank_test_id: args[:bank_test_id], loc_uid: loc.uid).save!
             location_list[loc_key] = loc
           end
           user_row_arr = []
@@ -2260,7 +2272,8 @@ namespace :swtk do
       end
       p 'begin'
       user_info_xlsx = Roo::Excelx.new(args[:file_path])
-      (2..user_info_xlsx.sheet(3).last_row).each do |i|
+        user_info_xlsx.sheet(3).each_with_index do |row,index|
+        next if index == 0
         user = User.where(id: row[0]).first
         bank_test = Mongodb::BankTest.where(_id: row[1]).first
         if bank_test
