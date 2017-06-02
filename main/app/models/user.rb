@@ -286,7 +286,9 @@ class User < ActiveRecord::Base
     else
       result = target_tenants.map{|item| item.locations}.flatten
     end
-    result
+    result.compact!
+    result.uniq!
+    result.sort{|a,b| b.dt_update <=> a.dt_update}
   end
 
   # 可访问测试
