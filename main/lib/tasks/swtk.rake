@@ -1908,11 +1908,19 @@ namespace :swtk do
         point_order = 1
         quiz_qiz = nil
 
+        pjson = {
+          :information => {
+            :paper_status => "none"
+          }
+        }
+
         bank_paper = Mongodb::BankPaperPap.new
         bank_paper.heading = args[:heading]
         bank_paper.subheading = args[:subheading]
         bank_paper.checkpoint_system_rid = args[:checkpoint_system_rid]
         bank_paper.is_empty = true
+        bank_paper.paper_status = "none"
+        bank_paper.paper_json = pjson.to_json
         bank_paper.save!
         File.open(args[:paper_file],"r") do |file|
           file.each do |line|
