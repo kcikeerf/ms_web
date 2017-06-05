@@ -11,6 +11,24 @@ class CheckpointSystem < ActiveRecord::Base
   scope :xy_default, -> { where(sys_type: "xy_default") }
 
   class << self
+    def get_list params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      conditions = []
+      conditions << self.send(:sanitize_sql, ["name LIKE ?", "%#{params[:name]}%"]) unless params[:name].blank?
+      conditions << self.send(:sanitize_sql, ["rid LIKE ?", "%#{params[:rid]}%"]) unless params[:rid].blank?
+      conditions << self.send(:sanitize_sql, ["sys_type LIKE ?", "%#{params[:sys_type]}%"]) unless params[:sys_type].blank?
+      conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
+      result = self.where(conditions).page(params[:page]).per(params[:rows])
+      result.each_with_index{|item, index|
+        h = {}
+        h.merge!(item.attributes)
+        h["sys_type"] = Common::Locale::i18n("dict.#{h["sys_type"]}")
+        result[index] = h
+      }
+      return result 
+    end
+
 
     #描述
     #根据选取的sys_type 返回对应的ckp_system

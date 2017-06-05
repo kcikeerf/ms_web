@@ -107,31 +107,36 @@ class Mongodb::BankPaperPap
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      result = self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status).order("dt_update desc").page(params[:page]).per(params[:rows])
+      conditions = {}
+      %w{paper_status grade subject term heading}.each{|attr|
+         conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
+       } 
+      result =  self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status)
+                    .where(conditions)
+                    .order("dt_update desc")
+                    .page(params[:page]).per(params[:rows])
       paper_result = []
-      result.each_with_index do |item, index|
+      result.each_with_index do |item|
         h = {
           "uid" => item._id.to_s,
-          "heading" => item.heading.nil?? "" : item.heading,
-          "paper_status" => item.paper_status,  
+          # "heading" => item.heading.nil?? "" : item.heading,
+          # "paper_status" => item.paper_status,  
           "school" => item.tenant.nil?? "": item.tenant.name_cn,
-          "subject" => item.subject.nil?? "": item.subject,
-          "grade" => item.grade.nil?? "": item.grade,
-          "term" => item.term.nil?? "": item.term
+          # "subject" => item.subject.nil?? "": item.subject,
+          # "grade" => item.grade.nil?? "": item.grade,
+          # "term" => item.term.nil?? "": item.term
         }
 
-        # h.merge!(area_h)
-        # h.merge!(item.attributes)
+        h.merge!(item.attributes)
         h["subject_label"] = Common::Locale::i18n("dict.#{h["subject"]}")
         h["grade_label"] = Common::Locale::i18n("dict.#{h["grade"]}")
         h["term_label"] = Common::Locale::i18n("dict.#{h["term"]}")
         h["status_label"] = Common::Locale::i18n("papers.status.#{h["paper_status"]}")
         h["has_bank_test"] = item.bank_tests.present?
-        paper_result[index] = h
+        paper_result << h
       end
       return paper_result, self.count
     end
-
 
     def ckp_weights_modification args={}
       if !args[:subject].blank? && !args[:dimesion].blank? && !args[:weights].blank? && !args[:difficulty].blank?

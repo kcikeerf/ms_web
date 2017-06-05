@@ -95,6 +95,20 @@ module PaperModule
       Status::Analyzing => I18n.t("papers.status.#{Status::Analyzing}")
     }
 
+    PaperStatusList = {
+      Status::None => I18n.t("papers.status.#{Status::None}"),
+      Status::New => I18n.t("papers.status.#{Status::New}"),
+      Status::Editting => I18n.t("papers.status.#{Status::Editting}"),
+      Status::Editted => I18n.t("papers.status.#{Status::Editted}"),
+      Status::Analyzing => I18n.t("papers.status.#{Status::Analyzing}"), 
+      Status::Analyzed => I18n.t("papers.status.#{Status::Analyzed}"),
+      Status::ScoreImporting => I18n.t("papers.status.#{Status::ScoreImporting}"),
+      Status::ScoreImported => I18n.t("papers.status.#{Status::ScoreImported}"),
+      Status::ReportGenerating => I18n.t("papers.status.#{Status::ReportGenerating}"),
+      Status::ReportCompleted => I18n.t("papers.status.#{Status::ReportCompleted}")
+    }
+
+
     def quiz_order(x,y)
       x_arr = destruct_order x
       y_arr = destruct_order y

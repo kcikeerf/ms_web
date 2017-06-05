@@ -16,9 +16,13 @@ class ProjectAdministrator < ActiveRecord::Base
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      conditions = []
+      conditions << self.send(:sanitize_sql, ["users.name LIKE ?", "%#{params[:user_name]}%"]) unless params[:user_name].blank?
+      conditions << self.send(:sanitize_sql, ["project_administrators.name LIKE ?", "%#{params[:name_cn]}%"]) unless params[:name_cn].blank?
+      conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
+      result = self.joins(:user).where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
       result.each_with_index{|item, index|
-      	#获得地区信息
+        #获得地区信息
         area_h = {
           :province_rid => "",
           :city_rid => "",
