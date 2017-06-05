@@ -2,6 +2,19 @@ module CheckpointCkpModule
   module CheckpointCkp
     module_function
     TYPE = %w{knowledge skill ability}
+    Dimesions = Proc.new {
+      {
+        :xy_default => TYPE,
+        :zh_dyzn => %W{other},
+        :zh_fzqn => %W{other},
+        :zh_rwdy => %W{other},
+        :zh_kxjs => %W{other},
+        :zh_xhxx => %W{other},
+        :zh_jksh => %W{other},
+        :zh_zrdd => %W{other},
+        :zh_sjcx => %W{other}
+      }
+    }.call
 
     LevelArr = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10,100]]
 
@@ -79,11 +92,9 @@ module CheckpointCkpModule
     #   GaoZhong = "gao_zhong"
     # end
 
-    def ckp_types_loop(key_str=nil,&block)
+    def ckp_types_loop(dimesion_arr=TYPE.clone,&block)
       nodes = {}
-      key_arr = TYPE.clone
-      key_arr.push(key_str) unless key_str.blank?
-      key_arr.each do |t|
+      dimesion_arr.each do |t|
         nodes[t.to_sym] = proc.call(t)
       end
       nodes
