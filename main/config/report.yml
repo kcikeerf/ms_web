@@ -1,14 +1,12 @@
 report_plus2:
   score_level:
-    xy:
-      default:
+    xy_default:
         excellent: [0.85,1]
         good: [0.6,0.85]
         fail: [0,0.6]
-    zh:
-      fzqn:
-        hen_qiang: [0.8,1]
-        shang_ke: [0.6,0.8]
-        pu_tong: [0.4,0.6]
-        ruo: [0.2,0.4]
-        hen_ruo: [0,0.2]
+    zh_dyzn:
+        A: [0.8,1] #hen_qiang
+        B: [0.6,0.8] #shang_ke
+        C: [0.4,0.6] #pu_tong
+        D: [0.2,0.4] #ruo
+        E: [0,0.2] #hen_ruo

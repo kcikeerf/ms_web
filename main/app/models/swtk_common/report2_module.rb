@@ -12,5 +12,10 @@ module Report2Module
       Project = "project"
     end
 
+    Config = Proc.new { 
+      cfg = YAML.load_file(Rails.root.to_s + "/config/report.yml")
+      cfg["report_plus2"]
+    }.call
+
   end
 end

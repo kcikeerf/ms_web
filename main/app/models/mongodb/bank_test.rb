@@ -149,6 +149,14 @@ class Mongodb::BankTest
     Location.where(uid: loc_uids)
   end
 
+  def user_ids
+    bank_test_user_links.map(&:user_id)
+  end
+
+  def users
+    User.where(id: user_ids)
+  end
+
   def tasks
     task_uids = bank_test_task_links.map(&:task_uid)
     TaskList.where(uid: task_uids)
