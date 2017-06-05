@@ -17,7 +17,14 @@ class Pupil < ActiveRecord::Base
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      conditions = []
+      conditions << self.send(:sanitize_sql, ["pupils.name LIKE ?", "%#{params[:name]}%"]) unless params[:name].blank?
+      conditions << self.send(:sanitize_sql, ["pupils.classroom LIKE ?", "%#{Common::Locale.hanzi2pinyin(params[:classroom])}%"]) unless params[:classroom].blank?
+      conditions << self.send(:sanitize_sql, ["pupils.grade LIKE ?", "%#{params[:subject]}%"]) unless params[:subject].blank?
+      conditions << self.send(:sanitize_sql, ["users.name LIKE ?", "%#{params[:user_name]}%"]) unless params[:user_name].blank? 
+      conditions << self.send(:sanitize_sql, ["tenants.name_cn LIKE ?", "%#{params[:tenant_name]}%"]) unless params[:tenant_name].blank? 
+      conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
+      result = self.joins(:user, location: :tenant).where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])      
       result.each_with_index{|item, index|
         area_h = {
           :province_rid => "",

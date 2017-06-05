@@ -19,7 +19,13 @@ class Teacher < ActiveRecord::Base
   def self.get_list params
     params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
     params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-    result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+    conditions = []
+    conditions << self.send(:sanitize_sql, ["teachers.name LIKE ?", "%#{params[:name]}%"]) unless params[:name].blank?
+    conditions << self.send(:sanitize_sql, ["teachers.subject LIKE ?", "%#{params[:subject]}%"]) unless params[:subject].blank?
+    conditions << self.send(:sanitize_sql, ["users.name LIKE ?", "%#{params[:user_name]}%"]) unless params[:user_name].blank? 
+    conditions << self.send(:sanitize_sql, ["tenants.name_cn LIKE ?", "%#{params[:tenant_name]}%"]) unless params[:tenant_name].blank? 
+    conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
+    result = self.joins(:tenant, :user).where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
     result.each_with_index{|item, index|
       area_h = {
         :province_rid => "",

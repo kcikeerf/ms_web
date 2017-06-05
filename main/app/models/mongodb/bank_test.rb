@@ -42,7 +42,15 @@ class Mongodb::BankTest
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      result = self.order("dt_update desc").page(params[:page]).per(params[:rows])
+      conditions = {}
+      %w{ name quiz_type}.each{|attr|
+         conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
+       }
+      date_range = {}
+      date_range[:start_date] = {'$gte' => params[:start_date]} unless params[:start_date].blank? 
+      date_range[:quiz_date] = {'$lt' => params[:quiz_date]} unless params[:quiz_date].blank? 
+    
+      result = self.where(conditions).where(date_range).order("dt_update desc").page(params[:page]).per(params[:rows])
       test_result = []
 
       result.each_with_index{|item, index|

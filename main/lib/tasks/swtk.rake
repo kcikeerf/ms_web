@@ -1908,11 +1908,19 @@ namespace :swtk do
         point_order = 1
         quiz_qiz = nil
 
+        pjson = {
+          :information => {
+            :paper_status => "none"
+          }
+        }
+
         bank_paper = Mongodb::BankPaperPap.new
         bank_paper.heading = args[:heading]
         bank_paper.subheading = args[:subheading]
         bank_paper.checkpoint_system_rid = args[:checkpoint_system_rid]
         bank_paper.is_empty = true
+        bank_paper.paper_status = "none"
+        bank_paper.paper_json = pjson.to_json
         bank_paper.save!
         File.open(args[:paper_file],"r") do |file|
           file.each do |line|
@@ -2140,7 +2148,7 @@ namespace :swtk do
           end
           unless area_list.keys.include?(tenant_area.uid)
             bank_test_area_link = Mongodb::BankTestAreaLink.new(bank_test_id: args[:bank_test_id], area_uid: target_tenant.area_uid).save!
-            tenant_list[tenant_area.uid] = tenant_area.uid
+            area_list[tenant_area.uid] = tenant_area.uid
           end
 
           grade_pinyin = Common::Locale.hanzi2pinyin(row[cols[:grade]].to_s.strip)
@@ -2204,7 +2212,7 @@ namespace :swtk do
             if !user_row_arr[-1] 
               user = User.find_by(name: user_row_arr[0])
               if user.present?
-                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]])
+                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]], :types => [:string,:string,:string,:string,:string,:string,:string,:string])
               end
             end          
           end
@@ -2233,7 +2241,7 @@ namespace :swtk do
             if !user_row_arr[-1]
               user = User.where(name: user_row_arr[0]).first
               if user.present?
-                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]])
+                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]], :types => [:string,:string,:string,:string,:string,:string,:string,:string])
               end          
             end 
           end
@@ -2264,7 +2272,7 @@ namespace :swtk do
             if !user_row_arr[-1] 
               user = User.find_by(name: user_row_arr[0])
               if user.present?
-                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]])
+                new_user_sheet.add_row([user.id, args[:bank_test_id], user_row_arr[0], user_row_arr[1]], :types => [:string,:string,:string,:string,:string,:string,:string,:string])
               end
             end 
           end
@@ -2286,16 +2294,26 @@ namespace :swtk do
       end
       p 'begin'
       user_info_xlsx = Roo::Excelx.new(args[:file_path])
-        user_info_xlsx.sheet(3).each_with_index do |row,index|
+      user_info_xlsx.sheet(3).each_with_index do |row,index|
         next if index == 0
         user = User.where(id: row[0]).first
         bank_test = Mongodb::BankTest.where(_id: row[1]).first
-        if bank_test
+
+        if bank_test.bank_test_user_links.present?
           bank_test.bank_test_user_links.destroy_all
-          #Mongodb::BankTestUserLink.where(user_id: row[0], bank_test_id: row[1]).destroy_all
+        end
+        if bank_test.locations.present?
+          bank_test.locations.destroy_all
+          bank_test.bank_test_location_links.destroy_all
+        end
+        if bank_test.bank_test_area_links.present?
+          bank_test.bank_test_area_links.destroy
+        end
+        if bank_test.bank_test_tenant_links.present?
+          bank_test.bank_test_tenant_links.destroy_all
         end
         #user.role_obj.destroy
-        user.destroy
+        user.destroy if user
       end
   
       p 'end'
