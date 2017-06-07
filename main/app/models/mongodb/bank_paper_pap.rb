@@ -637,7 +637,6 @@ class Mongodb::BankPaperPap
           ckps_arr.unshift(qzp_ckp)
         end
         ckps_arr.each{|ckp|
-          p ckp.dimesion
           index = result[ckp.dimesion].find_index{|item| item[:uid] == ckp.uid}
           if index.nil?
             item = {

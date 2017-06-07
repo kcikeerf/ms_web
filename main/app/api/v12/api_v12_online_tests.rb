@@ -27,7 +27,6 @@ module ApiV12OnlineTests
         #requires :test_id, type: String, allow_blank: false
       end
       post :todo_list do
-        p current_user
         pub_tests = Mongodb::BankTest.by_public(true)
         priv_tests = Mongodb::BankTestUserLink.by_user(current_user.id).lt_times(1).map{|item| item.bank_test}
         {
@@ -67,7 +66,7 @@ module ApiV12OnlineTests
             :quiz_type_label => Common::Test::Type[item.quiz_type.to_sym],
             :ext_data_path => item.ext_data_path,
             :start_date => item.start_date,
-            :end_date => item.end_date,
+            :end_date => item.quiz_date,
             :is_public => item.is_public
           }
         }
@@ -78,13 +77,16 @@ module ApiV12OnlineTests
       desc '提交综合测试结果 post /api/v1.2/online_tests/zh_result'
       params do
         requires :test_id, type: String, allow_blank: false
+        requires :result, type: Array, allow_blank: false
       end
       post :zh_result do
+
         target_test = Mongodb::BankTest.where(id: params[:test_id]).first
         if target_test
+          # begin
           # 结果保存
-          Common::ReportPlus2::online_test_import_results params[:test_id], current_user.id, params, {:user_model => "WxUser", :wx_openid => params[:wx_openid]}
-          
+          #error!(message_json("e44001"), 500) unless Common::ReportPlus2::online_test_zh_import_results params[:test_id], current_user.id, params[:result], {:user_model => "WxUser", :wx_openid => params[:wx_openid]}
+
           if target_test.is_public
             rpt_params = {
               :user_token => current_user.tk_token,
@@ -97,23 +99,49 @@ module ApiV12OnlineTests
             }
           end
           rpt_params[:test_id] = params[:test_id]
+          rpt_params[:test_type] = target_test.quiz_type
 
-          # 个人报告生成
-          # 1) 定义变量 
-          individual_generator = Mongodb::OnlineTestZhFzqnIndividualGenerator.new(rpt_params)
-          individual_constructor = Mongodb::OnlineTestZhFzqnGroupConstructor.new(rpt_params)
-          # 2) 个人报告生成
-          individual_generator.clear_old_data
-          individual_generator.cal_round_1
-          individual_generator.cal_round_2
-          # 3)个人报告组装
-          individual_constructor.construct_round_1
-          individual_constructor.pre_owari
-          individual_constructor.owari
+          # 读入配置信息
+          rpt_params[:config] = Common::Report2::Config
 
-          {
-            message: message_json("i12001")
-          }
+          begin
+            individual_test_link = Mongodb::BankTestUserLink.where(bank_test_id: params[:test_id], user_id: current_user.id).first
+            raise unless individual_test_link
+            individual_test_link
+            # 个人报告生成
+            # 1) 定义变量 
+            individual_generator = Mongodb::OnlineTestZhFzqnIndividualGenerator.new(rpt_params)
+            individual_constructor = Mongodb::OnlineTestZhFzqnGroupConstructor.new(rpt_params)
+            individual_gc = OnlineTestClearReportsGarbageWorker.new(rpt_params)
+
+            # # 2) 个人报告生成
+            individual_generator.clear_old_data
+            individual_generator.cal_round_1
+            individual_generator.cal_round_2
+            # # 3)个人报告组装
+            individual_constructor.construct_round_1
+            individual_constructor.pre_owari
+            individual_constructor.owari
+            # 4)清楚垃圾数据
+            report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + params[:test_id] + "/*"
+            report_redis_keys = Common::SwtkRedis::find_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+            report_redis_keys.each{|key| Common::SwtkRedis::current_redis(Common::SwtkRedis::Ns::Sidekiq).del(key) }
+            {
+              message: message_json("i12001")
+            }
+          rescue Exception => ex
+            status 500
+            {
+              message: "failed!"
+            }
+          end
+
+          # rescue Exception => ex
+          #   status 500
+          #   { 
+          #     message: "failed!(#{ex.message})"
+          #   }
+          # end
         else
           status 404
           { 
@@ -202,7 +230,7 @@ module ApiV12OnlineTests
            [ Common::OnrineTest::Status::ScoreImporting, 
              Common::OnrineTest::Status::report_generating 
            ].include?(target_test_user_link.target_test_status)
-          error!(message_json("e43002"), 403)
+          error!(message_json("e44002"), 403)
         else
           # 创建跟踪Task，Job
           target_task = TaskList.new({

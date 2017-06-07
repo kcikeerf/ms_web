@@ -14,7 +14,7 @@ class Mongodb::BankTestUserLink
 
   field :user_id, type: String
   field :test_date, type: DateTime
-  field :test_duation, type: Integer # 测试持续时间
+  field :test_duration, type: Integer # 测试持续时间
   field :test_times, type: Integer, default: 0 # 测试次数
   field :test_status, type: String, default: nil 
   
