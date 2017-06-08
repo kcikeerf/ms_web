@@ -92,7 +92,7 @@ module CheckpointCkpModule
     #   GaoZhong = "gao_zhong"
     # end
 
-    def ckp_types_loop(dimesion_arr,&block)
+    def ckp_types_loop(dimesion_arr=[],&block)
       nodes = {}
       dimesion_arr = TYPE.clone if dimesion_arr.blank?
       dimesion_arr.each do |t|
