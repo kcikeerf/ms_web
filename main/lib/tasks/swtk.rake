@@ -2321,7 +2321,7 @@ namespace :swtk do
 
     # 创建定时执行Job
     desc "create scheduled group report generate"
-    task :schedule_online_test_group_report_generator, [:test_id,:group_type] => :environment do |t, args|
+    task :schedule_online_test_group_report_generator, [:test_id,:top_group] => :environment do |t, args|
       begin
         target_test = Mongodb::BankTest.where(id: args[:test_id]).first
         end_date = target_test.quiz_date
@@ -2333,7 +2333,7 @@ namespace :swtk do
         # cron_str = "0-59 * * * *"
         worker_class = 'OnlineTestScheduledGenerateGroupReportsWorker'
         sjob = ScheduledJob.new(
-          name: args[:test_id] + args[:group_type],
+          name: args[:test_id] + args[:top_group],
           cron: cron_str,
           klass: worker_class,
           start_date: target_test.start_date ? target_test.start_date.strftime("%Y%m%d %H:%M") : nil,
@@ -2344,7 +2344,7 @@ namespace :swtk do
           name: sjob.uid, 
           cron: cron_str, 
           class: worker_class,
-          args: {:test_id => args[:test_id], :group_type => args[:group_type]}
+          args: {:test_id => args[:test_id], :top_group => args[:top_group]}
         )
       rescue Exception => ex
         puts "Error(#{ex.message})"
@@ -2358,7 +2358,7 @@ namespace :swtk do
       begin
         worker_class = 'ClearExpiredScheduledJobsWorker'
         raise "ALready existed!" if ScheduledJob.where(name: worker_class).first
-        cron_str = "0-59 * * * * *"
+        #cron_str = "0-59 * * * * *"
         sjob = ScheduledJob.new(
           name: "ClearExpiredScheduledJobsWorker",
           cron: cron_str,

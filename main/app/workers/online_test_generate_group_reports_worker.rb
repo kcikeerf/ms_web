@@ -11,7 +11,9 @@ class OnlineTestGenerateGroupReportsWorker
         if !args.blank?
           paramsh = {
             :test_id => args[0],
-            :group_type => args[1]
+            :group_type => args[1],
+            :config => args[3],
+            :test_type => args[4]
           }
           paramsh.merge!({:tenant_uids => [args[2]]}) if !args[2].blank?
           process_ins = Mongodb::OnlineTestZhFzqnGroupGenerator.new(paramsh)

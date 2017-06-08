@@ -11,9 +11,10 @@ class OnlineTestConstructReportsWorker
         if !args.blank?
           paramsh = {
             :test_id => args[0],
-            :group_type => args[1]
+            :group_type => args[1],
+            :test_type => args[3]
           }
-          paramsh.merge!({:tenant_uids => [args[1]]}) if !args[1].blank?
+          paramsh.merge!({:tenant_uids => [args[2]]}) if !args[2].blank?
           process_ins = Mongodb::OnlineTestZhFzqnGroupConstructor.new(paramsh)
           process_ins.construct_round_1
           process_ins.pre_owari

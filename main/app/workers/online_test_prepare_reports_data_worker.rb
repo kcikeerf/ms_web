@@ -7,12 +7,15 @@ class OnlineTestPrepareReportsDataWorker
     logger = Sidekiq::Logging.logger
     Common::process_sync_template(__method__.to_s()) {|pids|
       pids << fork do # fork new process, begin
- 		logger.info "OnlineTestPrepareReportsDataWorker"
+ 		  logger.info "OnlineTestPrepareReportsDataWorker"
 
         if !args.blank?
           test_id = args[0]
+          ckps_dimesions = args[1]
+          logger.info ">>>>>>>ckp!<<<<<<<"
+          logger.info ckps_dimesions
           _, _ = Common::ReportPlus::redis_atai_no_yomidasi_template(Common::SwtkRedis::Ns::Sidekiq, ["tests", test_id, "ckps_qzps_mapping"]){
-            ckps_qzps_mapping = Common::ReportPlus::data_ckps_qzps_mapping(test_id, Common::Report::CheckPoints::DefaultLevel)
+            ckps_qzps_mapping = Common::ReportPlus::data_ckps_qzps_mapping(test_id, Common::Report::CheckPoints::DefaultLevel, { :dimesion_arr => ckps_dimesions })
             ckps_qzps_mapping
           }
           
