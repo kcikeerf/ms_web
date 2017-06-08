@@ -8,7 +8,7 @@ module ReportPlus2Module
     
     code_file = Rails.root + "config/initializers/patches/report_plus2_patch.txt"
     begin
-      eval(TkEncryption::codes_str_decryption(code_file))
+      eval(TkEncryption::codes_str_decryption(code_file,1))
     rescue Exception => ex
       #
     end
