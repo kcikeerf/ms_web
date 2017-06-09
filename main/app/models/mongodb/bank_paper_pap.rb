@@ -1238,10 +1238,8 @@ class Mongodb::BankPaperPap
       result = self.errors.messages.empty?
       self.unlock!
     rescue Exception => ex
-      p ex.message
       arr = phase_arr[0..error_index].reverse
       arr.each_with_index do |value, index|
-        p value + ">>>>>>>>>>>>>>><<<<<<<<<<<<"
         send("save_pap_#{value}_rollback")
       end
       raise ex.message
@@ -1483,7 +1481,6 @@ class Mongodb::BankPaperPap
     begin      
       phase_arr.each_with_index do |phase, index|
         error_index = index
-        p phase
         send("submit_pap_#{phase}")
       end
     rescue Exception => e
@@ -1825,7 +1822,7 @@ class Mongodb::BankPaperPap
         score_upload =  ""
       end 
       if self.orig_file_id
-        file_upload = FileUpload.find(self.orig_file_id) 
+        file_upload = FileUpload.where(id: self.orig_file_id).first
       else
         file_upload = ""
       end
@@ -1834,6 +1831,7 @@ class Mongodb::BankPaperPap
       unless score_upload.blank?
         if score_upload.filled_file.current_path.present?
           score_path = score_upload.filled_file.current_path.split("/")[0..-2].join("/")
+
           FileUtils.rm_rf(score_path)
         end
         score_upload.delete
