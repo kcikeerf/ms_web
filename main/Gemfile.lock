@@ -214,6 +214,7 @@ GEM
       rack (>= 0.4)
     rack-cache (1.6.1)
       rack (>= 0.4)
+    rack-cors (0.4.1)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
@@ -399,6 +400,7 @@ DEPENDENCIES
   net-ssh!
   ox
   pandoc-ruby
+  rack-cors
   rails (= 4.2)
   rb-readline
   redis

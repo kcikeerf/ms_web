@@ -71,5 +71,12 @@ module Main
 
     config.filter_parameters += [:password, :password_confirmation]
 
+    config.middleware.insert_before 0, "Rack::Cors" do
+      allow do
+        origins '*'
+        resource '/oauth/token', :headers => :any, :methods => [:get, :post, :options]
+      end
+    end
+
   end
 end
