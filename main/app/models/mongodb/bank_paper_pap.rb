@@ -1833,7 +1833,7 @@ class Mongodb::BankPaperPap
         score_upload =  ""
       end 
       if self.orig_file_id
-        file_upload = FileUpload.find(self.orig_file_id) 
+        file_upload = FileUpload.where(id: self.orig_file_id).first
       else
         file_upload = ""
       end
@@ -1842,6 +1842,7 @@ class Mongodb::BankPaperPap
       unless score_upload.blank?
         if score_upload.filled_file.current_path.present?
           score_path = score_upload.filled_file.current_path.split("/")[0..-2].join("/")
+
           FileUtils.rm_rf(score_path)
         end
         score_upload.delete

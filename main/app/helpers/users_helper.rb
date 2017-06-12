@@ -2,7 +2,7 @@ module UsersHelper
   def top_title
     result = ""
     if current_user.is_project_administrator?
-      result = current_user.name
+      result = current_user.role_obj.name
     else
       result = current_tenant.name_cn
     end

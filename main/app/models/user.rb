@@ -38,7 +38,7 @@ class User < ActiveRecord::Base
   ########类方法定义：begin#######
   class << self
     def generate_rand_password len=6
-      len.times.map{ Common::Uzer::PasswdRandArr.sample }.join("")
+      Common::Uzer::PasswdRandArr[1..-1].sample + (len -1).times.map{ Common::Uzer::PasswdRandArr.sample }.join("")
     end
 
     def find_for_database_authentication(warden_conditions)

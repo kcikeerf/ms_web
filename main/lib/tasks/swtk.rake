@@ -1812,7 +1812,11 @@ namespace :swtk do
             target_area = tnt.area_pcd
             next if target_area.blank?
             class_arr = Dir[args[:target_path].to_s + "/reports_warehouse/tests/" + id + "/**/grade/" + tnt.uid + "/klass/[0-9a-z]*[^.json]"]
+            class_re = /klass\/([0-9a-z]{1,})/
+            class_uid_arr = class_arr.map{|item| class_re.match(item)[1] }
             pupil_arr = Dir[args[:target_path].to_s + "/reports_warehouse/tests/" + id + "/**/grade/" + tnt.uid + "/**/pupil/[0-9a-z]*"]
+            pupil_re = /pupil\/([0-9a-z]{1,})/
+            pupil_uid_arr = pupil_arr.map{|item| pupil_re.match(item)[1] }
             data_arr = [
               tnt.name_cn,
               target_pap.heading+"(#{id})",
@@ -1821,8 +1825,8 @@ namespace :swtk do
               target_area[:province_name_cn],
               target_area[:city_name_cn],
               target_area[:district],
-              class_arr.size,
-              pupil_arr.size
+              class_uid_arr.compact.uniq.size,
+              pupil_uid_arr.compact.uniq.size
             ]
             sheet.add_row data_arr
           }
