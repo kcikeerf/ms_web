@@ -52,12 +52,27 @@ module PaperModule
     #英语题型
     %W{
       ting_li_li_jie
+      ting_li_li_jie_zi_mu
+      ting_li_li_jie_dan_ci
+      ting_li_li_jie_ju_zi
+      ting_li_li_jie_dui_hua
+      ting_li_li_jie_duan_wen    
+      yu_yin_zhi_shi
+      zi_mu_pin_xie
+      dan_ci_pin_xie
+      ying_han_hu_yi
+      pi_pei_ti
+      gai_xie_ju_zi
       dan_xiang_xuan_ze
       wan_xing_tian_kong
-      yue_du_li_jie
-      ci_yu_yun_yong
       bu_quan_dui_hua
+      yue_du_li_jie
+      bu_quan_duan_wen       
+      ci_yu_yun_yong
+      wan_cheng_ju_zi
+      yue_du_biao_da
       shu_mian_biao_da
+      duan_wen_gai_cuo
     }.each{|item| QuizType[:ying_yu][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
 
     Difficulty = {
