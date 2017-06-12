@@ -934,6 +934,8 @@ $(function(){
                     //         $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline_id;
                     //     }
                     // });
+                }else{     
+                    CKEDITOR.replace('scoreAnswerText0', paper.ckeditor_params.qzp_edit);
                 }
                 $(".subNav li").removeClass("active");
                 that.addClass("active");
@@ -1836,7 +1838,11 @@ $(function(){
         $(".sideMenu .topNav > li:first-child").find("ol li:first-child").trigger("click");
 
         paper.baseFn.update_quiz_type_list();
+        var editor = CKEDITOR.instances['scoreAnswerText0'];
+        if (!editor){
         CKEDITOR.replace('scoreAnswerText0', paper.ckeditor_params.qzp_edit);
+        }
+
     }
 
     //跳转到解析详情模块
