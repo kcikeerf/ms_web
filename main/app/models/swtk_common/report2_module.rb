@@ -3,7 +3,7 @@ module Report2Module
     module_function
     
     module Group
-      List1Arr = ["individual", "project"]
+      List1Arr = ["pupil", "project"]
       List2Arr = ["pupil", "klass", "grade", "project"]
       Individual = "individual"
       Pupil = "pupil" 

@@ -32,6 +32,7 @@ module ApiV12OnlineTests
         {
           :public => pub_tests.map{|item|
             {
+              :id => item.id.to_s,
               :name => item.name,
               :quiz_type => item.quiz_type,
               :quiz_type_label => Common::Test::Type[item.quiz_type.to_sym],
@@ -40,6 +41,7 @@ module ApiV12OnlineTests
           },
           :private => priv_tests.map{|item|
             {
+              :id => item.id.to_s,
               :name => item.name,
               :quiz_type => item.quiz_type,
               :quiz_type_label => Common::Test::Type[item.quiz_type.to_sym],
@@ -83,18 +85,17 @@ module ApiV12OnlineTests
 
         target_test = Mongodb::BankTest.where(id: params[:test_id]).first
         if target_test
-          # begin
           # 结果保存
-          #error!(message_json("e44001"), 500) unless Common::ReportPlus2::online_test_zh_import_results params[:test_id], current_user.id, params[:result], {:user_model => "WxUser", :wx_openid => params[:wx_openid]}
+          error!(message_json("e44001"), 500) unless Common::ReportPlus2::online_test_zh_import_results params[:test_id], current_user.id, params[:result], {:user_model => "WxUser", :wx_openid => params[:wx_openid]}
 
           if target_test.is_public
             rpt_params = {
-              :user_token => current_user.tk_token,
+              :user_tokens => [current_user.tk_token],
               :group_type => Common::Report2::Group::Pupil
             }
           else
             rpt_params = {
-              :pup_uid => current_user.pupil.uid,
+              :pup_uid => [current_user.pupil.uid],
               :group_type => Common::Report2::Group::Pupil
             }
           end
@@ -129,9 +130,9 @@ module ApiV12OnlineTests
             individual_constructor.pre_owari
             individual_constructor.owari
             # 4)清楚垃圾数据
-            report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + params[:test_id] + "/*"
-            report_redis_keys = Common::SwtkRedis::find_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
-            report_redis_keys.each{|key| Common::SwtkRedis::current_redis(Common::SwtkRedis::Ns::Sidekiq).del(key) }
+            # report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + params[:test_id] + "/*"
+            # report_redis_keys = Common::SwtkRedis::find_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
+            # report_redis_keys.each{|key| Common::SwtkRedis::current_redis(Common::SwtkRedis::Ns::Sidekiq).del(key) }
             {
               message: message_json("i12001")
             }
@@ -142,13 +143,6 @@ module ApiV12OnlineTests
               backtrace: ex.backtrace
             }
           end
-
-          # rescue Exception => ex
-          #   status 500
-          #   { 
-          #     message: "failed!(#{ex.message})"
-          #   }
-          # end
         else
           status 404
           { 
