@@ -106,8 +106,8 @@ module ApiV12OnlineTests
 
           begin
             individual_test_link = Mongodb::BankTestUserLink.where(bank_test_id: params[:test_id], user_id: current_user.id).first
-            raise unless individual_test_link
-            individual_test_link
+            individual_test_link.save! unless individual_test_link
+
             # 个人报告生成
             # 1) 定义变量 
             individual_generator = Mongodb::OnlineTestZhFzqnIndividualGenerator.new(rpt_params)
