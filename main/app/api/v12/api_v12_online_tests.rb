@@ -138,7 +138,8 @@ module ApiV12OnlineTests
           rescue Exception => ex
             status 500
             {
-              message: "failed!"
+              message: ex.message,
+              backtrace: ex.backtrace
             }
           end
 
