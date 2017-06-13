@@ -118,7 +118,7 @@ module ApiV12OnlineTests
             # 1) 定义变量 
             individual_generator = Mongodb::OnlineTestZhFzqnIndividualGenerator.new(rpt_params)
             individual_constructor = Mongodb::OnlineTestZhFzqnGroupConstructor.new(rpt_params)
-            individual_gc = OnlineTestClearReportsGarbageWorker.new(rpt_params)
+            # individual_gc = OnlineTestClearReportsGarbageWorker.new(rpt_params)
 
             # # 2) 个人报告生成
             individual_generator.clear_old_data
