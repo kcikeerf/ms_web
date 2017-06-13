@@ -2072,7 +2072,7 @@ namespace :swtk do
       p "begin"
       paper = nil
       paper_xlsx = Roo::Excelx.new(args[:file_path])
-      (1..paper_xlsx.last_row).each do |j|
+      (1..paper_xlsx.sheet(1).last_row).each do |j|
         score_row = paper_xlsx.sheet(1).row(j)
         score_row = score_row.compact
         next if score_row.blank?
