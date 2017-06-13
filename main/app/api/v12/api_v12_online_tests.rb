@@ -90,7 +90,7 @@ module ApiV12OnlineTests
           if target_test.is_public
             rpt_params = {
               :user_token => current_user.tk_token,
-              :group_type => Common::Report2::Group::Individual
+              :group_type => Common::Report2::Group::Pupil
             }
           else
             rpt_params = {
@@ -106,13 +106,19 @@ module ApiV12OnlineTests
 
           begin
             individual_test_link = Mongodb::BankTestUserLink.where(bank_test_id: params[:test_id], user_id: current_user.id).first
-            raise unless individual_test_link
-            individual_test_link
+            unless individual_test_link
+              Mongodb::BankTestUserLink.new(
+                bank_test_id: params[:test_id], 
+                user_id: current_user.id,
+                test_times: 1
+              ).save!
+            end
+
             # 个人报告生成
             # 1) 定义变量 
             individual_generator = Mongodb::OnlineTestZhFzqnIndividualGenerator.new(rpt_params)
             individual_constructor = Mongodb::OnlineTestZhFzqnGroupConstructor.new(rpt_params)
-            individual_gc = OnlineTestClearReportsGarbageWorker.new(rpt_params)
+            # individual_gc = OnlineTestClearReportsGarbageWorker.new(rpt_params)
 
             # # 2) 个人报告生成
             individual_generator.clear_old_data
@@ -132,7 +138,8 @@ module ApiV12OnlineTests
           rescue Exception => ex
             status 500
             {
-              message: "failed!"
+              message: ex.message,
+              backtrace: ex.backtrace
             }
           end
 
