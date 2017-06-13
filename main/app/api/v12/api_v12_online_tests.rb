@@ -90,7 +90,7 @@ module ApiV12OnlineTests
           if target_test.is_public
             rpt_params = {
               :user_token => current_user.tk_token,
-              :group_type => Common::Report2::Group::Individual
+              :group_type => Common::Report2::Group::Pupil
             }
           else
             rpt_params = {
