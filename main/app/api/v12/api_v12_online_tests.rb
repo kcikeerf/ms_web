@@ -106,7 +106,13 @@ module ApiV12OnlineTests
 
           begin
             individual_test_link = Mongodb::BankTestUserLink.where(bank_test_id: params[:test_id], user_id: current_user.id).first
-            individual_test_link.save! unless individual_test_link
+            unless individual_test_link
+              Mongodb::BankTestUserLink.new(
+                bank_test_id: params[:test_id], 
+                user_id: current_user.id,
+                test_times: 1
+              ).save!
+            end
 
             # 个人报告生成
             # 1) 定义变量 
