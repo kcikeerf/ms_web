@@ -111,7 +111,7 @@ class Mongodb::BankPaperPap
       %w{paper_status grade subject term heading}.each{|attr|
          conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
        } 
-      result =  self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status)
+      result =  self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
                     .where(conditions)
                     .order("dt_update desc")
                     .page(params[:page]).per(params[:rows])
@@ -1833,7 +1833,7 @@ class Mongodb::BankPaperPap
         score_upload =  ""
       end 
       if self.orig_file_id
-        file_upload = FileUpload.where(id: self.orig_file_id).first
+        file_upload = FileUpload.where(id: self.orig_file_id).first 
       else
         file_upload = ""
       end
@@ -1841,8 +1841,8 @@ class Mongodb::BankPaperPap
       file_path = ""
       unless score_upload.blank?
         if score_upload.filled_file.current_path.present?
-          score_path = score_upload.filled_file.current_path.split("/")[0..-2].join("/")
 
+          score_path = score_upload.filled_file.current_path.split("/")[0..-2].join("/")
           FileUtils.rm_rf(score_path)
         end
         score_upload.delete
@@ -1854,12 +1854,208 @@ class Mongodb::BankPaperPap
       end
       self.delete
     rescue Exception => e
+      p e.message
       raise SwtkErrors::DeletePaperError.new(I18n.t("papers.messages.delete_paper.debug", :message => e.message))
     end
   end
 
   def checkpoint_system
     CheckpointSystem.where(rid: self.checkpoint_system_rid).first
+  end
+
+  #导入试卷结构
+  def import_paper_structure params
+    begin 
+      file, heading, subheading, rid = params[:file_name], params[:heading], params[:subheading], params[:checkpoint_system_rid]
+      order = 1
+      point_order = 1
+      quiz_qiz = nil
+      pjson = {
+        :information => {
+          :paper_status => "none"
+        }
+      }
+      fu = FileUpload.new
+      fu.paper_structure = params[:file_name]
+      fu.save!
+      self.heading = heading
+      self.subheading = subheading
+      self.checkpoint_system_rid = rid
+      self.orig_file_id = fu.id
+      self.is_empty = true
+      self.paper_status = "none"
+      self.paper_json = pjson.to_json
+      self.save!
+
+      file_content = IO.readlines(fu.paper_structure.current_path)
+      file_content.each do |line|
+        arr = line.split("\n");
+        arr.each do |item|
+          str = item.chomp
+          if str
+            arr = str.split(",")
+            if str.scan(/\+{4}/).size < 1
+              quiz = Mongodb::BankQuizQiz.new
+              quiz.order = order
+              quiz.asc_order = order
+              quiz.custom_order = arr[1]
+              quiz.is_empty = true
+              quiz.save!
+              quiz_qiz = quiz
+              point_order = 1
+              self.bank_quiz_qizs.push(quiz)
+              order += 1
+            else
+              qizpoint = Mongodb::BankQizpointQzp.new
+              qizpoint.asc_order = quiz_qiz.order
+              qizpoint.order = "#{quiz_qiz.order}(#{point_order})"
+              qizpoint.custom_order = arr[1]
+              qizpoint.answer = arr[2]
+              qizpoint.score = arr[3]
+              qizpoint.is_empty = true
+              qizpoint.save!
+              quiz_qiz.bank_qizpoint_qzps.push(qizpoint)
+              point_order += 1
+            end
+          end
+        end
+      end  
+    rescue Exception => e
+      self.destroy if self.present?
+      fu.destroy
+      raise e.message
+    end
+  end
+
+  #导出试卷结构
+  # 可选参数 xlsx json
+  #retrun 试卷地址 试卷名字
+  def export_paper_strucutre export_type
+    begin  
+      qizpoints = self.bank_quiz_qizs.map {|quiz| quiz.bank_qizpoint_qzps}.flatten
+      if self.orig_file_id
+        fu = FileUpload.where(id: self.orig_file_id).first
+      else
+        fu = FileUpload.new
+      end 
+      ckp = {}
+      file_path = ""
+      file_name = ""
+      bank_subject_checkpoint_ckps = BankSubjectCheckpointCkp.where(checkpoint_system_rid: self.checkpoint_system_rid).order("rid ASC")
+      ckp_hash = {}
+      if export_type == "xlsx"
+        bank_subject_checkpoint_ckps.each do |ckp|
+          checkpoint_arr = [ckp.checkpoint]
+          if ckp.parent
+            p_ckp = ckp.parent
+            checkpoint_arr.unshift("++++")
+            if p_ckp.parent
+              checkpoint_arr.unshift("++++")
+            end
+          end
+          ckp_hash[ckp.uid] = checkpoint_arr.join("")
+        end
+        out_excel = Axlsx::Package.new
+        wb = out_excel.workbook
+        file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}_ckp.xlsx"
+        wb.add_worksheet name: "ckp_list", state: :hidden do |sheet|
+          ckp_hash.each do |key, value|
+            sheet.add_row([[value,key].join(",")], :types => [:string])
+          end
+        end
+        wb.add_worksheet name: "题顺" do |sheet|
+          qizpoints.each do |point|
+            arr = [point.order,point._id.to_s,nil,nil,nil,nil,nil]
+            sheet.add_row(arr)
+          end
+          sheet.column_info[1].hidden = true
+
+          qizpoints.size.times.each {|line|
+            area_arr = %W{C D E F G}
+            area_arr.each do |area|
+              sheet.add_data_validation("#{area}#{line+1}",{
+                :type => :list,
+                :formula1 => "ckp_list!A$1:A$#{ckp_hash.size}",
+                :showDropDown => false,
+                :showInputMessage => true,
+                :promptTitle => "指标",
+                :prompt => ""
+              })
+            end
+          }
+        end
+        out_excel.serialize(file_path)
+        fu.xlsx_structure = Pathname.new(file_path).open
+        fu.save!
+        self.orig_file_id = fu.id
+        self.save!
+        File.delete(file_path)
+        file_path = fu.xlsx_structure.current_path
+        file_name = "#{self._id.to_s}_" + fu.xlsx_structure.filename
+      elsif export_type == "json"
+        file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}.json"
+        json_arr = []
+        object_arr = []
+        qizpoints.each do |qiz|
+          qiz_obj = {
+              id: qiz._id.to_s,
+              order: qiz.order
+            }
+          object_arr << qiz_obj
+        end
+        result = object_arr.to_json
+        File.open(file_path, 'w') do |f|
+          f << result
+        end
+        fu.json_structure = Pathname.new(file_path).open
+        fu.save!
+        self.orig_file_id = fu.id
+        self.save!
+        File.delete(file_path)
+        file_path = fu.json_structure.current_path
+        file_name = "#{self._id.to_s}_" + fu.json_structure.filename
+      end
+      return file_path, file_name
+    rescue Exception => e
+      raise e.message
+    end
+  end
+
+  #指标和试卷进行关联
+  def combine_paper_structure_checkpoint params
+    begin
+      if self.orig_file_id
+        fu = FileUpload.where(id: self.orig_file_id).first
+      else
+        fu = FileUpload.new
+      end
+      fu.combine_checkpoint = params[:file_name]
+      fu.save!
+      file_path = fu.combine_checkpoint.current_path 
+      paper_xlsx = Roo::Excelx.new(file_path)
+      paper_xlsx.sheet(1).each do |row|
+        score_row = row.compact
+        qizpoint = Mongodb::BankQizpointQzp.where(_id: score_row[1]).first
+        raise SwtkErrors::SavePaperHasError.new(I18n.t("papers.messages.error.cannot_combine_checkpoint")) if qizpoint.bank_quiz_qiz.bank_paper_paps[0] != self
+        Mongodb::BankCkpQzp.where(qzp_uid: score_row[1]).destroy_all
+        score_row[2..-1].each do |ckp_str|
+          ckp_info_arr = ckp_str.split(',')
+          ckp = Mongodb::BankCkpQzp.new
+          ckp.save_ckp_qzp score_row[1], ckp_info_arr[1], "BankSubjectCheckpointCkp"
+        end
+        qizpoint.format_ckps_json
+      end
+      self.paper_status = "analyzed"
+      self.save!    
+    rescue Exception => e
+      self.paper_status = "none"
+      save!
+      qizpoints = self.bank_quiz_qizs.map {|quiz| quiz.bank_qizpoint_qzps}.flatten
+      qizpoints.each do |qiz|
+          Mongodb::BankCkpQzp.where(qzp_uid: qiz._id.to_s).destroy_all
+      end
+      raise e.message
+    end
   end
 
 end

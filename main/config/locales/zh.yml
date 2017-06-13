@@ -14,6 +14,7 @@ zh:
     save: "保存"
     cancel: "取消"
     rollback: "回退"
+    import_obj: "导入"
   areas:
     list:
       all: "全部"
@@ -121,6 +122,8 @@ zh:
       error:
         no_tenant: "该试卷无所属Tenant"
         no_choose_status: "未选择回滚状态"
+        cannot_new_test: "不能创建测试"
+        cannot_combine_checkpoint: "试卷结构与本试卷不匹配，不能进行指标关联。"
 
   quizs:
     nosource: "自编"
