@@ -204,7 +204,7 @@ module ApiV12Reports
           target_tests = target_user.bank_tests.find_all{|item| item.is_public }
           _group_arr = Common::Report2::Group::List1Arr
         end
-        _rpt_type,_rpt_id = target_user.report_top_group_kv(params[:is_public])
+        _rpt_type,_rpt_id = target_user.report_top_group_kv(!params[:private])
 
         target_tests.map{|item|
           next unless item
