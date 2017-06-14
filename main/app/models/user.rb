@@ -313,7 +313,7 @@ class User < ActiveRecord::Base
   # 用户当前所属分组
   def report_top_group_kv is_public=true
     if is_public
-      rpt_type = Common::Report2::Group::Individual
+      rpt_type = Common::Report2::Group::Pupil
       rpt_id = self.tk_token
     else
       rpt_type = nil
