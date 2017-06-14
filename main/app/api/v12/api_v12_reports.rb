@@ -197,12 +197,12 @@ module ApiV12Reports
       end
       post :my_list do
         target_user = current_user
-        if !params[:private]
-          target_tests = target_user.bank_tests.find_all{|item| item.is_public }
-          _group_arr = Common::Report2::Group::List1Arr
-        else
+        if params[:private]
           target_tests = target_user.accessable_tests.find_all{|item| !item.is_public }
           _group_arr = Common::Report2::Group::List2Arr
+        else
+          target_tests = target_user.bank_tests.find_all{|item| item.is_public }
+          _group_arr = Common::Report2::Group::List1Arr
         end
         _rpt_type,_rpt_id = target_user.report_top_group_kv(params[:is_public])
 
