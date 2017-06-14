@@ -44,8 +44,8 @@ module Main
 
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
 
-    # Plugin
-    config.autoload_paths += Dir[Rails.root.join('lib', 'plugins', '{**}')]
+    # lib
+    config.autoload_paths += Dir[Rails.root.join('lib', '**', '*')]
     
     # API
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
@@ -75,6 +75,7 @@ module Main
       allow do
         origins '*'
         resource '/oauth/token', :headers => :any, :methods => [:get, :post, :options]
+        resource '/api/*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
 
