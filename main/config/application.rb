@@ -45,7 +45,7 @@ module Main
     config.autoload_paths += Dir[Rails.root.join('app', 'models', '{**}')]
 
     # lib
-    config.autoload_paths += Dir[Rails.root.join('lib', '**', '*')]
+    # config.autoload_paths += Dir[Rails.root.join('lib', '**', '*')]
     
     # API
     config.paths.add File.join('app', 'api'), glob: File.join('**', '*.rb')
