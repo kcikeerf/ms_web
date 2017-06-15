@@ -9,7 +9,7 @@ class WxUser < ActiveRecord::Base
   has_many :wx_user_mappings, foreign_key: "wx_uid", dependent: :destroy
   has_many :users, through: :wx_user_mappings
 
-  before_save :set_area
+  before_save :set_area, :set_sex
 
   def binded_user? user_name
      names = users.map{|u| u.name}
@@ -80,8 +80,12 @@ class WxUser < ActiveRecord::Base
   private
     def set_area
       option_h = {}
-      target_area = Area.where(name_cn: self.city) if !self.city.blank?
-      target_area = Area.where(name_cn: self.province) if target_area.blank? && !self.province.blank?
+      target_area = Area.where(name_cn: self.city).first if !self.city.blank?
+      target_area = Area.where(name_cn: self.province).first if target_area.blank? && !self.province.blank?
       self.area_uid = target_area.uid if target_area
+    end
+
+    def set_sex
+      self.sex = case self.sex when "0"; "wu" when "1"; "nan" when "2"; "n̈u" end
     end
 end

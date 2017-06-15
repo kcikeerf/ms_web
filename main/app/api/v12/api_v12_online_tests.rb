@@ -79,8 +79,10 @@ module ApiV12OnlineTests
       desc '提交综合测试结果 post /api/v1.2/online_tests/zh_result'
       params do
         requires :test_id, type: String, allow_blank: false
-        requires :wx_openid, type: String, allow_blank: false
         requires :result, type: Array, allow_blank: false
+        optional :wx_openid, type: String
+        optional :wx_unionid, type: String
+        at_least_one_of :wx_openid, :wx_unionid        
       end
       post :zh_result do
 

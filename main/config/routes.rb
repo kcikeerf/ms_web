@@ -200,8 +200,8 @@ Rails.application.routes.draw do
   end
 
   use_doorkeeper do
-    skip_controllers :authorizations, :applications,
-      :authorized_applications
+    # skip_controllers :authorizations, :applications,
+    #   :authorized_applications
   end
 
   #######################################
@@ -259,7 +259,7 @@ Rails.application.routes.draw do
   end
 
   ### API V1.2
-  mount ApiV12Auths::API => "/api/v1.2/"
+  mount ApiV12WxUsers::API => "/api/v1.2/"
   mount ApiV12OnlineTests::API => "/api/v1.2/"
   mount ApiV12Reports::API => "/api/v1.2/"
   mount ApiV12ReportsWarehouse::API => "/api/v1.2/"

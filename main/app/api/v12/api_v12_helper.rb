@@ -40,12 +40,15 @@ module ApiV12Helper
         :wx_unionid => params[:wx_unionid]
       }
     else
-      error!(message_json("e40400"), 400) unless target_wx_user
+      # do nothing
     end
 
     target_wx_user = WxUser.where(option_h).first
     unless target_wx_user
       begin
+        params_h = option_h.merge({
+          :wx_unionid => params[:wx_unionid]
+        }) if !params[:wx_unionid].blank?
         target_wx_user = WxUser.new(option_h)
         target_wx_user.save!
       rescue Exception => ex

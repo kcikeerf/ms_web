@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-module ApiV12Auths
+module ApiV12WxUsers
   class API < Grape::API
     format :json
 
@@ -12,11 +12,12 @@ module ApiV12Auths
       use :oauth
     end
 
-    resource :auths do #monitorings begin
+    resource :wx_users do #monitorings begin
 
       before do
         set_api_header
         doorkeeper_authorize!
+        @target_current_wx_user = current_wx_user
       end
 
       # 分组1：限制为Client认证token才可访问, begin
@@ -25,9 +26,9 @@ module ApiV12Auths
           not_user_token!
         end
 
-        desc '获取绑定的用户列表 post /api/v1.2/auths/binded_users_list'
+        desc '获取绑定的用户列表'
         params do
-          optional :wx_openid, type: String#, allow_blank: false
+          optional :wx_openid, type: String
           optional :wx_unionid, type: String
           at_least_one_of :wx_openid, :wx_unionid
         end
@@ -41,7 +42,7 @@ module ApiV12Auths
 
       # 分组2: 所有有效token都可以访问, begin
       group do
-        desc '完善微信用户信息 post /api/v1.2/auths/complete_wx_user'
+        desc '完善微信用户信息'
         params do
           optional :wx_openid, type: String#, allow_blank: false
           optional :nickname, type: String
@@ -53,10 +54,30 @@ module ApiV12Auths
           optional :wx_unionid, type: String
           at_least_one_of :wx_openid, :wx_unionid
         end
-        post :complete_wx_user do
+        post :complete_info do
           begin
-            current_wx_user.update_attributes(params)
+            target_params = params.extract!(:wx_openid,:nickname,:sex,:province,:city,:country,:headimgurl,:wx_unionid).to_h
+            @target_current_wx_user.update_attributes(target_params)
             status 200
+            @target_current_wx_user.attributes
+          rescue Exception => ex
+            status 500
+            {message: ex.message, backtrace: ex.backtrace}
+          end
+        end
+
+        ###########
+
+        desc '获取微信用户信息'
+        params do
+          optional :wx_openid, type: String
+          optional :wx_unionid, type: String
+          at_least_one_of :wx_openid, :wx_unionid
+        end
+        post :get_info do
+          begin
+            status 200
+            @target_current_wx_user.attributes
           rescue Exception => ex
             status 500
           end
