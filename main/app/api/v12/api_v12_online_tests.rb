@@ -63,6 +63,7 @@ module ApiV12OnlineTests
         target_tests = Mongodb::BankTestUserLink.by_user(current_user.id).gte_times(1).map{|item| item.bank_test}
         target_tests.map{|item|
           {
+            :id => item.id.to_s,
             :name => item.name,
             :quiz_type => item.quiz_type,
             :quiz_type_label => Common::Test::Type[item.quiz_type.to_sym],
