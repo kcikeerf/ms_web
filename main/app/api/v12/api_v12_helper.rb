@@ -15,6 +15,10 @@ module ApiV12Helper
     target_user
   end
 
+  def not_user_token!
+    error!("invalid token",400) unless doorkeeper_token.user.blank?
+  end
+
   def current_tenant
     tenant = nil
     if current_user.is_project_administrator?
