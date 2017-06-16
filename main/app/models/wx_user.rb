@@ -71,8 +71,11 @@ class WxUser < ActiveRecord::Base
       :password => self.wx_openid,
       :role_name => Common::Role::Guest
     }
-    target_user = User.new(option_h)
-    return nil unless target_user.save!
+    target_user = User.where(name: option_h[:name]).first
+    unless target_user
+      target_user = User.new(option_h)
+      target_user.save!
+    end
     self.users << target_user
     self.save!
   end
