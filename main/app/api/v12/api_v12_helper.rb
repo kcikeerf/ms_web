@@ -50,7 +50,7 @@ module ApiV12Helper
           :wx_unionid => params[:wx_unionid]
         }) if !params[:wx_unionid].blank?
         target_wx_user = WxUser.new(option_h)
-        target_wx_user.save!
+        target_wx_user.guest_user!
       rescue Exception => ex
         error!(message_json("e41002"), 403) unless target_wx_user
       end
