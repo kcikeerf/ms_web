@@ -74,6 +74,7 @@ class WxUser < ActiveRecord::Base
     target_user = User.new(option_h)
     return nil unless target_user.save!
     self.users << target_user
+    self.save!
   end
 
   ########私有方法: begin#######
