@@ -250,10 +250,10 @@ Rails.application.routes.draw do
   ### API V1.1
   constraints do
     mount Auths::API => "/"
-    mount PaperOnlineTest::API => "/"
+    # mount PaperOnlineTest::API => "/"
     mount Reports::API => "/"
     mount ReportsWarehouse::API => "/"
-    mount Monitoring::API => "/"
+    # mount Monitoring::API => "/"
     mount Tenants::API => "/"
     mount Quizs::API => "/"
   end

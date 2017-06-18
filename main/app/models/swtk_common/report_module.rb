@@ -6,6 +6,13 @@ module ReportModule
   module Report
     module_function
 
+    def get_test_report_url test_id, rpt_type, rpt_id
+      target_path = "/" + "reports_warehouse/tests/" + test_id+ '/.*' + rpt_type + '/' + rpt_id + '.json(\\?ext_data_path=.*){0,}'
+      re = Regexp.new target_path
+      target_url = Mongodb::TestReportUrl.where(test_id: test_id, report_url: re).first
+      return target_url.blank?? "" : target_url.report_url
+    end
+
     module Thread
       NumPerTh = 50
       ThNum = 5

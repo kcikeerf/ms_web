@@ -121,7 +121,7 @@ module Reports
               test_ext_data_path = target_pap.bank_tests[0].ext_data_path
               rpt_type = rpt_type || Common::Report::Group::Project
               rpt_id = (rpt_type == Common::Report::Group::Project)? test_id : rpt_id
-              report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
+              report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
               {
                 :paper_heading => target_pap.heading,
                 :subject => Common::Locale::i18n("dict.#{target_pap.subject}"),
@@ -175,7 +175,7 @@ module Reports
           next unless target_pap
           rpt_type = rpt_type || Common::Report::Group::Project
           rpt_id = rpt_id || test_id      
-          report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)          
+          report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
           {
             :paper_heading => target_pap.heading,
             :quiz_type => Common::Locale::i18n("dict.#{target_pap.quiz_type}"),

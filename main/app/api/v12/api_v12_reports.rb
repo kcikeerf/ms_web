@@ -124,7 +124,7 @@ module ApiV12Reports
               test_ext_data_path = target_pap.bank_tests[0].ext_data_path
               rpt_type = _rpt_type || Common::Report::Group::Project
               rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
-              report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)
+              report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
               {
                 :paper_heading => target_pap.heading,
                 :subject => Common::Locale::i18n("dict.#{target_pap.subject}"),
@@ -176,8 +176,8 @@ module ApiV12Reports
           target_pap = t.paper_question
           next unless target_pap
           rpt_type = _rpt_type || Common::Report::Group::Project
-          rpt_id = _rpt_id || test_id      
-          report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)          
+          rpt_id = _rpt_id || test_id
+          report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
           {
             :paper_heading => target_pap.heading,
             :quiz_type => Common::Locale::i18n("dict.#{target_pap.quiz_type}"),
@@ -211,7 +211,7 @@ module ApiV12Reports
           test_id = item.id.to_s
           rpt_type = _rpt_type || _group_arr[-1]
           rpt_id = _rpt_id || test_id
-          report_url = Common::ReportPlus::report_url(test_id, rpt_type, rpt_id)          
+          report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
           {
             :name => item.name,
             :quiz_type => Common::Locale::i18n("dict.#{item.quiz_type}"),

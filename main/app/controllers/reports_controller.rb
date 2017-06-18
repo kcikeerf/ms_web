@@ -7,38 +7,38 @@ class ReportsController < ApplicationController
     check_resource_tenant(@paper) if @paper
   end
 
-  def generate_all_reports
-    logger.info("====================generate_all_reports: begin")
-    params.permit!
+  # def generate_all_reports
+  #   logger.info("====================generate_all_reports: begin")
+  #   params.permit!
 
-    result = {:task_uid => ""}
+  #   result = {:task_uid => ""}
 
-    begin
-      # Task info
-      target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
-      task_uid = target_task.nil?? "" :target_task.uid
-      target_task.touch(:dt_update)
+  #   begin
+  #     # Task info
+  #     target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
+  #     task_uid = target_task.nil?? "" :target_task.uid
+  #     target_task.touch(:dt_update)
 
-      # create a job
-      Thread.new do
-        GenerateReportJob.perform_later({
-          :task_uid => task_uid,
-          :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
-          :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
-          :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
-          :school => Common::Locale.hanzi2pinyin(@paper.tenant.name_cn),
-          :pap_uid => params[:pap_uid]}) 
-      end
+  #     # create a job
+  #     Thread.new do
+  #       GenerateReportJob.perform_later({
+  #         :task_uid => task_uid,
+  #         :province =>Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:province_name_cn]),
+  #         :city => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:city_name_cn]),
+  #         :district => Common::Locale.hanzi2pinyin(@paper.tenant.area_pcd[:district_name_cn]),
+  #         :school => Common::Locale.hanzi2pinyin(@paper.tenant.name_cn),
+  #         :pap_uid => params[:pap_uid]}) 
+  #     end
 
-      status = 200
-      result[:task_uid] = task_uid
-    rescue Exception => ex
-      status = 500
-      result[:task_uid] = ex.message
-    end
-    logger.info("====================generate_all_reports: end")
-    render common_json_response(status, result)  
-  end
+  #     status = 200
+  #     result[:task_uid] = task_uid
+  #   rescue Exception => ex
+  #     status = 500
+  #     result[:task_uid] = ex.message
+  #   end
+  #   logger.info("====================generate_all_reports: end")
+  #   render common_json_response(status, result)  
+  # end
 
   def generate_reports
     Common::method_template_log_only(__method__.to_s()) {
@@ -48,111 +48,36 @@ class ReportsController < ApplicationController
 
       begin
         if [Common::Paper::Status::ScoreImported].include?( @paper.paper_status )
-          # Task info
-          target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::CreateReport).first
-          task_uid = target_task.nil?? "" :target_task.uid        
-          target_task.touch(:dt_update)
-
-          @paper.bank_tests[0].update(:report_version => "1.1")
-          @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
-
-          test_id = @paper.bank_tests[0].id
-          target_test = Mongodb::BankTest.where(id: test_id.to_s).first
-          tenant_uids = target_test.tenants.map(&:uid)
-          #将数据分组建立job groups， monitoring job
-          #job_groups = Common::ReportPlus::sigoto_siwake({ :task_uid => task_uid, :test_id => test_id.to_s, :top_group => "project"})
-
-          # job_tracker = JobList.new({
-          #   :name => Common::Job::Type::Monitoring,
-          #   :task_uid => task_uid,
-          #   :job_type => Common::Job::Type::Monitoring,
-          #   :status => Common::Job::Status::NotInQueue,
-          #   :process => 0
-          # })
-          # job_tracker.save!
-          # if current_user.is_project_administrator?
-          #   top_group = Common::Report::Group::Project
-          # else
-          #   top_group = Common::Report::Group::Grade
-          # end
-
-          # Thread.new do
-          #   GenerateReportsJob.perform_later({
-          #     :test_id => test_id.to_s,
-          #     :task_uid => task_uid,
-          #     :top_group => Common::Report::Group::Project #进一步修改，默认项目,"project"
-          #     # :job_uid => job_tracker.uid,
-          #     # :job_groups => job_groups
-          #   })
-          # end
-
-          job_base_params = {
-            :test_id => test_id.to_s,
-            :task_uid => task_uid,
-            :top_group => current_user.is_project_administrator?? Common::Report::Group::Project : Common::Report::Group::Grade 
-          }
-          @paper.bank_tests[0].update(report_top_group: job_base_params[:top_group])
-
-          job_tracker = JobList.new({
-            :name => "generate reports",
-            :task_uid => task_uid,
-            :job_type => "generate reports",
-            :status => Common::Job::Status::Processing,
-            :process => 0
+          test_id = @paper.bank_tests[0].id.to_s
+          tkc = TkJobConnector.new({
+            :version => "v1.2",
+            :api_name => "generate_xy_reports",
+            :http_method => "post",
+            :params => {
+              :test_id => test_id,
+              :user_id => current_user.id
+            }
           })
-          job_tracker.save!
-
-          total_phases = 4 + 6 * tenant_uids.size
-          job_redis_key = Common::SwtkRedis::Prefix::Reports + "tests/" + job_base_params[:test_id] + "/tasks/" + job_base_params[:task_uid] + "/jobs/" + job_tracker.uid
-          Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Sidekiq, job_redis_key, 0)
-
-          Superworker.define(:GenerateReportSuperWorker, :test_id, :task_uid, :top_group, :tenant_uids, :job_redis_key,:total_phases) do
-            PrepareReportsDataWorker :test_id, :task_uid, :top_group, :job_redis_key, :total_phases
-            EmptyWorker do
-              batch tenant_uids: :tenant_uid do
-                GeneratePupilReportsWorker :test_id, :task_uid, :top_group, :tenant_uid, :job_redis_key, :total_phases
-              end
-            end
-            EmptyWorker do
-              parallel do
-                batch tenant_uids: :tenant_uid do
-                  parallel do
-                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid, :job_redis_key, :total_phases
-                    GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
-                  end
-                end
-                if job_base_params[:top_group] == Common::Report::Group::Project
-                  GenerateGroupReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
-                end
-              end
-            end
-            EmptyWorker do
-              parallel do
-                batch tenant_uids: :tenant_uid do
-                  parallel do
-                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Pupil, :tenant_uid, :job_redis_key, :total_phases
-                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Klass, :tenant_uid, :job_redis_key, :total_phases
-                    ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Grade, :tenant_uid, :job_redis_key, :total_phases
-                  end
-                end
-                if job_base_params[:top_group] == Common::Report::Group::Project
-                  ConstructReportsWorker :test_id, :task_uid, :top_group, Common::Report::Group::Project, nil, :job_redis_key, :total_phases
-                end
-              end
-            end
-            ClearReportsGarbageWorker :test_id, :task_uid, :job_redis_key, :total_phases
+          tkc_flag, tkc_data = tkc.execute
+          if tkc_flag
+            @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
+            status = 200
+            result = {
+              :message => "success!"
+            }
+          else
+            status = 500
+            result = {
+              :message => "failed!"
+            }
           end
-          GenerateReportSuperWorker.perform_async(job_base_params[:test_id], job_base_params[:task_uid], job_base_params[:top_group], tenant_uids, job_redis_key, total_phases)
-
-          status = 200
-          result[:task_uid] = task_uid
         else
           status = 403
-          result[:message] = "unknowm error!"
+          result[:message] = "not suitable operation!"
         end
       rescue Exception => ex
         status = 500
-        result[:task_uid] = ex.message
+        result[:message] = "unkown error occurred!"
         logger.debug ">>>Exception!<<<"
         logger.debug ex.message
         logger.debug ex.backtrace
@@ -289,15 +214,6 @@ class ReportsController < ApplicationController
       params.permit!
 
       @test_id = @paper.bank_tests[0].id.to_s
-      # begin
-      #   # @init_menus = 
-      #   #@scope_menus = Common::ReportPlus::report_nav_menus({:test_id => test_id, :top_group => params[:top_group]})
-      # rescue Exception => ex
-      #   #@scope_menus = []
-      #   logger.debug ">>>Exception<<<"
-      #   logger.debug ex.message
-      #   logger.debug ex.backtrace
-      # end
       render :layout => '00016110/report'
     }
   end

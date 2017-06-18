@@ -281,56 +281,56 @@ class PapersController < ApplicationController
   end
 
   #上传成绩表
-  def import_filled_score
-    params.permit!
+  # def import_filled_score
+  #   params.permit!
 
-    if request.post?
-      logger.info("====================import score: begin")
-      result = {:status => 403, :task_uid => ""}
+  #   if request.post?
+  #     logger.info("====================import score: begin")
+  #     result = {:status => 403, :task_uid => ""}
 
-      begin
-        # this part will delete after merge with master
-        @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-        @paper.current_user_id = current_user.id
+  #     begin
+  #       # this part will delete after merge with master
+  #       @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+  #       @paper.current_user_id = current_user.id
 
-        #score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
-        score_file = Common::Score.upload_filled_score({filled_file: params[:file]})
-        if score_file
-          task_name = format_report_task_name @paper.heading, Common::Task::Type::ImportResult
-          new_task = TaskList.new(
-            name: task_name,
-            pap_uid: @paper._id.to_s)
-          new_task.save!
+  #       #score_file = Common::Score.upload_filled_score({score_file_id: @paper.score_file_id, filled_file: params[:file]})
+  #       score_file = Common::Score.upload_filled_score({filled_file: params[:file]})
+  #       if score_file
+  #         task_name = format_report_task_name @paper.heading, Common::Task::Type::ImportResult
+  #         new_task = TaskList.new(
+  #           name: task_name,
+  #           pap_uid: @paper._id.to_s)
+  #         new_task.save!
           
-          #Thread.new do
-            ImportScoreJob.perform_later({
-              :task_uid => new_task.uid,
-              :pap_uid => params[:pap_uid]
-            }) 
-          #end
-          status = 200
-          result[:status] = status
-          result[:task_uid] = new_task.uid
-        else
-          status = 500
-          result[:status] = status
-          result[:message] = I18n.t("scores.messages.error.upload_failed")
-        end
-      rescue Exception => ex
-        status = 500
-        result[:status] = status
-        result[:message] = I18n.t("scores.messages.error.upload_exception")
-        @result = result.to_json
-        logger.debug ">>>ex.message<<<"
-        logger.debug ex.message
-        logger.debug ">>>ex.backtrace<<<"
-        logger.debug ex.backtrace
-      end
-      @result = result.to_json
-      logger.info("====================import score: end")
-    end
-    render layout: false
-  end
+  #         #Thread.new do
+  #           ImportScoreJob.perform_later({
+  #             :task_uid => new_task.uid,
+  #             :pap_uid => params[:pap_uid]
+  #           }) 
+  #         #end
+  #         status = 200
+  #         result[:status] = status
+  #         result[:task_uid] = new_task.uid
+  #       else
+  #         status = 500
+  #         result[:status] = status
+  #         result[:message] = I18n.t("scores.messages.error.upload_failed")
+  #       end
+  #     rescue Exception => ex
+  #       status = 500
+  #       result[:status] = status
+  #       result[:message] = I18n.t("scores.messages.error.upload_exception")
+  #       @result = result.to_json
+  #       logger.debug ">>>ex.message<<<"
+  #       logger.debug ex.message
+  #       logger.debug ">>>ex.backtrace<<<"
+  #       logger.debug ex.backtrace
+  #     end
+  #     @result = result.to_json
+  #     logger.info("====================import score: end")
+  #   end
+  #   render layout: false
+  # end
 
   def import_filled_result
     params.permit!
@@ -344,56 +344,43 @@ class PapersController < ApplicationController
         params[:test_id] =  @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
         score_file = Common::Score.upload_filled_result(params)
         if score_file
-          # 状态更新( task, job, paper, test tenants )
-          target_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
-          job_tracker = JobList.new({
-            :name => "ImportResultJob",
-            :task_uid => target_task.uid,
-            :status => Common::Job::Status::NotInQueue,
-            :process => 0
+          tkc = TkJobConnector.new({
+            :version => "v1.2",
+            :api_name => "import_xy_results",
+            :http_method => "post",
+            :params => {
+              :test_id => params[:test_id],
+              :score_file_id => score_file.id,
+              :tenant_uid => params[:tenant_uid]
+            }
           })
-          job_tracker.save!
-          @paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
-          @paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImporting, {:job_uid =>job_tracker.uid} )
-
-          # # backend job
-          # #Thread.new do
-          #   ImportResultsJob.perform_later({
-          #     #:task_uid => target_task.uid,
-          #     :score_file_id => score_file.id,
-          #     :tenant_uid => params[:tenant_uid],
-          #     :pap_uid => params[:pap_uid],
-          #     :job_uid => job_tracker.uid 
-          #   })
-          # #end
-
-          ImportResultsWorker.perform_async({
-            :score_file_id => score_file.id,
-            :tenant_uid => params[:tenant_uid],
-            :pap_uid => params[:pap_uid],
-            :job_uid => job_tracker.uid 
-          })
-
-          status = 200
-          result[:status] = status
-          current_task = @paper.bank_tests[0].tasks.by_task_type(Common::Task::Type::ImportResult).first
-          result[:task_uid] = current_task.nil?? "":current_task.uid
+          tkc_flag, tkc_data = tkc.execute
+          if tkc_flag
+            status = 200
+            result = {
+              :message => "success!"
+            }
+          else
+            status = 500
+            result = {
+              :message => "failed!"
+            }
+          end
         else
           status = 500
-          result[:status] = status
-          result[:message] = I18n.t("scores.messages.error.upload_failed")
+          result = {
+            :message => I18n.t("scores.messages.error.upload_failed")
+          }
         end
       rescue Exception => ex
         status = 500
-        result[:status] = status
-        result[:message] = I18n.t("scores.messages.error.upload_exception")
-        @result = result.to_json
-        logger.debug ">>>ex.message<<<"
+        result = {
+          :message => I18n.t("scores.messages.error.upload_exception")
+        }
         logger.debug ex.message
-        logger.debug ">>>ex.backtrace<<<"
         logger.debug ex.backtrace
       end
-      @result = result.to_json
+      common_json_response(status, result)
       logger.info("====================import score request: end")
     end
     render layout: false

@@ -75,33 +75,6 @@ module TkEncryption
   end
 end
 
-# module ReportPlusModule
-#   module ReportPlus
-#     module_function
-
-#   end
-# end
-
-# target_klass_arr = %W{
-#   mongodb_report_constructor
-#   mongodb_report_pupil_generator
-#   mongodb_report_group_generator
-# }
-# target_klass_arr.each{|klass|
-#   code_file = Rails.root + "config/initializers/patches/#{klass}_patch.txt"
-#   secret_file = Rails.root + "tmp/tk_secret.txt"
-#   klass_arr = klass.split("mongodb_")
-#   klass_prefix = (klass_arr.size > 1 )? "Mongodb::" : ""
-#   klass_str = klass_prefix + klass_arr.map{|item| item.camelize}.join("")
-#   klass_str.constantize.class_eval do
-#     begin
-#       eval(TkEncryption::codes_str_decryption(code_file, secret_file))
-#     rescue Exception => ex
-#       #   
-#     end
-#   end
-# }
-
 module Doorkeeper
   class AccessGrant
     belongs_to :user, foreign_key: "resource_owner_id", class_name: "User"
