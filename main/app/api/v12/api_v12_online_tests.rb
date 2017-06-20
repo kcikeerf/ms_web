@@ -87,72 +87,32 @@ module ApiV12OnlineTests
       end
       post :zh_result do
 
-        target_test = Mongodb::BankTest.where(id: params[:test_id]).first
-        if target_test
-          # 结果保存
-          error!(message_json("e44001"), 500) unless Common::ReportPlus2::online_test_zh_import_results params[:test_id], current_user.id, params[:result], {:user_model => "WxUser", :wx_openid => params[:wx_openid]}
-
-          if target_test.is_public
-            rpt_params = {
-              :user_tokens => [current_user.tk_token],
-              :group_type => Common::Report2::Group::Pupil
-            }
-          else
-            rpt_params = {
-              :pup_uid => [current_user.pupil.uid],
-              :group_type => Common::Report2::Group::Pupil
-            }
-          end
-          rpt_params[:test_id] = params[:test_id]
-          rpt_params[:test_type] = target_test.quiz_type
-
-          # 读入配置信息
-          rpt_params[:config] = Common::Report2::Config
-
-          begin
-            individual_test_link = Mongodb::BankTestUserLink.where(bank_test_id: params[:test_id], user_id: current_user.id).first
-            unless individual_test_link
-              Mongodb::BankTestUserLink.new(
-                bank_test_id: params[:test_id], 
-                user_id: current_user.id,
-                test_times: 1
-              ).save!
-            end
-
-            # 个人报告生成
-            # 1) 定义变量 
-            individual_generator = Mongodb::OnlineTestZhFzqnIndividualGenerator.new(rpt_params)
-            individual_constructor = Mongodb::OnlineTestZhFzqnGroupConstructor.new(rpt_params)
-            # individual_gc = OnlineTestClearReportsGarbageWorker.new(rpt_params)
-
-            # # 2) 个人报告生成
-            individual_generator.clear_old_data
-            individual_generator.cal_round_1
-            individual_generator.cal_round_2
-            # # 3)个人报告组装
-            individual_constructor.construct_round_1
-            individual_constructor.pre_owari
-            individual_constructor.owari
-            # 4)清楚垃圾数据
-            # report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + params[:test_id] + "/*"
-            # report_redis_keys = Common::SwtkRedis::find_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
-            # report_redis_keys.each{|key| Common::SwtkRedis::current_redis(Common::SwtkRedis::Ns::Sidekiq).del(key) }
-            {
-              message: message_json("i12001")
-            }
-          rescue Exception => ex
-            status 500
-            {
-              message: ex.message,
-              backtrace: ex.backtrace
-            }
-          end
+        tkc = TkJobConnector.new({
+          :version => "v1.2",
+          :api_name => "online_tests.zh_submit_result_generate_reports",
+          :http_method => "post",
+          :params => {
+            :test_id => params[:test_id],
+            :user_id => current_user.id,
+            :result => params[:result],
+            :user_model => "WxUser",
+            :wx_openid => params[:wx_openid],
+            :wx_unionid => params[:wx_unionid]
+          }
+        })
+        tkc_flag, tkc_data = tkc.execute
+        if tkc_flag
+          status = 200
+          result = {
+            :message => "success!"
+          }
         else
-          status 404
-          { 
-            message: Common::Locale::i18n("swtk_errors.object_not_found", :message => "Test not existed!" ) 
+          status = 500
+          result = {
+            :message => I18n.t("scores.messages.error.upload_failed")
           }
         end
+        
       end
 
     end # resource online test

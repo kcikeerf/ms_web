@@ -49,31 +49,31 @@ class String
   end
 end
 
-module TkEncryption
-  module_function
-  def codes_str_decryption code_file, secret_code=0
-    begin
-      encrypted_core_str = File.open(code_file, 'rb').read
-      secrect_codes = nil
-      case secret_code
-      when 0
-        secret_file = Rails.root + "tmp/tk_secret.txt"
-      when 1
-        secret_file = Rails.root + "tmp/tk1_secret.txt"
-      else
-        secret_file = Rails.root + "tmp/tk_secret.txt"
-      end
-      if File.exists?(secret_file)
-        secrect_codes = File.open(secret_file, 'rb').read
-        secrect_codes.strip!
-        secrect_codes.chomp!
-      end
-      return (secrect_codes.blank?? encrypted_core_str.decrypt : encrypted_core_str.decrypt(secrect_codes))
-    rescue Exception => ex
-      #
-    end
-  end
-end
+# module TkEncryption
+#   module_function
+#   def codes_str_decryption code_file, secret_code=0
+#     begin
+#       encrypted_core_str = File.open(code_file, 'rb').read
+#       secrect_codes = nil
+#       case secret_code
+#       when 0
+#         secret_file = Rails.root + "tmp/tk_secret.txt"
+#       when 1
+#         secret_file = Rails.root + "tmp/tk1_secret.txt"
+#       else
+#         secret_file = Rails.root + "tmp/tk_secret.txt"
+#       end
+#       if File.exists?(secret_file)
+#         secrect_codes = File.open(secret_file, 'rb').read
+#         secrect_codes.strip!
+#         secrect_codes.chomp!
+#       end
+#       return (secrect_codes.blank?? encrypted_core_str.decrypt : encrypted_core_str.decrypt(secrect_codes))
+#     rescue Exception => ex
+#       #
+#     end
+#   end
+# end
 
 module Doorkeeper
   class AccessGrant
@@ -88,3 +88,5 @@ module Doorkeeper
     belongs_to :user, foreign_key: "resource_owner_id", class_name: "User"
   end
 end
+
+

@@ -1,6 +1,10 @@
 tk_job:
   base_url: "http://localhost:3001"
   api:
-    v1.2: 
-      import_xy_results: "/api/v1.2/tests/import_xy_results"
-      generate_xy_reports: "/api/v1.2/reports/generate_xy_reports"
+    v1.2:
+      online_tests:
+        zh_submit_result_generate_reports: "zh_submit_result_generate_reports"
+      tests: 
+        import_xy_results: "/api/v1.2/tests/import_xy_results"
+      reports:
+        generate_xy_reports: "/api/v1.2/reports/generate_xy_reports"

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Mongodb::OnlineTestZhFzqnSuggestionTest < ActiveSupport::TestCase
+class TkLockTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
