@@ -363,7 +363,7 @@ class PapersController < ApplicationController
           else
             status = 500
             result = {
-              :message => "failed!"
+              :message => I18n.t("scores.messages.error.upload_failed")
             }
           end
         else
