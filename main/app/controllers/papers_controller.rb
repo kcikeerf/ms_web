@@ -346,7 +346,7 @@ class PapersController < ApplicationController
         if score_file
           tkc = TkJobConnector.new({
             :version => "v1.2",
-            :api_name => "tests.import_xy_results",
+            :api_name => "tests_import_xy_results",
             :http_method => "post",
             :params => {
               :test_id => params[:test_id],

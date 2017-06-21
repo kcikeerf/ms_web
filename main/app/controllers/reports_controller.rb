@@ -51,7 +51,7 @@ class ReportsController < ApplicationController
           test_id = @paper.bank_tests[0].id.to_s
           tkc = TkJobConnector.new({
             :version => "v1.2",
-            :api_name => "reports.generate_xy_reports",
+            :api_name => "reports_generate_xy_reports",
             :http_method => "post",
             :params => {
               :test_id => test_id,

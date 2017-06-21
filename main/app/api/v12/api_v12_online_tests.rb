@@ -89,7 +89,7 @@ module ApiV12OnlineTests
 
         tkc = TkJobConnector.new({
           :version => "v1.2",
-          :api_name => "online_tests.zh_submit_result_generate_reports",
+          :api_name => "online_tests_zh_submit_result_generate_reports",
           :http_method => "post",
           :params => {
             :test_id => params[:test_id],
