@@ -6,7 +6,6 @@ class TkJobConnector
 
   def initialize args
     @cfg = YAML.load_file("lib/plugins/tk_job_config.yml")
-    p  @cfg["tk_job"]["base_url"]
     @api = @cfg["tk_job"]["base_url"] + @cfg["tk_job"]["api"][args[:version]][args[:api_name]]
     @http_method = args[:http_method]
     @params = args[:params]
