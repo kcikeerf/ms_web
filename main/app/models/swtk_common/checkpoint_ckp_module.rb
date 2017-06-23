@@ -158,5 +158,43 @@ module CheckpointCkpModule
       return result
     end
 
+    def get_ckps_json ckps
+        result = {
+          Common::CheckpointCkp::Dimesion::Knowledge => [], 
+          Common::CheckpointCkp::Dimesion::Skill => [],
+          Common::CheckpointCkp::Dimesion::Ability => []
+        }
+      ckps.each{|ckp|
+        next unless ckp
+
+        unless ckp.subject
+          logger.debug ">>>#{ckp}: no subject information<<<"
+        end
+
+        ckp_ancestors = BankRid.get_all_higher_nodes(ckp.families,ckp)
+        ckp_ancestors.sort!{|a,b| Common::CheckpointCkp.compare_rid_plus(a.rid, b.rid) }
+        ckps_arr = ckp_ancestors.push(ckp)
+
+        ckp_uid_path = "/#{ckps_arr.map(&:uid).join('/')}"
+        ckp_rid_path = "/#{ckps_arr.map(&:rid).join('/')}"
+        weights_arr = ckps_arr.map{|ckp|
+            Mongodb::BankPaperPap.ckp_weights_modification({
+              :subject => ckp.subject,
+              :dimesion=> ckp.dimesion, 
+              :weights => ckp.weights, 
+              :difficulty=> nil
+            })
+        }
+        ckp_weights_path = "/#{weights_arr.join('/')}"
+        result[ckp.dimesion] << { 
+          ckp_uid_path => {
+            "weights" => ckp_weights_path, 
+            "rid" => ckp_rid_path
+          } 
+        }
+      }
+      return result.to_json      
+    end
+
   end
 end

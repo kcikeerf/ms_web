@@ -15,6 +15,7 @@ class Mongodb::BankQizpointQzp
   belongs_to :paper_outline, class_name: "Mongodb::PaperOutline"
   belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
+  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid", dependent: :delete
 
   field :quz_uid, type: String
   field :pap_uid, type: String
@@ -35,10 +36,6 @@ class Mongodb::BankQizpointQzp
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
-  belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
-  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
-  has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid", dependent: :delete
- 
   #
   def bank_checkpoint_ckps
     result_arr =[]
