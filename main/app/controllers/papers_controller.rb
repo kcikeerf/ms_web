@@ -38,9 +38,11 @@ class PapersController < ApplicationController
       :answer => params[:answer_path]
     })
     result[:orig_file_id] = f_uploaded.id
-    
-    result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
-    result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)#Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+
+    result[:paper_html] = Common::Wc::convert_doc_through_wc(f_uploaded.paper.current_path)
+    result[:answer_html] = Common::Wc::convert_doc_through_wc(f_uploaded.answer.current_path)
+    # result[:paper_html] =  Common::PaperFile.get_doc_file_content_as_html(f_uploaded.paper.current_path)
+    # result[:answer_html] = Common::PaperFile.get_doc_file_content_as_html(f_uploaded.answer.current_path)
 
     render :json => result.to_json
   end
@@ -89,9 +91,8 @@ class PapersController < ApplicationController
     begin
       current_pap.current_user_id = current_user.id
       current_pap.save_pap_plus(params)
-      render common_json_response(200, {pap_uid: current_pap._id.to_s})
+      render common_json_response(200, {data: { pap_uid: current_pap._id.to_s } })
     rescue Exception => ex
-      p ex.backtrace
       #current_pap.save_paper_rollback
       #result = response_json(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}")})
       render common_json_response(500, {messages: Common::Locale::i18n("papers.messages.save_paper.fail", :message=> "#{ex.message}" )})
@@ -356,16 +357,23 @@ class PapersController < ApplicationController
           @paper.update(:paper_status =>  Common::Paper::Status::ScoreImporting)
           @paper.bank_tests[0].update_test_tenants_status([params[:tenant_uid]], Common::Test::Status::ScoreImporting, {:job_uid =>job_tracker.uid} )
 
-          # backend job
-          #Thread.new do
-            ImportResultsJob.perform_later({
-              #:task_uid => target_task.uid,
-              :score_file_id => score_file.id,
-              :tenant_uid => params[:tenant_uid],
-              :pap_uid => params[:pap_uid],
-              :job_uid => job_tracker.uid 
-            })
-          #end
+          # # backend job
+          # #Thread.new do
+          #   ImportResultsJob.perform_later({
+          #     #:task_uid => target_task.uid,
+          #     :score_file_id => score_file.id,
+          #     :tenant_uid => params[:tenant_uid],
+          #     :pap_uid => params[:pap_uid],
+          #     :job_uid => job_tracker.uid 
+          #   })
+          # #end
+
+          ImportResultsWorker.perform_async({
+            :score_file_id => score_file.id,
+            :tenant_uid => params[:tenant_uid],
+            :pap_uid => params[:pap_uid],
+            :job_uid => job_tracker.uid 
+          })
 
           status = 200
           result[:status] = status

@@ -149,7 +149,7 @@ class ImportResultsJob < ActiveJob::Base
           #   :city => Common::Locale.hanzi2pinyin(loc_row[3]),
           #   :district => Common::Locale.hanzi2pinyin(loc_row[5])
           # })
-          @loc_h = { :tenant_uid => target_tenant.uid }
+          @loc_h = { :tenant_uid => @target_tenant.uid }
           target_area = @target_tenant.area
           @loc_h.merge!({
             :area_uid => target_area.uid,

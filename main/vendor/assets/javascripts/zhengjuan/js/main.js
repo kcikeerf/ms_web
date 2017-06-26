@@ -480,7 +480,7 @@ $(function(){
             $(this).parent().toggleClass("active");
         });
         //得分弹出、收起下拉选项
-        doc.on("click",".selectFullscore .selectVal .icon, .scorePart .selectVal .icon, .selectScore .selectVal .icon",function(){
+        doc.on("click",".selectFullscore .selectVal .icon, .scorePart .selectVal .icon, .selectTime .selectVal .icon, .selectScore .selectVal .icon",function(){
             $(".optionWarp").not($(this).parents(".optionWarp")).removeClass("active");
             $(this).parents(".optionWarp").toggleClass("active");
         });
@@ -570,7 +570,7 @@ $(function(){
         //     that.parents(".optionWarp").find(".selectVal span").text(text);
         // });
         //得分下拉选择
-        doc.on("click",".selectFullscore .optionList li, .scorePart .optionList li, .selectScore .optionList li",function(){
+        doc.on("click",".selectFullscore .optionList li, .scorePart .optionList li, .selectTime .optionList li, .selectScore .optionList li",function(){
             //if($(this).hasClass("active")) return;
             $(this).addClass("active").siblings().removeClass("active");
             $(this).parents(".optionWarp").removeClass("active").find(".selectVal input").val($(this).text());
@@ -687,7 +687,7 @@ $(function(){
 
                 quiz_type : $(".selecType .selectVal span").attr("values") || "",   //考试类型
                 levelword : $(".selectDifficulty .selectVal span").attr("values") || "",    //难度
-                quiz_duration : $(".selectTime .selectVal span").attr("values") || "",  //考试时长
+                quiz_duration : $(".selectTime .selectVal input").val() || "90分钟",  //考试时长
                 score : $(".selectScore .selectVal input").val() || "0",  //满分值
                 tenants: $.map($(".tenant_range_item_checkbox.active"), function(v,i){ 
                     return {tenant_uid: v.getAttribute("tenant_uid"), 
@@ -1661,6 +1661,7 @@ $(function(){
             for(var k in tempObj){
                 $("." + k + " .optionList li").each(function(){
                     if(k == "selectScore") $(this).parents(".optionWarp").find(".selectVal input").val(tempObj[k]||0);
+                    if(k == "selectTime") $(this).parents(".optionWarp").find(".selectVal input").val(tempObj[k]|| "90分钟");
                     if($(this).text() == tempObj[k]){
                         $(this).addClass("active").siblings().removeClass("active").parents(".optionWarp").find(".selectVal span").text($(this).text()).attr("values",$(this).text());
                         return false;
