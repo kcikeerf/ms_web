@@ -104,12 +104,12 @@ module ApiV12OnlineTests
         if tkc_flag
           status = 200
           result = {
-            :message => "success!"
+            :message => "success!!!!!!!"
           }
         else
           status = 500
           result = {
-            :message => I18n.t("scores.messages.error.upload_failed")
+            :message => tkc_data#I18n.t("scores.messages.error.upload_failed")
           }
         end
         
