@@ -114,11 +114,11 @@
 
 <% if !@current_test || @current_test.report_version.blank? %>	
 		<div class="lookReport">
-			<a href="/reports/new_square" class="active">在线查看报告</a>
+			<a href="/reports/new_square" class="active" target="_blank" >在线查看报告</a>
 		</div>
 <% elsif  @current_test.report_version == "1.1" %>
 		<div class="lookReport">
-			<a href="/reports/square_v1_1" class="active">在线查看报告</a>
+			<a href="/reports/square_v1_1" class="active" target="_blank">在线查看报告</a>
 		</div>
 <% end %>
 

@@ -68,9 +68,9 @@
 					<%= "#{paper.heading}-#{paper.subheading}".truncate(30) %>
 <% end %>
 <% if !paper.bank_tests[0] || paper.bank_tests[0].report_version.blank? %>					
-					<%= link_to '[查看报告]', new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
+					<%= link_to '[查看报告]', new_square_reports_path(pap_uid: paper.id), class: 'viewreport', target: '_blank' if paper.is_completed? %>
 <% else %>
-					<%= link_to '[查看报告]', square_v1_1_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
+					<%= link_to '[查看报告]', square_v1_1_reports_path(pap_uid: paper.id), class: 'viewreport', target: '_blank' if paper.is_completed? %>
 <% end %>
 				</td>
 				<td><%= t("papers.status.#{paper.paper_status}") %></td>
