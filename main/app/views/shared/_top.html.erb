@@ -30,15 +30,17 @@
                   <%= current_user.name %>
                   <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                  <li class="arrow"></li>
-                  <% user_popup_menus.each do |key, value| %>
-                      <li>
-                        <a href="<%= value %>" onclick="window.location.reload(true);"><%= t("page.user_left_menu.#{key}") %>
-                        </a>
-                      </li>
-                  <% end %>
-                </ul>
+                <% unless current_user.is_demo %>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                    <li class="arrow"></li>
+                    <% user_popup_menus.each do |key, value| %>
+                        <li>
+                          <a href="<%= value %>" onclick="window.location.reload(true);"><%= t("page.user_left_menu.#{key}") %>
+                          </a>
+                        </li>
+                    <% end %>
+                  </ul>
+                <% end %>
               </li>
             </ul>
           </div>

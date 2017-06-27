@@ -177,7 +177,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       # ckps.map(&:organization_hash)
     end
 
-    #获取影响范围
+    # 获取影响范围
     # [参数]
     # 开始节点，不包含的节点
     # [返回值]
@@ -197,9 +197,71 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       end
       return infilence_area.map(&:uid)
     end
+
+    # 压缩节点
+    # [参数]
+    #  学科，学段，三维
+    # [返回值]
+    # 压缩成功(0)/不需要压缩(1)/压缩失败(-1)
+    def compress_node(subject, category, dimesion)
+      regexp = Regexp.new("." * Common::SwtkConstants::CkpStep)
+      nodes = where(subject: subject, category: category, dimesion: dimesion)
+      node =  nodes.select {|node| node if node.rid.gsub(regexp).to_a.include?("zzz")}
+      if node.present?
+        parent_node = node[0].parent
+        need_change_children = parent_node.children.order("rid ASC")
+        need_change_children_step_rid = need_change_children.map {|ch| ch.rid.slice(parent_node.rid.size, Common::SwtkConstants::CkpStep)}
+        need_change_children_step_rid.uniq!
+        hash_bank_index = {}
+        need_change_children_step_rid.each_with_index do |key, value|
+          hash_bank_index[key] = value
+        end
+        transaction do
+          begin
+            need_change_children.each do |child|
+              new_rid =child.replace_rid_from_hash(parent_node.rid, hash_bank_index)
+              child.update(rid: new_rid)
+            end            
+          rescue Exception => e
+            return -1
+          end
+        end
+        return 0        
+      else
+        return 1
+      end
+    end
+
   end
 
   #
+  # 类方法结束 实例方法开始 
+  #
+
+  # 根据hash中的关系替换部分bank_rid
+  # [参数]
+  # 需要替换的那一级的parent_rid, 相关的hash
+  # [返回值]
+  # 新的rid
+  def replace_rid_from_hash(parent_node_rid,node_rid_hash)
+    child_parent_rid, self_old_bank_id, children_bank_id = gsub_with_parent_rid(parent_node_rid)
+    self_new_bank_id = node_rid_hash[self_old_bank_id].to_s(36).rjust(3, '0')
+    new_rid = child_parent_rid + self_new_bank_id + children_bank_id
+    return new_rid
+  end
+
+  # 按照parent_rid分割rid 分割为3个片段, parent_rid, old_bank_rid, children_rid
+  # [参数]
+  # 分割的parent_rid
+  # [返回值]
+  # parent_rid, old_bank_rid, children_rid
+  def gsub_with_parent_rid(parent_node_rid)
+    child_parent_rid = rid.slice(0,parent_node_rid.size)
+    self_old_bank_id = rid.slice(child_parent_rid.size, Common::SwtkConstants::CkpStep)
+    children_bank_id = rid.slice((child_parent_rid.size + Common::SwtkConstants::CkpStep)..-1)
+    return child_parent_rid, self_old_bank_id, children_bank_id   
+  end
+
   # str_uid: current check point uid
   # str_pid: parent rid
   # node_uid: node structure uid
@@ -217,7 +279,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   # move_type: "inner", "prev", "next"
   # target_node_uid: 目标节点
   # [返回值]
-  # true ： false
+  # true/false
   # [功能]
   # 将原节点移动到目标节点的指定类型里面，同时更新目标节点(可能包含目标节点）之后的节点, （替换目标节点，并更改子节点）
   def move_node(move_type, target_node_uid)
@@ -338,7 +400,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   def parent_node_rid
     rid.slice(0, rid.size - Common::SwtkConstants::CkpStep)
   end
-  
+
   #自己的bank_id
   def bank_node_rid
     rid.slice(rid.size - Common::SwtkConstants::CkpStep, Common::SwtkConstants::CkpStep)
