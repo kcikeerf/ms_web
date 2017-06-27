@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
     #authenticate_person!
     if (controller_name =~ /^Wx.*$/) != 0
       authenticate_user!
-      if current_user.is_demo && !(%w(/reports/square_v1_1 /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
+      if current_user.is_demo && !(%w(/reports /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
         redirect_to root_path
       end
     end
@@ -121,10 +121,11 @@ class ApplicationController < ActionController::Base
        @url_after_login = root_path
       end
 
-      if request.referer.include?("/users/login")
+      if request.referer && request.referer.include?("/users/login")
         super
       else
-        stored_location_for(resource) || @url_after_login
+        @url_after_login ||= stored_location_for(resource)
+        @url_after_login
       end
     else
     end

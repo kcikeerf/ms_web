@@ -8,7 +8,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand zy-navbar-brand" href="/" title="甄学">
+          <a class="navbar-brand zy-navbar-brand"
+             <% unless current_user.is_demo %>
+             href="/"
+             <% end %> 
+             title="甄学">
             <img class="zy-logo" alt="甄学" src="<%= image_url('logo-1.png') %>">
           </a>
         </div>
