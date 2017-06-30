@@ -262,6 +262,7 @@ zh:
         login_failed: "您输入的用户名或密码有错误，未通过认证！"
         wx_not_binded: "您的微信账户与三维题库账户绑定失败!"
 
+
   wx_papers:
     messages:
       info:
@@ -296,6 +297,18 @@ zh:
       error:
         save_failed: "在线测试结果保存失败!"
   #################
+  #主账号关联
+  bind_users:
+    messages:
+      info:
+        u_binded: "该账号已与主账号成功绑定"
+        u_unbinded: "该账号已与主账号成功解绑"
+        not_binded: "该账号为与主账户绑定"
+      warn:
+        user_binding_limit: "主账号绑定子账号已超过%{limit}个，若希望绑定更多的子帐户请联系管理员！"
+      error:
+        is_perent_user: "该账号已绑定过其他账号，不能再被绑定"
+        invalid_user: "参数不正确，不能进行绑定或解绑"
 
   time:
     formats:

@@ -8,6 +8,7 @@ module UzerModule
     UserNameRandArr = Common::SwtkConstants::AlphabetDownCaseArr
     GuestUserNamePrefix = "guest_"
     WxUserNamePrefix = "wx_"
+    UserBindingMaxLimit = 5
 
     UserAccountTitle = {
       :head_teacher => [
