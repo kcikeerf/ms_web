@@ -74,15 +74,15 @@ zh:
   papers:
     status:
       none: "无"
-      new: "新添试卷"
-      editting: "正在修订"
-      editted: "修订完成"
-      analyzing: "正在解析"
-      analyzed: "解析完成"
-      score_importing: "成绩入库"
-      score_imported: "成绩已导入"
-      report_generating: "报告生成中"
-      report_completed: "报告生成完毕" 
+      new: "考试信息设定" # 1
+      editting: "试卷添加完成" # 2 【*】
+      editted: "试题拆分完成" # 3 【*】
+      analyzing: "正在三维解析" # 4
+      analyzed: "三维解析完成" # 5 【*】
+      score_importing: "正在导入成绩" # 6
+      score_imported: "成绩导入完毕" # 7
+      report_generating: "正在生成报告" # 8
+      report_completed: "报告生成完毕" # 9 【*】
     name:
       paper: '原试卷'
       answer: '原答案'
