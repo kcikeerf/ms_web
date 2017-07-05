@@ -266,6 +266,7 @@ Rails.application.routes.draw do
   mount ApiV12Monitoring::API => "/api/v1.2/"
   mount ApiV12Tenants::API => "/api/v1.2/"
   mount ApiV12Quizs::API => "/api/v1.2/"
+  mount ApiV12Users::API => "/api/v1.2/"
   #######################################
 
   # match '*path', to: 'welcomes#error_404', via: :all
