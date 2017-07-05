@@ -1,6 +1,6 @@
 # set path to application
 #app_dir = File.expand_path("../", __FILE__)
-app_dir="/opt/qidian/swtk/main"
+app_dir=File.expand_path("../..", __FILE__)
 shared_dir = "#{app_dir}/shared"
 working_directory app_dir
 
@@ -14,8 +14,8 @@ timeout 30
 listen "/tmp/unicorn.sock", :backlog => 64
 
 # Logging
-stderr_path "#{shared_dir}/log/unicorn.stderr.log"
-stdout_path "#{shared_dir}/log/unicorn.stdout.log"
+stderr_path "/tmp/log/unicorn.stderr.log"
+stdout_path "/tmp/log/unicorn.stdout.log"
 
 # Set master PID location
-pid "#{shared_dir}/pids/unicorn.pid"
+pid "/tmp/pids/unicorn.pid"

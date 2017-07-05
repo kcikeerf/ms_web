@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
     #authenticate_person!
     if (controller_name =~ /^Wx.*$/) != 0
       authenticate_user!
-      if current_user.is_demo && !(%w(/reports/square_v1_1 /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
+      if current_user.is_demo && !(%w(/reports /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
         redirect_to root_path
       end
     end
@@ -104,21 +104,28 @@ class ApplicationController < ActionController::Base
   ########
   #override devise after login path
   def after_sign_in_path_for(resource)
+    @url_after_login = root_path
     case resource
     when :user, User
-     # if current_user.role_obj.is_a? Analyzer
-     #   @redirect_target = my_home_analyzers_path
-     # elsif current_user.role_obj.is_a? Teacher
-     #   @redirect_target = my_home_teachers_path
-     # elsif current_user.role_obj.is_a? Pupil
-     #   @redirect_target = my_home_pupils_path
-     # else
-     #   @redirect_target = root_path
-     # end
-      if request.referer.include?("/users/login")
+      if current_user.is_project_administrator?
+       @url_after_login = my_home_project_administrators_path
+      elsif current_user.is_tenant_administrator?
+       @url_after_login = my_home_tenant_administrators_path
+      elsif current_user.is_analyzer?
+       @url_after_login = my_home_analyzers_path
+      elsif current_user.is_teacher?
+       @url_after_login = my_home_teachers_path
+      elsif current_user.is_pupil?
+       @url_after_login = my_home_pupils_path
+      else
+       @url_after_login = root_path
+      end
+
+      if request.referer && request.referer.include?("/users/login")
         super
       else
-        stored_location_for(resource) || request.referer || root_path
+        @url_after_login ||= stored_location_for(resource)
+        @url_after_login
       end
     else
     end
