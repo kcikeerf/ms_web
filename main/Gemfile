@@ -74,7 +74,7 @@ gem 'kaminari'
 #job
 gem 'sidekiq'
 gem 'sidekiq-superworker'
-gem 'redis'
+gem 'redis', '~>3.3.1'# 限制为3.3.1版本，高版本有设定value的size 100kb限制，出现timeout
 gem 'redis-namespace'
 gem 'redis-rails'
 gem 'redis-rack-cache'

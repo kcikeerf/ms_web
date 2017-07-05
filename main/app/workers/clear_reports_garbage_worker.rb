@@ -9,18 +9,21 @@ class ClearReportsGarbageWorker
       pids << fork do # fork new process, begin
         logger.info "#{args}"
         if !args.blank?
-          test_id = args[0]
-          task_uid = args[1]
-          target_task = TaskList.where(uid: task_uid).first
+          _test_id = args[0]
+          _task_uid = args[1]
+
+          target_task = TaskList.where(uid: _task_uid).first
           job_tracker = target_task.job_lists.order(dt_update: :desc).first
           job_tracker.update(process: 1.0)
-          target_test = Mongodb::BankTest.where(id: test_id).first
-          target_pap= target_test.bank_paper_pap      	
-          report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + test_id + "/*"
+
+          target_test = Mongodb::BankTest.where(id: _test_id).first
+          target_pap= target_test.bank_paper_pap
+
+          report_redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + _test_id + "/*"
           target_pap.update(paper_status: Common::Paper::Status::ReportCompleted)
+
           begin
-            report_redis_keys = Common::SwtkRedis::find_keys(Common::SwtkRedis::Ns::Sidekiq, report_redis_key_wildcard)
-            report_redis_keys.each{|key| Common::SwtkRedis::current_redis(Common::SwtkRedis::Ns::Sidekiq).del(key) }
+            Common::ReportPlus::kumitate_no_owari_redis(Common::SwtkRedis::Ns::Sidekiq, _test_id)
           rescue Exception => ex
             # do nothing
           end
