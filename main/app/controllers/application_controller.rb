@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
     #authenticate_person!
     if (controller_name =~ /^Wx.*$/) != 0
       authenticate_user!
-      if current_user.is_demo && !(%w(/reports /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
+      if current_user && current_user.is_demo && !(%w(/reports /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
         redirect_to root_path
       end
     end
