@@ -2,7 +2,7 @@ class ReportsWarehouseController < ApplicationController
   layout false
 
   def get_report_file
-    target_file_path = "." + request.fullpath.to_s
+    target_file_path = request.fullpath.to_s
     target_file_path = target_file_path.split("?")[0] if target_file_path
     if !params[:any_path].blank? && File.exist?(target_file_path)
       expires_in 7.days, :public => true

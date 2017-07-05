@@ -22,7 +22,8 @@ module ReportModule
     module WareHouse
       module_function
 
-      ReportLocation = Rails.root.to_s + "/"
+      #ReportLocation = Rails.root.to_s + "/"
+      ReportLocation = "/"
       # 报告保存格式
       # /reports/测试id／类型／租户uid／类型id
       #
