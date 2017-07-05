@@ -176,10 +176,10 @@ Rails.application.routes.draw do
 
   resources :messages, only: [] do 
     collection do 
-      # post 'send_sms_auth_number'
-      # post 'send_email_auth_number'
-      # post 'send_sms_forgot_password'
-      # post 'send_email_forgot_password'
+      post 'send_sms_auth_number'
+      post 'send_email_auth_number'
+      post 'send_sms_forgot_password'
+      post 'send_email_forgot_password'
     end
   end
   
