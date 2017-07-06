@@ -442,7 +442,7 @@ namespace :swtk do
             I18n.t("dict.district"),
             target_pap.district,
             "Tenant",
-            target_pap.tenant.name_cn
+            target_pap.present? ? target_pap.tenant.name_cn : "-"
           ], :style =>[
             cell_style[:label],
             nil,
