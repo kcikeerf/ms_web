@@ -278,7 +278,7 @@ class User < ActiveRecord::Base
     else
       result = [self.tenant]
     end
-    result.sort{|a,b| b.name <=> a.name }
+    result.sort{|a,b| a.name <=> b.name }
   end
 
   # 可访问班级（分组）

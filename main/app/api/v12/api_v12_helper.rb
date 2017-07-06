@@ -11,6 +11,11 @@ module ApiV12Helper
 
   def current_user
     target_user = User.where(id: doorkeeper_token.resource_owner_id).first if doorkeeper_token
+    if params[:child_user_name]
+      child_user = User.where(name: params[:child_user_name]).first
+      target_user.children.include?(child_user)
+      target_user = child_user
+    end
     error!(message_json("e40004"), 404) unless target_user
     target_user
   end

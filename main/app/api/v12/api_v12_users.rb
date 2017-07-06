@@ -27,7 +27,19 @@ module ApiV12Users
           current_user.binded_users_list
         end
       end 
-
+      desc "获取用户信息"
+      params do
+      end
+      post :get_info do
+        u = current_user
+        {
+          :id => u.id,
+          :user_name => u.name,
+          :name => u.role_obj.nil? ? "-" : u.role_obj.name,
+          :role => u.role.name,
+          :accessable_tenants => u.accessable_tenants.map {|t| { uid: t.uid, name_cn: t.name_cn}}
+        }
+      end 
 
       desc '绑定子用户账号信息'
       params do
