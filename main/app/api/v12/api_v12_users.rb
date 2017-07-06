@@ -36,14 +36,14 @@ module ApiV12Users
       end
       post :bind do
         if current_user
-          flag,result = current_user.users_bind params
+          flag,code = current_user.users_bind params
           if flag
-            result
+            message_json(code)
           else
-            error!(result, 500) 
+            error!(message_json(code), 500) 
           end
         else
-          error!({message: Common::Locale::i18n("bind_users.messages.error.invalid_user")}, 500) 
+          error!(message_json("e41002"), 500) 
         end
       end
 
@@ -53,16 +53,14 @@ module ApiV12Users
       end
       post :unbind do
         if current_user
-          flag,result = current_user.users_unbind params
+          flag,code = current_user.users_unbind params
           if flag
-            result
+            message_json(code)
           else
-            error!(result, 500)
+            error!(message_json(code), 500)
           end
         end
       end  
-
-
 
     end #auths end
   end #class end

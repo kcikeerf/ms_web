@@ -16,8 +16,10 @@ class User < ActiveRecord::Base
   has_many :oauth_access_tokens, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessToken", dependent: :destroy
   has_many :oauth_access_grants, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessGrant", dependent: :destroy
   has_many :oauth_applications, foreign_key: "resource_owner_id", class_name: "Doorkeeper::Application", dependent: :destroy
-  has_many :childrens, class_name: "User", foreign_key: "parent_id"
-  belongs_to :parent, class_name: "User"
+  has_many :groups_as_parent, :foreign_key=>"child_id", :class_name=>'UserLink'
+  has_many :groups_as_child, :foreign_key => "parent_id", :class_name=>"UserLink"
+  has_many :parents, :through=>:groups_as_parent
+  has_many :children, :through=>:groups_as_child
 
   before_create :set_role,:generate_token #, :check_existed?
 
@@ -112,7 +114,14 @@ class User < ActiveRecord::Base
         else
           where("lower(name) = ?", login.downcase)
         end
-      user.where(conditions.to_h).where(parent_id: nil).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      user = user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      result = nil
+      if user
+        if user.parents.size < 1
+          result = user
+        end
+      end
+      return result
     end
 
     # 给doorkeeper验证用户
@@ -340,7 +349,7 @@ class User < ActiveRecord::Base
 
   #当前用户绑定的用户列表
   def binded_users_list
-    childrens.map {|u|
+    children.map {|u|
       {
         :id => u.id,
         :user_name => u.name,
@@ -352,50 +361,48 @@ class User < ActiveRecord::Base
   #将其他账号绑定到该账号上
   def users_bind params
     flag = false
-    data = {}
-    if self.parent_id.nil?
+    if self.parents.size < 1
       bind_user = User.where(name: params[:user_name]).first
       if bind_user && bind_user.valid_password?(params[:password])
-        self.with_lock do
-          #超过微信帐户绑定限制
-          if (self.childrens.count + 1) > Common::Uzer::UserBindingMaxLimit
-            data = {message: Common::Locale::i18n("bind_users.messages.warn.user_binding_limit", :limit => Common::Uzer::UserBindingMaxLimit)}
+        #超过微信帐户绑定限制
+        if (self.children.count + 1) > Common::Uzer::UserBindingMaxLimit
+          code = "w21000"
+        elsif (bind_user.parents.count + 1) > Common::Uzer::UserBoundMaxLimit
+          code = "w21001"
+        else
+          if self.children.include?(bind_user)
+            flag = true
+            code = "i11002"
           else
-            if bind_user.parent_id.present?
-              data = {message: Common::Locale::i18n("bind_users.messages.error.is_perent_user")}
-            else
-              bind_user.parent_id = self.id
-              bind_user.save!
+            if self.children.push(bind_user)
               flag = true
-              data = {message: Common::Locale::i18n("bind_users.messages.info.u_binded")}
+              code = "i11000"
+            else
+              code = "e41003"
             end
           end
         end
       else
-        data = {message: Common::Locale::i18n("bind_users.messages.error.invalid_user")}
+        code = "e40004"
       end
     else
-      data = {message: Common::Locale::i18n("bind_users.messages.error.is_perent_user")}
+      code = "e41004"
     end
-    return flag, data
+    return flag, code
   end
 
   #从主账号中解绑子账号
   def users_unbind params
-    unbind_user = self.childrens.where(name: params[:user_name]).first
+    unbind_user = self.children.where(name: params[:user_name]).first
     flag = false
     if unbind_user
-      if unbind_user.parent_id.present?
-        unbind_user.parent_id = nil
-        unbind_user.save!
-        flag = true
-        data = {message: Common::Locale::i18n("bind_users.messages.info.u_unbinded")}
-      end
+      self.children.delete(unbind_user)
+      flag = true
+      code = "i11001"
     else
-      data = {message: Common::Locale::i18n("bind_users.messages.error.invalid_user")}
+      code = "w21002"
     end
-    return flag,data
-
+    return flag,code
   end
 
 
