@@ -108,7 +108,6 @@ class ApplicationController < ActionController::Base
     @url_after_login = root_path
     case resource
     when :user, User
-<<<<<<< HEAD
       if current_user.is_project_administrator?
        @url_after_login = my_home_project_administrators_path
       elsif current_user.is_tenant_administrator?
@@ -122,20 +121,8 @@ class ApplicationController < ActionController::Base
       else
        @url_after_login = root_path
       end
-
-      if request.referer && request.referer.include?("/users/login")
-=======
-     # if current_user.role_obj.is_a? Analyzer
-     #   @redirect_target = my_home_analyzers_path
-     # elsif current_user.role_obj.is_a? Teacher
-     #   @redirect_target = my_home_teachers_path
-     # elsif current_user.role_obj.is_a? Pupil
-     #   @redirect_target = my_home_pupils_path
-     # else
-     #   @redirect_target = root_path
-     # end
+      
       if request.referer && request.referer.include?("/users/login") 
->>>>>>> version1.2_bind_pwd
         super
       else
         @url_after_login ||= stored_location_for(resource)
