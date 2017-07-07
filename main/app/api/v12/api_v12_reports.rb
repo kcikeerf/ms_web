@@ -91,7 +91,7 @@ module ApiV12Reports
           elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
             _rpt_type = Common::Report::Group::Grade
             _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
-          elsif target_user.is_project_administrator?
+          elsif target_user.is_project_administrator? || target_user.is_area_administrator?
             _rpt_type = Common::Report::Group::Project
             _rpt_id = nil
           else
