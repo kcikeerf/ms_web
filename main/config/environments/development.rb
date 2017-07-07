@@ -43,10 +43,10 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: 'smtp.exmail.qq.com',
+    address: 'smtp.163.com',
     port: 25,
-    domain: 'exmail.qq.com',
+    domain: 'www.163.com',
     authentication: :login,
-    user_name:  "yinhl@qidianbj.com",
-    password: "XXX" }
+    user_name:  "k12ke_mail@163.com",
+    password: "1qaz2wsx3edc" }
 end

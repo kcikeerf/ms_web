@@ -121,11 +121,12 @@ class ProfilesController < ApplicationController
     if request.post?
       mobile_auth_number = params[:mobile_auth_number]
       mobile = params[:user][:phone]
-      if !Message.check(mobile, 'init_profile', mobile_auth_number)
+      if $cache_redis.get(mobile) != mobile_auth_number#!Message.check(mobile, 'init_profile', mobile_auth_number)
         current_user.errors.add(:base, I18n.t('messages.invalid_mobile'))
         #return render action: :binding_or_unbinding_mobile
         return render :action => "#{action_name}"
       end
+      $cache_redis.del(mobile)
     end
   end
   
@@ -152,12 +153,13 @@ class ProfilesController < ApplicationController
       mobile = @user_params[:phone]
 
       if mobile_auth_number.present? && mobile.present?
-        if !Message.check(mobile, 'init_profile', mobile_auth_number)
+        if $cache_redis.get(mobile) != mobile_auth_number#!Message.check(mobile, 'init_profile', mobile_auth_number)
          current_user.errors.add(:base, I18n.t('messages.invalid_mobile'))
          @resource = current_user.role_obj
          return render action: :init
-       end
-       @user_params.merge!({phone_validate: true})
+        end
+        @user_params.merge!({phone_validate: true})
+        $cache_redis.del(mobile)
      end
    end
  end

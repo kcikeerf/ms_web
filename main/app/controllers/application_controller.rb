@@ -13,14 +13,15 @@ class ApplicationController < ActionController::Base
     controller_name = controller.class.to_s
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
-    if cond1 || cond2
+    cond3 = (controller_name == "MessagesController" && (action_name == "send_sms_forgot_password" || action_name == "send_email_forgot_password") )
+    if cond1 || cond2 || cond3
       next
     end
 
     #authenticate_person!
     if (controller_name =~ /^Wx.*$/) != 0
       authenticate_user!
-      if current_user && current_user.is_demo && !(%w(/reports /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
+      if current_user && current_user.is_demo && !(%w(/reports/square_v1_1 /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
         redirect_to root_path
       end
     end
@@ -107,6 +108,7 @@ class ApplicationController < ActionController::Base
     @url_after_login = root_path
     case resource
     when :user, User
+<<<<<<< HEAD
       if current_user.is_project_administrator?
        @url_after_login = my_home_project_administrators_path
       elsif current_user.is_tenant_administrator?
@@ -122,6 +124,18 @@ class ApplicationController < ActionController::Base
       end
 
       if request.referer && request.referer.include?("/users/login")
+=======
+     # if current_user.role_obj.is_a? Analyzer
+     #   @redirect_target = my_home_analyzers_path
+     # elsif current_user.role_obj.is_a? Teacher
+     #   @redirect_target = my_home_teachers_path
+     # elsif current_user.role_obj.is_a? Pupil
+     #   @redirect_target = my_home_pupils_path
+     # else
+     #   @redirect_target = root_path
+     # end
+      if request.referer && request.referer.include?("/users/login") 
+>>>>>>> version1.2_bind_pwd
         super
       else
         @url_after_login ||= stored_location_for(resource)
