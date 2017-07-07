@@ -164,22 +164,22 @@ Rails.application.routes.draw do
     get 'modify_mobile_succeed'
     get 'modify_email_succeed'
     match 'init', via: [:get, :post]
-    match 'binding_or_unbinding_mobile', via: [:get]#[:get, :post]
-    match 'binding_or_unbinding_email', via: [:get]#[:get, :post]
-    match 'verified_email', via: [:get]#[:get, :post]
-    match 'modify_email', via: [:get]#[:get, :post]
-    match 'verified_mobile', via: [:get]#[:get, :post]
-    match 'modify_mobile', via: [:get]#[:get, :post]
+    match 'binding_or_unbinding_mobile', via: [:get, :post]#[:get, :post]
+    match 'binding_or_unbinding_email', via: [:get, :post]#[:get, :post]
+    match 'verified_email', via: [:get,:post]#[:get, :post]
+    match 'modify_email', via: [:get,:post]#[:get, :post]
+    match 'verified_mobile', via: [:get,:post]#[:get, :post]
+    match 'modify_mobile', via: [:get, :post]#[:get, :post]
     post 'head_image_upload'
     post 'save_info'
   end
 
   resources :messages, only: [] do 
     collection do 
-      # post 'send_sms_auth_number'
-      # post 'send_email_auth_number'
-      # post 'send_sms_forgot_password'
-      # post 'send_email_forgot_password'
+      post 'send_sms_auth_number'
+      post 'send_email_auth_number'
+      post 'send_sms_forgot_password'
+      post 'send_email_forgot_password'
     end
   end
   

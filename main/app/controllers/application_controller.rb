@@ -13,14 +13,15 @@ class ApplicationController < ActionController::Base
     controller_name = controller.class.to_s
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
-    if cond1 || cond2
+    cond3 = (controller_name == "MessagesController" && (action_name == "send_sms_forgot_password" || action_name == "send_email_forgot_password") )
+    if cond1 || cond2 || cond3
       next
     end
 
     #authenticate_person!
     if (controller_name =~ /^Wx.*$/) != 0
       authenticate_user!
-      if current_user.is_demo && !(%w(/reports/square_v1_1 /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
+      if current_user && current_user.is_demo && !(%w(/reports/square_v1_1 /reports_warehouse /users/login /users/logout).any? {|s| request.original_url.include?(s)})
         redirect_to root_path
       end
     end
@@ -115,7 +116,7 @@ class ApplicationController < ActionController::Base
      # else
      #   @redirect_target = root_path
      # end
-      if request.referer.include?("/users/login")
+      if request.referer && request.referer.include?("/users/login") 
         super
       else
         stored_location_for(resource) || request.referer || root_path
