@@ -21,6 +21,7 @@ module Common
   include TenantModule
   include TermModule
   include TestModule
+  include TkLockModule
   include UzerModule
   include WcModule
   include WxModule
