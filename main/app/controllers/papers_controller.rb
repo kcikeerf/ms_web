@@ -333,57 +333,84 @@ class PapersController < ApplicationController
   # end
 
   def import_filled_result
+    # params.permit!
+
+    # if request.post?
+    #   logger.info("====================import result rquest: begin")
+    #   result = {:status => 403, :task_uid => ""}
+
+    #   begin
+    #     raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
+    #     params[:test_id] =  @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
+    #     score_file = Common::Score.upload_filled_result(params)
+    #     if score_file
+    #       tkc = TkJobConnector.new({
+    #         :version => "v1.2",
+    #         :api_name => "tests_import_xy_results",
+    #         :http_method => "post",
+    #         :params => {
+    #           :test_id => params[:test_id],
+    #           :score_file_id => score_file.id,
+    #           :tenant_uid => params[:tenant_uid]
+    #         }
+    #       })
+    #       tkc_flag, tkc_data = tkc.execute
+    #       if tkc_flag
+    #         status = 200
+    #         result = {
+    #           :message => "success!"
+    #         }
+    #       else
+    #         status = 500
+    #         result = {
+    #           :message => I18n.t("scores.messages.error.upload_failed")
+    #         }
+    #       end
+    #     else
+    #       status = 500
+    #       result = {
+    #         :message => I18n.t("scores.messages.error.upload_failed")
+    #       }
+    #     end
+    #   rescue Exception => ex
+    #     status = 500
+    #     result = {
+    #       :message => I18n.t("scores.messages.error.upload_exception")
+    #     }
+    #     logger.debug ex.message
+    #     logger.debug ex.backtrace
+    #   end
+    #   common_json_response(status, result)
+    #   logger.info("====================import score request: end")
+    # end
+    # render layout: false
+
     params.permit!
-
     if request.post?
-      logger.info("====================import result rquest: begin")
-      result = {:status => 403, :task_uid => ""}
-
-      begin
-        raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
-        params[:test_id] =  @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
-        score_file = Common::Score.upload_filled_result(params)
-        if score_file
-          tkc = TkJobConnector.new({
-            :version => "v1.2",
-            :api_name => "tests_import_xy_results",
-            :http_method => "post",
-            :params => {
-              :test_id => params[:test_id],
-              :score_file_id => score_file.id,
-              :tenant_uid => params[:tenant_uid]
-            }
-          })
-          tkc_flag, tkc_data = tkc.execute
-          if tkc_flag
-            status = 200
-            result = {
-              :message => "success!"
-            }
-          else
-            status = 500
-            result = {
-              :message => I18n.t("scores.messages.error.upload_failed")
-            }
-          end
-        else
-          status = 500
-          result = {
-            :message => I18n.t("scores.messages.error.upload_failed")
-          }
-        end
-      rescue Exception => ex
+      raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
+      params[:test_id] = @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
+      score_file = Common::Score.upload_filled_result(params)    
+      if score_file.blank?
         status = 500
         result = {
-          :message => I18n.t("scores.messages.error.upload_exception")
+          :message => I18n.t("scores.messages.error.upload_failed")
         }
-        logger.debug ex.message
-        logger.debug ex.backtrace
       end
-      common_json_response(status, result)
-      logger.info("====================import score request: end")
-    end
-    render layout: false
+      render Common::template_tk_job_execution_in_controller(status, result) {
+        TkJobConnector.new({
+          :version => "v1.2",
+          :api_name => "tests_import_xy_results",
+          :http_method => "post",
+          :params => {
+            :test_id => params[:test_id],
+            :score_file_id => score_file.id,
+            :tenant_uid => params[:tenant_uid]
+          }
+        })
+      }
+    else
+      render layout: false
+    end    
   end
 
   # 获取试卷大纲

@@ -46,7 +46,7 @@ class ReportsController < ApplicationController
       status = 403
       result[:message] = "not suitable operation!"
     end
-    render Common::template_tk_job_execution_in_controller(status=nil, result=nil) {
+    render Common::template_tk_job_execution_in_controller(status, result) {
       TkJobConnector.new({
         :version => "v1.2",
         :api_name => "reports_generate_xy_reports",
