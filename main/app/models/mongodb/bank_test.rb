@@ -3,7 +3,8 @@
 class Mongodb::BankTest
   include Mongoid::Document
   include Mongodb::MongodbPatch
-  
+  include SwtkLockPatch
+
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp, :generate_ext_data_path
 

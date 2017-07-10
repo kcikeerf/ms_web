@@ -4,7 +4,7 @@ class Mongodb::BankPaperPap
 
   include Mongoid::Document
   include Mongodb::MongodbPatch
-  include TkLockPatch
+  include SwtkLockPatch
   
   attr_accessor :current_user_id
   attr_accessor :test_associated_tenant_uids, :status, :target_area, :old_status, :old_tenant_links, :old_paper_outline_arr

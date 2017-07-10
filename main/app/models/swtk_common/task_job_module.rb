@@ -45,8 +45,11 @@ module TaskJobModule
       Common::SwtkRedis::incr_key(_redis_ns, _redis_key)
       process_value = Common::SwtkRedis::get_value(_redis_ns, _redis_key).to_f
       target_task = TaskList.where(uid: _task_uid).first
+      return false unless target_task
       job_tracker = target_task.job_lists.order(dt_update: :desc).first
+      return false unless job_tracker
       job_tracker.update(process: process_value/_total_phases)  
+      return true
     end
   end
 end

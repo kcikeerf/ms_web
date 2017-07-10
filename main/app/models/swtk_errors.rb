@@ -6,4 +6,9 @@ module SwtkErrors
  class SaveOnlineTestError < StandardError;end
  class TestTenantNotAssociatedError < StandardError;end
  class DeletePaperError < StandardError; end
+ class LockResourceFailed < StandardError; end
+ class ReleaseResourceLockFailed < StandardError; end
+ class CannotLockALockingResource < StandardError; end
+ class ExclusiveLocking < StandardError; end
+ class ShareLocking < StandardError; end
 end

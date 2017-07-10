@@ -4,6 +4,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
   #concerns
   include TimePatch
   include InitUid
+  include SwtkLockPatch
 
   belongs_to :checkpoint_system, foreign_key: "checkpoint_system_rid", class_name: "CheckpointSystem"
   

@@ -8,6 +8,7 @@ class JobList < ActiveRecord::Base
   before_create :init_uid
 
   belongs_to :task_list, foreign_key: "task_uid"
+  has_many :swtk_locks, foreign_key: "job_uid"
 
   private
 
