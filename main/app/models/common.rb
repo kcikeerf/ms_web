@@ -32,6 +32,37 @@ module Common
     Rails.logger
   end
 
+  def template_tk_job_execution_in_controller(status=nil, result=nil, &block)
+    if status.nil? && result.nil?
+      result = {}
+      begin
+        tkc = yield
+        tkc_flag, tkc_data = tkc.execute
+        if tkc_flag
+          status = 200
+          result = tkc_data
+        else
+          status = 500
+          logger.info ">>>JOB Failed<<<"
+          logger.debug tkc_data
+          result = {
+            :message => "failed!"
+          }
+        end
+      rescue Exception => ex
+        status = 500
+        result = {
+          :message => "unkown error occurred!"
+        }
+        logger.debug ">>>Exception!<<<"
+        logger.debug ex.message
+        logger.debug ex.backtrace
+      end
+    end
+
+    {:status => status, :json => result.to_json }
+  end
+
   def method_template_with_rescue(from_where, &block)
     logger.info(">>>>>>#{from_where}: begin<<<<<<<")
     begin

@@ -41,48 +41,21 @@ class ReportsController < ApplicationController
   # end
 
   def generate_reports
-    Common::method_template_log_only(__method__.to_s()) {
-      params.permit!
-
-      result = {:task_uid => ""}
-
-      begin
-        if [Common::Paper::Status::ScoreImported].include?( @paper.paper_status )
-          test_id = @paper.bank_tests[0].id.to_s
-          tkc = TkJobConnector.new({
-            :version => "v1.2",
-            :api_name => "reports_generate_xy_reports",
-            :http_method => "post",
-            :params => {
-              :test_id => test_id,
-              :user_id => current_user.id
-            }
-          })
-          tkc_flag, tkc_data = tkc.execute
-          if tkc_flag
-            @paper.update(paper_status: Common::Paper::Status::ReportGenerating)
-            status = 200
-            result = {
-              :message => "success!"
-            }
-          else
-            status = 500
-            result = {
-              :message => "failed!"
-            }
-          end
-        else
-          status = 403
-          result[:message] = "not suitable operation!"
-        end
-      rescue Exception => ex
-        status = 500
-        result[:message] = "unkown error occurred!"
-        logger.debug ">>>Exception!<<<"
-        logger.debug ex.message
-        logger.debug ex.backtrace
-      end
-      render common_json_response(status, result)  
+    params.permit!
+    if ![Common::Paper::Status::ScoreImported].include?( @paper.paper_status )
+      status = 403
+      result[:message] = "not suitable operation!"
+    end
+    render Common::template_tk_job_execution_in_controller(status=nil, result=nil) {
+      TkJobConnector.new({
+        :version => "v1.2",
+        :api_name => "reports_generate_xy_reports",
+        :http_method => "post",
+        :params => {
+          :test_id => @paper.bank_tests[0].id.to_s,
+          :user_id => current_user.id
+        }
+      })
     }
   end
 
