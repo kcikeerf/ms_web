@@ -389,7 +389,8 @@ class PapersController < ApplicationController
     if request.post?
       raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
       params[:test_id] = @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
-      score_file = Common::Score.upload_filled_result(params)    
+      score_file = Common::Score.upload_filled_result(params)
+      status, result = nil, nil
       if score_file.blank?
         status = 500
         result = {

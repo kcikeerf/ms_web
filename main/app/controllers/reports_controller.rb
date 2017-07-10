@@ -42,6 +42,7 @@ class ReportsController < ApplicationController
 
   def generate_reports
     params.permit!
+    status, result = nil, nil
     if ![Common::Paper::Status::ScoreImported].include?( @paper.paper_status )
       status = 403
       result[:message] = "not suitable operation!"
