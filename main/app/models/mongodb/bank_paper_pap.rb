@@ -1832,29 +1832,32 @@ class Mongodb::BankPaperPap
       else
         score_upload =  ""
       end 
+
       if self.orig_file_id
         file_upload = FileUpload.where(id: self.orig_file_id).first 
       else
         file_upload = ""
       end
+
       score_path = ""
       file_path = ""
-      unless score_upload.blank?
+      if score_upload.present?
         if score_upload.filled_file.current_path.present?
-
           score_path = score_upload.filled_file.current_path.split("/")[0..-2].join("/")
           FileUtils.rm_rf(score_path)
         end
         score_upload.delete
       end
-      unless file_upload.blank?
-        file_path = file_upload.paper.current_path.split("/")[0..-2].join("/")
+
+      if file_upload.present?
+        file_path = file_upload.paper_structure.current_path.split("/")[0..-2].join("/")
         FileUtils.rm_rf(file_path)
         file_upload.delete
       end
       self.delete
     rescue Exception => e
       p e.message
+      p e.backtrace
       raise SwtkErrors::DeletePaperError.new(I18n.t("papers.messages.delete_paper.debug", :message => e.message))
     end
   end
@@ -1999,7 +2002,8 @@ class Mongodb::BankPaperPap
         qizpoints.each do |qiz|
           qiz_obj = {
               id: qiz._id.to_s,
-              order: qiz.order
+              order: qiz.order,
+              full_score: qiz.score
             }
           object_arr << qiz_obj
         end
