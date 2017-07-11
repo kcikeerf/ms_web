@@ -33,17 +33,17 @@ module Common
     Rails.logger
   end
 
-  def template_tk_job_execution_in_controller(status=nil, result=nil, &block)
-    if status.nil? && result.nil?
+  def template_tk_job_execution_in_controller(status_code=nil, result=nil, &block)
+    if status_code.nil? && result.nil?
       result = {}
       begin
         tkc = yield
         tkc_flag, tkc_data = tkc.execute
         if tkc_flag
-          status = 200
+          status_code = 200
           result = tkc_data
         else
-          status = 500
+          status_code = 500
           logger.info ">>>JOB Failed<<<"
           logger.debug tkc_data
           result = {
@@ -51,7 +51,7 @@ module Common
           }
         end
       rescue Exception => ex
-        status = 500
+        status_code = 500
         result = {
           :message => "unkown error occurred!"
         }
@@ -60,8 +60,7 @@ module Common
         logger.debug ex.backtrace
       end
     end
-
-    {:status => status, :json => result.to_json }
+    return status_code, result
   end
 
   def method_template_with_rescue(from_where, &block)

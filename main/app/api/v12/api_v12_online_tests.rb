@@ -87,32 +87,50 @@ module ApiV12OnlineTests
       end
       post :zh_result do
 
-        tkc = TkJobConnector.new({
-          :version => "v1.2",
-          :api_name => "online_tests_zh_submit_result_generate_reports",
-          :http_method => "post",
-          :params => {
-            :test_id => params[:test_id],
-            :user_id => current_user.id,
-            :result => params[:result],
-            :user_model => "WxUser",
-            :wx_openid => params[:wx_openid],
-            :wx_unionid => params[:wx_unionid]
-          }
-        })
-        tkc_flag, tkc_data = tkc.execute
-        if tkc_flag
-          status = 200
-          result = {
-            :message => "success!!!!!!!"
-          }
-        else
-          status = 500
-          result = {
-            :message => tkc_data#I18n.t("scores.messages.error.upload_failed")
-          }
-        end
-        
+        # tkc = TkJobConnector.new({
+        #   :version => "v1.2",
+        #   :api_name => "online_tests_zh_submit_result_generate_reports",
+        #   :http_method => "post",
+        #   :params => {
+        #     :test_id => params[:test_id],
+        #     :user_id => current_user.id,
+        #     :result => params[:result],
+        #     :user_model => "WxUser",
+        #     :wx_openid => params[:wx_openid],
+        #     :wx_unionid => params[:wx_unionid]
+        #   }
+        # })
+        # tkc_flag, tkc_data = tkc.execute
+        # if tkc_flag
+        #   status = 200
+        #   result = {
+        #     :message => "success!!!!!!!"
+        #   }
+        # else
+        #   status = 500
+        #   result = {
+        #     :message => tkc_data#I18n.t("scores.messages.error.upload_failed")
+        #   }
+        # end
+
+
+        status_code, result = Common::template_tk_job_execution_in_controller {
+          TkJobConnector.new({
+            :version => "v1.2",
+            :api_name => "online_tests_zh_submit_result_generate_reports",
+            :http_method => "post",
+            :params => {
+              :test_id => params[:test_id],
+              :user_id => current_user.id,
+              :result => params[:result],
+              :user_model => "WxUser",
+              :wx_openid => params[:wx_openid],
+              :wx_unionid => params[:wx_unionid]
+            }
+          })
+        }
+        status status_code
+        result
       end
 
     end # resource online test

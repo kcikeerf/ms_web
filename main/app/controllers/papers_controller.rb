@@ -397,7 +397,7 @@ class PapersController < ApplicationController
           :message => I18n.t("scores.messages.error.upload_failed")
         }
       end
-      render Common::template_tk_job_execution_in_controller(status, result) {
+      status_code, result = Common::template_tk_job_execution_in_controller(status, result) {
         TkJobConnector.new({
           :version => "v1.2",
           :api_name => "tests_import_xy_results",
@@ -409,6 +409,7 @@ class PapersController < ApplicationController
           }
         })
       }
+      render common_json_response(status_code, result)
     else
       render layout: false
     end    
