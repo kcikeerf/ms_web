@@ -6,7 +6,7 @@ require 'axlsx'
 
 namespace :swtk do
   namespace :report do
-  	namespace :v1_2 do
+  	#namespace :v1_2 do
 
       desc "输出区域报告用数据表"
       task :export_test_overall_report_data_table,[] => :environment do |t, args|
@@ -387,6 +387,94 @@ namespace :swtk do
        
       end # export_test_area_report_tenants_basic, end
 
+      desc "输出报告的整体的各题得分率"
+      task :export_test_overall_quiz_table,[] => :environment do |t, args|
+        ReportWarehousePath = "/reports_warehouse/tests/"
+        _test_ids = args.extras
+
+        out_excel = Axlsx::Package.new
+        wb = out_excel.workbook
+
+        _test_ids.each{|_id|
+          target_test =Mongodb::BankTest.where(id: _id).first
+          target_paper =  target_test.bank_paper_pap
+          ordered_qzps = target_paper.ordered_qzps
+          wb.add_worksheet name: target_paper.id.to_s do |sheet|
+            title_row = [
+              "No",
+              "Order",
+              "Average Percent(Difficulty)"
+            ]
+            sheet.add_row title_row
+            if target_test.report_top_group == "project"
+              fdata = File.open(ReportWarehousePath + _id + "/project/" + _id + ".json", 'rb').read
+            else
+              target_tenant = target_test.tenants.first
+              fdata = File.open(ReportWarehousePath + _id + "/grade/" + target_tenant.uid + ".json", 'rb').read
+            end
+            target_report_data =JSON.parse(fdata)
+
+            qzps_data = target_report_data["paper_qzps"]
+            ordered_qzps.each_with_index{|qzp, index|
+              data_row = [
+	             index,
+                qzp.order,
+                qzps_data[index]["value"]["weights_score_average_percent"]
+              ]
+              sheet.add_row(data_row)  
+            }
+          end
+        }      
+        file_path = Rails.root.to_s + "/tmp/" + Time.now.to_i.to_s + ".xlsx"
+        out_excel.serialize(file_path)        
+        puts "Output: " + file_path         
+      end
+
+      desc "组装报告数量json"
+      task :construct_all_reports_stat_json,[] => :environment do |t, args|
+        ReportWarehousePath = "/reports_warehouse/tests/"
+        redis_key_prefix = "/" + Time.now.to_i.to_s
+        _test_ids = args.extras
+        _test_ids.each{|_id|
+          target_test =Mongodb::BankTest.where(id: _id).first
+          nav_arr = Dir[ReportWarehousePath + _id + "/**/**/nav.json"]
+          nav_arr.each{|nav_path|
+            target_nav_h = get_report_hash(nav_path)
+            target_nav_count = target_nav_h.values[0].size
+            target_path = nav_path.split("/nav.json")[0]
+            target_path_arr = target_path.split("/")
+            current_group = (Common::Report::Group::ListArr&target_path_arr)[-1]
+            sub_group = (Common::Report::Group::ListArr - target_path_arr)[-1]
+            next unless sub_group
+            while target_path_arr.include?(target_test.report_top_group)
+              target_key = redis_key_prefix + "/" + target_path_arr.join("/")
+              reset_redis_value(target_key, sub_group, target_nav_count)
+              target_path_arr.pop(2)
+            end
+          }
+        }
+        rpt_stat_redis_keys = Common::SwtkRedis::find_keys($cache_redis, redis_key_prefix + "/*")
+        rpt_stat_redis_keys.each{|key|
+          target_path = key + "/report_stat.json"
+          p target_path
+          File.write(target_path.split(redis_key_prefix)[1], $cache_redis.get(key))
+          $cache_redis.del(key)
+        }             
+      end
+
+      def reset_redis_value redis_key, sub_group, target_nav_count
+        target_value = $cache_redis.get(redis_key)
+        if target_value.blank?
+          result = {}
+          result[sub_group] = target_nav_count
+        else
+          result = JSON.parse(target_value)
+          result[sub_group] = 0 unless result[sub_group]
+          result[sub_group] += target_nav_count
+        end
+        $cache_redis.set(redis_key, result.to_json)
+      end      
+
       # 获取报告数据HASH
       def get_report_hash file_path
         fdata = File.open(file_path, 'rb').read
@@ -423,7 +511,6 @@ namespace :swtk do
         }
         return urls
       end
-
-    end
+    #end
   end
 end
