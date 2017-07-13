@@ -1062,7 +1062,8 @@ $(function(){
             cloneNode.find(".selectVal span").text("请选择");
             cloneNode.find(".optionList li").removeClass("active");
             cloneNode.find("textarea").val("");
-            // cloneNode.find("input").val("0");
+            cloneNode.find(".scorePart input").val("0");
+            cloneNode.find(".customScoreOrder input").val("");
             cloneNode.find(".is_subjective .textCheckbox").removeClass("active");
             cloneNode.find(".scoreAnswerText").attr("id", qzp_ckeditor_id);
             $(".analyze").append(cloneNode);
