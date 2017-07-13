@@ -350,11 +350,26 @@ class User < ActiveRecord::Base
   #当前用户绑定的用户列表
   def binded_users_list
     children.map {|u|
+      target_token = Doorkeeper::AccessToken.find_or_create_for(
+          nil, #client
+          u.id, #resource_owner_id
+          "", #scopes
+          7200, #expired in
+          true # use refresh token?
+      )      
       {
         :id => u.id,
         :user_name => u.name,
         :name => u.role_obj.nil? ? "-" : u.role_obj.name,
-        :role => u.role.name
+        :role => u.role.name,
+        :oauth => {
+          :access_token => target_token.token,
+          :token_type => "bear",
+          :expires_in => target_token.expires_in,
+          :refresh_token => target_token.refresh_token,
+          :scope => "",
+          :created_at => target_token.created_at.to_i
+        }        
       }
     }
   end
