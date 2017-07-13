@@ -222,30 +222,29 @@ class PapersController < ApplicationController
     type = params[:type]
     return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file empty_result filled_file usr_pwd_file}.include?(type)
    
-    #修正试卷，修正答案需要进一步处理
-    # 
-    if %w{revise_paper revise_answer}.include?(type)
-      head_html =<<-EOF
-        <h2>#{@paper.heading}</h2>
-        <h3>#{@paper.subheading}</h3>
+    # #修正试卷，修正答案需要进一步处理
+    # # 
+    # if %w{revise_paper revise_answer}.include?(type)
+    #   head_html =<<-EOF
+    #     <h2>#{@paper.heading}</h2>
+    #     <h3>#{@paper.subheading}</h3>
        
-        <p style="text-align:center">
-          <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
-        </p>      
-      EOF
-      file = ScoreUpload.find(@paper.score_file_id)
-      case type
-      when "revise_paper"
-        if file.revise_paper.blank? || !File.exists?(file.revise_paper.current_path)
-          file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", type)
-        end
-      when "revise_answer"
-        if file.revise_answer.blank? || !File.exists?(file.revise_answer.current_path)
-          file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", type)
-        end
-      end
-    end
-    ###
+    #     <p style="text-align:center">
+    #       <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
+    #     </p>      
+    #   EOF
+    #   case type
+    #   when "revise_paper"
+    #     if file.revise_paper.blank? || !File.exists?(file.revise_paper.current_path)
+    #       file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", type)
+    #     end
+    #   when "revise_answer"
+    #     if file.revise_answer.blank? || !File.exists?(file.revise_answer.current_path)
+    #       file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", type)
+    #     end
+    #   end
+    # end
+    # ###
 
     #文件对象
     file = nil
@@ -257,6 +256,24 @@ class PapersController < ApplicationController
       end
     elsif %w{paper answer revise_paper revise_answer empty_result}.include?(type)
       file = FileUpload.find(@paper.orig_file_id)
+      head_html =<<-EOF
+        <h2>#{@paper.heading}</h2>
+        <h3>#{@paper.subheading}</h3>
+       
+        <p style="text-align:center">
+          <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
+        </p>      
+      EOF
+      case type
+      when "revise_paper"
+        if file.revise_paper.blank? || !File.exists?(file.revise_paper.current_path)
+          file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.paper_html, "#{@paper.id}_paper", type)
+        end
+      when "revise_answer"
+        if file.revise_answer.blank? || !File.exists?(file.revise_answer.current_path)
+          file = Common::PaperFile.generate_docx_by_html(file, head_html + @paper.answer_html, "#{@paper.id}_answer", type)
+        end
+      end      
     else
       # do nothing
     end
