@@ -232,6 +232,7 @@ class PapersController < ApplicationController
           <span>（考试时长：</span><span style="color:#0000ff">#{@paper.quiz_duration}分钟</span><span>    卷面分值：</span><span style="color:#0000ff">#{@paper.score}</span>)
         </p>      
       EOF
+      file = ScoreUpload.find(@paper.score_file_id)
       case type
       when "revise_paper"
         if file.revise_paper.blank? || !File.exists?(file.revise_paper.current_path)
