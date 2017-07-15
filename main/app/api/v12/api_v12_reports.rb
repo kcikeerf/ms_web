@@ -242,7 +242,7 @@ module ApiV12Reports
         accessable_loc_uids = current_user.accessable_locations.map(&:uid)
   
         nav_h = {}
-        nav_path = Common::Report::WareHouse::ReportLocation  + "reports_warehouse/tests/" + params[:test_id]+ '/.*grade/' + params[:tenant_uid] + '/nav.json$'
+        nav_path = Common::Report::WareHouse::ReportLocation  + "reports_warehouse/tests/" + params[:test_id]+ '/.*grade/' + params[:tenant_uid] + '/nav.json(\\?ext_data_path=[0-9A-Za-z_]{1,})?$'
         re = Regexp.new nav_path
         nav = Mongodb::TestReportUrl.where(test_id: params[:test_id], report_url: re).first
         nav_data = File.open(nav.report_url, 'rb').read if nav
