@@ -85,7 +85,7 @@ module ApiV12Reports
         target_papers.uniq!
 
         unless target_papers.blank?
-          _rpt_type, rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
+          _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
 
           target_papers.map{|target_pap|
             next unless target_pap
