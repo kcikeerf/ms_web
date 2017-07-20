@@ -91,9 +91,10 @@ module ReportsHelper
       _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
     elsif target_user.is_project_administrator? || target_user.is_area_administrator?
       _rpt_type = Common::Report::Group::Project
-      _rpt_id = nil
+      _rpt_id = _test_id
     else
-      # do nothing
+      _rpt_type = Common::Report::Group::Project
+      _rpt_id = _test_id
     end
     _report_url = Common::Report::get_test_report_url(_test_id, _rpt_type, _rpt_id)
 
