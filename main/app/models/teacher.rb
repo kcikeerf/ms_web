@@ -11,7 +11,7 @@ class Teacher < ActiveRecord::Base
 
   # has_many :classrooms, foreign_key: 'tea_id'
   scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) }
-  scope :by_keyword, ->(keyword) { where( "name LIKE '%#{keyword}%'" ) if keyword.present? }
+  scope :by_keyword, ->(keyword) { where( "teachers.name LIKE '%#{keyword}%'" ) if keyword.present? }
   
   accepts_nested_attributes_for :class_teacher_mappings
   

@@ -1,0 +1,48 @@
+<h1 class="panel-heading clearfix">
+  <div class="col-lg-4 input-group pull-right">
+      <%= text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: '请输入学生名字搜索' %>
+      <span class="input-group-btn" id='keyword_filter'>
+          <button class="btn btn-default" type="button"><i class="fa fa-search search"></i></button>
+      </span>
+  </div>
+    我的学生
+  </h1>
+  <div class="panel-body">
+    <form action="" id="data_filter" class="form-inline">
+      <div class="form-group">
+        <%= select_tag :grade, options_for_select(@grades, params[:grade]), include_blank: '全部年级', class: 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= select_tag :classroom, options_for_select(@classrooms, params[:classroom]), include_blank: '全部班级', class: 'form-control' %>
+      </div>              
+    </form>
+    <table id="testtable" class="table table-bordered table-hover">
+      <thead>
+        <tr>
+            <th>学生姓名</th>
+            <th>学号</th>
+            <th>年级</th>
+            <th>班级</th>
+            <th>QQ号</th>
+            <th>手机号</th>
+            <!--th>个人报告</th-->
+        </tr>
+		  </thead>
+  		<tbody>
+        <% @pupils.each do |pupil| %>
+          <tr>
+          	<td><%= pupil.name%></td>
+          	<td><%= pupil.stu_number%></td>
+          	<td><%= LABEL("dict.#{pupil.grade}")%></td>
+          	<td><%= Common::Klass::klass_label pupil.classroom %></td>
+          	<td><%= current_user.qq %></td>
+          	<td><%= current_user.phone %></td>
+          	<!--td>个人报告</td-->
+          </tr>
+        <% end %>
+  		</tbody>
+    </table>
+  <nav class="text-center">
+	  <%= paginate @pupils %>
+  </nav>
+</div>

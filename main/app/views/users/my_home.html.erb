@@ -1,0 +1,16 @@
+<% content_for :work_field do %>
+	<div class="tab-content">
+		<div role="tabpanel" class="tab-pane active" id="home">
+			<div class="panel">
+				<!-- 个人信息 -->					
+				<%= render 'shared/user/info' %>
+
+				<!-- 我的试卷 -->
+				<% if current_user.is_analyzer? %>	
+					<%= render 'paper' %>
+				<%end%>
+			</div>
+		</div>
+	</div> 
+<% end %>
+

@@ -19,7 +19,7 @@ class Analyzer < ActiveRecord::Base
           foreign_key: "ana_uid"
 
   scope :by_tenant, ->(t_uid) { where( tenant_uid: t_uid) if t_uid.present? }
-  scope :by_keyword, ->(keyword) { where( "name LIKE '%#{keyword}%'" ) if keyword.present? }
+  scope :by_keyword, ->(keyword) { where( "analyzers.name LIKE '%#{keyword}%'" ) if keyword.present? }
 
   # class method definition begin
   class << self

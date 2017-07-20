@@ -1,0 +1,43 @@
+<h1 class="panel-heading clearfix">
+  <div class="col-lg-4 input-group pull-right">
+	  <input type="text" class="form-control" placeholder="请输入关键字进行搜索">
+	  <span class="input-group-btn">
+		<button class="btn btn-default" type="button"><i class="fa fa-search search"></i></button>
+	  </span>
+  </div>
+  我的报告
+</h1>
+<div class="panel-body">
+  <table id="logtable" class="table table-bordered table-hover">
+	  <thead>
+	  <tr>
+		  <th class="title">试卷</th>
+		  <th class="title">学科</th>
+		  <th class="updated">发布时间</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+      <% @papers.each do |paper| %>
+      <tr>
+			  <td class="text-left">
+					<% if ["report_completed"].include?(paper.paper_status) %>
+						<% if !paper.bank_tests[0] || paper.bank_tests[0].report_version.blank? %>					
+							<%= link_to paper.heading, new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
+						<% else %>
+							<%= link_to paper.heading, square_v1_1_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>
+						<% end %>
+					<% else %>
+					<%= paper.heading%>（<%=(LABEL("papers.status.#{paper.paper_status}"))%>）
+					<% end %>
+			  </td>
+		  	<td><%= LABEL("dict.#{paper.subject}") %></td>
+			  <td><%= paper.dt_update %></td>
+       </tr>
+      <% end %>
+	  </tbody>
+  </table>
+
+  <nav class="text-center">
+	  <%= paginate @papers %>
+  </nav>
+</div>
