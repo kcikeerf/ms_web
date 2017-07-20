@@ -97,7 +97,11 @@ module ReportsHelper
       loc_uid = current_user.pupil.location.nil?? "" : current_user.pupil.location.uid
       pup_uid = current_user.pupil.nil?? "" : current_user.pupil.uid
       result[:root_group] = "pupil"
-      result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
+      if target_test.report_top_group == "project"
+        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
+      else
+        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
+      end
     end
     result[:paper_info_url] = "/reports_warehouse/tests/" + test_id + "/paper_info.json"
     return result
