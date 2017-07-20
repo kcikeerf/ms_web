@@ -35,6 +35,8 @@ module TestModule
   end
 
   module OnrineTest
+    module_function
+
     module Status
       None = "none"
       Created = "created"
@@ -49,6 +51,12 @@ module TestModule
       List = ["individual", "total"]
       Individual = "individual"
       Total = "total"
+    end
+
+    def update_user_online_test_status _test_id, _user_id, _status
+      item = Mongodb::BankTestUserLink.where(bank_test_id: _test_id, user_id: _user_id).first
+      return false unless item
+      item.update(test_status: _status)
     end
   end
 end
