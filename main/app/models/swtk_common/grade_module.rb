@@ -34,6 +34,12 @@ module GradeModule
     }
 
     module XueDuan
+      Order = {
+        :xiao_xue => "1",
+        :chu_zhong => "2",
+        :gao_zhong => "3",
+      }
+
       List = {
         :xiao_xue => Common::Locale::i18n("checkpoints.subject.category.xiao_xue"),
         :chu_zhong => Common::Locale::i18n("checkpoints.subject.category.chu_zhong"),

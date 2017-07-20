@@ -16,6 +16,12 @@ module CheckpointCkpModule
       }
     }.call
 
+    Order = {
+      :knowledge => '1',
+      :skill => '2',
+      :ability => '3'
+    }
+
     LevelArr = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10,100]]
 
     ReservedCkpRid = {
