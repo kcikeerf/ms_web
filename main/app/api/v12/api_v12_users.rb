@@ -43,8 +43,8 @@ module ApiV12Users
 
       desc '绑定子用户账号信息'
       params do
-        optional :user_name, type: String
-        optional :password, type: String
+        requires :user_name, type: String
+        requires :password, type: String
       end
       post :bind do
         if current_user
@@ -61,15 +61,24 @@ module ApiV12Users
 
       desc '解绑子用户账号信息'
       params do
-        optional :user_name, type: String
+        requires :user_names, type: Array
       end
       post :unbind do
         if current_user
-          flag,code = current_user.users_unbind params
-          if flag
-            message_json(code)
+          return_code = true
+          message_list = []
+          users_list = params[:user_names]
+          users_list.each do |u_name|
+            flag,code = current_user.users_unbind u_name
+            message = {user_name: u_name, code: code, message: I18n.t("api.#{code}", variable: u_name) }
+            message_list << message
+            return_code = return_code&&flag
+          end
+
+          if return_code
+            message_list
           else
-            error!(message_json(code), 500)
+            error!(message_list, 500) 
           end
         end
       end  

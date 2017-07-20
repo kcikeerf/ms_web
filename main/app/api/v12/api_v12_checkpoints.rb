@@ -20,12 +20,12 @@ module ApiV12Checkpoints
       
       desc '随机获取相关指标的单题' # grade_class_list begin
       params do
-        requires :checkpoint_uid, type: String
-        optional :quiz_amount, type: Integer, allow_blank: true
+        requires :ckp_uid, type: String
+        optional :amount, type: Integer, allow_blank: true
       end
 
       post :get_related_quizs do
-        checkpoint = BankSubjectCheckpointCkp.where(uid: params[:checkpoint_uid]).first
+        checkpoint = BankSubjectCheckpointCkp.where(uid: params[:ckp_uid]).first
         if checkpoint
           checkpoint.get_related_quizs params
         else

@@ -407,8 +407,8 @@ class User < ActiveRecord::Base
   end
 
   #从主账号中解绑子账号
-  def users_unbind params
-    unbind_user = self.children.where(name: params[:user_name]).first
+  def users_unbind user_name
+    unbind_user = self.children.where(name: user_name).first
     flag = false
     if unbind_user
       self.children.delete(unbind_user)
