@@ -199,6 +199,20 @@ Rails.application.routes.draw do
     post 'users/passwords/user_captcha_validate'
   end
 
+  resources :users do
+    collection do
+      get 'my_home'
+      get 'my_analyzer'
+      get 'my_teacher'
+      get 'my_paper'
+      get 'my_report'
+      get 'my_pupil'
+      get 'region'
+      get 'test_report'
+    end 
+  end
+
+
   use_doorkeeper do
     # skip_controllers :authorizations, :applications,
     #   :authorized_applications

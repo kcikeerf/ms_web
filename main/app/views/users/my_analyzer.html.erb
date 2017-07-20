@@ -1,0 +1,48 @@
+<% content_for :work_field do %>
+        <div class="tab-content">
+            <div role="tabpanel" id="test">
+
+                <div class="panel">
+
+                      <!-- 我的分析员 -->
+                      <h1 class="panel-heading clearfix">
+                        <div class="col-lg-4 input-group pull-right">
+                            <%= text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: '请输入分析员姓名搜索' %>
+                            <span class="input-group-btn" id='keyword_filter'>
+                                <button class="btn btn-default" type="button"><i class="fa fa-search search"></i></button>
+                            </span>
+                        </div>
+                          <%= LABEL("page.user_left_menu.my_analyzer")%>
+                      </h1>
+                      <div class="panel-body">
+                            
+                            <table id="testtable" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><%=LABEL("activerecord.attributes.user.name")%></th>
+                                        <th><%=LABEL("activerecord.attributes.analyzer.name")%></th>
+                                        <th><%=LABEL("activerecord.attributes.analyzer.subject")%></th>
+                                        <th><%=LABEL("activerecord.attributes.user.email")%></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% @analyzers.each do |analyzer| %>
+                                    <tr>
+                                        <td><%= analyzer[:user_name] %></td>
+                                        <td><%= analyzer["name"] %></td>
+                                        <td><%= LABEL("dict.#{analyzer["subject"]}")%></td>
+                                        <td><%= analyzer[:email] %></td>
+                                    </tr>
+                                    <% end %>
+                                </tbody>
+                            </table>
+
+                          <nav class="text-center">
+                              <%= paginate @analyzers %>
+                          </nav>
+                      </div>
+
+                </div>
+            </div>
+        </div>
+<% end %>

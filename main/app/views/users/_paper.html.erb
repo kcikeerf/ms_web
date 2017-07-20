@@ -1,0 +1,20 @@
+<h3 class="panel-heading">我的试卷</h3>
+<div class="panel-body">
+	<p class="process"> 
+		<% 
+			position = 'right'
+			%w{new editting editted analyzing report_generating score_imported score_importing analyzed report_completed}.each do |name|										
+					position = 'left' if name == 'report_generating'
+		%>
+			<a class="btn btn-default" href="/analyzers/my_paper?paper_status=<%= name %>" role="button"><%= "#{t('papers.status.' + name)}(#{@papers_status_to_count[name] || 0})" %></a>
+
+			<% if ['analyzing', 'analyzed'].include?(name) %>
+				<br />
+				<span class="glyphicon glyphicon-arrow-down pull-<%= position %>"></span>
+				<br />
+			<% else %>
+				<%= raw "<span class='glyphicon glyphicon-arrow-#{position}'></span>" unless name == 'report_completed'%>
+			<% end %>
+		<% end %>								
+	</p>
+</div>

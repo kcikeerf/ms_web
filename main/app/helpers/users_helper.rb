@@ -10,18 +10,20 @@ module UsersHelper
   end
 
   def user_popup_menus
-    if current_user.is_pupil?
-      menus = {personal_center: my_home_pupils_path}
-    elsif current_user.is_teacher?
-      menus = {personal_center: my_home_teachers_path}
-    elsif current_user.is_analyzer?
-      menus = {personal_center: my_home_analyzers_path}
-    elsif current_user.is_tenant_administrator?
-      menus = {personal_center: my_home_tenant_administrators_path}
-    elsif current_user.is_project_administrator?
-      menus = {personal_center: my_home_project_administrators_path}
-    end
+    # if current_user.is_pupil?
+    #   menus = {personal_center: my_home_pupils_path}
+    # elsif current_user.is_teacher?
+    #   menus = {personal_center: my_home_teachers_path}
+    # elsif current_user.is_analyzer?
+    #   menus = {personal_center: my_home_analyzers_path}
+    # elsif current_user.is_tenant_administrator?
+    #   menus = {personal_center: my_home_tenant_administrators_path}
+    # elsif current_user.is_project_administrator?
+    #   menus = {personal_center: my_home_project_administrators_path}
+    # end
 #    menus[:account_setting] = url_for(action: 'setting', controller: 'accounts')
+    menus = {}
+    menus[:personal_center] = my_home_users_path
     menus[:edit_password] = edit_user_registration_path
     menus[:logout] = destroy_user_session_path
     return menus
@@ -30,34 +32,30 @@ module UsersHelper
   def left_panel_menus
     if current_user.is_pupil?
       menus = {
-        my_home: my_home_pupils_path,
-        my_report: my_report_pupils_path
+        my_report: my_report_users_path
       }
     elsif current_user.is_teacher?
       menus = {
-        my_home: my_home_teachers_path,
-        my_pupil: my_pupil_teachers_path,
-        test_report: test_report_teachers_path
+        my_pupil: my_pupil_users_path,
+        test_report: test_report_users_path
       }
     elsif current_user.is_analyzer?
       menus = {
-        my_home: my_home_analyzers_path,
-        my_paper: my_paper_analyzers_path,
+        my_paper: my_paper_users_path,
         #my_log: my_log_analyzers_path
       }
     elsif current_user.is_tenant_administrator?
       menus = {
-        my_home: my_home_tenant_administrators_path,
-        my_analyzer: my_analyzer_tenant_administrators_path, 
-        my_teacher: my_teacher_tenant_administrators_path, 
-        my_paper: my_paper_tenant_administrators_path
+        my_analyzer: my_analyzer_users_path, 
+        my_teacher: my_teacher_users_path, 
+        my_paper: my_paper_users_path
       }
     elsif current_user.is_project_administrator?
       menus = {
-        my_home: my_home_project_administrators_path,
-        my_paper: my_paper_project_administrators_path
+        my_paper: my_paper_users_path
       }
     end
+    menus[:my_home] = my_home_users_path
     return menus
   end
 
