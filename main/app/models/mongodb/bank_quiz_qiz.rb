@@ -158,6 +158,15 @@ class Mongodb::BankQuizQiz
     return true
   end
 
+
+  def quiz_base_info
+    result = {}
+    result[:id] = self._id.to_s
+    result[:text] = self.text
+    result[:answer] = self.answer
+    return result
+  end
+
   #
   # get quiz all details 
   #

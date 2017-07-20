@@ -25,6 +25,10 @@ class Mongodb::BankCkpQzp
     return true
   end
 
+  def bank_qizpoint_qzp
+    Mongodb::BankQizpointQzp.where(_id: self.qzp_uid).first
+  end
+
   def destroy_ckp_qzp
     begin
       self.destroy!

@@ -282,6 +282,7 @@ Rails.application.routes.draw do
   mount ApiV12Quizs::API => "/api/v1.2/"
   mount ApiV12Users::API => "/api/v1.2/"
   mount ApiV12Papers::API => "/api/v1.2/"
+  mount ApiV12Checkpoints::API => "/api/v1.2/"
 
   #######################################
 
