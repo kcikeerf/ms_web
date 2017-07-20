@@ -22,8 +22,6 @@ class Mongodb::BankQuizQiz
   has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
 
-  embeds_one :tk_lock, class_name: "Mongodb::TkLock"
-
   #field :uid, type: String
   field :subject, type: String
   field :node_uid, type: String

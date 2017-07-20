@@ -24,8 +24,6 @@ class Mongodb::BankPaperPap
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
 
-  embeds_one :tk_lock, class_name: "Mongodb::TkLock"
-
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
@@ -268,12 +266,7 @@ class Mongodb::BankPaperPap
     result = false
     begin
       # 锁定
-      if self.tk_lock
-        result = false
-        raise Common::Locale::i18n("papers.messages.warn.is_locked")
-      else
-        self.lock!(TkLockModule::TkLock::ReadOnly, current_user_id)
-      end
+      #
 
       params[:pap_uid] = id.to_s
       ##############################
@@ -426,8 +419,8 @@ class Mongodb::BankPaperPap
       self.errors.add(:base, ex.message)
       result = false
     ensure
-      #解锁
-      self.unlock! if result
+      # 解锁
+      #
       return result
     end
   end
@@ -1210,12 +1203,8 @@ class Mongodb::BankPaperPap
     self.status = Common::Paper::Status::None
     begin
       # 锁定
-      if self.tk_lock
-        result = false
-        raise Common::Locale::i18n("papers.messages.warn.is_locked")
-      else
-        self.lock!(TkLockModule::TkLock::ReadOnly, current_user_id)
-      end
+      #
+
       params[:pap_uid] = id.to_s
       ##############################
       #地理位置信息
