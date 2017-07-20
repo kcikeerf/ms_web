@@ -134,7 +134,22 @@ module UzerModule
       end
     end
 
-
+    def get_user_report_type_and_id_by_role _user
+      _rpt_type, _rpt_id = nil, nil
+      if _user.is_pupil?
+        _rpt_type = Common::Report::Group::Pupil
+        _rpt_id = _user.role_obj.uid
+      elsif _user.is_tenant_administrator? || _user.is_analyzer? || _user.is_teacher?
+        _rpt_type = Common::Report::Group::Grade
+        _rpt_id = _user.accessable_tenants.blank?? "" : _user.accessable_tenants.first.uid
+      elsif _user.is_project_administrator? || _user.is_area_administrator?
+        _rpt_type = Common::Report::Group::Project
+        _rpt_id = nil
+      else
+        # do nothing
+      end
+      return _rpt_type, _rpt_id
+    end
 
   end
 end

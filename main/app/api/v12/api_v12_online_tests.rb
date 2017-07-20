@@ -60,17 +60,32 @@ module ApiV12OnlineTests
         #requires :test_id, type: String, allow_blank: false
       end
       post :tested_list do
-        target_tests = Mongodb::BankTestUserLink.by_user(current_user.id).gte_times(1).map{|item| item.bank_test}
-        target_tests.map{|item|
+        target_user = current_user
+        target_user_tests = Mongodb::BankTestUserLink.by_user(target_user.id).gte_times(1).map{|item| item}
+        target_user_tests.map{|item|
+          target_test = item.bank_test
+          _test_id = target_test.id.to_s
+          if target_test.is_public
+            # 公开测试获取类型与id
+            _rpt_type = Common::Report::Group::Pupil
+            _rpt_id = target_user.tk_token
+          else
+            _rpt_type, rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
+          end
+
+          report_url = Common::Report::get_test_report_url(_test_id, _rpt_type, _rpt_id)
+
           {
-            :id => item.id.to_s,
-            :name => item.name,
-            :quiz_type => item.quiz_type,
-            :quiz_type_label => Common::Test::Type[item.quiz_type.to_sym],
-            :ext_data_path => item.ext_data_path,
-            :start_date => item.start_date,
-            :end_date => item.quiz_date,
-            :is_public => item.is_public
+            :id => _test_id,
+            :name => target_test.name,
+            :quiz_type => target_test.quiz_type,
+            :quiz_type_label => Common::Test::Type[target_test.quiz_type.to_sym],
+            :ext_data_path => target_test.ext_data_path,
+            :start_date => target_test.start_date,
+            :end_date => target_test.quiz_date,
+            :is_public => target_test.is_public,
+            :task_uid => item.task_uid,
+            :report_url => report_url
           }
         }
       end

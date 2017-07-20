@@ -7,7 +7,7 @@ module ReportModule
     module_function
 
     def get_test_report_url test_id, rpt_type, rpt_id
-      target_path = "/" + "reports_warehouse/tests/" + test_id+ '/.*' + rpt_type + '/' + rpt_id + '.json(\\?ext_data_path=.*){0,}'
+      target_path = WareHouse::ReportLocation + "tests/" + test_id+ '/.*' + rpt_type + '/' + rpt_id + '.json(\\?ext_data_path=.*){0,}'
       re = Regexp.new target_path
       target_url = Mongodb::TestReportUrl.where(test_id: test_id, report_url: re).first
       return target_url.blank?? "" : target_url.report_url
@@ -20,10 +20,12 @@ module ReportModule
     end
 
     module WareHouse
+      include SwtkConstantsModule
+
       module_function
 
       #ReportLocation = Rails.root.to_s + "/"
-      ReportLocation = "/"
+      ReportLocation = SwtkConstants::ReportsLocationPrefix
       # 报告保存格式
       # /reports/测试id／类型／租户uid／类型id
       #

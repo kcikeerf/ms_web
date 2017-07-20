@@ -17,6 +17,7 @@ class Mongodb::BankTestUserLink
   field :test_duration, type: Integer # 测试持续时间
   field :test_times, type: Integer, default: 0 # 测试次数
   field :test_status, type: String, default: nil 
+  field :task_uid, type: String
   
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime

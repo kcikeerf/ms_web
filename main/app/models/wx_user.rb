@@ -29,8 +29,8 @@ class WxUser < ActiveRecord::Base
       {
         :id => u.id,
         :user_name => u.name,
-        :name => u.role_obj.nil?? "-":u.role_obj.name,
-        :role => u.role.name,
+        :name => u.role_obj.blank? ? "-":u.role_obj.name,
+        :role => u.role.blank? ? "-":u.role.name,
         :oauth => {
           :access_token => target_token.token,
           :token_type => "bear",

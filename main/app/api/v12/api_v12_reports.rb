@@ -85,18 +85,7 @@ module ApiV12Reports
         target_papers.uniq!
 
         unless target_papers.blank?
-          if target_user.is_pupil?
-            _rpt_type = Common::Report::Group::Pupil
-            _rpt_id = target_user.role_obj.uid
-          elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
-            _rpt_type = Common::Report::Group::Grade
-            _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
-          elsif target_user.is_project_administrator? || target_user.is_area_administrator?
-            _rpt_type = Common::Report::Group::Project
-            _rpt_id = nil
-          else
-            # do nothing
-          end
+          _rpt_type, rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
 
           target_papers.map{|target_pap|
             next unless target_pap
@@ -154,22 +143,18 @@ module ApiV12Reports
         if target_user.is_area_administrator?
           target_tests = target_user.role_obj.area.bank_tests
         elsif target_user.is_tenant_administrator?
-          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten
-          _rpt_type = Common::Report::Group::Grade
-          _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid          
+          target_tests = target_user.accessable_tenants.map{|t| t.bank_tests}.flatten      
         elsif target_user.is_teacher?
           target_tests = target_user.accessable_locations.map{|l| l.bank_tests}.flatten
-          _rpt_type = Common::Report::Group::Grade
-          _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.last.uid
         elsif target_user.is_pupil?
           target_tests = target_user.bank_tests
-          _rpt_type = Common::Report::Group::Pupil
-          _rpt_id = target_user.role_obj.uid
         else
           target_tests = []
         end
         target_tests.compact!
         target_tests.uniq!
+
+        _rpt_type, rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
 
         target_tests.map{|t|
           test_id = t.id.to_s
