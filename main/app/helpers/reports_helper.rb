@@ -81,28 +81,46 @@ module ReportsHelper
       :paper_info_url => ""      
     }
     target_test = Mongodb::BankTest.where(id: test_id).first
-    if current_user.is_project_administrator?
-      result[:root_group] = "project"
-      result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/#{test_id}.json"
-    elsif current_user.is_tenant_administrator? || current_user.is_analyzer? || current_user.is_teacher?
-      tenant_uid = current_tenant.nil?? nil : current_tenant.uid
-      result[:root_group] = "grade"
-      if target_test.report_top_group == "project"
-        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + ".json"
-      else
-        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/grade/" + tenant_uid + ".json"
-      end
-    elsif current_user.is_pupil?
-      tenant_uid = current_tenant.nil?? "" : current_tenant.uid
-      loc_uid = current_user.pupil.location.nil?? "" : current_user.pupil.location.uid
-      pup_uid = current_user.pupil.nil?? "" : current_user.pupil.uid
-      result[:root_group] = "pupil"
-      if target_test.report_top_group == "project"
-        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
-      else
-        result[:root_url] = "/reports_warehouse/tests/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
-      end
+    _test_id = target_test.id.to_s
+    target_user = current_user
+    if target_user.is_pupil?
+      _rpt_type = Common::Report::Group::Pupil
+      _rpt_id = target_user.role_obj.uid
+    elsif target_user.is_tenant_administrator? || target_user.is_analyzer? || target_user.is_teacher?
+      _rpt_type = Common::Report::Group::Grade
+      _rpt_id = target_user.accessable_tenants.blank?? "" : target_user.accessable_tenants.first.uid
+    elsif target_user.is_project_administrator? || target_user.is_area_administrator?
+      _rpt_type = Common::Report::Group::Project
+      _rpt_id = nil
+    else
+      # do nothing
     end
+    _report_url = Common::Report::get_test_report_url(_test_id, _rpt_type, _rpt_id)
+
+    # if current_user.is_project_administrator?
+    #   result[:root_group] = "project"
+    #   result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/#{test_id}.json"
+    # elsif current_user.is_tenant_administrator? || current_user.is_analyzer? || current_user.is_teacher?
+    #   tenant_uid = current_tenant.nil?? nil : current_tenant.uid
+    #   result[:root_group] = "grade"
+    #   if target_test.report_top_group == "project"
+    #     result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + ".json"
+    #   else
+    #     result[:root_url] = "/reports_warehouse/tests/" + test_id + "/grade/" + tenant_uid + ".json"
+    #   end
+    # elsif current_user.is_pupil?
+    #   tenant_uid = current_tenant.nil?? "" : current_tenant.uid
+    #   loc_uid = current_user.pupil.location.nil?? "" : current_user.pupil.location.uid
+    #   pup_uid = current_user.pupil.nil?? "" : current_user.pupil.uid
+    #   result[:root_group] = "pupil"
+    #   if target_test.report_top_group == "project"
+    #     result[:root_url] = "/reports_warehouse/tests/" + test_id + "/project/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
+    #   else
+    #     result[:root_url] = "/reports_warehouse/tests/" + test_id + "/grade/" + tenant_uid + "/klass/" + loc_uid + "/pupil/" + pup_uid + ".json"
+    #   end
+    # end
+    result[:root_group] = _rpt_type
+    result[:root_url] = _report_url
     result[:paper_info_url] = "/reports_warehouse/tests/" + test_id + "/paper_info.json"
     return result
   end
