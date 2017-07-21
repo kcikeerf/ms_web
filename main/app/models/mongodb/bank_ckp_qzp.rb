@@ -17,6 +17,8 @@ class Mongodb::BankCkpQzp
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
 
+  index({ckp_uid: 1}, {background: true})
+  
   def save_ckp_qzp qzpUid=nil, ckpUid=nil, sourceType=nil
     self.ckp_uid = ckpUid.nil?? nil:ckpUid
     self.qzp_uid = qzpUid.nil?? nil:qzpUid
