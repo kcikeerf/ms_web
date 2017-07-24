@@ -13,6 +13,12 @@ class Area < ActiveRecord::Base
 
   ########类方法定义：begin#######
   class << self
+    #获取全部地区
+    def area_list
+      area = Area.where("`is_deleted` is false").select(:rid,:name_cn,:uid,:name)
+      area.map {|a| a.area_option }
+    end
+
     def get_area params
       name_pinyin = "zhong_guo"
       if params[:district]
@@ -55,6 +61,7 @@ class Area < ActiveRecord::Base
       areaUid = target_area.uid if target_area
       return areaUid,areaRid  
     end
+
   
     def default_option
       result = [{
@@ -65,6 +72,43 @@ class Area < ActiveRecord::Base
     end
   end
   ########类方法定义：end#######
+
+  def area_option
+    {
+      id: self.rid,
+      rid: self.rid[0..-(Common::SwtkConstants::CkpStep + 1)],
+      name_cn: self.name_cn,
+      uid: self.uid,
+      name: self.name
+    }
+  end
+
+  #修改地区名称
+  def update_area params
+    name_cn = params[:name_cn]
+    self.name_cn = name_cn
+    self.name = Common::Locale::hanzi2pinyin(name_cn)
+    self.save!
+    return self
+  end
+  
+  #新建子节点
+  def new_area params
+    rid = BankRid.get_new_bank_rid(Area,self.rid)
+    area = Area.new
+    name_cn = params[:name_cn]
+    area.name = Common::Locale::hanzi2pinyin(name_cn) 
+    area.name_cn = name_cn
+    area.rid = rid
+    area.area_type = Common::Area::Type::Type_hash[rid.length]
+    area.save!
+    return area
+  end
+
+  #删除该节点以及其子节点
+  def destroy_area 
+    Area.where("`rid` like '"+self.rid+"%'").update_all(is_deleted: true)
+  end
 
   def papers
     Mongodb::BankPaperPap.where(:area_uid => rid).to_a
