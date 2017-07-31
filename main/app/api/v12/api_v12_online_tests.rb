@@ -70,7 +70,7 @@ module ApiV12OnlineTests
             _rpt_type = Common::Report::Group::Pupil
             _rpt_id = target_user.tk_token
           else
-            _rpt_type, rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
+            _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
           end
 
           report_url = Common::Report::get_test_report_url(_test_id, _rpt_type, _rpt_id)
