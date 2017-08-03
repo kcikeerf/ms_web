@@ -17,7 +17,7 @@ class WxUser < ActiveRecord::Base
   end
 
   def binded_users_list
-    guest_user!
+    default_user!
     users.map{|u|
       target_token = Doorkeeper::AccessToken.find_or_create_for(
           nil, #client
@@ -43,9 +43,6 @@ class WxUser < ActiveRecord::Base
     }
   end
 
-
-
-
   def online_tests
     links = Mongodb::OnlineTestUserLink.by_wx_user(self.id)
     online_test_ids = links.map(&:online_test_id)
@@ -58,26 +55,31 @@ class WxUser < ActiveRecord::Base
   end
 
   # Guest用户
-  def guest_user
+  def default_user
     users.find{|u| u.is_guest? }
   end
 
   # 无Guest用户，则创建Guest用户
-  def guest_user!
-    return guest_user if self.guest_user
-
+  def default_user!
+    return default_user if self.default_user
     option_h = {
       :name => Common::Uzer::WxUserNamePrefix + self.wx_openid,
       :password => self.wx_openid,
-      :role_name => Common::Role::Guest
+      :role_name => Common::Role::Guest,
+      :is_customer => true,
+      :is_master => true
     }
     target_user = User.where(name: option_h[:name]).first
     unless target_user
       target_user = User.new(option_h)
       target_user.save!
     end
-    self.users << target_user
     self.save!
+    self.users << target_user
+  end
+
+  def update_wx_unionid params
+    update(wx_unionid: params[:wx_unionid]) if params[:wx_unionid]   
   end
 
   ########私有方法: begin#######
@@ -90,6 +92,15 @@ class WxUser < ActiveRecord::Base
     end
 
     def set_sex
-      self.sex = case self.sex when "0"; "wu" when "1"; "nan" when "2"; "n̈u" end
+      self.sex = case self.sex 
+      when "0" 
+        "wu" 
+      when "1"
+        "nan" 
+      when "2"
+        "nv"
+      else
+        self.sex
+      end
     end
 end

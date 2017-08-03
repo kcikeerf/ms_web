@@ -36,29 +36,29 @@ module ApiV12Helper
 
   # 获取登录的微信账户 
   def current_wx_user
+    conditions = []
     if params[:wx_openid]
-      option_h = {
-        :wx_openid => params[:wx_openid]
-      }
-    elsif params[:wx_unionid]
-      option_h = {
-        :wx_unionid => params[:wx_unionid]
-      }
+      conditions << "wx_openid = '#{params[:wx_openid]}'"
+    end
+    if params[:wx_unionid]
+      conditions << "wx_unionid = '#{params[:wx_unionid]}'"
     else
       # do nothing
     end
-
-    target_wx_user = WxUser.where(option_h).first
+    target_wx_user = WxUser.where(conditions.join(" or ")).first
     unless target_wx_user
       begin
-        params_h = option_h.merge({
-          :wx_unionid => params[:wx_unionid]
-        }) if !params[:wx_unionid].blank?
+        params_h = {
+          :wx_unionid => params[:wx_unionid],
+          :wx_openid => params[:wx_openid]
+        }
         target_wx_user = WxUser.new(option_h)
-        target_wx_user.guest_user!
+        target_wx_user.default_user!
       rescue Exception => ex
         error!(message_json("e41002"), 403) unless target_wx_user
       end
+    else
+      target_wx_user.update_wx_unionid(params) if params[:wx_unionid] && target_wx_user.wx_unionid.blank?
     end
     return target_wx_user
   end

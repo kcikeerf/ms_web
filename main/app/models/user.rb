@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   belongs_to :role
   has_one :image_upload
 
-  has_many :wx_user_mappings, foreign_key: "user_id"
+  has_many :wx_user_mappings, foreign_key: "user_id", dependent: :destroy
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
   has_many :oauth_access_tokens, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessToken", dependent: :destroy
@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   has_many :groups_as_child, :foreign_key => "parent_id", :class_name=>"UserLink"
   has_many :parents, :through=>:groups_as_parent
   has_many :children, :through=>:groups_as_child
+  scope :by_master, ->(val) { where(is_master: val) }
 
   before_create :set_role,:generate_token #, :check_existed?
 
@@ -349,77 +350,101 @@ class User < ActiveRecord::Base
 
   #当前用户绑定的用户列表
   def binded_users_list
-    children.map {|u|
-      target_token = Doorkeeper::AccessToken.find_or_create_for(
-          nil, #client
-          u.id, #resource_owner_id
-          "", #scopes
-          7200, #expired in
-          true # use refresh token?
-      )      
-      {
-        :id => u.id,
-        :user_name => u.name,
-        :name => u.role_obj.nil? ? "-" : u.role_obj.name,
-        :role => u.role.name,
-        :oauth => {
-          :access_token => target_token.token,
-          :token_type => "bear",
-          :expires_in => target_token.expires_in,
-          :refresh_token => target_token.refresh_token,
-          :scope => "",
-          :created_at => target_token.created_at.to_i
-        }        
-      }
+    user_list  = {}
+    user_list[:master] = self.get_user_base_info
+    user_list[:slave] = children.map {|u|
+      u.get_user_base_info
     }
+    return user_list
   end
-  #将其他账号绑定到该账号上
-  def users_bind params
-    flag = false
-    if self.parents.size < 1
-      bind_user = User.where(name: params[:user_name]).first
-      if bind_user && bind_user.valid_password?(params[:password])
-        #超过微信帐户绑定限制
-        if (self.children.count + 1) > Common::Uzer::UserBindingMaxLimit
-          code = "w21000"
-        elsif (bind_user.parents.count + 1) > Common::Uzer::UserBoundMaxLimit
-          code = "w21001"
-        else
-          if self.children.include?(bind_user)
-            flag = true
-            code = "i11002"
-          else
-            if self.children.push(bind_user)
-              flag = true
-              code = "i11000"
-            else
-              code = "e41003"
-            end
-          end
-        end
-      else
-        code = "e40004"
-      end
-    else
-      code = "e41004"
-    end
-    return flag, code
+
+  def get_user_base_info  
+    target_token = Doorkeeper::AccessToken.find_or_create_for(
+      nil, #client
+      self.id, #resource_owner_id
+      "", #scopes
+      7200, #expired in
+      true # use refresh token?
+    )      
+    {
+      :id => self.id,
+      :user_name => self.name,
+      :name => self.role_obj.nil? ? "-" : self.role_obj.name,
+      :role => self.role.name,
+      :oauth => {
+        :access_token => target_token.token,
+        :token_type => "bear",
+        :expires_in => target_token.expires_in,
+        :refresh_token => target_token.refresh_token,
+        :scope => "",
+        :created_at => target_token.created_at.to_i
+      }        
+    }
   end
 
   #从主账号中解绑子账号
   def users_unbind user_name
-    unbind_user = self.children.where(name: user_name).first
     flag = false
+    unbind_user = User.where(name: user_name).first
     if unbind_user
-      self.children.delete(unbind_user)
-      flag = true
-      code = "i11001"
+      if unbind_user == self
+        code = "e41005"
+      else
+        if self.children.include?(unbind_user)
+          self.children.delete(unbind_user)
+          code = "i11001"
+          flag = true
+        else
+          code = "w21002"
+        end
+      end
     else
-      code = "w21002"
+      code = "e40004"
     end
     return flag,code
   end
 
+  def slave_user _user
+    status = 500
+    if (self.children.count + 1) > Common::Uzer::UserBindingMaxLimit
+      code = "w21000"
+    elsif (_user.parents.count + 1) > Common::Uzer::UserBoundMaxLimit
+      code = "w21001"
+    else
+      if self.children.include?(_user)
+        code,status = "i11002", 200
+      else
+        if self.children.push(_user)
+          code,status = "i11000", 200
+        else
+          code = "e41003"
+        end
+      end
+    end
+    return code, status
+  end
+
+  def associate_master target_3rd_user, target_user
+    master_user = target_3rd_user.users.by_master(true).first
+    unless  master_user  
+      target_3rd_user.users << target_user unless target_3rd_user.users.include?(target_user)
+      code, status = "i11215",200
+    else
+      if master_user == target_user
+        code, status = "i11215",200
+      else
+        if ((target_user.children.map(&:id) + master_user.children.map(&:id)).uniq.size) > Common::Uzer::UserBindingMaxLimit
+          code, status = "w21005",500
+        else
+          target_user.children += master_user.children
+          target_3rd_user.users.delete(master_user)
+          target_3rd_user.users << target_user unless target_3rd_user.users.include?(target_user)
+          code, status = "i11215",200
+        end
+      end
+    end
+    return code, status
+  end
 
   # 是否已绑定微信
   def wx_binded?

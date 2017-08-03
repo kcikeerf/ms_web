@@ -136,23 +136,6 @@ module ApiV12WxUsers
         end
 
         ###########
-
-        desc '获取微信用户信息'
-        params do
-          optional :wx_openid, type: String
-          optional :wx_unionid, type: String
-          at_least_one_of :wx_openid, :wx_unionid
-        end
-        post :get_info do
-          begin
-            status 200
-            @target_wx_user.attributes
-          rescue Exception => ex
-            status 500
-          end
-        end
-
-        ###########
       end# 分组2: 所有有效token都可以访问, end
 
       # # 分组3: 公开访问

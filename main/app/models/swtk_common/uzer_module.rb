@@ -46,6 +46,8 @@ module UzerModule
       ]
     }
 
+    ThirdPartyList = ["wx", "qq", "sina"]
+
 
     def get_tenant user_id 
       tenant = nil
