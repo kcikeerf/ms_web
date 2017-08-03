@@ -30,32 +30,22 @@ module UsersHelper
   end
 
   def left_panel_menus
-    if current_user.is_pupil?
-      menus = {
-        my_report: my_report_users_path
-      }
-    elsif current_user.is_teacher?
-      menus = {
-        my_pupil: my_pupil_users_path,
-        test_report: test_report_users_path
-      }
-    elsif current_user.is_analyzer?
-      menus = {
-        my_paper: my_paper_users_path,
-        #my_log: my_log_analyzers_path
-      }
-    elsif current_user.is_tenant_administrator?
-      menus = {
-        my_analyzer: my_analyzer_users_path, 
-        my_teacher: my_teacher_users_path, 
-        my_paper: my_paper_users_path
-      }
-    elsif current_user.is_project_administrator?
-      menus = {
-        my_paper: my_paper_users_path
-      }
-    end
+    menus = {}
     menus[:my_home] = my_home_users_path
+    if current_user.is_pupil?
+      menus[:my_report] = my_report_users_path
+    elsif current_user.is_teacher?
+      menus[:my_pupil] = my_pupil_users_path
+      menus[:test_report] = test_report_users_path
+    elsif current_user.is_analyzer?
+      menus[:my_paper] = my_paper_users_path
+    elsif current_user.is_tenant_administrator?
+      menus[:my_analyzer] = my_analyzer_users_path
+      menus[:my_teacher] = my_teacher_users_path
+      menus[:my_paper] = my_paper_users_path
+    elsif current_user.is_project_administrator?
+      menus[:my_paper] = my_paper_users_path
+    end
     return menus
   end
 
