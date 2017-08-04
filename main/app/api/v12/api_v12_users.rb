@@ -47,7 +47,7 @@ module ApiV12Users
       params do
         optional :user_name, type: String
         optional :password, type: String
-        optional :third_part, type: String
+        optional :third_party, type: String
         given third_party: ->(val) { val == 'wx' } do 
           optional :wx_openid, type: String
           optional :wx_unionid, type: String
