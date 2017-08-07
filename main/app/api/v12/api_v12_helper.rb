@@ -34,6 +34,21 @@ module ApiV12Helper
     tenant
   end
 
+  def get_3rd_user
+    third_party = params[:third_party]
+    _3rd_user = nil
+    master_user = nil
+    _3rd_user = send("current_#{third_party}_user") if third_party && Common::Uzer::ThirdPartyList.include?(third_party)
+    if _3rd_user
+      master_user = _3rd_user.users.by_master(true).first 
+      unless  master_user
+        _3rd_user.default_user!
+        master_user = _3rd_user.users.by_master(true).first
+      end
+    end 
+    return _3rd_user, master_user
+  end
+
   # 获取登录的微信账户 
   def current_wx_user
     conditions = []

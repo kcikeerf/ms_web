@@ -21,10 +21,16 @@ module ApiV12Users
 
       desc "获取绑定的账号列表"
       params do
+        use :third
       end
       post :get_binded_users do
-        if current_user.is_master
-          current_user.binded_users_list
+        if doorkeeper_token.user.blank?
+          current_3rd_user, master_user = get_3rd_user
+        else
+          master_user = current_user
+        end
+        if master_user.is_master
+          master_user.binded_users_list
         else
           error!(message_json("w21004"),500)
         end
@@ -38,9 +44,9 @@ module ApiV12Users
           :id => u.id,
           :user_name => u.name,
           :name => u.role_obj.nil? ? "-" : u.role_obj.name,
-          :role => u.role.name,
-          :accessable_tenants => u.accessable_tenants.map {|t| { uid: t.uid, name_cn: t.name_cn}}
-        }
+          :role => u.role.nil? ? "默认" : u.role.name,
+          :accessable_tenants => u.accessable_tenants.map {|t| { uid: t.uid, name_cn: t.name_cn} if t}
+        } if u
       end 
 
       desc "完善账号信息"
@@ -62,9 +68,10 @@ module ApiV12Users
       end
       post :complete_info do
         user = current_user
-        if user.is_customer
+        if user && user.is_customer
           user.update(name: params[:user_name], password: params[:password], is_customer: false)  if params[:user_name] && params[:password]
         end
+        result = []
         if params[:third_party] == "wx"
           target_params = params.extract!(:nickname,:sex,:province,:city,:country, :headimgurl, :wx_unionid, :wx_openid).to_h
           current_wx_user.update_attributes(target_params)

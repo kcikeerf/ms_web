@@ -15,4 +15,13 @@ module ApiV12SharedParamsHelper
     optional :wx_unionid, type: String
     at_least_one_of :wx_openid, :wx_unionid
   end
+
+  params :third do
+    optional :third_party, type: String
+    given third_party: ->(val) { val == 'wx' } do 
+      optional :wx_openid, type: String
+      optional :wx_unionid, type: String
+      at_least_one_of :wx_openid, :wx_unionid
+    end
+  end
 end
