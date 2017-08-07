@@ -67,7 +67,7 @@ module ApiV12Helper
           :wx_unionid => params[:wx_unionid],
           :wx_openid => params[:wx_openid]
         }
-        target_wx_user = WxUser.new(option_h)
+        target_wx_user = WxUser.new(params_h)
         target_wx_user.default_user!
       rescue Exception => ex
         error!(message_json("e41002"), 403) unless target_wx_user
