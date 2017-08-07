@@ -1204,6 +1204,16 @@ class Mongodb::BankPaperPap
     begin
       # 锁定
       #
+      if self.swtk_lock
+        self.set_operator current_user_id, nil
+        if self.locked_by_current_operator?
+        else
+          self.acquire_exclusive_lock!
+        end
+      else
+        self.set_operator current_user_id, nil
+        self.acquire_exclusive_lock!
+      end
 
       params[:pap_uid] = id.to_s
       ##############################
@@ -1230,13 +1240,18 @@ class Mongodb::BankPaperPap
       end
       raise if self.test_associated_tenant_uids.blank?
       ##############################
+
+      # sleep 200
       phase_arr.each_with_index do |value,index|
         error_index = index
         params = send("save_pap_#{value}", params)
       end 
       result = self.errors.messages.empty?
-      self.unlock!
-    rescue Exception => ex
+      # self.unlock!
+      if self.locked_by_current_operator?
+        self.release_lock!
+      end
+      rescue Exception => ex
       arr = phase_arr[0..error_index].reverse
       arr.each_with_index do |value, index|
         send("save_pap_#{value}_rollback")
@@ -1432,8 +1447,9 @@ class Mongodb::BankPaperPap
     if params["information"]["tasks"].blank?
       self.bank_tests[0].destroy_all if self.bank_tests[0]
     end
-
-    self.unlock!
+    if self.locked_by_current_operator?
+      self.release_lock!
+    end
     #delete bank_paper_pap    
   end
 
