@@ -370,7 +370,7 @@ class User < ActiveRecord::Base
       :id => self.id,
       :user_name => self.name,
       :name => self.role_obj.nil? ? "-" : self.role_obj.name,
-      :role => self.role.name,
+      :role => self.role.nil? ? "默认" : self.role.name, 
       :oauth => {
         :access_token => target_token.token,
         :token_type => "bear",
