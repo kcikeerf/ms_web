@@ -241,6 +241,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  Common::Uzer::ThirdPartyList.each do |oauth2|
+    define_method("#{oauth2}_related?") do
+      self.send("#{oauth2}_related")
+    end
+  end
+
   def role_obj
     return analyzer if is_analyzer?
     return teacher if is_teacher?
@@ -424,9 +430,9 @@ class User < ActiveRecord::Base
     return code, status
   end
 
-  def associate_master target_3rd_user, target_user
+  def associate_master target_3rd_user, target_user, oauth2
     master_user = target_3rd_user.users.by_master(true).first
-    unless  master_user  
+    unless  master_user 
       target_3rd_user.users << target_user unless target_3rd_user.users.include?(target_user)
       code, status = "i11215",200
     else
@@ -438,6 +444,8 @@ class User < ActiveRecord::Base
         else
           target_user.children += master_user.children
           target_3rd_user.users.delete(master_user)
+          option_h = {"#{oauth2}_related" => true}
+          target_user.update(option_h)
           target_3rd_user.users << target_user unless target_3rd_user.users.include?(target_user)
           code, status = "i11215",200
         end

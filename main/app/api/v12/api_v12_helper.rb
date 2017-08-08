@@ -52,13 +52,11 @@ module ApiV12Helper
   # 获取登录的微信账户 
   def current_wx_user
     conditions = []
-    if params[:wx_openid]
-      conditions << "wx_openid = '#{params[:wx_openid]}'"
-    end
     if params[:wx_unionid]
       conditions << "wx_unionid = '#{params[:wx_unionid]}'"
-    else
-      # do nothing
+    end
+    if params[:wx_openid]
+      conditions << "wx_openid = '#{params[:wx_openid]}'"
     end
     target_wx_user = WxUser.where(conditions.join(" or ")).first
     unless target_wx_user
@@ -73,8 +71,15 @@ module ApiV12Helper
         error!(message_json("e41002"), 403) unless target_wx_user
       end
     else
-      target_wx_user.update_wx_unionid(params) if params[:wx_unionid] && target_wx_user.wx_unionid.blank?
+      target_wx_user.wx_unionid = params[:wx_unionid] if params[:wx_unionid] && target_wx_user.wx_unionid.blank?
     end
+    target_wx_user.nickname = params[:nickname] if params[:nickname]
+    target_wx_user.sex = params[:sex] if params[:sex]
+    target_wx_user.province = params[:province] if params[:province]
+    target_wx_user.city = params[:city] if params[:city]
+    target_wx_user.country = params[:country] if params[:country]
+    target_wx_user.headimgurl = params[:headimgurl] if params[:headimgurl]
+    target_wx_user
     return target_wx_user
   end
 

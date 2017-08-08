@@ -24,4 +24,26 @@ module ApiV12SharedParamsHelper
       at_least_one_of :wx_openid, :wx_unionid
     end
   end
+
+  params :base_info do
+    optional :nickname, type: String
+    optional :sex, type: Integer
+    optional :province, type: String
+    optional :city, type: String
+    optional :country, type: String
+    optional :headimgurl, type: String
+  end
+
+  params :wx_with_info do
+    optional :wx_openid, type: String
+    optional :wx_unionid, type: String    
+    optional :nickname, type: String
+    optional :sex, type: Integer
+    optional :province, type: String
+    optional :city, type: String
+    optional :country, type: String
+    optional :headimgurl, type: String
+    at_least_one_of :wx_openid, :wx_unionid
+  end
+
 end

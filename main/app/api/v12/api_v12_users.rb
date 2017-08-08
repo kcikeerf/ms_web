@@ -22,6 +22,7 @@ module ApiV12Users
       desc "获取绑定的账号列表"
       params do
         use :third
+        use :base_info
       end
       post :get_binded_users do
         if doorkeeper_token.user.blank?
@@ -80,7 +81,7 @@ module ApiV12Users
         result
       end
 
-      desc '绑定子用户账号信息'
+      desc '绑定子用户账号信息或关联主账号（三方）'
       params do
         optional :target_user_from
         given target_user_from: -> (val){ val == "zx"} do
@@ -88,9 +89,7 @@ module ApiV12Users
           requires :password
         end
         given target_user_from: -> (val){ val == "wx"} do
-          optional :wx_openid, type: String
-          optional :wx_unionid, type: String
-          at_least_one_of :wx_openid, :wx_unionid 
+          use :wx_with_info
         end        
 
         optional :current_platform
@@ -101,9 +100,7 @@ module ApiV12Users
           
         end        
         given current_platform: -> (val){ val == "wx"} do
-          optional :wx_openid, type: String
-          optional :wx_unionid, type: String
-          at_least_one_of :wx_openid, :wx_unionid 
+          use :wx_with_info
         end
         # given current_platform: -> (val){ val == "qq"} do
         #   optional :wx_openid, type: String
@@ -127,16 +124,23 @@ module ApiV12Users
  
         if _user.is_master
           if target_3rd_user
-            #当有target_user 为三方绑定一个主账号
-            if target_user && target_user.valid_password?(params[:password])
-              if target_user.is_master              
-                code, status = _user.associate_master(target_3rd_user, target_user)
-              else
-                code, status = "w21006", 500
-              end
-            #没有target_user 为从Pc端绑定三方的账号
+            
+            if _user.send("#{case_value}_related?") or target_user.send("#{case_value}_related?")
+              code, status = "w21007", 500
+              case_value_cn = I18n.t("oauth2.#{case_value}")
+              message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
             else
-              code, status = _user.associate_master(target_3rd_user, _user)
+              #当有target_user 为三方绑定一个主账号
+              if target_user && target_user.valid_password?(params[:password])
+                if target_user.is_master              
+                  code, status = _user.associate_master(target_3rd_user, target_user, case_value)
+                else
+                  code, status = "w21006", 500
+                end
+              #没有target_user 为从Pc端绑定三方的账号
+              else
+                code, status = _user.associate_master(target_3rd_user, _user, case_value)
+              end
             end
           else
             #没有第三方账号时默认为绑定身份账号
@@ -154,7 +158,8 @@ module ApiV12Users
         if [200,201].include?(status)
           message_json(code)
         else
-          error!(message_json(code), status)
+          error!(message_json(code), status) unless message
+          error!(message, status) if message
         end
       end
 

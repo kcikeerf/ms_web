@@ -15,6 +15,10 @@ zh:
     cancel: "取消"
     rollback: "回退"
     import_obj: "导入"
+  oauth2:
+    wx: "微信"
+    qq: "QQ"
+    sina: "新浪"
   areas:
     list:
       all: "全部"
