@@ -89,6 +89,27 @@ class WxUser < ActiveRecord::Base
     self.users << target_user
   end
 
+  def master
+    users.by_master(true).first 
+  end
+
+  # 必须执行过swtk_patch::v1_2::update_wx_user_is_master
+  #
+  def migrate_other_wx_user_binded_user _other_wx_user
+    master_user = nil
+    master_user = self.master if self.users
+    unless master_user
+      self.default_user!
+      master_user = self.master if self.users
+    end
+
+    _other_master_user = _other_wx_user.master
+    _target_users = _other_master_user.prensent? ? _other_master_user.children : _other_wx_user.users
+
+    master_user.children += _target_users
+    _other_master_user.destroy
+  end
+
   ########私有方法: begin#######
   private
     def set_area

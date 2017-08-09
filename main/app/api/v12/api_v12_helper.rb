@@ -51,14 +51,19 @@ module ApiV12Helper
 
   # 获取登录的微信账户 
   def current_wx_user
-    conditions = []
+    target_wx_user = nil
+    target_wx_user1, target_wx_user2 = nil, nil
     if params[:wx_unionid]
-      conditions << "wx_unionid = '#{params[:wx_unionid]}'"
+      target_wx_user1 = WxUser.where(wx_unionid: params[:wx_unionid]).first
     end
     if params[:wx_openid]
-      conditions << "wx_openid = '#{params[:wx_openid]}'"
+      target_wx_user2 = WxUser.where(wx_openid: params[:wx_openid]).first
     end
-    target_wx_user = WxUser.where(conditions.join(" or ")).first
+
+    target_wx_user = target_wx_user1 || target_wx_user2
+    if target_wx_user1 && target_wx_user2 &&  (target_wx_user1 != target_wx_user2)
+      target_wx_user.migrate_other_wx_user_binded_user(target_wx_user2)
+    end
     unless target_wx_user
       begin
         params_h = {
@@ -79,7 +84,7 @@ module ApiV12Helper
     target_wx_user.city = params[:city] if params[:city]
     target_wx_user.country = params[:country] if params[:country]
     target_wx_user.headimgurl = params[:headimgurl] if params[:headimgurl]
-    target_wx_user
+    target_wx_user.save!
     return target_wx_user
   end
 
