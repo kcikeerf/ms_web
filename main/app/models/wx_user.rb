@@ -104,7 +104,7 @@ class WxUser < ActiveRecord::Base
     end
 
     _other_master_user = _other_wx_user.master
-    _target_users = _other_master_user.prensent? ? _other_master_user.children : _other_wx_user.users
+    _target_users = _other_master_user.present? ? _other_master_user.children : _other_wx_user.users
 
     master_user.children += _target_users
     _other_master_user.destroy
