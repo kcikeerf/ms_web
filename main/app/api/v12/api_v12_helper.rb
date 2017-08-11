@@ -21,7 +21,7 @@ module ApiV12Helper
   end
 
   def not_user_token!
-    error!("invalid token",400) unless doorkeeper_token.user.blank?
+    error!(I18n.t("doorkeeper.errors.messages.invalid_token.unknown"),400) unless doorkeeper_token.user.blank?
   end
 
   def current_tenant
