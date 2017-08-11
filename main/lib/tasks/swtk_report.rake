@@ -265,6 +265,7 @@ namespace :swtk do
             target_tenant = nil
             Common::Report::Group::ListArr.each{|group|
               group_pos = path_arr.find_index(group)
+              next unless group_pos
               group_uid = path_arr[group_pos + 1]
               case group
               when "pupil"
@@ -477,8 +478,10 @@ namespace :swtk do
 
       # 获取报告数据HASH
       def get_report_hash file_path
-        fdata = File.open(file_path, 'rb').read
-        JSON.parse(fdata)  
+        return {} if file_path.blank?
+        target_file_path = file_path.split("?")[0]
+        fdata = File.open(target_file_path, 'rb').read
+        JSON.parse(fdata)
       end
 
       # 获取报告数据行

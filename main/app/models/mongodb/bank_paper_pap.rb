@@ -67,6 +67,7 @@ class Mongodb::BankPaperPap
   field :score_file_id, type: String
   field :paper_html, type: String
   field :answer_html, type: String
+  field :ckps_file_id, type: String
 
   field :user_id, type: String
   field :tenant_uid, type: String
@@ -2048,6 +2049,51 @@ class Mongodb::BankPaperPap
           Mongodb::BankCkpQzp.where(qzp_uid: qiz._id.to_s).destroy_all
       end
       raise e.message
+    end
+  end
+
+
+  #导出试卷三维指标结构
+  def export_paper_associated_ckps_file
+    target_subject = self.subject
+    target_category =  Common::Grade.judge_xue_duan(self.grade)
+    
+    ckp_objs = BankSubjectCheckpointCkp.where(subject: target_subject, category: target_category)
+    qzps = self.bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps}.flatten
+
+    ckps_file = FileUpload.where(id: self.ckps_file_id).first
+    ckps_file = FileUpload.new if ckps_file.blank?
+
+    begin
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+
+      wb.add_worksheet name: "Paper Structure" do |sheet|
+        sheet.add_row(["PaperID", self._id.to_s, "Paper Name", self.heading])
+        sheet.add_row(["Quit Point", "Score", "Dimesion", "Checkpoint Path"])
+        qzps.each{|qzp|
+          ckps = qzp.bank_checkpoint_ckps
+          ckps.each{|ckp|
+            next unless ckp
+            ckp_ancestors = BankRid.get_all_higher_nodes ckp_objs, ckp
+            ckp_path = ckp_ancestors.map{|a| a.checkpoint }.join(" >> ") + ">> #{ckp.checkpoint}"
+            sheet.add_row([qzp.order, qzp.score, I18n.t("dict.#{ckp.dimesion}"), ckp_path])
+          }
+        }
+      end
+      file_path = Rails.root.to_s + "/tmp/#{self._id.to_s}_ckps_file.xlsx"
+      out_excel.serialize(file_path)
+      ckps_file.ckps_associated = Pathname.new(file_path).open
+      ckps_file.save!
+      self.ckps_file_id = ckps_file.id
+      self.save!
+      File.delete(file_path)
+      file_path = ckps_file.ckps_associated.current_path
+      file_name = self.heading+'_'+Common::Locale::i18n("activerecord.models.bank_paper_pap")+Common::Locale::i18n("page.quiz.three_dimensiona_digital_analysis")+'.xlsx'
+
+      return file_path, file_name
+    rescue Exception => ex
+      raise ex.message
     end
   end
 

@@ -11,6 +11,6 @@ class FileUpload < ActiveRecord::Base
   mount_uploader :xlsx_structure, XlsxStructureUploader
   mount_uploader :json_structure, JsonStructureUploader
   mount_uploader :user_base, UserBaseUploader
-
+  mount_uploader :ckps_associated, CkpsAssociatedUploader
 
 end
