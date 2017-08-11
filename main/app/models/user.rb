@@ -371,21 +371,46 @@ class User < ActiveRecord::Base
       "", #scopes
       7200, #expired in
       true # use refresh token?
-    )      
-    {
-      :id => self.id,
-      :user_name => self.name,
-      :name => self.role_obj.nil? ? "-" : self.role_obj.name,
-      :role => self.role.nil? ? "默认" : self.role.name, 
-      :oauth => {
+    )
+    oauth_hash = {
         :access_token => target_token.token,
         :token_type => "bear",
         :expires_in => target_token.expires_in,
         :refresh_token => target_token.refresh_token,
         :scope => "",
         :created_at => target_token.created_at.to_i
-      }        
+      } 
+    user_base_info = {
+      :id => self.id,
+      :user_name => self.name,
+      :name => self.role_obj.nil? ? "-" : self.role_obj.name,
+      :role => self.role.nil? ? "默认" : self.role.name,       
     }
+    third_hash = {}
+    if self.is_master
+      Common::Uzer::ThirdPartyList.each do |oauth2|
+        if send("#{oauth2}_related?")
+          oauth2_users = send("#{oauth2}_users")
+          oauth2_user = oauth2_users.first
+          if oauth2_user
+            oauth2_obj = {
+              nickname: oauth2_user.nickname,
+              sex: oauth2_user.sex,
+              headimgurl: oauth2_user.headimgurl
+            }
+            third_hash[oauth2] = oauth2_obj
+          end
+          user_base_info["#{oauth2}_related"] = true
+        else
+          user_base_info["#{oauth2}_related"] = false
+        end
+      end
+    end
+    if third_hash.present?
+      user_base_info[:third_party] = third_hash
+    end
+    user_base_info[:oauth] = oauth_hash
+    user_base_info
   end
 
   #从主账号中解绑子账号
