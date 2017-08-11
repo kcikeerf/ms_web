@@ -62,17 +62,19 @@ class WxUser < ActiveRecord::Base
   # 无Guest用户，则创建Guest用户
   def default_user!
     return default_user if self.default_user
-    if self.nickname
-      user_name = Common::Uzer::WxUserNamePrefix + self.nickname
-      target_user = User.where(name: user_name).first
-      if target_user
-        user_name = Common::Uzer::WxUserNamePrefix + self.wx_openid  if self.wx_openid
-        user_name = Common::Uzer::WxUserNamePrefix + self.wx_unionid  if self.wx_unionid
-      end
-    else
-      user_name = Common::Uzer::WxUserNamePrefix + self.wx_openid  if self.wx_openid
-      user_name = Common::Uzer::WxUserNamePrefix + self.wx_unionid  if self.wx_unionid      
-    end
+    # if self.nickname
+    #   user_name = Common::Uzer::WxUserNamePrefix + self.nickname
+    #   target_user = User.where(name: user_name).first
+    #   if target_user
+    #     user_name = Common::Uzer::WxUserNamePrefix + self.wx_openid  if self.wx_openid
+    #     user_name = Common::Uzer::WxUserNamePrefix + self.wx_unionid  if self.wx_unionid
+    #   end
+    # else
+    #   user_name = Common::Uzer::WxUserNamePrefix + self.wx_openid  if self.wx_openid
+    #   user_name = Common::Uzer::WxUserNamePrefix + self.wx_unionid  if self.wx_unionid      
+    # end
+    user_name = Common::Uzer::WxUserNamePrefix + self.wx_openid  if self.wx_openid
+    user_name = Common::Uzer::WxUserNamePrefix + self.wx_unionid  if self.wx_unionid
     option_h = {
       :name => user_name,
       :password => self.wx_unionid.present? ? self.wx_unionid  : self.wx_openid,
