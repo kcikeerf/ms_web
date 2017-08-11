@@ -7,6 +7,17 @@ require 'axlsx'
 namespace :swtk do
   namespace :report do
   	#namespace :v1_2 do
+      desc "统计系统报告数量"
+      task update_all_report_state: :environment do
+        target_test = Mongodb::BankTest.all
+        target_test.each do |test|
+          p test._id
+          test.get_report_state
+        end
+        report = Mongodb::Dashbord.where(total_tp: "report").first
+        report = Mongodb::Dashbord.initialize_report if report.blank?
+        report.update_report_overall_stat
+      end
 
       desc "输出区域报告用数据表"
       task :export_test_overall_report_data_table,[] => :environment do |t, args|
@@ -436,9 +447,11 @@ namespace :swtk do
         ReportWarehousePath = "/reports_warehouse/tests/"
         redis_key_prefix = "/" + Time.now.to_i.to_s
         _test_ids = args.extras
+        _test_ids = Mongodb::BankTest.all.only(:id).map{|item| item.id.to_s} if _test_ids.blank?
         _test_ids.each{|_id|
           target_test =Mongodb::BankTest.where(id: _id).first
           nav_arr = Dir[ReportWarehousePath + _id + "/**/**/nav.json"]
+          next if nav_arr.blank?
           nav_arr.each{|nav_path|
             target_nav_h = get_report_hash(nav_path)
             target_nav_count = target_nav_h.values[0].size
