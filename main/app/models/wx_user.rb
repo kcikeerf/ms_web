@@ -80,7 +80,8 @@ class WxUser < ActiveRecord::Base
       :password => self.wx_unionid.present? ? self.wx_unionid  : self.wx_openid,
       :role_name => Common::Role::Guest,
       :is_customer => true,
-      :is_master => true
+      :is_master => true,
+      :wx_related => true
     }
     target_user = User.where(name: option_h[:name]).first
     unless target_user

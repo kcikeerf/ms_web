@@ -45,6 +45,8 @@ module ApiV12Helper
         _3rd_user.default_user!
         master_user = _3rd_user.users.by_master(true).first
       end
+      option_h = {"#{third_party}_related" => true}
+      master_user.update(option_h)
     end 
     return _3rd_user, master_user
   end
