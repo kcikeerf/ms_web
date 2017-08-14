@@ -101,6 +101,58 @@ class Mongodb::BankPaperPap
 
   ########类方法定义：begin#######
   class << self
+    #导出试卷分析
+    def export_pap_ckpz_qzps params
+      out_path = Rails.root.to_s + "/public/ckpz_qzps.xlsx"
+      pap_ids = params[:id_arr]
+
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+
+      wb.add_worksheet name: "Data" do |sheet|
+
+        cell_style = {
+          :title => wb.styles.add_style(
+            :bg_color => "FF00F7", 
+            :border => { 
+                :style => :thin, 
+                :color => "00" 
+              },
+              :fg_color => "000000", 
+              :sz => 12, 
+              :alignment => { 
+                :horizontal=> :center 
+              }
+            )
+        }
+        # 标题
+        title_row_arr = ["paper","dimension", "level", "layer", "index", "count", "score"]
+        sheet.add_row(
+            title_row_arr,
+            :style => title_row_arr.size.times.map{|item| cell_style[:title]}
+        )
+
+        pap_ids.each{|pap_id|
+          target_paper = Mongodb::BankPaperPap.where(id: pap_id).first
+          next if target_paper.blank?
+          data_row_base_arr = [target_paper.heading]
+          ckps_qzps = target_paper.associated_checkpoints()
+          ckps_qzps.map{|item| item[1]}.flatten.each{|item|
+            data_row_arr = [
+              item[:dimesion],
+              item[:high_level],
+              item[:rid].length/3,
+              item[:checkpoint],
+              item[:qzp_count],
+              item[:qzps_full_score_total]
+            ]
+            sheet.add_row(data_row_base_arr + data_row_arr)
+          }
+        }
+      end
+      out_excel.serialize(out_path)
+      return out_path
+    end
 
     #获取试卷信息
     def get_list params
