@@ -9,6 +9,21 @@ module ApiV12Helper
     header 'Access-Control-Allow-Headers', 'x-requested-with,Content-Type, Authorization'    
   end
 
+  def doorkeeper_render_error_with(error)
+    case error.reason
+    when :unknown
+      status_code =401
+      code = "e41101"
+    when :expired
+      status_code =403
+      code = "e41100"
+    when :revoked
+      status_code =401
+      code = "e41102"
+    end
+    error!(message_json(code), status_code)
+  end
+
   def current_user
     target_user = User.where(id: doorkeeper_token.resource_owner_id).first if doorkeeper_token
     if params[:child_user_name]
@@ -75,7 +90,7 @@ module ApiV12Helper
         target_wx_user = WxUser.new(params_h)
         target_wx_user.default_user!
       rescue Exception => ex
-        error!(message_json("e41002"), 403) unless target_wx_user
+        error!(message_json("e41100"), 403) unless target_wx_user
       end
     else
       target_wx_user.wx_unionid = params[:wx_unionid] if params[:wx_unionid] && target_wx_user.wx_unionid.blank?

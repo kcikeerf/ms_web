@@ -46,7 +46,7 @@ module ApiHelper
         target_wx_user = WxUser.new({:wx_openid => params[:wx_openid]})
         target_wx_user.save!
       rescue Exception => ex
-        error!(message_json("e41002"), 403) unless target_wx_user
+        error!(message_json("e41100"), 403) unless target_wx_user
       end
     end
     return target_wx_user
