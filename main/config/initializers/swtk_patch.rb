@@ -87,6 +87,31 @@ module Doorkeeper
   class Application
     belongs_to :user, foreign_key: "resource_owner_id", class_name: "User"
   end
+  module OAuth
+    class InvalidTokenResponse < ErrorResponse
+      attr_accessor :reason
+    end
+  end
+  
+  module OAuth
+    class ErrorResponse
+      def body
+        case name
+        when :invalid_grant
+          code  = "e41009"
+          _message = I18n.t("api.#{code}")
+        else
+          code = name
+          _message = description
+        end
+        {
+          code: code,
+          message: _message,
+          state: state
+        }.reject { |_, v| v.blank? }
+      end
+    end
+  end
 end
 
 

@@ -4,9 +4,9 @@ module ApiV12Monitoring
   class API < Grape::API
     format :json
 
+    helpers Doorkeeper::Grape::Helpers
     helpers ApiV12Helper
     helpers ApiV12SharedParamsHelper
-    helpers Doorkeeper::Grape::Helpers
 
     params do
       use :oauth

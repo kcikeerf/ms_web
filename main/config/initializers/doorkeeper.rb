@@ -17,6 +17,7 @@ Doorkeeper.configure do
       :wx_unionid => params[:wx_unionid]
     }
     User.authenticate(params[:name], password_h)
+
   end  
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.

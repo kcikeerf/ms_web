@@ -24,7 +24,7 @@ namespace :swtk_patch do
     desc "update unionid with openid"
     task :update_unionid_with_openid, [:file_path] => :environment do
       if args[:file_path].nil?
-        puts "Command format not correct, Usage: #rake swtk:patch:update_unionid_with_openid[file_path]"
+        puts "Command format not correct, Usage: #rake swtk_patch:v1_2:update_unionid_with_openid[file_path]"
         exit 
       end
       wx_xlsx = Roo::Excelx.new(args[:file_path])
@@ -66,5 +66,33 @@ namespace :swtk_patch do
       end
       puts "迁移完成"
     end
+
+    desc "Use Openid or Unionid rollback"
+    task :rollback_wx_with_args, [:wx_openid, :wx_unionid] => :environment do
+      wx_users = WxUser.where("wx_unionid = ? or wx_openid = ?", args[:wx_unionid], args[:wx_openid])
+      wx_users.each do |wx|
+        if wx.master_user
+          wx.master_user.delete
+        end
+      end
+    end
+
+    desc "rollback wx user with time"
+    task :rollback_wx_with_time, [:rollback_time] => :environment do
+      if args[:rollback_time].nil?
+        puts "Need rollback_time, Usage: #rake swtk_patch:v1_2:rollback_wx_with_time[rollback_time]"
+        exit 
+      end      
+      roll_time = Time.parse(args[:rollback])
+      wx_users = WxUser.where("dt_update > ?", roll_time )
+      wx_users.each do |wx|
+        if wx.master_user
+          wx.master_user.delete
+        end
+      end
+
+
+    end
+
   end
 end

@@ -4,9 +4,9 @@ module ApiV12Reports
   class API < Grape::API
     format :json
 
+    helpers Doorkeeper::Grape::Helpers
     helpers ApiV12Helper
     helpers ApiV12SharedParamsHelper
-    helpers Doorkeeper::Grape::Helpers
 
     helpers do
       def read_report_data report_path

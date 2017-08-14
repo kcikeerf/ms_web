@@ -4,9 +4,9 @@ module ApiV12Users
   class API < Grape::API
     format :json
 
+    helpers Doorkeeper::Grape::Helpers
     helpers ApiV12Helper
     helpers ApiV12SharedParamsHelper
-    helpers Doorkeeper::Grape::Helpers
 
     params do
       use :oauth
@@ -27,10 +27,11 @@ module ApiV12Users
       post :get_binded_users do
         if doorkeeper_token.user.blank?
           current_3rd_user, master_user = get_3rd_user
+          error!(message_json("e41008"),401) unless master_user
         else
           master_user = current_user
         end
-        if master_user.is_master
+        if master_user && master_user.is_master
           master_user.binded_users_list
         else
           error!(message_json("w21004"),500)
