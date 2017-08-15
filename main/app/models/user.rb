@@ -115,7 +115,7 @@ class User < ActiveRecord::Base
         else
           where("lower(name) = ?", login.downcase)
         end
-      user = user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      user = user.where(conditions.to_h).where(is_master: true).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
       result = nil
       if user
         if user.parents.size < 1
