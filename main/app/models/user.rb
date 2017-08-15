@@ -13,9 +13,9 @@ class User < ActiveRecord::Base
   has_many :wx_user_mappings, foreign_key: "user_id", dependent: :destroy
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
-  has_many :oauth_access_tokens, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessToken", dependent: :destroy
-  has_many :oauth_access_grants, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessGrant", dependent: :destroy
-  has_many :oauth_applications, foreign_key: "resource_owner_id", class_name: "Doorkeeper::Application", dependent: :destroy
+  has_many :oauth_access_tokens, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessToken"#, dependent: :destroy
+  has_many :oauth_access_grants, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessGrant"#, dependent: :destroy
+  has_many :oauth_applications, foreign_key: "resource_owner_id", class_name: "Doorkeeper::Application"#, dependent: :destroy
   has_many :groups_as_parent, :foreign_key=>"child_id", :class_name=>'UserLink'
   has_many :groups_as_child, :foreign_key => "parent_id", :class_name=>"UserLink"
   has_many :parents, :through=>:groups_as_parent
