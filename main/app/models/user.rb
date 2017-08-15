@@ -13,9 +13,9 @@ class User < ActiveRecord::Base
   has_many :wx_user_mappings, foreign_key: "user_id", dependent: :destroy
   has_many :wx_users, through: :wx_user_mappings
   has_many :task_lists, foreign_key: "user_id"
-  has_many :oauth_access_tokens, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessToken", dependent: :destroy
-  has_many :oauth_access_grants, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessGrant", dependent: :destroy
-  has_many :oauth_applications, foreign_key: "resource_owner_id", class_name: "Doorkeeper::Application", dependent: :destroy
+  has_many :oauth_access_tokens, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessToken"#, dependent: :destroy
+  has_many :oauth_access_grants, foreign_key: "resource_owner_id", class_name: "Doorkeeper::AccessGrant"#, dependent: :destroy
+  has_many :oauth_applications, foreign_key: "resource_owner_id", class_name: "Doorkeeper::Application"#, dependent: :destroy
   has_many :groups_as_parent, :foreign_key=>"child_id", :class_name=>'UserLink'
   has_many :groups_as_child, :foreign_key => "parent_id", :class_name=>"UserLink"
   has_many :parents, :through=>:groups_as_parent
@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   scope :by_master, ->(val) { where(is_master: val) }
 
   before_create :set_role,:generate_token #, :check_existed?
+  before_destroy :set_resource_owner_id
 
   validates :role_name, presence: true, on: :create
   validates :name, presence: true, uniqueness: true, format: { with: /\A[a-zA-Z]{1,1}[a-zA-Z0-9_-]{5,127}\z/ }
@@ -512,6 +513,12 @@ class User < ActiveRecord::Base
         random_token = SecureRandom.urlsafe_base64(nil, false)
         break random_token unless self.class.exists?(tk_token: random_token)
       end
+    end
+
+    def set_resource_owner_id
+      oauth_access_tokens.update_all(resource_owner_id: nil)
+      oauth_access_grants.update_all(resource_owner_id: nil)
+      oauth_applications.update_all(resource_owner_id: nil)
     end
   ########私有方法: end#######
 end
