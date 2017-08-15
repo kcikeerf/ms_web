@@ -69,9 +69,10 @@ module ApiV12Users
         end
         result = []
         if params[:third_party] == "wx"
+          target_wx_user = current_wx_user
           target_params = params.extract!(:nickname,:sex,:province,:city,:country, :headimgurl, :wx_unionid, :wx_openid).to_h
-          current_wx_user.update_attributes(target_params)
-          result =  current_wx_user.attributes
+          target_wx_user.update_attributes(target_params)
+          result =  target_wx_user.attributes
         end
         result
       end
@@ -119,22 +120,28 @@ module ApiV12Users
  
         if _user.is_master
           if target_3rd_user
-            
-            if _user.send("#{case_value}_related?") or target_user.send("#{case_value}_related?")
-              code, status = "w21007", 500
-              case_value_cn = I18n.t("oauth2.#{case_value}")
-              message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
-            else
-              #当有target_user 为三方绑定一个主账号
-              if target_user && target_user.valid_password?(params[:password])
-                if target_user.is_master              
+           
+            case_value_cn = I18n.t("oauth2.#{case_value}")
+            #当有target_user 为三方绑定一个主账号
+            if target_user && target_user.valid_password?(params[:password])
+              if target_user.is_master 
+                if _user.is_customer && !target_user.send("#{case_value}_related?")       
                   code, status = _user.associate_master(target_3rd_user, target_user, case_value)
                 else
-                  code, status = "w21006", 500
+                  code, status = "w21007", 500
+                  message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
                 end
-              #没有target_user 为从Pc端绑定三方的账号
               else
+                code, status = "w21006", 500
+              end
+            #没有target_user 为从Pc端绑定三方的账号
+            else
+              master_user = target_3rd_user.users.by_master(true).first
+              if master_user && master_user.is_customer
                 code, status = _user.associate_master(target_3rd_user, _user, case_value)
+              else
+                code, status = "w21008", 500
+                message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
               end
             end
           else

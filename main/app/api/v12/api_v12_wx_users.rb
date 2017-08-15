@@ -83,6 +83,8 @@ module ApiV12WxUsers
           if @target_wx_user.binded_user?(target_user.name)
             begin
               WxUserMapping.where( :wx_uid => @target_wx_user.uid, :user_id=> target_user.id ).destroy_all
+              target_user.wx_related = false
+              target_user.save!
             rescue
               status 500
               message_json("i11204")

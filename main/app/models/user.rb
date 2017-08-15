@@ -115,7 +115,7 @@ class User < ActiveRecord::Base
         else
           where("lower(name) = ?", login.downcase)
         end
-      user = user.where(conditions.to_h).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      user = user.where(conditions.to_h).where(is_master: true).first#.where(["lower(phone) = :value OR lower(email) = :value", { :value => login.downcase }]).first
       result = nil
       if user
         if user.parents.size < 1
@@ -388,6 +388,7 @@ class User < ActiveRecord::Base
     }
     third_hash = {}
     if self.is_master
+      user_base_info[:is_customer] = self.is_customer
       Common::Uzer::ThirdPartyList.each do |oauth2|
         if send("#{oauth2}_related?")
           oauth2_users = send("#{oauth2}_users")
