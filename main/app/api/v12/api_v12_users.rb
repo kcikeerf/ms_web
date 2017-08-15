@@ -116,7 +116,8 @@ module ApiV12Users
         cond2 = Common::Uzer::ThirdPartyList.include?(params[:current_platform]) && params[:current_platform].present?
         case_value = params[:target_user_from] if cond1
         case_value = params[:current_platform] if !cond1 && cond2
-        target_3rd_user = send("current_#{case_value}_user") if case_value
+        target_3rd_user = get_3rd_user(case_value) if case_value
+ #       send("current_#{case_value}_user") if case_value
  
         if _user.is_master
           if target_3rd_user

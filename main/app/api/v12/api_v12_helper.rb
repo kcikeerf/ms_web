@@ -49,8 +49,8 @@ module ApiV12Helper
     tenant
   end
 
-  def get_3rd_user
-    third_party = params[:third_party]
+  def get_3rd_user(oauth2=nil)
+    third_party = params[:third_party] || oauth2
     _3rd_user = nil
     master_user = nil
     _3rd_user = send("current_#{third_party}_user") if third_party && Common::Uzer::ThirdPartyList.include?(third_party)
