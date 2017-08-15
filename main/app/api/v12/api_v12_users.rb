@@ -137,11 +137,15 @@ module ApiV12Users
             #没有target_user 为从Pc端绑定三方的账号
             else
               master_user = target_3rd_user.users.by_master(true).first
-              if master_user && master_user.is_customer
+              if master_user 
+                if master_user.is_customer
                 code, status = _user.associate_master(target_3rd_user, _user, case_value)
+                else
+                  code, status = "w21008", 500
+                  message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
+                end
               else
-                code, status = "w21008", 500
-                message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
+                code, status = "w20000", 504
               end
             end
           else
