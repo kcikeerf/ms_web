@@ -19,7 +19,7 @@ module SwtkLockPatch
     # 非操作用户不得更新
     def acquire_exclusive_lock!
       raise SwtkErrors::CannotLockALockingResource.new("Already locked!") if locked?
-      set_exclusive_lock 1
+      set_exclusive_lock
     end
 
     # 获取共享锁
@@ -154,8 +154,8 @@ module SwtkLockPatch
       # 判断当前锁定对象的条件
       def locked_by_current_operator?
         return false unless locked?
-        return swtk_lock.locked_owner.split(",").include?(@current_user_id) if @current_user_id
-        return swtk_lock.job_uid.split(",").include?(@current_job_uid) if @current_job_uid
+        return swtk_lock.locked_owner.split(",").include?(@current_user_id.to_s) if @current_user_id
+        return swtk_lock.job_uid.split(",").include?(@current_job_uid.to_s) if @current_job_uid
         return true
       end
   end

@@ -573,6 +573,17 @@ class Mongodb::BankPaperPap
   end
 
   def save_ckp params
+    if self.swtk_lock
+      self.set_operator current_user_id, nil
+      if self.locked_by_current_operator?
+      else
+        self.acquire_exclusive_lock!
+      end
+    else
+      self.set_operator current_user_id, nil
+      self.acquire_exclusive_lock!
+    end
+
     self.status = Common::Paper::Status::Analyzing
     #return result if params[:infromation].blank?
     old_paper_h = JSON.parse(self.paper_json).clone
@@ -586,8 +597,15 @@ class Mongodb::BankPaperPap
         :paper_json => paper_h.to_json || "",
         :paper_status => status
       })
+      if self.locked_by_current_operator?
+        self.release_lock!
+      end
     rescue Exception => e
       save_ckp_rollback old_paper_h
+      if self.locked_by_current_operator?
+        self.release_lock!
+      end
+      raise e.message
     end
   end
 
@@ -1257,7 +1275,16 @@ class Mongodb::BankPaperPap
     begin
       # 锁定
       #
-
+      if self.swtk_lock
+        self.set_operator current_user_id, nil
+        if self.locked_by_current_operator?
+        else
+          self.acquire_exclusive_lock!
+        end
+      else
+        self.set_operator current_user_id, nil
+        self.acquire_exclusive_lock!
+      end
       params[:pap_uid] = id.to_s
       ##############################
       #地理位置信息
@@ -1288,7 +1315,9 @@ class Mongodb::BankPaperPap
         params = send("save_pap_#{value}", params)
       end 
       result = self.errors.messages.empty?
-      self.unlock!
+      if self.locked_by_current_operator?
+        self.release_lock!
+      end
     rescue Exception => ex
       arr = phase_arr[0..error_index].reverse
       arr.each_with_index do |value, index|
@@ -1485,8 +1514,10 @@ class Mongodb::BankPaperPap
     if params["information"]["tasks"].blank?
       self.bank_tests[0].destroy_all if self.bank_tests[0]
     end
+    if self.locked_by_current_operator?
+      self.release_lock!
+    end
 
-    self.unlock!
     #delete bank_paper_pap    
   end
 
@@ -1530,10 +1561,23 @@ class Mongodb::BankPaperPap
     phase_arr = %w{ phase1 phase2 phase3}
     error_index = 0
     self.old_status = self.paper_status.clone
+    if self.swtk_lock
+      self.set_operator current_user_id, nil
+      if self.locked_by_current_operator?
+      else
+        self.acquire_exclusive_lock!
+      end
+    else
+      self.set_operator current_user_id, nil
+      self.acquire_exclusive_lock!
+    end
     begin      
       phase_arr.each_with_index do |phase, index|
         error_index = index
         send("submit_pap_#{phase}")
+      end
+      if self.locked_by_current_operator?
+        self.release_lock!
       end
     rescue Exception => e
       phase_arr = phase_arr[0..error_index].reverse
@@ -1545,7 +1589,7 @@ class Mongodb::BankPaperPap
   end
   #试卷保存1
   def submit_pap_phase1 
-     begin 
+    begin 
        #########
        # part 1 根据params 修改paper信息
        #########
@@ -1653,6 +1697,10 @@ class Mongodb::BankPaperPap
       :levelword2 => "",
       :score => 0.00,
     })
+    if self.locked_by_current_operator?
+      self.release_lock!
+    end
+
   end
   #试卷保存回滚2
   def submit_pap_phase2_rollback 
@@ -1694,10 +1742,23 @@ class Mongodb::BankPaperPap
     phase_arr = %w{ phase1 phase2 phase3 phase4 }
     self.status = Common::Paper::Status::Analyzed
     error_index = 0
+    if self.swtk_lock
+      self.set_operator current_user_id, nil
+      if self.locked_by_current_operator?
+      else
+        self.acquire_exclusive_lock!
+      end
+    else
+      self.set_operator current_user_id, nil
+      self.acquire_exclusive_lock!
+    end
     begin      
       phase_arr.each_with_index do |phase, index|
         error_index = index
         send("submit_ckp_#{phase}")
+      end
+      if self.locked_by_current_operator?
+        self.release_lock!
       end
     rescue Exception => e
       phase_arr = phase_arr[0..error_index].reverse
@@ -1787,6 +1848,9 @@ class Mongodb::BankPaperPap
           Mongodb::BankCkpQzp.where(qzp_uid: bqq["id"]).destroy_all
         }
       }
+    end
+    if self.locked_by_current_operator?
+      self.release_lock!
     end
   end
 
