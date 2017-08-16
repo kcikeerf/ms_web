@@ -71,8 +71,8 @@ namespace :swtk_patch do
     task :rollback_wx_with_args, [:wx_openid, :wx_unionid] => :environment do
       wx_users = WxUser.where("wx_unionid = ? or wx_openid = ?", args[:wx_unionid], args[:wx_openid])
       wx_users.each do |wx|
-        if wx.master_user
-          wx.master_user.delete
+        if wx.master
+          wx.master.delete
         end
       end
     end
@@ -83,11 +83,11 @@ namespace :swtk_patch do
         puts "Need rollback_time, Usage: #rake swtk_patch:v1_2:rollback_wx_with_time[rollback_time]"
         exit 
       end      
-      roll_time = Time.parse(args[:rollback])
+      roll_time = Time.parse(args[:rollback_time])
       wx_users = WxUser.where("dt_update > ?", roll_time )
       wx_users.each do |wx|
-        if wx.master_user
-          wx.master_user.delete
+        if wx.master
+          wx.master.delete
         end
       end
 

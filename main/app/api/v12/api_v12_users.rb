@@ -19,6 +19,45 @@ module ApiV12Users
         doorkeeper_authorize!
       end
 
+      desc '单个回退'
+      params do
+        use :third
+        use :base_info      
+      end
+      post :rollback_wechat do
+        if doorkeeper_token.user.blank?
+          current_3rd_user, master_user = get_3rd_user
+          error!(message_json("e41008"),401) unless master_user
+        else
+          master_user = current_user
+        end
+        if master_user.destroy
+          message_json("i00000")
+        else
+          error!(message_json("i00001"),500)
+        end
+      end
+
+      desc "按时间回退"
+      params do
+        use :third
+        requires :roll_time, type: String
+      end
+      post :rollback_wechat_with_time do
+        roll_time = Time.parse(params[:roll_time])
+        wx_users = WxUser.where("dt_update > ?", roll_time )
+        begin       
+          wx_users.each do |wx|
+            if wx.master
+              wx.master.destroy
+            end
+          end
+          message_json("i00000")
+        rescue Exception => e
+          error!(message_json("i00001"),500)
+        end
+      end
+
       desc "获取绑定的账号列表"
       params do
         use :third
@@ -112,11 +151,12 @@ module ApiV12Users
         
         case_value = nil
         target_3rd_user = nil
+        master_user = nil
         cond1 = Common::Uzer::ThirdPartyList.include?(params[:target_user_from]) && params[:target_user_from].present?
         cond2 = Common::Uzer::ThirdPartyList.include?(params[:current_platform]) && params[:current_platform].present?
         case_value = params[:target_user_from] if cond1
         case_value = params[:current_platform] if !cond1 && cond2
-        target_3rd_user = get_3rd_user(case_value) if case_value
+        target_3rd_user, master_user = get_3rd_user(case_value) if case_value
  #       send("current_#{case_value}_user") if case_value
  
         if _user.is_master
@@ -137,7 +177,6 @@ module ApiV12Users
               end
             #没有target_user 为从Pc端绑定三方的账号
             else
-              master_user = target_3rd_user.users.by_master(true).first
               if master_user 
                 if master_user.is_customer
                 code, status = _user.associate_master(target_3rd_user, _user, case_value)
