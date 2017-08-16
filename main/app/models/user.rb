@@ -390,6 +390,7 @@ class User < ActiveRecord::Base
     third_hash = {}
     if self.is_master
       user_base_info[:is_customer] = self.is_customer
+      user_base_info[:name] = self.nickname.present? ? self.nickname : self.name
       Common::Uzer::ThirdPartyList.each do |oauth2|
         if send("#{oauth2}_related?")
           oauth2_users = send("#{oauth2}_users")

@@ -76,6 +76,8 @@ module ApiV12Users
           error!(message_json("w21004"),500)
         end
       end 
+
+
       desc "获取用户信息"
       params do
       end
@@ -89,6 +91,7 @@ module ApiV12Users
         optional :user_name, type: String
         optional :password, type: String
         optional :third_party, type: String
+        optional :user_nickname, type: String
         given third_party: ->(val) { val == 'wx' } do 
           optional :wx_openid, type: String
           optional :wx_unionid, type: String
@@ -103,17 +106,28 @@ module ApiV12Users
       end
       post :complete_info do
         user = current_user
-        if user && user.is_customer
-          user.update(name: params[:user_name], password: params[:password], is_customer: false)  if params[:user_name] && params[:password]
+        if user
+          if user.is_customer
+            find_user = User.where(name: params[:user_name])
+            if find_user
+              error!(message_json("w21009"), 500)
+            else
+              user.update(name: params[:user_name], password: params[:password], nickname: params[:user_nickname], is_customer: false)  if params[:user_name] && params[:password]
+            end
+          else
+            user.update(nickname: params[:user_nickname])
+          end
+          target_3rd_user = nil            
+          target_3rd_user, master_user = get_3rd_user
+          if target_3rd_user
+            target_3rd_user = current_wx_user
+            target_params = params.extract!(:nickname,:sex,:province,:city,:country, :headimgurl, :wx_unionid, :wx_openid).to_h
+            target_3rd_user.update_attributes(target_params)
+          end
+          user.get_user_base_info
+        else
+          error!(message_json("e41001"), 500)
         end
-        result = []
-        if params[:third_party] == "wx"
-          target_wx_user = current_wx_user
-          target_params = params.extract!(:nickname,:sex,:province,:city,:country, :headimgurl, :wx_unionid, :wx_openid).to_h
-          target_wx_user.update_attributes(target_params)
-          result =  target_wx_user.attributes
-        end
-        result
       end
 
       desc '绑定子用户账号信息或关联主账号（三方）'
@@ -177,15 +191,19 @@ module ApiV12Users
               end
             #没有target_user 为从Pc端绑定三方的账号
             else
-              if master_user 
-                if master_user.is_customer
-                code, status = _user.associate_master(target_3rd_user, _user, case_value)
-                else
-                  code, status = "w21008", 500
-                  message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
-                end
+              if params[:user_name]
+                code, status = "e41010", 500
               else
-                code, status = "w20000", 504
+                if master_user 
+                  if master_user.is_customer
+                    code, status = _user.associate_master(target_3rd_user, _user, case_value)
+                  else
+                    code, status = "w21008", 500
+                    message = {code: code, message: I18n.t("api.#{code}", oauth2: case_value_cn)}
+                  end
+                else
+                  code, status = "w20000", 504
+                end
               end
             end
           else
@@ -196,6 +214,8 @@ module ApiV12Users
               else
                 code, status = _user.slave_user(target_user) # model
               end
+            else
+              code, status = "e41011", 500
             end  
           end
         else
