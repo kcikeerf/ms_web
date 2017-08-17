@@ -365,7 +365,7 @@ class User < ActiveRecord::Base
     return user_list
   end
 
-  def get_user_base_info  
+  def fresh_access_token
     target_token = Doorkeeper::AccessToken.find_or_create_for(
       nil, #client
       self.id, #resource_owner_id
@@ -373,14 +373,18 @@ class User < ActiveRecord::Base
       7200, #expired in
       true # use refresh token?
     )
-    oauth_hash = {
-        :access_token => target_token.token,
-        :token_type => "bear",
-        :expires_in => target_token.expires_in,
-        :refresh_token => target_token.refresh_token,
-        :scope => "",
-        :created_at => target_token.created_at.to_i
-      } 
+    {
+      :access_token => target_token.token,
+      :token_type => "bear",
+      :expires_in => target_token.expires_in,
+      :refresh_token => target_token.refresh_token,
+      :scope => "",
+      :created_at => target_token.created_at.to_i
+    } 
+  end
+
+  def get_user_base_info  
+    oauth_hash = fresh_access_token 
     user_base_info = {
       :id => self.id,
       :user_name => self.name,
