@@ -423,7 +423,8 @@ class PapersController < ApplicationController
           :params => {
             :test_id => params[:test_id],
             :score_file_id => score_file.id,
-            :tenant_uid => params[:tenant_uid]
+            :tenant_uid => params[:tenant_uid],
+            :user_id => current_user.id
           }
         })
       }
