@@ -219,6 +219,9 @@ module ApiV12Users
                 end
               end
             end
+
+            target_params = params.extract!(:nickname,:sex,:province,:city,:country, :headimgurl).to_h
+            target_3rd_user.update_attributes(target_params)
           else
             #没有第三方账号时默认为绑定身份账号
             if target_user && target_user.valid_password?(params[:password])
