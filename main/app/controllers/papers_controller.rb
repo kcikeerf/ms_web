@@ -428,7 +428,8 @@ class PapersController < ApplicationController
           }
         })
       }
-      render common_json_response(status_code, result)
+      #render common_json_response(status_code, result)
+      @result = result
     else
       render layout: false
     end    
