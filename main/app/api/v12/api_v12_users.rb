@@ -31,11 +31,20 @@ module ApiV12Users
         else
           master_user = current_user
         end
-        if master_user.destroy
-          message_json("i00000")
-        else
-          error!(message_json("i00001"),500)
+        begin
+          if master_user
+            master_user.children = []
+            master_user.wx_related = false
+            master_user.save!
+            master_user.wx_users.delete(master_user.wx_users.first)
+            message_json("i00000")
+          else
+            error!(message_json("i00001"),500)
+          end
+        rescue Exception => e
+          error!(message_json("i00001").merge({error: e.message}),500)
         end
+
       end
 
       desc "按时间回退"
@@ -49,7 +58,11 @@ module ApiV12Users
         begin       
           wx_users.each do |wx|
             if wx.master
-              wx.master.destroy
+              master_user = wx.master
+              master_user.children = []
+              master_user.wx_related = false
+              master.save!
+              master.wx_users.delete(master_user)
             end
           end
           message_json("i00000")
@@ -206,6 +219,9 @@ module ApiV12Users
                 end
               end
             end
+
+            target_params = params.extract!(:nickname,:sex,:province,:city,:country, :headimgurl).to_h
+            target_3rd_user.update_attributes(target_params)
           else
             #没有第三方账号时默认为绑定身份账号
             if target_user && target_user.valid_password?(params[:password])
@@ -222,7 +238,14 @@ module ApiV12Users
           code, status = "w21004", 500
         end
         if [200,201].include?(status)
-          message_json(code)
+          result = message_json(code)
+          if target_3rd_user.present?
+            fresh_master = target_3rd_user.users.by_master(:true).first
+          else
+            fresh_master = _user
+          end
+          result[:oauth] = _user.fresh_access_token
+          result
         else
           error!(message_json(code), status) unless message
           error!(message, status) if message
