@@ -438,7 +438,9 @@ $(function(){
                     dataType: "json",
                     success: function(data){
                         if(data && data.task_uid){
-                            location.reload();
+                            setTimeout(function(){
+                                location.reload();
+                            },3000);
                             // console.log( $(".paperDetails > .progress"));
                             // $(".paperDetails > .progress").show();
                             // paper.paperData.task_uid = data.task_uid;
