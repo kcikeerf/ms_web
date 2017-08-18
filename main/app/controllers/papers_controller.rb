@@ -429,7 +429,7 @@ class PapersController < ApplicationController
         })
       }
       #render common_json_response(status_code, result)
-      @result = result
+      @result = result.merge({:status => status_code}).to_json
     else
       render layout: false
     end    
