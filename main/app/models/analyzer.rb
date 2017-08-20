@@ -48,7 +48,8 @@ class Analyzer < ActiveRecord::Base
           :subject_cn => Common::Locale::i18n("dict.#{item.subject}"),
           :qq => item.user.nil?? "":(item.user.qq.blank?? "":item.user.qq),
           :phone => item.user.nil?? "":(item.user.phone.blank?? "":item.user.phone),
-          :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email)
+          :email => item.user.nil?? "":(item.user.email.blank?? "":item.user.email),
+          :is_master => item.user.nil?? "":item.user.is_master
         }
         h.merge!(area_h)
         h.merge!(item.attributes)
