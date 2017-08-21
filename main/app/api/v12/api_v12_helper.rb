@@ -94,6 +94,7 @@ module ApiV12Helper
       end
     else
       target_wx_user.wx_unionid = params[:wx_unionid] if params[:wx_unionid] && target_wx_user.wx_unionid.blank?
+      target_wx_user.wx_openid = params[:wx_openid] if params[:wx_openid]
     end
     target_wx_user.nickname = params[:nickname] if params[:nickname]
     target_wx_user.sex = params[:sex] if params[:sex]
