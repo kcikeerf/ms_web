@@ -1934,7 +1934,7 @@ class Mongodb::BankPaperPap
   def delete_paper_pap
     begin
       if bank_tests[0].present? 
-        score_upload = bank_tests[0].score_uploads.by_tenant_uid(self.tenant_uid).first
+        score_uploads = bank_tests[0].score_uploads
       else
         score_upload =  ""
       end 
@@ -1947,17 +1947,29 @@ class Mongodb::BankPaperPap
 
       score_path = ""
       file_path = ""
-      if score_upload.present?
-        if score_upload.filled_file.current_path.present?
-          score_path = score_upload.filled_file.current_path.split("/")[0..-2].join("/")
-          FileUtils.rm_rf(score_path)
-        end
-        score_upload.delete
+      if score_uploads.present?
+        score_uploads.each {|su| 
+          if su.filled_file.current_path.present?
+            score_path = su.filled_file.current_path.split("/")[0..-2].join("/")
+          elsif su.empty_file.current_path.present?
+            score_path = su.empty_file.current_path.split("/")[0..-2].join("/")
+          end
+          if score_path
+            FileUtils.rm_rf(score_path)
+          end
+          su.delete
+        }
       end
 
       if file_upload.present?
-        file_path = file_upload.paper_structure.current_path.split("/")[0..-2].join("/")
-        FileUtils.rm_rf(file_path)
+        if file_upload.paper.current_path.present?
+          file_path = file_upload.paper.current_path.split("/")[0..-2].join("/")
+        elsif file_upload.paper_structure.current_path.present?
+          file_path = file_upload.paper_structure.current_path.split("/")[0..-2].join("/")
+        end
+        if file_path
+          FileUtils.rm_rf(file_path)
+        end
         file_upload.delete
       end
       self.delete
