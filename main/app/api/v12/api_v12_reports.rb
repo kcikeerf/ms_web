@@ -60,9 +60,33 @@ module ApiV12Reports
     resource :reports do
       before do
         set_api_header
-        doorkeeper_authorize!
+        #doorkeeper_authorize!
       end
 
+      ###########
+
+      desc ''
+      params do
+        requires :union_test_id, type: String, allow_blank: false
+        requires :union_test_config, type: Hash, allow_blank: false
+      end
+      post :generate_union do
+        p params[:union_test_config]
+        status_code, result = Common::template_tk_job_execution_in_controller {
+          TkJobConnector.new({
+            :version => "v1.2",
+            :api_name => "generate_union_tests_reports",
+            :http_method => "post",
+            :params => {
+              :union_test_id => params[:union_test_id],
+              :union_test_config => params[:union_test_config],
+              :user_id => nil#current_user.id
+            }
+          })
+        }
+        status status_code
+        result
+      end
       ###########
 
       desc ''

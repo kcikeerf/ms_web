@@ -203,6 +203,13 @@ class Tenant < ActiveRecord::Base
   end
 
   def bank_tests
-    Mongodb::BankTestTenantLink.where(tenant_uid: self.uid).map{|item| item.bank_test}.compact
+    _test_ids = Mongodb::BankTestTenantLink.where(tenant_uid: self.uid).distinct(:bank_test_id)
+    Mongodb::BankTest.where(id: {"$in" => _test_ids })    
   end
+
+  def union_tests
+    _test_ids = Mongodb::UnionTestTenantLink.where(tenant_uid: self.uid).distinct(:union_test_id)
+    Mongodb::UnionTest.where(id: {"$in" => _test_ids })
+  end
+
 end

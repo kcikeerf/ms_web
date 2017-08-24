@@ -179,6 +179,12 @@ class Area < ActiveRecord::Base
   end
 
   def bank_tests
-    Mongodb::BankTestAreaLink.where(area_uid: self.uid).map{|item| item.bank_test}.compact
+    _test_ids = Mongodb::BankTestAreaLink.where(area_rid:{ "$regex" => Regexp.new("^(#{rid}).*") }).distinct(:bank_test_id)
+    Mongodb::BankTest.where(id: {"$in" => _test_ids })
+  end
+
+  def union_tests
+    _test_ids = Mongodb::UnionTestAreaLink.where(area_rid:{ "$regex" => Regexp.new("^(#{rid}).*") }).distinct(:union_test_id)
+    Mongodb::UnionTest.where(id: {"$in" => _test_ids })
   end
 end

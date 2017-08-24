@@ -5,3 +5,4 @@ tk_job:
       online_tests_zh_submit_result_generate_reports: "/api/v1.2/online_tests/zh_submit_result_generate_reports"
       tests_import_xy_results: "/api/v1.2/tests/import_xy_results"
       reports_generate_xy_reports: "/api/v1.2/reports/generate_xy_reports"
+      generate_union_tests_reports: "/api/v1.2/reports/generate_union_tests_reports"
