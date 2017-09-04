@@ -154,7 +154,7 @@ module ApiV12Reports
         target_tests.compact!
         target_tests.uniq!
 
-        _rpt_type, rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
+        _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
 
         target_tests.map{|t|
           test_id = t.id.to_s
