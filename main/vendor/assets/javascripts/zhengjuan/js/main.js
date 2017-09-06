@@ -1873,7 +1873,11 @@ $(function(){
         paper.abstract();
         $("input#node_uid").val(paper.paperData.information.node_uid || "");
         $("input#pap_uid").val(paper.paperData.pap_uid || "");
-        $("input#checkpoint_system").val(paper.paperData.information.checkpoint_system.name || "");
+        if(paper.paperData.information.checkpoint_system){
+            $("input#checkpoint_system").val(paper.paperData.information.checkpoint_system.name || "");
+        }else{
+            $("input#checkpoint_system").val("");
+        }
         var menu1 = "", count = 0,
             tempObj = $("<div></div>").html(paper.paperData.paper_html);
         tempObj.find(".my-group").each(function(i){
