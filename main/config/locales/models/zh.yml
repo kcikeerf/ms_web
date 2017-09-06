@@ -29,7 +29,15 @@ zh:
       super_administrator: "超级管理员"
       bank_quiz_qiz: "单题"
       bank_subject_checkpoint_ckp: "指标"
-
+      permissions: "一般权限"
+      api_permissions: "API权限"
+      auth_domain_white_lists: "域名白名单"
+      oauth2_clients: "第三方客户端认证"
+      skopes: "Scope"
+      skope_rules: "Scope规则"
+      node_structures: "教材"
+      checkpoints: "指标"
+      locations: "班级"
     attributes:
       default:
         name: "名称"

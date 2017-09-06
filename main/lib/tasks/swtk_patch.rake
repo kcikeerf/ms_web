@@ -90,9 +90,50 @@ namespace :swtk_patch do
           wx.master.delete
         end
       end
-
-
     end
 
+  end
+
+  namespace :v1_2_1 do
+    desc "match grade and subject to bank_quiz_qiz"
+    task :match_grade_subject => :environment do
+      Mongodb::BankQuizQiz.each_with_index do |quiz,index|
+        p index
+        paper = quiz.bank_paper_paps[0]
+        if paper.present?
+          if paper.grade.present?
+            quiz.grade = paper.grade
+            quiz.subject = paper.subject
+          end
+        elsif quiz.node_uid.present?
+          node = BankNodestructure.where(uid: quiz.node_uid).first
+          if node
+            quiz.grade = node.grade
+            quiz.subject = node.subject
+          end
+        else 
+          quiz.grade = nil
+          quiz.subject = nil
+        end
+        quiz.save!
+      end
+    end
+
+    desc "import permission definition into mysql"
+    task :inport_permission_diffnition, [:file_path] => :environment do |t,args|
+
+      xlsx = Roo::Excelx.new(args[:file_path])
+      permissions = Permission.all.delete_all
+      (3..xlsx.sheet("permissions").last_row).each do |i|     
+        row = xlsx.sheet("permissions").row(i)
+        Permission.new(name: row[1], subject_class: row[2],operation: row[3], description: row[4]).save!
+      end
+      api_permissions = ApiPermission.all.delete_all
+      (2..xlsx.sheet("api_permissions").last_row).each do |j|
+        row = xlsx.sheet("api_permissions").row(j)
+        ApiPermission.new(name: row[1], method: row[2], path: row[3], description: row[4]).save!
+      end
+    end
+    
   end
 end

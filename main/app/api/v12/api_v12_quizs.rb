@@ -17,6 +17,7 @@ module ApiV12Quizs
       before do
         set_api_header
         doorkeeper_authorize!
+        authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
 
       #

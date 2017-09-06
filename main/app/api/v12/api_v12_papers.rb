@@ -16,6 +16,7 @@ module ApiV12Papers
       before do
         set_api_header
         doorkeeper_authorize!
+        authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
 
       ##########
@@ -235,6 +236,7 @@ module ApiV12Papers
         requires :pap_uid, type: String
       end
       post :ckps_qzps_mapping do
+        # authenticate_api_permission current_user.id, "POST" , "/api/v1.2/users/get_binded_users"
         @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
         @paper.associated_checkpoints
       end

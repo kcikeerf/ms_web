@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
     password_length: 6..128
 
   belongs_to :role
+  belongs_to :area, foreign_key: "area_uid"
+
   has_one :image_upload
 
   has_many :wx_user_mappings, foreign_key: "user_id", dependent: :destroy
@@ -20,6 +22,17 @@ class User < ActiveRecord::Base
   has_many :groups_as_child, :foreign_key => "parent_id", :class_name=>"UserLink"
   has_many :parents, :through=>:groups_as_parent
   has_many :children, :through=>:groups_as_child
+
+  has_many :user_skope_links, foreign_key: "user_id", dependent: :destroy
+  has_many :skopes, through: :user_skope_links
+
+
+  #
+  has_many :user_tenant_links, foreign_key: "user_id", dependent: :destroy
+  has_many :tenants, through: :user_tenant_links, foreign_key: "user_id"
+  has_many :user_location_links, foreign_key: "user_id", dependent: :destroy
+  has_many :locations, through: :user_location_links,foreign_key: "user_id"
+
   scope :by_master, ->(val) { where(is_master: val) }
 
   before_create :set_role,:generate_token #, :check_existed?
@@ -147,6 +160,119 @@ class User < ActiveRecord::Base
   end
   ########类方法定义：end#######
 
+  #更新修改用户信息的方法
+  def save_ins(role_name=nil, params)
+    result = false
+    begin
+      usr_skp_links = []
+      usr_tnt_links = []
+      usr_loc_links = []
+
+      # 基本信息
+      paramsh = {
+        :name => params[:name],
+        :real_name => params[:real_name].blank?? params[:name] : params[:real_name],
+        :my_number => params[:my_number],
+        :gender => params[:gender],
+        :subject => params[:subject],
+        :grade => params[:grade],
+        :role_name => role_name,
+        :role_id => params[:role_id],
+        :qq => params[:qq] || "",
+        :phone => params[:phone] || "",
+        :email => params[:email] || "",
+        :is_master => params[:is_master] || false
+      }
+
+      # 是否更新密码
+      if self.id.blank?
+        random_password_codes = self.class.generate_rand_password
+        paramsh[:password] = random_password_codes
+        paramsh[:password_confirmation] = random_password_codes
+        paramsh[:initial_password] = random_password_codes
+      else
+        if !params[:password].blank? || !params[:password_confirmation].blank?
+          paramsh[:password] = params[:password]
+          paramsh[:password_confirmation] = params[:password_confirmation]
+          paramsh[:initial_password] = nil
+        end
+      end
+
+      # 更新Scope
+      unless params[:skope_ids].blank?
+        self.user_skope_links.destroy_all
+        params[:skope_ids].each{|skope_id|
+          next if skope_id.blank?
+          item = UserSkopeLink.new({
+            :user_id => self.id,
+            :skope_id => skope_id
+          })
+          item.save!
+          usr_skp_links << item
+        }
+      end
+
+      # 更新地区
+      area_rid = params[:province_rid] unless params[:province_rid].blank?
+      area_rid = params[:city_rid] unless params[:city_rid].blank?
+      area_rid = params[:district_rid] unless params[:district_rid].blank?
+      target_area = Area.where(rid: area_rid).first
+      paramsh[:area_uid] = target_area.uid if target_area
+
+      # 更新租户
+      tenant_uids = []
+      if params[:tenant_uids].blank?
+        if !params[:tenant_all].blank?
+          tenant_uids = area.all_tenants.map(&:uid)
+        end
+      else
+        tenant_uids = params[:tenant_uids]
+      end
+      self.user_tenant_links.destroy_all
+      tenant_uids.each{|tenant_uid|
+        next if tenant_uid.blank?
+        item = UserTenantLink.new({
+          :user_id => self.id,
+          :tenant_uid => tenant_uid
+        })
+        item.save!
+        usr_tnt_links << item
+      }      
+
+      # 更新班级
+      loc_uids = []
+      if params[:loc_uids].blank?
+        if !params[:loc_all].blank?
+          loc_uids = Location.where(tenant_uid: tenant_uids).map(&:uid)
+        end
+      else
+        loc_uids = params[:loc_uids]
+      end
+      self.user_location_links.destroy_all
+      loc_uids.each{|loc_uid|
+        next if loc_uid.blank?
+        item = UserLocationLink.new({
+          :user_id => self.id,
+          :loc_uid => loc_uid
+        })
+        item.save!
+        usr_loc_links << item
+      } 
+
+      update_attributes!(paramsh)
+      save_role_obj(params.merge({user_id: self.id}))      
+      result = true
+    rescue Exception => ex
+      usr_skp_links.each{|item| item.destroy }
+      usr_tnt_links.each{|item| item.destroy }
+      usr_loc_links.each{|item| item.destroy }
+    ensure
+      return result
+    end
+  end
+
+
+
   def save_user(role_name, params)
     #transaction do 
       paramsh = {
@@ -187,6 +313,58 @@ class User < ActiveRecord::Base
       return self
     #end
   end
+
+  def update_user_plus(role_name, params)
+   #transaction do       
+      paramsh = {
+        :name => params[:user_name], 
+        :role_name => role_name,
+        :qq => params[:qq] || "",
+        :phone => params[:phone] || "",
+        :email => params[:email] || "",
+        :is_master => params[:is_master] || false
+      }
+      unless params[:password].blank?
+        paramsh[:password] = params[:password]
+        paramsh[:password_confirmation] = params[:password_confirmation]
+        paramsh[:initial_password] = ""
+      end
+
+      area_rid = params[:province_rid] unless params[:province_rid].blank?
+      area_rid = params[:city_rid] unless params[:city_rid].blank?
+      area_rid = params[:district_rid] unless params[:district_rid].blank?
+      target_area = Area.where(rid: area_rid).first
+      paramsh[:area_uid] = target_area.uid if target_area
+
+      unless params[:tenant_uids].blank?
+        self.user_tenant_links.destroy_all
+        params[:tenant_uids].each{|tenant_uid|
+          UserTenantLink.new({
+            :user_id => self.id,
+            :tenant_uid => tenant_uid
+          }).save! if tenant_uid
+        }
+      end
+
+      unless params[:loc_uids].blank?
+        self.user_location_links.destroy_all
+        params[:loc_uids].each{|loc_uid|
+          UserLocationLink.new({
+            :user_id => self.id,
+            :loc_uid => loc_uid
+          }).save! if loc_uid
+        }
+      end
+
+      paramsh[:role_id] = params[:role_id] unless params[:role_id].blank?
+      return self unless update_attributes(paramsh)
+
+      save_role_obj(params.merge({user_id: self.id}))
+      return self
+    #end
+  end
+
+
 
   #删除关联角色对象用户的实例
   def destroy
@@ -396,7 +574,7 @@ class User < ActiveRecord::Base
     third_hash = {}
     if self.is_master
       user_base_info[:is_customer] = self.is_customer
-      t_name = nil
+      t_name = ""
       Common::Uzer::ThirdPartyList.each do |oauth2|
         if send("#{oauth2}_related?")
           oauth2_users = send("#{oauth2}_users")
@@ -408,9 +586,9 @@ class User < ActiveRecord::Base
               headimgurl: oauth2_user.headimgurl
             }
             third_hash[oauth2] = oauth2_obj
+            t_name ||=  oauth2_user.nickname
           end
           user_base_info["#{oauth2}_related"] = true
-          t_name ||=  oauth2_user.nickname
         else
           user_base_info["#{oauth2}_related"] = false
         end
@@ -495,6 +673,28 @@ class User < ActiveRecord::Base
   def wx_binded?
     !wx_users.blank?
   end
+
+  def create_user_auth_redis
+    key_arr = Common::SwtkRedis::find_keys Common::SwtkRedis::Ns::Auth, "/users/#{self.id}"
+    if key_arr.blank?
+      refresh_user_auth_redis
+    end
+  end
+
+  def refresh_user_auth_redis
+    return false unless self.id
+    base_key = "/users/#{self.id}"
+    Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Auth, base_key
+  
+    #######权限#######
+    #api权限redis缓存
+    self.role.api_permissions.each {|item|
+      api_permission_key = base_key + "/api_permissions/#{item.method}#{item.path}"
+      Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, api_permission_key, 1
+    }
+    Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Auth, base_key, 1
+  end
+
 
   ########私有方法: begin#######
   private

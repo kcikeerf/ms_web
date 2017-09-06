@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     cond1 = (controller_name == "Users::SessionsController" && action_name == "new")
     cond2 = (controller_name == "WelcomesController")
     cond3 = (controller_name == "MessagesController" && (action_name == "send_sms_forgot_password" || action_name == "send_email_forgot_password") )
-    cond4 = (controller_name == "Doorkeeper::TokensControlle" && action_name == "create")
+    cond4 = (controller_name == "Doorkeeper::TokensController" && action_name == "create")
     if cond1 || cond2 || cond3
       next
     end

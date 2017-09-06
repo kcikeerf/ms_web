@@ -30,6 +30,7 @@ class Mongodb::BankQuizQiz
   field :tpl_id, type: String
   field :ext1, type: Integer
   field :ext2, type: Integer
+  field :grade, type: String
   field :cat, type: String
   field :type, type: String
   field :optional, type: Boolean
