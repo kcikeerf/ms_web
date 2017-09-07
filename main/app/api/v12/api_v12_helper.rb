@@ -103,7 +103,7 @@ module ApiV12Helper
       target_wx_user.wx_unionid = params[:wx_unionid] if params[:wx_unionid] && target_wx_user.wx_unionid.blank?
       target_wx_user.wx_openid = params[:wx_openid] if params[:wx_openid]
     end
-    target_wx_user.nickname = params[:nickname] if params[:nickname]
+    target_wx_user.nickname = remove_emoji(params[:nickname]) if params[:nickname]
     target_wx_user.sex = params[:sex] if params[:sex]
     target_wx_user.province = params[:province] if params[:province]
     target_wx_user.city = params[:city] if params[:city]
@@ -118,6 +118,10 @@ module ApiV12Helper
       online_test_id: params[:online_test_id],
       wx_user_id: current_wx_user.id
     }).first
+  end
+
+  def remove_emoji str
+    str.gsub(Common::Locale::EMOJIRANGE, '')
   end
 
   def message_json code
