@@ -11,6 +11,7 @@ class Mongodb::BankTest
 
   belongs_to :bank_paper_pap, class_name: "Mongodb::BankPaperPap"
   belongs_to :paper_question, class_name: "Mongodb::PaperQuestion"
+  belongs_to :union_test, class_name: "Mongodb::UnionTest"
 
   has_many :bank_test_task_links, class_name: "Mongodb::BankTestTaskLink", dependent: :delete
   has_many :bank_test_area_links, class_name: "Mongodb::BankTestAreaLink", dependent: :delete

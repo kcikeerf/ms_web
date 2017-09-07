@@ -67,6 +67,67 @@ namespace :swtk_patch do
       puts "迁移完成"
     end
 
+    desc "update all project optional optional-abstract"
+    task :update_all_tests_project_optional, [] => :environment do |t, args|
+      puts "开始刷新"
+      BasePath = ""
+      ReportWarehousePath = BasePath + "/reports_warehouse/tests/"
+      # redis_key_prefix = "/" + Time.now.to_i.to_s
+      _nav_re = /.*project\/(.*)\/nav.json$/
+      _test_ids = args.extras
+      _test_ids = Mongodb::BankTest.all.only(:id).map{|item| item.id.to_s} if _test_ids.blank?
+      _test_ids.each{|_id|
+        # target_test =Mongodb::BankTest.where(id: _id).first
+        nav_arr = Dir[ReportWarehousePath + _id + "/project/*/nav.json"]
+        puts "#{_id}, nav_url: #{nav_arr}"
+        next if nav_arr.blank?
+        nav_file = nav_arr.first
+        _project_id = _nav_re.match(nav_file)[1]
+        next unless _project_id
+        file_data = File.open(nav_file, 'rb').read
+        next if file_data.blank?
+        nav_h = JSON.parse(file_data)
+        next if nav_h.values.blank?
+        optional_h = nav_h.deep_dup
+        optional_abstract_h = nav_h.deep_dup
+        nav_h.values[0].each_with_index{|_item, _index|
+          _target_report_url = _item[1]["report_url"].split("?")[0]
+          next unless File.exists?(BasePath + _target_report_url)
+          _report_data = File.open(BasePath + _target_report_url, 'rb').read
+          next if _report_data.blank?
+          _report_h = JSON.parse(_report_data)
+          next if _report_h.blank?
+          optional_h.values[0][_index][1]["report_data"] = _report_h
+          optional_abstract_h.values[0][_index][1]["report_data"] = {"basic" => _report_h["basic"], "data" => _report_h["data"]["knowledge"]["base"]}
+        }
+        File.write( ReportWarehousePath + _id + "/project/" + _project_id + "_optional.json", optional_h.to_json)
+        File.write( ReportWarehousePath + _id + "/project/" + _project_id + "_optional_abstract.json", optional_abstract_h.to_json)
+        puts nav_file + ", done"
+        # nav_arr.each{|nav_path|
+        #   target_nav_h = get_report_hash(nav_path)
+        #   target_nav_count = target_nav_h.values[0].size
+        #   target_path = nav_path.split("/nav.json")[0]
+        #   target_path_arr = target_path.split("/")
+        #   current_group = (Common::Report::Group::ListArr&target_path_arr)[-1]
+        #   sub_group = (Common::Report::Group::ListArr - target_path_arr)[-1]
+        #   next unless sub_group
+        #   while target_path_arr.include?(target_test.report_top_group)
+        #     target_key = redis_key_prefix + "/" + target_path_arr.join("/")
+        #     reset_redis_value(target_key, sub_group, target_nav_count)
+        #     target_path_arr.pop(2)
+        #   end
+        # }
+      }
+      # rpt_stat_redis_keys = Common::SwtkRedis::find_keys($cache_redis, redis_key_prefix + "/*")
+      # rpt_stat_redis_keys.each{|key|
+      #   target_path = key + "/report_stat.json"
+      #   p target_path
+      #   File.write(target_path.split(redis_key_prefix)[1], $cache_redis.get(key))
+      #   $cache_redis.del(key)
+      # }   
+      puts "刷新完成"
+    end 
+
     desc "Use Openid or Unionid rollback"
     task :rollback_wx_with_args, [:wx_openid, :wx_unionid] => :environment do
       wx_users = WxUser.where("wx_unionid = ? or wx_openid = ?", args[:wx_unionid], args[:wx_openid])

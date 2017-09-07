@@ -7,6 +7,35 @@ require 'axlsx'
 namespace :swtk do
   namespace :report do
   	#namespace :v1_2 do
+      desc "获取测试报告各地址报告数量"
+      task :get_each_test_report_num,[:test_id] => :environment do |t, args|
+        if args[:test_id].nil? 
+          puts "Command format not correct."
+          exit
+        end
+        test = Mongodb::BankTest.find(args[:test_id])
+        top_group = test.report_top_group.blank? ? "project" : test.report_top_group
+        index = Common::Report::Group::ListArr.index(top_group)
+
+        _report_warehouse_path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/"
+        nav_arr = Dir[_report_warehouse_path + args[:test_id] + '/' + top_group + "/**/**/nav.json"]
+        nav_arr += Dir[_report_warehouse_path + args[:test_id] + '/nav.json']
+
+        # path = "/reports_warehouse/tests/"
+        # nav_arr = Dir[Common::Report::WareHouse::ReportLocation + Dir::pwd + path + args[:test_id] + '/' + top_group + "/**/**/nav.json"]
+        # nav_arr += Dir[Common::Report::WareHouse::ReportLocation + Dir::pwd + path + args[:test_id] + '/nav.json']
+
+        nav_arr.each{|nav_path|
+          p nav_path
+          target_nav_h = get_report_hash(nav_path)
+          target_nav_count = target_nav_h.values[0].size
+          target_path = nav_path.split("/nav.json")[0]
+          target_path_arr = target_path.split("/")
+          target_group = (Common::Report::Group::ListArr[0..index] - target_path_arr)[-1]
+          p target_group +":"+target_nav_count.to_s
+        }
+      end
+
       desc "统计系统报告数量"
       task update_all_report_state: :environment do
         target_test = Mongodb::BankTest.all
@@ -450,7 +479,8 @@ namespace :swtk do
         _test_ids = Mongodb::BankTest.all.only(:id).map{|item| item.id.to_s} if _test_ids.blank?
         _test_ids.each{|_id|
           target_test =Mongodb::BankTest.where(id: _id).first
-          nav_arr = Dir[ReportWarehousePath + _id + "/**/**/nav.json"]
+          report_top_group = target_test.report_top_group
+          nav_arr = Dir[ReportWarehousePath + _id + "/" + report_top_group + "/**/**/nav.json"]
           next if nav_arr.blank?
           nav_arr.each{|nav_path|
             target_nav_h = get_report_hash(nav_path)

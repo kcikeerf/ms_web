@@ -179,9 +179,15 @@ class Location < ActiveRecord::Base
   end
 
   def bank_tests
-    Mongodb::BankTestLocationLink.where(loc_uid: self.uid).map{|item| item.bank_test}.compact
+    _test_ids = Mongodb::BankTestLocationLink.where(loc_uid: self.uid).distinct(:bank_test_id)
+    Mongodb::BankTest.where(id: {"$in" => _test_ids })    
   end
-  
+
+  def union_tests
+    _test_ids = Mongodb::UnionTestLocationLink.where(loc_uid: self.uid).distinct(:union_test_id)
+    Mongodb::UnionTest.where(id: {"$in" => _test_ids })
+  end
+
   ########私有方法: begin#######
   private
 
