@@ -114,7 +114,7 @@ module ApiV12Helper
   end
 
   def remove_emoji str
-    str.gsub(/[\u{1F600}-\u{1F6FF}]/, '')
+    str.gsub(Common::Locale::EMOJIRANGE, '')
   end
 
   def message_json code

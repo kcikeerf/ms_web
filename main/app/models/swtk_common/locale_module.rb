@@ -58,6 +58,12 @@ module LocaleModule
       PinYin.abbr(shanzi_str) 
     end
 
+    EMOJIRANGE = Regexp.new("[\u{1F300}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F1E6}-\u{1F1FF}
+\u231A\u231B\u23E9-\u23EC\u23F0\u23F3
+\u2614\u2615\u2648-\u2653\u267F\u2693\u26A1\u26AA\u26AB\u26B3-\u26BD\u26BF-\u26E1\u26E3-\u26FF
+\u2705\u270A\u270B\u2728\u274C\u274E\u2753\u2757\u2795\u2796\u2797\u27B0\u27BF
+\u{1F1E6}-\u{1F1FF}]")
+
     def mysort(x,y)
       x = x || ""
       y = y || ""
