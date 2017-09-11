@@ -18,11 +18,12 @@ module ApiV12OnlineTests
       before do
         set_api_header
         doorkeeper_authorize!
+        authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
 
       ###########
 
-      desc '获取综合测试列表 post /api/v1.2/online_tests/zh_list'
+      desc '获取综合测试列表 post /api/v1.2/online_tests/todo_list'
       params do
         #requires :test_id, type: String, allow_blank: false
       end
@@ -55,7 +56,7 @@ module ApiV12OnlineTests
 
       ###########
 
-      desc '获取已测试过综合列表 post /api/v1.2/online_tests/zh_result'
+      desc '获取已测试过综合列表 post /api/v1.2/online_tests/tested_list'
       params do
         #requires :test_id, type: String, allow_blank: false
       end

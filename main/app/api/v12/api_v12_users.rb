@@ -82,7 +82,9 @@ module ApiV12Users
           error!(message_json("e41008"),401) unless master_user
         else
           master_user = current_user
-        end
+        end 
+        authenticate_api_permission master_user.id, request.request_method, request.fullpath
+        # authenticate_api_permission master_user.id, "POST" , "/api/v1.2/users/get_binded_users"
         if master_user && master_user.is_master
           master_user.binded_users_list
         else
@@ -90,13 +92,31 @@ module ApiV12Users
         end
       end 
 
+      desc "update password"
+      params do
+        # requires :old_password
+        requires :password
+        requires :password_confirmation
+      end
+
+      post :update_pwd do
+        _user = current_user
+        authenticate_api_permission _user.id, request.request_method, request.fullpath        
+        if _user.is_master
+          _user.update(password: params[:password], nickname: params[:user_nickname])
+          _user.get_user_base_info
+        else
+          error!(message_json("w21004"), 500)
+        end 
+      end
 
       desc "获取用户信息"
       params do
       end
       post :get_info do
         u = current_user
-        current_user ? u.get_user_base_info : {}
+        authenticate_api_permission current_user.id, request.request_method, request.fullpath
+        u ? u.get_user_base_info : {}
       end 
 
       desc "完善账号信息"
@@ -119,6 +139,7 @@ module ApiV12Users
       end
       post :complete_info do
         user = current_user
+        authenticate_api_permission user.id, request.request_method, request.fullpath
         if user
           if user.is_customer
             find_user = User.where(name: params[:user_name])
@@ -172,8 +193,9 @@ module ApiV12Users
         at_least_one_of :target_user_from, :current_platform 
       end
       post :bind do
-
         _user = current_user  #access token
+        authenticate_api_permission _user.id, request.request_method, request.fullpath
+
         target_user = User.where(name: params[:user_name]).first if params[:user_name].present?
         
         case_value = nil
@@ -257,12 +279,14 @@ module ApiV12Users
         requires :user_names, type: Array
       end
       post :unbind do
-        if current_user
+        _user = current_user
+        authenticate_api_permission _user.id, request.request_method, request.fullpath
+        if _user
           return_code = true
           message_list = []
           users_list = params[:user_names]
           users_list.each do |u_name|
-            flag,code = current_user.users_unbind u_name
+            flag,code = _user.users_unbind u_name
             message = {user_name: u_name, code: code, message: I18n.t("api.#{code}", variable: u_name) }
             message_list << message
             return_code = return_code&&flag

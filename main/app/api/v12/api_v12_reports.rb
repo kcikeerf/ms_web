@@ -60,7 +60,8 @@ module ApiV12Reports
     resource :reports do
       before do
         set_api_header
-        #doorkeeper_authorize!
+        doorkeeper_authorize!
+        authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
 
       ###########
@@ -307,7 +308,7 @@ module ApiV12Reports
       params do
 
       end
-      post :project do
+      post :zh_my_report do
 
       end # zh_my_report end
 

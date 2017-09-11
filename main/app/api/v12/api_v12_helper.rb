@@ -32,12 +32,19 @@ module ApiV12Helper
       target_user = child_user
     end
     error!(message_json("e40004"), 404) unless target_user
+    target_user.create_user_auth_redis
     target_user
   end
 
   def not_user_token!
     error!(I18n.t("doorkeeper.errors.messages.invalid_token.unknown"),400) unless doorkeeper_token.user.blank?
   end
+
+  def authenticate_api_permission user_id=nil, http_method=nil, api_path=nil
+    error!(message_json("e41001"), 401) if user_id.blank?
+    error!(message_json("e41001"), 401) unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Auth,"/users/#{user_id}/api_permissions/#{http_method}#{api_path}" 
+  end
+
 
   def current_tenant
     tenant = nil
@@ -96,7 +103,7 @@ module ApiV12Helper
       target_wx_user.wx_unionid = params[:wx_unionid] if params[:wx_unionid] && target_wx_user.wx_unionid.blank?
       target_wx_user.wx_openid = params[:wx_openid] if params[:wx_openid]
     end
-    target_wx_user.nickname = params[:nickname] if params[:nickname]
+    target_wx_user.nickname = remove_emoji(params[:nickname]) if params[:nickname]
     target_wx_user.sex = params[:sex] if params[:sex]
     target_wx_user.province = params[:province] if params[:province]
     target_wx_user.city = params[:city] if params[:city]
@@ -111,6 +118,10 @@ module ApiV12Helper
       online_test_id: params[:online_test_id],
       wx_user_id: current_wx_user.id
     }).first
+  end
+
+  def remove_emoji str
+    str.gsub(Common::Locale::EMOJIRANGE, '')
   end
 
   def message_json code

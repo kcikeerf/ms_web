@@ -16,4 +16,5 @@ url = "redis://#{redis_server}:#{redis_port}/#{redis_db_num}"
 $redis_cnn = Redis.new(host: redis_server, port: redis_port, db: redis_db_num, :timeout => 1)
 
 $cache_redis = Redis::Namespace.new(:cache, :redis => $redis_cnn)
-# $sidekiq_redis = Redis::Namespace.new(:sidekiq, :redis => $redis_cnn)
+$sidekiq_redis = Redis::Namespace.new(:sidekiq, :redis => $redis_cnn)
+$auth_redis = Redis::Namespace.new(:auth, :redis => $redis_cnn)

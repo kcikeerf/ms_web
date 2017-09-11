@@ -12,7 +12,7 @@ class Mongodb::UnionTest
   has_many :union_test_area_links, class_name: "Mongodb::UnionTestAreaLink", dependent: :delete
   has_many :union_test_tenant_links, class_name: "Mongodb::UnionTestTenantLink", dependent: :delete
   has_many :union_test_location_links, class_name: "Mongodb::UnionTestLocationLink", dependent: :delete
-  has_many :union_test_user_links, class_name: "Mongodb::UnionestUserLink", dependent: :delete
+  has_many :union_test_user_links, class_name: "Mongodb::UnionTestUserLink", dependent: :delete
 
   field :name, type: String
   field :quiz_type, type: String

@@ -16,6 +16,7 @@ module ApiV12Checkpoints
       before do
         set_api_header
         doorkeeper_authorize!
+        authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
       
       desc '随机获取相关指标的单题' # grade_class_list begin
@@ -33,6 +34,30 @@ module ApiV12Checkpoints
         end
       end
 
+      desc '根据相关信息获取内容'
+      params do
+        requires :grade, type: String
+        requires :subject, type: String
+        requires :knowledge_uid, type: String 
+        requires :accuracy, type: String, values: ["exact", "normal"]
+        given accuracy: ->(val) { val == 'exact' } do
+          optional :cat_type, type: String
+          requires :levelword, type: String
+        end
+        given accuracy: ->(val) {val == 'normal'} do
+          optional :ability_uid, type: String
+          optional :skill_uid, type: String
+          exactly_one_of :ability_uid, :skill_uid
+        end
+      end
+      post :get_related_quizs_plus do
+        result, flag = BankSubjectCheckpointCkp.get_related_quizs params
+        if flag
+           result
+        else
+          error!(message_json(result), 500)
+        end
+      end
     end
   end
 end

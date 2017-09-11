@@ -126,7 +126,6 @@ class Mongodb::BankQizpointQzp
        self.paper_outline_id = params["paper_outline_id"] || nil 
        self.save!
      rescue Exception => ex
-        p ex.message
        return false
      end
      return true
