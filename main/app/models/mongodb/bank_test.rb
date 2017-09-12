@@ -137,13 +137,16 @@ class Mongodb::BankTest
       # nav_arr += Dir[Common::Report::WareHouse::ReportLocation + Dir::pwd + path + self._id + '/nav.json']
 
       nav_arr.each{|nav_path|
+        group_state_hash = {
+          :area_rid => self.area_rid,
+          :bank_test_id => self._id,
+        }
         target_nav_h = get_report_hash(nav_path)
         target_nav_count = target_nav_h.values[0].size
         target_path = nav_path.split("/nav.json")[0]
         target_path_arr = target_path.split("/")
         target_group = (Common::Report::Group::ListArr[0..index] - target_path_arr)[-1]
-        state_hash.delete(:total_num)
-        group_hash = state_hash.merge!({"#{target_group}_num".to_sym => target_nav_count})
+        group_hash = group_state_hash.merge!({"#{target_group}_num".to_sym => target_nav_count})
         if target_group == 'klass'
           group_hash.merge!({:tenant_uid => target_path_arr[-1]})
         end
