@@ -23,7 +23,7 @@ class Mongodb::BankPaperPap
   has_many :bank_tnt_paps, class_name: "Mongodb::BankTntPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
-
+  belongs_to :union_test, class_name: "Mongodb::UnionTest"
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
@@ -95,6 +95,7 @@ class Mongodb::BankPaperPap
   index({_id: 1}, {background: true})
   index({user_id: 1}, {background: true})
   index({grade: 1}, {background: true})
+  # index({union_test_id: 1}, {background: true})
   index({subject: 1}, {background: true})
   index({paper_status: 1}, {background: true})
   index({dt_update:-1},{background: true})
@@ -1126,7 +1127,7 @@ class Mongodb::BankPaperPap
           :promptTitle => Common::Locale::i18n('dict.classroom'),
           :prompt => ""
         })
-        sheet.add_data_validation("G#{line+5}",{
+        sheet.add_data_validation("I#{line+5}",{
           :type => :list,
           :formula1 => "sex_list!A$1:A$3",
           :showDropDown => false,
@@ -1288,9 +1289,19 @@ class Mongodb::BankPaperPap
       params[:pap_uid] = id.to_s
       ##############################
       #地理位置信息
+      p '====================='
+      p params[:information]
+      if params[:information][:union_test_id]
+        self.union_test.bank_paper_paps(self) if self.union_test
+        union_test = Mongodb::UnionTest.where(_id: params[:information][:union_test_id]).first
+        p union_test
+        union_test.bank_paper_paps.push(self) if union_test.present?
+      end
+
+      p '------------------------------'
       current_user = Common::Uzer.get_user current_user_id
       target_tenant = Common::Uzer.get_tenant current_user_id
-      test_associated_tenant_uids = []
+      self.test_associated_tenant_uids = []
       if current_user.is_project_administrator?
         target_area = Area.where(rid: current_user.role_obj.area_rid).first
         params[:information][:province] = target_area.pcd_h[:province][:name_cn]
@@ -1323,6 +1334,7 @@ class Mongodb::BankPaperPap
       arr.each_with_index do |value, index|
         send("save_pap_#{value}_rollback")
       end
+      # p ex.backtrace
       raise ex.message
     # ensure
     #   p result
@@ -1338,11 +1350,14 @@ class Mongodb::BankPaperPap
   def save_pap_phase1 params
     # step1 new_bank_tests
     begin
+      #创建测试
+      ext_data_path = (params[:test] && params[:test][:ext_data_path]) ? params[:test][:ext_data_path] : ""
       if self.bank_tests.blank?
         pap_test = Mongodb::BankTest.new({
           :name => self._id.to_s + "_" +Common::Locale::i18n("activerecord.models.bank_test"),
           :user_id => current_user_id,
           :quiz_date => Time.now,
+          :ext_data_path => ext_data_path,
           :bank_paper_pap_id => self.id.to_s
         })
         pap_test.save!
@@ -1350,7 +1365,8 @@ class Mongodb::BankPaperPap
         # save!
       else
         self.old_tenant_links = self.bank_tests[0].bank_test_tenant_links.map(&:tenant_uid)
-        self.bank_tests[0].bank_test_tenant_links.destroy_all unless params[:information][:tenants].blank?
+        self.bank_tests[0].update(ext_data_path: ext_data_path )
+        self.bank_tests[0].bank_test_tenant_links.destroy_all if (self.union_test && self.union_test.tenant_uids) || params[:information][:tenants].present?
       end
       return params
     rescue Exception => e
@@ -1379,7 +1395,15 @@ class Mongodb::BankPaperPap
       end
       self.old_status = params["information"]["paper_status"].blank? ? Common::Paper::Status::None : params["information"]["paper_status"]
       params["information"]["paper_status"] = status
-
+      # if self.union_test
+      #   params["information"]["heading"] = self.union_test.heading
+      #   params["information"]["subheading"] = self.union_test.subheading
+      #   params["information"]["term"]  = self.union_test.term
+      #   params["information"]["grade"] = self.union_test.grade
+      #   params["information"]["quiz_type"] = self.union_test.quiz_type
+      #   params["information"]["term_cn"]  = I18n.t("dict.#{self.union_test.term}")
+      #   params["information"]["grade_cn"] = I18n.t("dict.#{self.union_test.grade}")
+      # end
       #测试各Tenant的状态更新
       params = update_test_tenants_status(params,
         Common::Test::Status::NotStarted,
@@ -1476,14 +1500,16 @@ class Mongodb::BankPaperPap
   #试卷保存
   # step5 save/update paper
   def save_pap_phase5 params
+    target_tenant = Common::Uzer.get_tenant current_user_id
     begin
-      target_tenant = Common::Uzer.get_tenant current_user_id
       self.update_attributes({
         :user_id => current_user_id || "",
-        :area_uid => target_area.nil?? "" : target_area.uid,
+        :area_uid => self.target_area.nil?? "" : self.target_area.uid,
         :tenant_uid => target_tenant.nil?? "" : target_tenant.uid,
         :heading => params[:information][:heading] || "",
         :subheading => params[:information][:subheading] || "",
+        :subject => params[:information][:grade].blank? ? "": params[:information][:grade][:name],
+        :subject => params[:information][:subject].blank? ? "": params[:information][:subject][:name],
         :orig_file_id => params[:orig_file_id] || "",
         :paper_json => params.to_json || "",
         :paper_html => params[:paper_html] || "",
@@ -1593,8 +1619,7 @@ class Mongodb::BankPaperPap
        #########
        # part 1 根据params 修改paper信息
        #########
-      params = JSON.parse(self.paper_json)
-
+      params = JSON.parse(self.paper_json) 
       self.update_attributes({
         :order => params["order"] || "",
         :heading => params["information"]["heading"] || "",

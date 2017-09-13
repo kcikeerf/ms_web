@@ -47,6 +47,27 @@ class PapersController < ApplicationController
   end
 
   def new
+    @union_test_info_base = nil
+    if params[:union_test_id]
+      union_test = Mongodb::UnionTest.where(_id: params[:union_test_id]).first
+      @union_test_info_base = {
+        uid: params[:union_test_id],
+        heading: union_test.heading,
+        subheading: union_test.subheading,
+        term: union_test.term,
+        grade: union_test.grade,
+        quiz_type: union_test.quiz_type,
+        term_cn: I18n.t("dict.#{union_test.term}"),
+        grade_cn: I18n.t("dict.#{union_test.grade}"),
+        school: union_test.school,
+        :tenants =>  union_test.tenants.map { |t|
+          {        
+            tenant_uid: t.uid,
+            tenant_name: t.name_cn
+          } if t
+        }
+      }.to_json  if union_test
+    end
     render "zhengjuan"
   end
 
@@ -58,7 +79,6 @@ class PapersController < ApplicationController
     else
       current_pap = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
     end
-
     #Version1.1，临时代码
     # 默认是一个试卷对应一个测试，之后对改成1对多
     @current_test = current_pap.bank_tests[0]

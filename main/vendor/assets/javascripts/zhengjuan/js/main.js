@@ -709,7 +709,9 @@ $(function(){
                             tenant_status_label: ""}
                 }),
                 paper_outline: $(".paper_outline").val() || "",
-                paper_outline_edittable: paper.paperData.information.paper_outline_edittable
+                paper_outline_edittable: paper.paperData.information.paper_outline_edittable,
+                union_test_id: paper.paperData.information.union_test_id
+
             };
 
             paper.paperData.test = {
@@ -1553,8 +1555,24 @@ $(function(){
         });*/
         $(".contentBody").html($(".template_part2").html());
         $("input.date_input").date_input();
-
+       if (union_test_info_base){
+            paper.paperData.information.heading = union_test_info_base.heading;
+            paper.paperData.information.subheading = union_test_info_base.subheading;
+            paper.paperData.information.grade = {
+                name : union_test_info_base.grade,
+                label : union_test_info_base.grade_cn 
+            };
+            paper.paperData.information.term = {
+                name : union_test_info_base.term,
+                label : union_test_info_base.term_cn 
+            };
+            paper.paperData.information.quiz_type = union_test_info_base.quiz_type;
+            paper.paperData.information.tenants = union_test_info_base.tenants;
+            paper.paperData.information.union_test_id = union_test_info_base.uid
+        }
+        console.log(union_test_info_base);
         if(paper.paperData.information){
+            console.log(paper.paperData.information)
             if(paper.paperData.information.subject){
                 var subject = paper.paperData.information.subject.name,
                 s_active = $(".selectSubject .optionList li[nameid="+subject+"]");

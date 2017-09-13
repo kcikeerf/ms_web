@@ -31,4 +31,5 @@
 <input type="hidden" id="checkpoint_system">
 <script type="text/javascript">
   var quiz_type_list = <%= raw quiz_type_list.to_json %>;
+  var union_test_info_base = <%= @union_test_info_base.present? ? (raw @union_test_info_base) : "null" %>;
 </script>

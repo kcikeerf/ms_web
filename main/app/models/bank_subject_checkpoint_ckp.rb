@@ -522,7 +522,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       qzp_filter = {
         id: {'$in'=> qzp_list} 
       }
-      quiz_uid_list = Mongodb::BankQizpointQzp.where(qzp_filter).map(&:bank_quiz_qiz_id).compact
+      quiz_uid_list << Mongodb::BankQizpointQzp.where(qzp_filter).map(&:bank_quiz_qiz_id).compact
     } 
     quiz_uid_list.uniq!
     t3 = Time.new

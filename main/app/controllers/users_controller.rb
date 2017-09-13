@@ -111,6 +111,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def my_exam
+    if current_user.is_project_administrator?
+      # union_test_ids = Mongodb::UnionTestUserLink.only(:union_test_id).where(user_id: current_user.id).map{ |li| li.union_test_id.to_s}
+      union_tests = Mongodb::UnionTest.where({user_id: current_user.id })
+      grade_arr = union_tests.map {|t| t.grade if t.grade}.uniq.compact.sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.nil?? "":a.to_sym],Common::Grade::Order[b.nil?? "":b.to_sym]) }
+      @grades = deal_label('dict', grade_arr)
+      @union_tests = union_tests.by_grade(params[:grade])
+      .by_keyword(params[:keyword])
+      .page(params[:page])
+      .per(10)
+    else
+      redirect_to my_home_users_path 
+    end
+  end
+
   private
 
   def set_tenant

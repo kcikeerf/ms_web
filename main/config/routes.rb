@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :quizs do
+  resources :quizs do
     member do
       post 'single_quiz_file_upload' 
       post 'quiz_create_type1upload'
@@ -33,6 +33,15 @@ Rails.application.routes.draw do
     get 'single_quiz'
     post 'subject_related_data'
     post 'single_quiz_save'
+  end
+
+  resources :union_tests do
+    member do
+      get "show_test"
+    end
+    collection do
+      post "save_union"
+    end
   end
 
   resources :checkpoints do 
@@ -209,6 +218,7 @@ Rails.application.routes.draw do
       get 'my_pupil'
       get 'region'
       get 'test_report'
+      get 'my_exam'
     end 
   end
 

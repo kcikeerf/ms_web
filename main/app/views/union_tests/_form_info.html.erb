@@ -1,0 +1,86 @@
+<!-- 试卷信息模版 -->
+<div class="part2">
+  <div class="wordUpdate">
+    <div class="updateTitle"> 考试 - 基本信息</div>
+  </div>
+  <div class="infoWarp">
+    <div class="paperTitle unionTitle1">
+      <label>试卷主标题&nbsp;:&nbsp;</label><input type="text">
+    </div>
+    <div class="paperTitle unionTitle2">
+      <label>试卷副标题&nbsp;:&nbsp;</label><input type="text">
+    </div>
+    <div class="source">
+      <div class="school">
+        <label>学校&nbsp;:</label>
+        <input type="hidden" value="<%= test_organizer_name %>" disabled=true><span class="school_name"><%= test_organizer_name %></span>
+      </div>
+    </div>
+    <ul class="infoList">
+      <li>
+        <div class="selectWarp selecTerm different clearfix">
+          <p>适用学期&nbsp;:</p>
+          <div class="optionWarp">
+            <div class="selectVal">
+              <span>请选择</span>
+              <i class="icon"></i>
+            </div>
+            <ol class="optionList">
+              <% term_list.each do |k,v|%>
+                  <li nameid="<%=k%>"><%=v%></li>
+              <% end %>
+            </ol>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="selectWarp selecGrade different clearfix">
+          <p>年级&nbsp;:</p>
+          <div class="optionWarp">
+            <div class="selectVal">
+              <span>请选择</span>
+              <i class="icon"></i>
+            </div>
+            <ol class="optionList">
+              <% grade_list.each do |k,v|%>
+                  <li nameid="<%=k%>"><%=v%></li>
+              <% end %>
+            </ol>
+          </div>
+        </div>
+      </li>
+      <li> 
+        <div class="selectWarp selecType different selectCommon clearfix">
+          <p><%=LABEL("dict.quiz_type")%>&nbsp;:</p>
+          <div class="optionWarp">
+            <div class="selectVal">
+              <span>请选择</span>
+              <i class="icon"></i>
+            </div>
+            <ol class="optionList">
+              <li nameid="qi_chu_ce_shi"><%=LABEL("dict.qi_chu_ce_shi")%></li>
+              <li nameid="qi_zhong_ce_shi"><%=LABEL("dict.qi_zhong_ce_shi")%></li>
+              <li nameid="qi_mo_ce_shi"><%=LABEL("dict.qi_mo_ce_shi")%></li>
+              <li nameid="mo_ni_ce_shi"><%=LABEL("dict.mo_ni_ce_shi")%></li>
+              <li nameid="yue_kao"><%=LABEL("dict.yue_kao")%></li>
+              <li nameid="dan_yuan_ce_shi"><%=LABEL("dict.dan_yuan_ce_shi")%></li>
+              <li nameid="xiao_sheng_chu_ce_shi"><%=LABEL("dict.xiao_sheng_chu_ce_shi")%></li>
+              <li nameid="xue_ke_neng_li_ce_ping"><%=LABEL("dict.xue_ke_neng_li_ce_ping")%></li>
+            </ol>
+          </div>
+        </div>
+       
+      </li>
+    </ul>
+  <!--项目管理员增加Tenant范围选择域-->
+    <%=render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
+    <div class="union_test_list_paper">
+    </div>
+  </div>
+  <div class="submitInfoWarp clearfix">
+    <a class="infoBtn" href="javascript:void(0);">保存</a>
+    <%= link_to "返回", my_exam_users_path, :class => "backTo" %>
+  </div>
+</div>
+<%=render partial: "paper_list"%>
+

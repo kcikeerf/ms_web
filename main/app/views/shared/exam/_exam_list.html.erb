@@ -1,0 +1,38 @@
+<div class="panel-body">
+  <!--过滤检索区域-->
+  <div class="matches">
+    <form action="" id="data_filter" class="form-inline">
+      <div class="form-group">
+      <%= select_tag :grade, options_for_select(@grades, params[:grade]), include_blank: '全部年级', class: 'form-control' %>
+      </div>
+    </form>
+  </div>
+
+  <!--列表-->
+  <table id="testtable" class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th class="title">测试名称</th>
+        <th class="subject">已有试卷</th>
+        <th class="updated">变更时间</th>
+        <th class="show">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @union_tests.each do |utest| %>
+      <tr>
+        <td class="title">
+        <%= utest.heading %>
+        </td>
+        <td><%= utest.bank_paper_paps.map {|pap| t("dict.#{pap.subject}")}.join("、") %> </td>
+        <td class='updated'><%= utest.dt_update %></td>
+        <td ><%= link_to "查看详情", union_test_path(utest) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
+  <nav class="text-center">
+    <%= paginate @union_tests %>
+  </nav>
+</div>
