@@ -37,6 +37,35 @@ class Mongodb::UnionTest
 
   index({_id: 1}, {background: true})
 
+  class << self
+    def get_list params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      conditions = []
+      # conditions << self.send(:sanitize_sql, ["name LIKE ?", "%#{params[:name]}%"]) unless params[:name].blank?
+      # conditions << self.send(:sanitize_sql, ["email LIKE ?", "%#{params[:email]}%"]) unless params[:email].blank?
+      # conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
+      # result = self.where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
+      result = self.all.page(params[:page]).per(params[:rows])
+      result.each_with_index{|item, index|
+        h = {
+          :id => item.id,
+          :name => item.name,
+          :heading => item.heading,
+          :subheading => item.subheading,
+          :school => item.school,
+          :grade => item.grade,
+          :term => item.term,
+          :quiz_type => item.quiz_type.strftime("%Y-%m-%d %H:%M"),
+          :quiz_date => item.quiz_date.strftime("%Y-%m-%d %H:%M"),
+          :dt_update => item.updated_at.strftime("%Y-%m-%d %H:%M")
+        }
+        result[index] = h
+      }
+      return result
+    end
+  end
+
   def save_ins params
     target_area_ird = params[:province_rid] if params[:province_rid].present?
     target_area_rid = params[:city_rid] if params[:city_rid].present?
