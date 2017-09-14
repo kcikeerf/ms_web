@@ -76,18 +76,15 @@ class Mongodb::BankTest
     target_pupil_urls = Dir[_report_warehouse_path + self._id + "/**/pupil/*.json"]
     target_pupil_uids = []
     target_klass_uids = []
-    target_pupil_urls.map{|url| 
-      target_path = url.split(".json")[0]
-      target_path_arr = target_path.split("/")
-      target_pupil_uids << target_path_arr[-1]
-      target_klass_uids << target_path_arr[-3]
-    }.compact
-    target_klass_uids = target_klass_uids.uniq.compact
-
-    # target_loc_uids = Location.joins(:pupils).where("pupils.uid in (?)",target_pupil_uids).pluck("locations.uid")
-    # target_loc_uids = target_loc_uids.uniq.compact
+    target_pupil_uids = target_pupil_urls.map{|url| url.scan(/.*pupil\/([0-9]{1,}).json$/) }.flatten
+    target_klass_uids = target_pupil_urls.map{|url| url.scan(/.*klass\/([0-9]{1,})\/pupil.*.json$/) }.flatten.uniq.compact
+   
+    target_user_ids = Pupil.joins(:user).where(uid: target_pupil_uids).pluck(:id).uniq
+    master_ids = User.joins(:wx_user_mappings, :groups_as_child).pluck(:id)
+    binded_wx_user = UserLink.where(parent_id: master_ids).pluck(:child_id)
+    binded_pupil_number = (binded_wx_user&target_user_ids).size
+    # binded_pupil_number = UserLink.where(parent_id: master_ids,child_id: target_user_ids).pluck(:child_id).uniq
     result = {}
-    binded_pupil_number = Pupil.joins(user: :wx_users).where(uid: target_pupil_uids).select(:user_id).distinct.size
     result['total_pupils'] = target_pupil_uids.size
     result['binded_pupils'] = binded_pupil_number
 
@@ -95,13 +92,27 @@ class Mongodb::BankTest
 
     target_tenants = target_locations.map{|loc| loc.tenant }
     target_teachers = target_locations.map{|loc| loc.teachers.map{|item| item[:teacher]} }.flatten
-    binded_teacher_number = target_teachers.map{|tea| tea.user.wx_users.blank? ? 0 : 1 }.sum
+    binded_teacher_number = target_teachers.map{|tea| 
+      re = 0
+      if tea && tea.user
+        re = 1 if (tea.user.is_master && tea.user.wx_users.present?)
+        re = 1 if (!tea.user.is_master && tea.user.parents.map{|p| p.wx_users.present? }.include?(true))
+      end
+      re
+    }.sum
 
     result['total_teachers'] = target_teachers.size
     result['binded_teachers'] = binded_teacher_number
 
     target_tenant_administrators = target_tenants.map{|tnt| tnt.tenant_administrators }.flatten.uniq.compact
-    binded_tenant_administrators_number = target_tenant_administrators.map{|tnt_admin| tnt_admin.user.wx_users.blank? ? 0 : 1 }.sum
+    binded_tenant_administrators_number = target_tenant_administrators.map{|tnt_admin| 
+      re = 0
+      if tnt_admin && tnt_admin.user
+        re = 1 if (tnt_admin.user.is_master && tnt_admin.user.wx_users.present?)
+        re = 1 if (!tnt_admin.user.is_master && tnt_admin.user.parents.map{|p| p.wx_users.present? }.include?(true))
+      end
+      re
+    }.sum
 
     result['total_tenant'] = target_tenant_administrators.size
     result['binded_tenant'] = binded_tenant_administrators_number

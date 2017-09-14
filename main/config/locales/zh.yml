@@ -371,6 +371,7 @@ zh:
       shi_juan_guan_li: "试卷管理"
       zhi_biao_xi_tong_guan_li: "指标系统管理"
       bank_test: "测试管理"
+      union_test: "考试管理"
     messages:
       welcome: "欢迎访问三题库管理后台!"
       tenant:

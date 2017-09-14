@@ -48,6 +48,14 @@ module LocaleModule
     	:n̈u => i18n("dict.n̈u")
     }
 
+    HttpMethod = %W{
+      GET
+      POST
+      PUT
+      PATCH
+      DELETE
+    }
+
     def hanzi2pinyin hanzi_str
       PinYin.backend = PinYin::Backend::Simple.new
       PinYin.of_string(hanzi_str).join("_")

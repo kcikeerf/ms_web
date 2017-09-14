@@ -14,8 +14,9 @@ class Mongodb::UnionTest
   has_many :union_test_area_links, class_name: "Mongodb::UnionTestAreaLink", dependent: :delete
   has_many :union_test_tenant_links, class_name: "Mongodb::UnionTestTenantLink", dependent: :delete
   has_many :union_test_location_links, class_name: "Mongodb::UnionTestLocationLink", dependent: :delete
+
   has_many :union_test_user_links, class_name: "Mongodb::UnionTestUserLink", dependent: :delete
-  has_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap", dependent: :delete
+  has_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"#, dependent: :delete
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
   scope :by_keyword, ->(keyword) { any_of({heading: /#{keyword}/}, {subheading: /#{keyword}/}) if keyword.present? }
 
@@ -41,28 +42,28 @@ class Mongodb::UnionTest
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      conditions = []
-      # conditions << self.send(:sanitize_sql, ["name LIKE ?", "%#{params[:name]}%"]) unless params[:name].blank?
-      # conditions << self.send(:sanitize_sql, ["email LIKE ?", "%#{params[:email]}%"]) unless params[:email].blank?
-      # conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
-      # result = self.where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
-      result = self.all.page(params[:page]).per(params[:rows])
+      conditions = {}
+      %w{ name quiz_type term grade school heading}.each{|attr|
+        conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
+      }
+      result = self.where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
+      union_test_result = []
       result.each_with_index{|item, index|
         h = {
-          :id => item.id,
-          :name => item.name,
+          :id => item._id.to_s,
           :heading => item.heading,
-          :subheading => item.subheading,
           :school => item.school,
-          :grade => item.grade,
-          :term => item.term,
-          :quiz_type => item.quiz_type.strftime("%Y-%m-%d %H:%M"),
-          :quiz_date => item.quiz_date.strftime("%Y-%m-%d %H:%M"),
-          :dt_update => item.updated_at.strftime("%Y-%m-%d %H:%M")
+          :grade_cn => Common::Locale::i18n("dict.#{item.grade}"),
+          :term_cn => Common::Locale::i18n("dict.#{item.term}"),
+          :quiz_type_cn => Common::Locale::i18n("dict.#{item.quiz_type}"),
+          :quiz_date => item.quiz_date.blank? ? nil : item.quiz_date.strftime("%Y-%m-%d %H:%M"),
+          :dt_update => item.dt_update.strftime("%Y-%m-%d %H:%M"),
+          :subject_cn => item.bank_paper_paps.map{|paper_pap| Common::Locale::i18n("dict.#{paper_pap.subject}")} 
         }
-        result[index] = h
+        union_test_result[index] = h
       }
-      return result
+      return union_test_result, self.count
+
     end
   end
 
