@@ -51,7 +51,7 @@ module ApiV12Checkpoints
         end
       end
       post :get_related_quizs_plus do
-        result, flag = BankSubjectCheckpointCkp.get_related_quizs params
+        result, flag = BankSubjectCheckpointCkp.get_related_quizs params.deep_stringify_keys
         if flag
            result
         else

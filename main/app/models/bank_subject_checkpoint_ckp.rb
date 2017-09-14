@@ -22,17 +22,17 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
 
   class << self
     def get_related_quizs params
-      params[:amount] ||= 3
+      params["amount"] ||= 3
       base_condition = {}
-      base_condition["cat"] = Regexp.new(params[:cat_type]) if params[:cat_type].present?
-      base_condition["grade"] = Regexp.new(params[:grade]) if params[:grade].present? 
-      base_condition["subject"] = Regexp.new(params[:subject]) if params[:subject].present?
-      base_condition["levelword2"] = Regexp.new(params[:levelword]) if params[:levelword].present?
+      base_condition["cat"] = Regexp.new(params["cat_type"]) if params["cat_type"].present?
+      base_condition["grade"] = Regexp.new(params["grade"]) if params["grade"].present? 
+      base_condition["subject"] = Regexp.new(params["subject"]) if params["subject"].present?
+      base_condition["levelword2"] = Regexp.new(params["levelword"]) if params["levelword"].present?
       qzp_list = []
       quiz_uid_list = []
-      case params[:accuracy]
+      case params["accuracy"]
       when "exact"
-        base_ckp = where(uid: params[:knowledge_uid]).first
+        base_ckp = where(uid: params["knowledge_uid"]).first
         return "e45001",false if base_ckp.blank? 
         qzp_list = Mongodb::BankCkpQzp.where(ckp_uid: base_ckp.uid).map(&:qzp_uid).compact
         qzp_filter = {
@@ -40,12 +40,12 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         }
         quiz_uid_list = Mongodb::BankQizpointQzp.where(qzp_filter).map{|qiz| qiz.bank_quiz_qiz_id.to_s}.uniq.compact
       else
-        base_ckp = where(uid: params[:knowledge_uid]).first if params[:knowledge_uid].present?
-        base_ckp = where(uid: params[:ability_uid]).first if params[:ability_uid].present?
-        base_ckp = where(uid: params[:skill_uid]).first if params[:skill_uid].present?
+        base_ckp = where(uid: params["knowledge_uid"]).first if params["knowledge_uid"].present?
+        base_ckp = where(uid: params["ability_uid"]).first if params["ability_uid"].present?
+        base_ckp = where(uid: params["skill_uid"]).first if params["skill_uid"].present?
         return "e45001",false if base_ckp.blank? 
 
-        base_k_ckp = where(uid: params[:knowledge_uid]).first
+        base_k_ckp = where(uid: params["knowledge_uid"]).first
         if base_ckp && base_k_ckp
           p_base_k_ckp = base_k_ckp.parent
           qzp_list = Mongodb::BankCkpQzp.where(ckp_uid: base_ckp.uid).map(&:qzp_uid).compact
@@ -66,7 +66,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         end
       end
       base_condition[:id] = {'$in' => quiz_uid_list}
-      quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params[:amount].to_i).map {|quiz|
+      quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params["amount"].to_i).map {|quiz|
         quiz.quiz_base_info
       }
       if quizs_info.present?
