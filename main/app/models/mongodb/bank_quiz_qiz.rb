@@ -73,6 +73,7 @@ class Mongodb::BankQuizQiz
         :tpl_id => params["tpl_id"] || "",
         :ext1 => params["ext1"] || 0,
         :ext2 => params["ext2"] || 0,
+        :grade => params["grade"] || "",
         :cat => params["cat"] || "",
         :type => params["type"] || "",
         :optional => params["optional"] || "",

@@ -66,7 +66,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         end
       end
       base_condition[:id] = {'$in' => quiz_uid_list}
-      quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params[:amount]).map {|quiz|
+      quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params[:amount].to_i).map {|quiz|
         quiz.quiz_base_info
       }
       if quizs_info.present?

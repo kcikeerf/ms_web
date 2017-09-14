@@ -1289,16 +1289,12 @@ class Mongodb::BankPaperPap
       params[:pap_uid] = id.to_s
       ##############################
       #地理位置信息
-      p '====================='
-      p params[:information]
+
       if params[:information][:union_test_id]
         self.union_test.bank_paper_paps(self) if self.union_test
         union_test = Mongodb::UnionTest.where(_id: params[:information][:union_test_id]).first
-        p union_test
         union_test.bank_paper_paps.push(self) if union_test.present?
       end
-
-      p '------------------------------'
       current_user = Common::Uzer.get_user current_user_id
       target_tenant = Common::Uzer.get_tenant current_user_id
       self.test_associated_tenant_uids = []
@@ -1508,7 +1504,7 @@ class Mongodb::BankPaperPap
         :tenant_uid => target_tenant.nil?? "" : target_tenant.uid,
         :heading => params[:information][:heading] || "",
         :subheading => params[:information][:subheading] || "",
-        :subject => params[:information][:grade].blank? ? "": params[:information][:grade][:name],
+        :grade => params[:information][:grade].blank? ? "": params[:information][:grade][:name],
         :subject => params[:information][:subject].blank? ? "": params[:information][:subject][:name],
         :orig_file_id => params[:orig_file_id] || "",
         :paper_json => params.to_json || "",
@@ -1675,6 +1671,7 @@ class Mongodb::BankPaperPap
           qzp_arr = []
           qiz = Mongodb::BankQuizQiz.new
           quiz["subject"] = subject
+          quiz["grade"] = grade
           # 单题的试卷中递增题顺
           quiz["asc_order"] = index + 1
           # 所有得分点的题顺数组
