@@ -47,7 +47,7 @@ module ApiV12Checkpoints
         given accuracy: ->(val) {val == 'normal'} do
           optional :ability_uid, type: String
           optional :skill_uid, type: String
-          exactly_one_of :ability_uid, :skill_uid
+          mutually_exclusive :ability_uid, :skill_uid
         end
       end
       post :get_related_quizs_plus do
@@ -55,7 +55,12 @@ module ApiV12Checkpoints
         if flag
            result
         else
-          error!(message_json(result), 500)
+          if result == "e45001"
+            status = 500
+          else
+            status = 404
+          end
+          error!(message_json(result), status)
         end
       end
     end
