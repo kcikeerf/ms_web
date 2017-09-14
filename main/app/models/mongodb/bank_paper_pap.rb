@@ -11,6 +11,7 @@ class Mongodb::BankPaperPap
 
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
+  before_destroy :delete_paper_pap  
 
   # has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
   # has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
@@ -23,6 +24,7 @@ class Mongodb::BankPaperPap
   has_many :bank_tnt_paps, class_name: "Mongodb::BankTntPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
+
   belongs_to :union_test, class_name: "Mongodb::UnionTest"
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
@@ -1952,55 +1954,55 @@ class Mongodb::BankPaperPap
   end
 
 
-  #删除相关试卷的上传文件，删除试卷及依赖
-  def delete_paper_pap
-    begin
-      if bank_tests[0].present? 
-        score_uploads = bank_tests[0].score_uploads
-      else
-        score_upload =  ""
-      end 
+  # #删除相关试卷的上传文件，删除试卷及依赖
+  # def delete_paper_pap
+  #   begin
+  #     if bank_tests[0].present? 
+  #       score_uploads = bank_tests[0].score_uploads
+  #     else
+  #       score_upload =  ""
+  #     end 
 
-      if self.orig_file_id
-        file_upload = FileUpload.where(id: self.orig_file_id).first 
-      else
-        file_upload = ""
-      end
+  #     if self.orig_file_id
+  #       file_upload = FileUpload.where(id: self.orig_file_id).first 
+  #     else
+  #       file_upload = ""
+  #     end
 
-      score_path = ""
-      file_path = ""
-      if score_uploads.present?
-        score_uploads.each {|su| 
-          if su.filled_file.current_path.present?
-            score_path = su.filled_file.current_path.split("/")[0..-2].join("/")
-          elsif su.empty_file.current_path.present?
-            score_path = su.empty_file.current_path.split("/")[0..-2].join("/")
-          end
-          if score_path
-            FileUtils.rm_rf(score_path)
-          end
-          su.delete
-        }
-      end
+  #     score_path = ""
+  #     file_path = ""
+  #     if score_uploads.present?
+  #       score_uploads.each {|su| 
+  #         if su.filled_file.current_path.present?
+  #           score_path = su.filled_file.current_path.split("/")[0..-2].join("/")
+  #         elsif su.empty_file.current_path.present?
+  #           score_path = su.empty_file.current_path.split("/")[0..-2].join("/")
+  #         end
+  #         if score_path
+  #           FileUtils.rm_rf(score_path)
+  #         end
+  #         su.delete
+  #       }
+  #     end
 
-      if file_upload.present?
-        if file_upload.paper.current_path.present?
-          file_path = file_upload.paper.current_path.split("/")[0..-2].join("/")
-        elsif file_upload.paper_structure.current_path.present?
-          file_path = file_upload.paper_structure.current_path.split("/")[0..-2].join("/")
-        end
-        if file_path
-          FileUtils.rm_rf(file_path)
-        end
-        file_upload.delete
-      end
-      self.delete
-    rescue Exception => e
-      p e.message
-      p e.backtrace
-      raise SwtkErrors::DeletePaperError.new(I18n.t("papers.messages.delete_paper.debug", :message => e.message))
-    end
-  end
+  #     if file_upload.present?
+  #       if file_upload.paper.current_path.present?
+  #         file_path = file_upload.paper.current_path.split("/")[0..-2].join("/")
+  #       elsif file_upload.paper_structure.current_path.present?
+  #         file_path = file_upload.paper_structure.current_path.split("/")[0..-2].join("/")
+  #       end
+  #       if file_path
+  #         FileUtils.rm_rf(file_path)
+  #       end
+  #       file_upload.delete
+  #     end
+  #     self.delete
+  #   rescue Exception => e
+  #     p e.message
+  #     p e.backtrace
+  #     raise SwtkErrors::DeletePaperError.new(I18n.t("papers.messages.delete_paper.debug", :message => e.message))
+  #   end
+  # end
 
   def checkpoint_system
     CheckpointSystem.where(rid: self.checkpoint_system_rid).first
@@ -2246,6 +2248,56 @@ class Mongodb::BankPaperPap
       raise ex.message
     end
   end
+
+  private
+    #删除相关试卷的上传文件，删除试卷及依赖
+    def delete_paper_pap
+      begin
+        if bank_tests[0].present? 
+          score_uploads = bank_tests[0].score_uploads
+        else
+          score_upload =  ""
+        end 
+
+        if self.orig_file_id
+          file_upload = FileUpload.where(id: self.orig_file_id).first 
+        else
+          file_upload = ""
+        end
+
+        score_path = ""
+        file_path = ""
+        if score_uploads.present?
+          score_uploads.each {|su| 
+            if su.filled_file.current_path.present?
+              score_path = su.filled_file.current_path.split("/")[0..-2].join("/")
+            elsif su.empty_file.current_path.present?
+              score_path = su.empty_file.current_path.split("/")[0..-2].join("/")
+            end
+            if score_path
+              FileUtils.rm_rf(score_path)
+            end
+            su.delete
+          }
+        end
+
+        if file_upload.present?
+          if file_upload.paper.current_path.present?
+            file_path = file_upload.paper.current_path.split("/")[0..-2].join("/")
+          elsif file_upload.paper_structure.current_path.present?
+            file_path = file_upload.paper_structure.current_path.split("/")[0..-2].join("/")
+          end
+          if file_path
+            FileUtils.rm_rf(file_path)
+          end
+          file_upload.delete
+        end
+      rescue Exception => e
+        p e.message
+        p e.backtrace
+        raise SwtkErrors::DeletePaperError.new(I18n.t("papers.messages.delete_paper.debug", :message => e.message))
+      end
+    end
 
 end
 
