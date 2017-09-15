@@ -12,6 +12,7 @@ class Mongodb::UnionTest
 
   has_many :bank_tests, class_name: "Mongodb::BankTest", dependent: :delete
   has_many :union_test_area_links, class_name: "Mongodb::UnionTestAreaLink", dependent: :delete
+  has_many :union_test_task_links, class_name: "Mongodb::UnionTestTaskLink", dependent: :delete
   has_many :union_test_tenant_links, class_name: "Mongodb::UnionTestTenantLink", dependent: :delete
   has_many :union_test_location_links, class_name: "Mongodb::UnionTestLocationLink", dependent: :delete
 
@@ -158,6 +159,14 @@ class Mongodb::UnionTest
 
   def users
     User.where(id: user_ids)
+  end
+
+  def task_uids
+    union_test_task_links.map(&:task_uid)
+  end
+
+  def tasks
+    TaskList.where(id: task_uids)
   end
 
 end

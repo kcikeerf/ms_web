@@ -9,8 +9,10 @@ module LocaleModule
       else
         label_str = nil
       end
-      
-      I18n.t(label_str, options.merge!({:default => label_str.blank?? I18n.t("common.minus") : label_str}))
+
+      options.merge!({:default => label_str.blank?? I18n.t("common.minus") : label_str })
+      options.merge!({:locale => :zh}) if options[:locale].blank?
+      I18n.t(label_str, options)
     end
 
     DimesionOrder = {

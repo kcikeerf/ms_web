@@ -90,10 +90,13 @@ module ReportModule
 
     module Group
       ListArr = ["pupil", "klass", "grade", "project"]
+      UnionListArr = ["pupil", "klass", "grade", "test", "union"]
       Pupil = "pupil"
       Klass = "klass"
       Grade = "grade"
       Project = "project"
+      Test = "test"
+      Union = "union"
     end
 
     module Type
