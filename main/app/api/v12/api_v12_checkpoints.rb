@@ -55,12 +55,7 @@ module ApiV12Checkpoints
         if flag
            result
         else
-          if result == "e45001"
-            status = 500
-          else
-            status = 404
-          end
-          error!(message_json(result), status)
+          error!(message_json(result), 404)
         end
       end
     end
