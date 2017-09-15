@@ -23,14 +23,14 @@ class User < ActiveRecord::Base
   has_many :parents, :through=>:groups_as_parent
   has_many :children, :through=>:groups_as_child
 
-  has_many :user_skope_links, foreign_key: "user_id", dependent: :destroy
-  has_many :skopes, through: :user_skope_links
+  # has_many :user_skope_links, foreign_key: "user_id", dependent: :destroy
+  # has_many :skopes, through: :user_skope_links
 
 
   #
-  has_many :user_tenant_links, foreign_key: "user_id", dependent: :destroy
+  # has_many :user_tenant_links, foreign_key: "user_id", dependent: :destroy
   has_many :tenants, through: :user_tenant_links, foreign_key: "user_id"
-  has_many :user_location_links, foreign_key: "user_id", dependent: :destroy
+  # has_many :user_location_links, foreign_key: "user_id", dependent: :destroy
   has_many :locations, through: :user_location_links,foreign_key: "user_id"
 
   scope :by_master, ->(val) { where(is_master: val) }
