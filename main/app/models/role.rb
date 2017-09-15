@@ -12,7 +12,7 @@ class Role < ActiveRecord::Base
   ##########类方法##########
   class	 << self
     def get_role_id(name)
-      find_by(name: name).try(:id) || 0
+      find_by(name: name).try(:id) || nil
     end
   end
   ################实例方法##########
