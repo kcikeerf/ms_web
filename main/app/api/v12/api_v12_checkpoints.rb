@@ -37,6 +37,7 @@ module ApiV12Checkpoints
       desc '根据相关信息获取内容'
       params do
         requires :grade, type: String
+        optional :quiz_uid, type: String
         requires :subject, type: String
         requires :knowledge_uid, type: String 
         requires :accuracy, type: String, values: ["exact", "normal"]

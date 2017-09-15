@@ -89,6 +89,7 @@ module ApiV12Quizs
             :qzp_type => Common::Locale::hanzi2pinyin(target_qzp.type),
             :full_score => target_qzp.score,
             :qzp_answer => target_qzp.answer,
+            :levelword => target_quiz.levelword2,
             :qzp_analysis => nil,
             :result_info => {
                 :result_url => nil,

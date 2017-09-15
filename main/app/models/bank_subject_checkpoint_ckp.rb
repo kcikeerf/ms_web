@@ -43,8 +43,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         base_ckp = where(uid: params["skill_uid"]).first# if params["skill_uid"].present?
         # return "e45001",false if base_ckp.blank? 
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_k_ckp
-
       end
+      quiz_uid_list.delete(params["quiz_uid"]) if params["quiz_uid"] && quiz_uid_list.include?(params["quiz_uid"])
       base_condition["id"] = {'$in' => quiz_uid_list}
       quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params["amount"].to_i).map {|quiz|
         quiz.quiz_base_info

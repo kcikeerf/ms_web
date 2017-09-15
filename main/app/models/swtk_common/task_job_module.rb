@@ -6,7 +6,6 @@ module TaskJobModule
       CreateReport = "create_report"
       ImportResult = "import_result"
       SubmittingOnlineTestResult = "submitting_online_test_results"
-      GenerateUnionTestReports = "generate_union_report"
     end
 
     module Status
@@ -32,7 +31,6 @@ module TaskJobModule
       ConstructReports = "construct_reports"
       Monitoring = "monitoring"
       SubmittingOnlineTestResult = "submitting_online_test_results"
-      GenerateUnionTestReports = "generate_union_report"
     end
 
     module Status
@@ -43,9 +41,9 @@ module TaskJobModule
       Completed = "completed"
     end
 
-    def update_first_job_process_with_redis  _task_uid, _redis_ns, _redis_key,_total_phases, _process_value=nil
+    def update_first_job_process_with_redis  _task_uid, _redis_ns, _redis_key,_total_phases
       Common::SwtkRedis::incr_key(_redis_ns, _redis_key)
-      process_value = _process_value || Common::SwtkRedis::get_value(_redis_ns, _redis_key).to_f
+      process_value = Common::SwtkRedis::get_value(_redis_ns, _redis_key).to_f
       target_task = TaskList.where(uid: _task_uid).first
       return false unless target_task
       job_tracker = target_task.job_lists.order(dt_update: :desc).first
