@@ -184,15 +184,15 @@ namespace :swtk_patch do
     task :inport_permission_diffnition, [:file_path] => :environment do |t,args|
 
       xlsx = Roo::Excelx.new(args[:file_path])
-      permissions = Permission.all.delete_all
-      (3..xlsx.sheet("permissions").last_row).each do |i|     
-        row = xlsx.sheet("permissions").row(i)
-        Permission.new(name: row[1], subject_class: row[2],operation: row[3], description: row[4]).save!
-      end
+      # permissions = Permission.all.delete_all
+      # (3..xlsx.sheet("permissions").last_row).each do |i|     
+      #   row = xlsx.sheet("permissions").row(i)
+      #   Permission.new(name: row[1], subject_class: row[2],operation: row[3], description: row[4]).save!
+      # end
       api_permissions = ApiPermission.all.delete_all
       (2..xlsx.sheet("api_permissions").last_row).each do |j|
         row = xlsx.sheet("api_permissions").row(j)
-        ApiPermission.new(name: row[1], method: row[2], path: row[3], description: row[4]).save!
+        ApiPermission.new(name: row[0], method: row[1], path: row[2], description: row[3]).save!
       end
     end
     
