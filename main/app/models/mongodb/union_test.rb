@@ -34,8 +34,11 @@ class Mongodb::UnionTest
   field :report_top_group, type: String #取几个联考测试的最低值
   field :ext_data_path, type: String # 外挂码
   field :user_id, type: String
+  field :union_status, type: String
+  field :union_config, type: String
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
+
 
   index({_id: 1}, {background: true})
 
@@ -72,7 +75,6 @@ class Mongodb::UnionTest
     target_area_ird = params[:province_rid] if params[:province_rid].present?
     target_area_rid = params[:city_rid] if params[:city_rid].present?
     target_area_rid = params[:district_rid] if params[:district_rid].present?
-    
     paramsh = {
       :name => params[:name],
       :school => params[:school],
@@ -83,7 +85,9 @@ class Mongodb::UnionTest
       :quiz_type => params[:quiz_type],
       :quiz_date => params[:quiz_date],
       :start_date => params[:start_date],
-      :user_id => current_user_id
+      :user_id => current_user_id,
+      :union_config => params[:union_config],
+      :union_status => params[:union_status] || "new"
     }
     paramsh.merge!({:area_rid => target_area_rid})
     update_attributes(paramsh)
@@ -97,6 +101,7 @@ class Mongodb::UnionTest
 
 
   def u_test_info
+    paper_report_completed = true
     {
       :id => self._id.to_s,
       :name => self.name,
@@ -117,15 +122,19 @@ class Mongodb::UnionTest
         } if t
       },
       :bank_paper_paps => self.bank_paper_paps.map { |t|
+        paper_report_completed = paper_report_completed&&(t.paper_status == "report_completed")
         {
           :pap_uid => t._id.to_s,
           :subject => t.subject,
           :subject_cn => I18n.t("dict.#{t.subject}"),
           :paper_status => t.paper_status,
           :status => I18n.t("papers.status.#{t.paper_status}"),
-          :quiz_date => t.quiz_date
+          :quiz_date => t.quiz_date.strftime("%Y-%m-%d")
         } if t
-      }
+      },
+      :paper_report_completed => paper_report_completed,
+      :union_status => self.union_status.present? ? self.union_status : "",
+      :union_config => self.union_config
     }
   end
 

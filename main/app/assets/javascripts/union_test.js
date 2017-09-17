@@ -25,14 +25,30 @@ $(document).on('ready page:load', function (){
       });
     }
     var template = $(".bank_paper_list").html();
+    var union_config_test = union_test_info.union_config
+    console.log(union_test_info.union_config)
+    $(".form-group .union_config").val(union_config_test);
     $(".union_test_list_paper").html(template);
     new_paper_url = "/papers/new?union_test_id=" + union_test_info.id
     $(".paper_new").attr("href", new_paper_url);
     var paper_html = "";
     if (union_test_info.bank_paper_paps){
-      $.map(union_test_info.bank_paper_paps, function(v){ paper_html += ("<tr><td>" + v.subject_cn  + "</td><td>"+ v.status + "</td><td><a href='/papers/get_paper?pap_uid=" + v.pap_uid + "'>查看</a></td>") });
+      $.map(union_test_info.bank_paper_paps, function(v){ paper_html += ("<tr><td>" + v.subject_cn  + "</td><td>"+ v.status + "</td><td>"+ v.quiz_date + "</td><td><a href='/papers/get_paper?pap_uid=" + v.pap_uid + "'>进入试卷控制</a></td>") });
     }
     $(".paper_list").html(paper_html);
+    if (union_test_info.paper_report_completed){
+      if(union_test_info.union_stauts != "report_generating"  && union_test_info.union_stauts != "report_completed" ) {
+        $(".createReport").show();
+      }
+      else if(union_test_info.union_stauts == "report_generating"){
+        var that = $(this);
+        $(".createReport").show();
+        if(!that.hasClass("active")) return;
+        that.removeClass("active");
+      }
+    }
+    // $(".createReport").show();
+
   }
   else{
 
@@ -76,7 +92,7 @@ $(document).on('ready page:load', function (){
       term : $(".selecTerm .selectVal span").attr("values") ? $(".selecTerm  .selectVal span").attr("values") : "", //适用学期
       quiz_type : $(".selecType .selectVal span").attr("values") ? $(".selecType  .selectVal span").attr("values") : "", //测试类型
       grade : $(".selecGrade .selectVal span").attr("values") ? $(".selecGrade  .selectVal span").attr("values") : "", //年级
-
+      union_config: $(".form-group .union_config").val(),
       tenants: $.map($(".tenant_range_item_checkbox.active"), function(v,i){ 
           return {tenant_uid: v.getAttribute("tenant_uid"), 
                   tenant_name: v.getAttribute("tenant_name"),
@@ -101,6 +117,8 @@ $(document).on('ready page:load', function (){
     }
     if(union_test_info) {
       union_test["id"] = union_test_info.id
+      union_test["union_stauts"] = union_test_info.union_stauts
+
     }
     if(allowSubmit){
         $.ajax({
@@ -123,4 +141,34 @@ $(document).on('ready page:load', function (){
         alert(errors.join("\n"));
     }
   });
+
+
+
+  doc.on("click",".createReport a",function(){
+    if (union_test_info.paper_report_completed) {
+      var that = $(this);
+      if(!that.hasClass("active")) return;
+      that.removeClass("active");
+      $.ajax({
+          url: "/reports/generate_union_reports",
+          type: "post",
+          data: { union_test_id: union_test_info.id },
+          dataType: "json",
+          success: function(data){
+              if(data && data.task_uid){
+                  setTimeout(function(){
+                      location.reload();
+                  },3000);
+              }
+          },
+          error: function(){
+              that.addClass("active");
+              alert("网络错误，请求失败");
+          }   
+      });
+    }else{
+      alert("还有试卷未生成报告，不能生成整体报告")
+    }
+  });
+
 });

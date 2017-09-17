@@ -61,6 +61,24 @@ class ReportsController < ApplicationController
     render common_json_response(status_code, result)
   end
 
+  def generate_union_reports
+    union_test = Mongodb::UnionTest.where(_id: params[:union_test_id]).first
+    status_code, result = nil, nil
+    union_test_config = (union_test.present?&&union_test.union_config.present?) ? JSON.parse(union_test.union_config) : {}
+    status_code,result = Common::template_tk_job_execution_in_controller(status, result) {
+      TkJobConnector.new({
+        :version => "v1.2",
+        :api_name => "generate_union_tests_reports",
+        :http_method => "post",
+        :params => {
+          :union_test_id => union_test.id.to_s,
+          :union_test_config => union_test_config
+        }
+      })
+    }
+    render common_json_response(status_code, result)
+  end
+
   def get_grade_report
     params.permit!
 

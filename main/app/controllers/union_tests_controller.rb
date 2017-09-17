@@ -19,7 +19,7 @@ class UnionTestsController < ApplicationController
       union_test.save_ins params
       render common_json_response(200, {data: { union_uid: union_test._id.to_s } })
     rescue Exception => ex
-      render common_json_response(500, {messages: Common::Locale::i18n("union.messages.save_test.fail", :message=> "#{ex.message}" )})
+      render common_json_response(500, {messages: Common::Locale::i18n("union.messages.save_test.fail", :message => "#{ex.message}" )})
     end
   end
 

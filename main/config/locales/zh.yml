@@ -208,6 +208,11 @@ zh:
         add_user_failed: "生成用户异常！"
         upload_failed: "文件上传失败！"
         upload_exception: "文件上传中发生异常错误！"
+  #
+  skope_rules:
+    all_invalid: "所有无效"
+    specified_available: "所属范围访问有效"
+    all_available: "所有有效"      
   tasks:
     type:
       create_report: "生成报告"
@@ -624,3 +629,8 @@ zh:
       search_placeholder: '请输入关键字进行搜索'
     reports:
       report: "报告"
+  
+  union:
+    messages:
+      save_test:
+        fail: "考试失败（原因：%{message}）保存失败!"
