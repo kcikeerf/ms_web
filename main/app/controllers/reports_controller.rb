@@ -69,7 +69,7 @@ class ReportsController < ApplicationController
       union_test.bank_paper_paps.each {|paper| can_report = can_report&&paper.is_report_completed? }
       if can_report
         union_test_config = (union_test.present?&&union_test.union_config.present?) ? JSON.parse(union_test.union_config) : {}
-        status_code,result = Common::template_tk_job_execution_in_controller(status, result) {
+        status_code,result = Common::template_tk_job_execution_in_controller(status_code, result) {
           TkJobConnector.new({
             :version => "v1.2",
             :api_name => "generate_union_tests_reports",
