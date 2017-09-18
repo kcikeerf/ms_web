@@ -64,18 +64,23 @@ class ReportsController < ApplicationController
   def generate_union_reports
     union_test = Mongodb::UnionTest.where(_id: params[:union_test_id]).first
     status_code, result = nil, nil
-    union_test_config = (union_test.present?&&union_test.union_config.present?) ? JSON.parse(union_test.union_config) : {}
-    status_code,result = Common::template_tk_job_execution_in_controller(status, result) {
-      TkJobConnector.new({
-        :version => "v1.2",
-        :api_name => "generate_union_tests_reports",
-        :http_method => "post",
-        :params => {
-          :union_test_id => union_test.id.to_s,
-          :union_test_config => union_test_config
-        }
-      })
-    }
+    unless union_test  
+      status_code = 500
+      result = {message: I18n.t("reports.messages.grade.get_report.failed")}
+    else
+      union_test_config = (union_test.present?&&union_test.union_config.present?) ? JSON.parse(union_test.union_config) : {}
+      status_code,result = Common::template_tk_job_execution_in_controller(status, result) {
+        TkJobConnector.new({
+          :version => "v1.2",
+          :api_name => "generate_union_tests_reports",
+          :http_method => "post",
+          :params => {
+            :union_test_id => union_test.id.to_s,
+            :union_test_config => union_test_config
+          }
+        })
+      }
+    end
     render common_json_response(status_code, result)
   end
 

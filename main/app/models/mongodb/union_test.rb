@@ -122,7 +122,7 @@ class Mongodb::UnionTest
         } if t
       },
       :bank_paper_paps => self.bank_paper_paps.map { |t|
-        paper_report_completed = paper_report_completed&&(t.paper_status == "report_completed")
+        paper_report_completed = paper_report_completed&&(t.is_report_completed?)
         {
           :pap_uid => t._id.to_s,
           :subject => t.subject,

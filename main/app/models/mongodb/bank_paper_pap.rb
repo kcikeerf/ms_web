@@ -2249,6 +2249,10 @@ class Mongodb::BankPaperPap
     end
   end
 
+  def is_report_completed?
+    self.paper_status == "report_completed"
+  end
+
   private
     #删除相关试卷的上传文件，删除试卷及依赖
     def delete_paper_pap
