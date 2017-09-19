@@ -129,12 +129,13 @@ class Mongodb::UnionTest
           :subject_cn => I18n.t("dict.#{t.subject}"),
           :paper_status => t.paper_status,
           :status => I18n.t("papers.status.#{t.paper_status}"),
-          :quiz_date => t.quiz_date.strftime("%Y-%m-%d")
+          :quiz_date => t.quiz_date.present? ? t.quiz_date.strftime("%Y-%m-%d") : ""
         } if t
       },
       :paper_report_completed => paper_report_completed,
       :union_status => self.union_status.present? ? self.union_status : "",
-      :union_config => self.union_config
+      :union_config => self.union_config,
+      :task => self.union_test_report_task
     }
   end
 
@@ -175,7 +176,13 @@ class Mongodb::UnionTest
   end
 
   def tasks
-    TaskList.where(id: task_uids)
+    TaskList.where(id: task_uids).order("dt_add DESC")
+  end
+
+  def union_test_report_task
+    condition = Common::Job::Type::GenerateUnionTestReports
+    task = tasks.by_task_type(condition).first
+    task.present? ? task.uid : ""
   end
 
 end

@@ -78,9 +78,7 @@ module ApiV12Reports
         can_report = true
         union_test.bank_paper_paps.each {|paper| can_report = can_report&&paper.is_report_completed? }
         error!(message_json("e42001"), 403) unless union_test
-
         union_test_config = (union_test.present?&&union_test.union_config.present?) ? JSON.parse(union_test.union_config) : {}
-
         status_code, result = Common::template_tk_job_execution_in_controller {
           TkJobConnector.new({
             :version => "v1.2",

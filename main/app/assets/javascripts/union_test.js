@@ -1,4 +1,7 @@
 //= require application
+//= require interval_update
+//= require topic
+
 $(document).on('ready page:load', function (){
   if(union_test_info)  {
     $(".unionTitle1 input").val(union_test_info.heading);
@@ -26,29 +29,46 @@ $(document).on('ready page:load', function (){
     }
     var template = $(".bank_paper_list").html();
     var union_config_test = union_test_info.union_config
-    console.log(union_test_info.union_config)
     $(".form-group .union_config").val(union_config_test);
     $(".union_test_list_paper").html(template);
-    new_paper_url = "/papers/new?union_test_id=" + union_test_info.id
-    $(".paper_new").attr("href", new_paper_url);
+    $(".paper_new").attr("href", "/papers/new?union_test_id=" + union_test_info.id);
     var paper_html = "";
     if (union_test_info.bank_paper_paps){
+      console.log(union_test_info.bank_paper_paps.length);
       $.map(union_test_info.bank_paper_paps, function(v){ paper_html += ("<tr><td>" + v.subject_cn  + "</td><td>"+ v.status + "</td><td>"+ v.quiz_date + "</td><td><a href='/papers/get_paper?pap_uid=" + v.pap_uid + "'>进入试卷控制</a></td>") });
-    }
-    $(".paper_list").html(paper_html);
-    if (union_test_info.paper_report_completed){
-      if(union_test_info.union_stauts != "report_generating"  && union_test_info.union_stauts != "report_completed" ) {
-        $(".createReport").show();
-      }
-      else if(union_test_info.union_stauts == "report_generating"){
-        var that = $(this);
-        $(".createReport").show();
-        if(!that.hasClass("active")) return;
-        that.removeClass("active");
-      }
-    }
-    // $(".createReport").show();
+      $(".paper_list").html(paper_html);
+      if (union_test_info.paper_report_completed&&union_test_info.bank_paper_paps.length>0){
+        console.log(union_test_info.union_status);
+        if(union_test_info.union_status != "report_generating"  && union_test_info.union_status != "report_completed" ) {
+          $(".createReport").show();
+          $(".progress").hide();
+        }
+        else if(union_test_info.union_status == "report_generating"){
+          var that = $(this);
+          $(".createReport").show();
+          $(".progress.createReport").show();
+          $(".createReport a").removeClass("active");
+          $(".createReport a").html("报告生成中...");
 
+          //paper.setInterVal();
+          var monitoring_all_tenants = new MonitorMultipleUpdaters();
+           $.each($(".progress.createReport > .progress-bar"),function(i,item){
+              var target_task_uid = union_test_info.task;
+              var target_job_uid = item.getAttribute("job-uid");
+              window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+              monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
+              $.Topic("union_report_generating").subscribe(window["job_updater"+target_job_uid].run());
+              $.Topic("union_report_generating").publish();
+          });
+          monitoring_all_tenants.run();
+        }
+        else if (union_test_info.union_status == "report_completed"){
+          $.Topic("union_report_generating").destroy();
+          $(".lookReport").show();
+          $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?union_uid=1111"+union_test_info.id);
+        }
+      }
+    }
   }
   else{
 

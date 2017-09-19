@@ -80,6 +80,8 @@ class ReportsController < ApplicationController
             }
           })
         }
+        # union_test.union_status = "report_generating"
+        # union_test.save!
       else
       status_code = 403
       result = {message: I18n.t("reports.messages.union_test.cannot_report")}
