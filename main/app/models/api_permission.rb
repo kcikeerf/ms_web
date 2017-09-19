@@ -32,6 +32,7 @@ class ApiPermission < ActiveRecord::Base
         api_permission = ApiPermission.new(api_permission_params)
         api_permission.save
         api_permission.roles << roles
+        roles.each{|role| role.delete_role_auth_redis }
       end
     end
   end
@@ -42,7 +43,9 @@ class ApiPermission < ActiveRecord::Base
       add_roles = roles - self.roles
       self.update(api_permission_params)
       self.roles.delete(delete_roles)
+      delete_roles.each{|role| role.delete_role_auth_redis }
       self.roles << add_roles
+      add_roles.each{|role| role.delete_role_auth_redis }
     end
   end
 

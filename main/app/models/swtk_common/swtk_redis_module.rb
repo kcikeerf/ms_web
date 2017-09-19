@@ -10,6 +10,7 @@ module SwtkRedisModule
       ImportResult = "/import_results/"
       GenerateReport = "/generate_reports/"
       Reports = "/reports_warehouse/"
+      Auths = "/authts/role/"
     end
 
     module Ns
@@ -61,7 +62,7 @@ module SwtkRedisModule
     end
 
     def find_keys ns,str
-      current_redis(ns).keys(str)
+      current_redis(ns).keys(str + '*')
     end
 
   end

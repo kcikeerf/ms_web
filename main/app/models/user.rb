@@ -675,7 +675,7 @@ class User < ActiveRecord::Base
   end
 
   def create_user_auth_redis
-    key_arr = Common::SwtkRedis::find_keys Common::SwtkRedis::Ns::Auth, "/users/#{self.id}"
+    key_arr = Common::SwtkRedis::find_keys Common::SwtkRedis::Ns::Auth, Common::SwtkRedis::Prefix::Auths + self.role_id.to_s + "users/#{self.id}"
     if key_arr.blank?
       refresh_user_auth_redis
     end
@@ -683,7 +683,7 @@ class User < ActiveRecord::Base
 
   def refresh_user_auth_redis
     return false unless self.id
-    base_key = "/users/#{self.id}"
+    base_key = Common::SwtkRedis::Prefix::Auths + self.role_id.to_s + "/users/#{self.id}"
     Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Auth, base_key
   
     #######权限#######

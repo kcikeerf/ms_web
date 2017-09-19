@@ -29,4 +29,9 @@ class Role < ActiveRecord::Base
     
   end
 
+  def delete_role_auth_redis
+    base_key = Common::SwtkRedis::Prefix::Auths + self.id.to_s + "/users"
+    Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Auth, base_key
+  end
+
 end
