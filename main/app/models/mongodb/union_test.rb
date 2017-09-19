@@ -176,7 +176,7 @@ class Mongodb::UnionTest
   end
 
   def tasks
-    TaskList.where(id: task_uids).order("dt_add DESC")
+    TaskList.where(uid: task_uids).order("dt_add DESC")
   end
 
   def union_test_report_task
