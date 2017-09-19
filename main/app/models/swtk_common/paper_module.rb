@@ -104,6 +104,12 @@ module PaperModule
       ReportCompleted = "report_completed"
     end
 
+    module UnionStatus
+      New = "new"
+      ReportGenerating = "report_generating"
+      ReportCompleted = "report_completed"
+    end
+
     RollbackStatus = {
       Status::Editting => I18n.t("papers.status.#{Status::Editting}"),
       Status::Editted => I18n.t("papers.status.#{Status::Editted}"),

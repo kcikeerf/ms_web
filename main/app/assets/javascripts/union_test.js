@@ -28,17 +28,14 @@ $(document).on('ready page:load', function (){
       });
     }
     var template = $(".bank_paper_list").html();
-    var union_config_test = union_test_info.union_config
-    $(".form-group .union_config").val(union_config_test);
+    $(".form-group .union_config").val(union_test_info.union_config);
     $(".union_test_list_paper").html(template);
     $(".paper_new").attr("href", "/papers/new?union_test_id=" + union_test_info.id);
     var paper_html = "";
     if (union_test_info.bank_paper_paps){
-      console.log(union_test_info.bank_paper_paps.length);
       $.map(union_test_info.bank_paper_paps, function(v){ paper_html += ("<tr><td>" + v.subject_cn  + "</td><td>"+ v.status + "</td><td>"+ v.quiz_date + "</td><td><a href='/papers/get_paper?pap_uid=" + v.pap_uid + "'>进入试卷控制</a></td>") });
       $(".paper_list").html(paper_html);
       if (union_test_info.paper_report_completed&&union_test_info.bank_paper_paps.length>0){
-        console.log(union_test_info.union_status);
         if(union_test_info.union_status != "report_generating"  && union_test_info.union_status != "report_completed" ) {
           $(".createReport").show();
           $(".progress").hide();
@@ -65,7 +62,8 @@ $(document).on('ready page:load', function (){
         else if (union_test_info.union_status == "report_completed"){
           $.Topic("union_report_generating").destroy();
           $(".lookReport").show();
-          $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?union_uid=1111"+union_test_info.id);
+          $(".lookReport a").attr("href", "#"); 
+          // $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?union_uid=1111"+union_test_info.id);
         }
       }
     }

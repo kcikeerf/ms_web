@@ -2250,7 +2250,7 @@ class Mongodb::BankPaperPap
   end
 
   def is_report_completed?
-    self.paper_status == "report_completed"
+    self.paper_status == Common::Paper::Status::ReportCompleted
   end
 
   private

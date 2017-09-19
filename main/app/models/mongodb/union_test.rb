@@ -87,7 +87,7 @@ class Mongodb::UnionTest
       :start_date => params[:start_date],
       :user_id => current_user_id,
       :union_config => params[:union_config].to_json,
-      :union_status => params[:union_status] || "new"
+      :union_status => params[:union_status] || Common::Paper::UnionStatus::New
     }
     paramsh.merge!({:area_rid => target_area_rid})
     update_attributes(paramsh)
@@ -134,7 +134,7 @@ class Mongodb::UnionTest
       },
       :paper_report_completed => paper_report_completed,
       :union_status => self.union_status.present? ? self.union_status : "",
-      :union_config => self.union_config,
+      :union_config => self.union_config.present? ? eval(self.union_config) : nil,
       :task => self.union_test_report_task
     }
   end
@@ -181,7 +181,7 @@ class Mongodb::UnionTest
 
   def union_test_report_task
     condition = Common::Job::Type::GenerateUnionTestReports
-    task = tasks.by_task_type(condition).first
+    task = self.tasks.by_task_type(condition).first
     task.present? ? task.uid : ""
   end
 

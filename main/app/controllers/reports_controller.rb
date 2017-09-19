@@ -80,7 +80,7 @@ class ReportsController < ApplicationController
             }
           })
         }
-        # union_test.union_status = "report_generating"
+        # union_test.union_status = Common::Paper::UnionStatus::ReportGenerating
         # union_test.save!
       else
       status_code = 403
