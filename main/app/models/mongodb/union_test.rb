@@ -86,7 +86,7 @@ class Mongodb::UnionTest
       :quiz_date => params[:quiz_date],
       :start_date => params[:start_date],
       :user_id => current_user_id,
-      :union_config => params[:union_config],
+      :union_config => params[:union_config].to_json,
       :union_status => params[:union_status] || "new"
     }
     paramsh.merge!({:area_rid => target_area_rid})
