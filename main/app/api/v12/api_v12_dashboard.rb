@@ -31,7 +31,7 @@ module ApiV12Dashboard
             target_report_data = File.open(op, 'rb').read
             result = JSON.parse(target_report_data)
             # p result
-            result["project"].each do |school|
+            result.values[0].each do |school|
               school_data = {}
               # data = {}
 
@@ -68,7 +68,7 @@ module ApiV12Dashboard
               school_data["data"] = report_data["data"]
               lastest_data["school"] << school_data
             end
-          end
+          end 
           if lastest_data["basic"].present?
             Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Cache, base_key
             Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
