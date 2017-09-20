@@ -226,7 +226,7 @@ module ApiV12Dashboard
             result
           end
         rescue Exception => e
-          error!({code: "e40003", message: I18n.t("api.#{e40003}"), message: e.message}, 500)
+          error!({code: "e40003", message: I18n.t("api.#{e40003}", message: e.message)}, 500)
         end
       end  
 
