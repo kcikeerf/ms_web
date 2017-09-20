@@ -34,6 +34,8 @@ module GradeModule
     }
 
     module XueDuan
+      module_function
+
       Order = {
         :xiao_xue => "1",
         :chu_zhong => "2",
@@ -54,6 +56,17 @@ module GradeModule
       XiaoXue = "xiao_xue"
       ChuZhong = "chu_zhong"
       GaoZhong = "gao_zhong"
+
+      def get_xue_duan_en xue_duan
+        xue_duan_en = case xue_duan.to_s
+        when Common::Grade::XueDuan::XiaoXue
+          "primary_school"
+        when Common::Grade::XueDuan::ChuZhong
+          "middle_school"
+        when Common::Grade::XueDuan::GaoZhong
+          "high_school"
+        end
+      end
     end
 
     # 获取学段

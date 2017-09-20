@@ -293,7 +293,7 @@ class Mongodb::BankTest
 
   def tasks
     task_uids = bank_test_task_links.map(&:task_uid)
-    TaskList.where(uid: task_uids)
+    TaskList.where(uid: task_uids).order("dt_add DESC")
   end
 
   def task_list
