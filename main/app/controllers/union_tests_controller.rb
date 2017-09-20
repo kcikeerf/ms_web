@@ -25,6 +25,13 @@ class UnionTestsController < ApplicationController
 
   def show
     @union_test_info = @union_test.u_test_info
+    p @union_test
+    @current_create_report_job_uid = nil
+    if @union_test_info[:task_uid]
+      create_report_task = TaskList.where(uid: @union_test_info[:task_uid]).first
+      create_report_job = create_report_task.job_lists.blank?? nil : create_report_task.job_lists.order({:dt_update => :desc}).first
+      @current_create_report_job_uid = create_report_job.uid
+    end
   end
 
   private

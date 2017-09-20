@@ -135,7 +135,7 @@ class Mongodb::UnionTest
       :paper_report_completed => paper_report_completed,
       :union_status => self.union_status.present? ? self.union_status : "",
       :union_config => self.union_config.present? ? eval(self.union_config) : nil,
-      :task => self.union_test_report_task
+      :task_uid => self.union_test_report_task.present? ? self.union_test_report_task : nil
     }
   end
 

@@ -46,11 +46,10 @@ $(document).on('ready page:load', function (){
           $(".progress.createReport").show();
           $(".createReport a").removeClass("active");
           $(".createReport a").html("报告生成中...");
-
           //paper.setInterVal();
           var monitoring_all_tenants = new MonitorMultipleUpdaters();
            $.each($(".progress.createReport > .progress-bar"),function(i,item){
-              var target_task_uid = union_test_info.task;
+              var target_task_uid = union_test_info.task_uid;
               var target_job_uid = item.getAttribute("job-uid");
               window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
               monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
