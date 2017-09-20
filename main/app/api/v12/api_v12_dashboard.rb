@@ -22,49 +22,51 @@ module ApiV12Dashboard
           lastest_data["school"] = []
           path = "/reports_warehouse/tests/"
           top_group = bank_test.report_top_group.blank? ? "project" : bank_test.report_top_group
-          optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional.json"]
+          optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
           optional_file.each do |op|
 
             target_report_data = File.open(op, 'rb').read
             result = JSON.parse(target_report_data)
             # p result
             result["project"].each do |school|
-              base_data =  school[1]["report_data"]["data"]["knowledge"]["base"] if school[1]["report_data"]
               school_data = {}
-              data = {}
-              if base_data
-                data["diff_degree"] =  base_data["diff_degree"]
-                data["excellent_percent"] =  base_data["excellent_percent"]
-                data["excellent_pupil_number"] =  base_data["excellent_pupil_number"]
-                data["good_percent"] =  base_data["good_percent"]
-                data["good_pupil_number"] =  base_data["good_pupil_number"]
-                data["level0_pupil_number"] =  base_data["level0_pupil_number"]
-                data["level25_pupil_number"] =  base_data["level25_pupil_number"]
-                data["level25_weights_score_average_percent"] =  base_data["level25_weights_score_average_percent"]
-                data["level25_weights_score_average_percent_total"] =  base_data["level25_weights_score_average_percent_total"]
-                data["level50_pupil_number"] =  base_data["level50_pupil_number"]
-                data["project_median_percent"] =  base_data["project_median_percent"]
-                data["pupil_number"] =  base_data["pupil_number"]
-                data["score_average"] =  base_data["score_average"]
-                data["score_average_percent"] =  base_data["score_average_percent"]
-                data["total_full_score"] =  base_data["total_full_score"]
-                data["total_qzp_correct_count"] =  base_data["total_qzp_correct_count"]
-                data["total_qzp_correct_percent"] =  base_data["total_qzp_correct_percent"]
-                data["total_qzp_count"] =  base_data["total_qzp_count"]
-                data["total_real_score"] =  base_data["total_real_score"]
-                data["score_average"] =  base_data["score_average"]
-                data["score_average_percent"] =  base_data["score_average_percent"]
-              end 
-              lastest_data["basic"] = school[1]["report_data"]["basic"]
+              # data = {}
+
+              # base_data =  school[1]["report_data"]["data"]["knowledge"]["base"] if school[1]["report_data"]
+              # if base_data
+              #   data["diff_degree"] =  base_data["diff_degree"]
+              #   data["excellent_percent"] =  base_data["excellent_percent"]
+              #   data["excellent_pupil_number"] =  base_data["excellent_pupil_number"]
+              #   data["good_percent"] =  base_data["good_percent"]
+              #   data["good_pupil_number"] =  base_data["good_pupil_number"]
+              #   data["level0_pupil_number"] =  base_data["level0_pupil_number"]
+              #   data["level25_pupil_number"] =  base_data["level25_pupil_number"]
+              #   data["level25_weights_score_average_percent"] =  base_data["level25_weights_score_average_percent"]
+              #   data["level25_weights_score_average_percent_total"] =  base_data["level25_weights_score_average_percent_total"]
+              #   data["level50_pupil_number"] =  base_data["level50_pupil_number"]
+              #   data["project_median_percent"] =  base_data["project_median_percent"]
+              #   data["pupil_number"] =  base_data["pupil_number"]
+              #   data["score_average"] =  base_data["score_average"]
+              #   data["score_average_percent"] =  base_data["score_average_percent"]
+              #   data["total_full_score"] =  base_data["total_full_score"]
+              #   data["total_qzp_correct_count"] =  base_data["total_qzp_correct_count"]
+              #   data["total_qzp_correct_percent"] =  base_data["total_qzp_correct_percent"]
+              #   data["total_qzp_count"] =  base_data["total_qzp_count"]
+              #   data["total_real_score"] =  base_data["total_real_score"]
+              #   data["score_average"] =  base_data["score_average"]
+              #   data["score_average_percent"] =  base_data["score_average_percent"]
+              # end
+              report_data = school[1]["report_data"].present? ?  school[1]["report_data"] : {"basic" => {}, "data" => {}} 
+              lastest_data["basic"] = report_data["basic"]
               school_data["basic"] = {
                 "school_name" => lastest_data["basic"]["school"]
               }
               lastest_data["basic"].delete("school")
-              school_data["data"] = data
+              school_data["data"] = report_data["data"]
               lastest_data["school"] << school_data
             end
           end
-          # Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
+          Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
         end
         return lastest_data
       end
