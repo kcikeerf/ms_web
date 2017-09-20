@@ -11,7 +11,9 @@ module ApiV12Dashboard
     helpers do
       def get_test_detail_datagrid xue_duan, subject, test_id
         lastest_data = {}
-        redis_key_prefix = "/lastest/#{xue_duan}/#{subject}/#{test_id}"
+        base_key = "/lastest/#{xue_duan}/#{subject}" 
+
+        redis_key_prefix = base_key + "/#{test_id}"
         if Common::SwtkRedis::has_key?(Common::SwtkRedis::Ns::Cache, redis_key_prefix)
           lastest_json = Common::SwtkRedis::get_value(Common::SwtkRedis::Ns::Cache, redis_key_prefix)
           lastest_data = JSON.parse(lastest_json)
@@ -20,9 +22,10 @@ module ApiV12Dashboard
           lastest_data = {}
           lastest_data["basic"] = {}
           lastest_data["school"] = []
-          path = "/reports_warehouse/tests/"
+          path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/"
           top_group = bank_test.report_top_group.blank? ? "project" : bank_test.report_top_group
-          optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
+          optional_file = Dir[path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
+          # optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
           optional_file.each do |op|
 
             target_report_data = File.open(op, 'rb').read
@@ -66,7 +69,10 @@ module ApiV12Dashboard
               lastest_data["school"] << school_data
             end
           end
-          Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
+          if lastest_data["basic"].present?
+            Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Cache, base_key
+            Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
+          end 
         end
         return lastest_data
       end
@@ -226,7 +232,7 @@ module ApiV12Dashboard
             result
           end
         rescue Exception => e
-          error!({code: "e40003", message: I18n.t("api.#{e40003}", message: e.message)}, 500)
+          error!({code: "e40003", message: I18n.t("api.#{'e40003'}", message: e.message)}, 500)
         end
       end  
 
