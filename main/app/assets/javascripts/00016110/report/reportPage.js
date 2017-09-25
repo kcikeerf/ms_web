@@ -2208,15 +2208,15 @@ var reportPage = {
 					$('#improve-sugg').html(reportPage.PupilData.data.quiz_comment);
 				}else if($dataId == 'table-data-knowledge'){
 					var tableStr = reportPage.Pupil.constructDataTable('knowledge');
-					$('#pupil_knowledge_percentile').html(reportPage.PupilData.data.knowledge.base.grade_percentile);
+					$('#pupil_knowledge_percentile').html(reportPage.baseFn.formatValue(reportPage.PupilData.data.knowledge.base.grade_percentile));
 					$('#knowledge_data_table').html(tableStr);
 				}else if($dataId == 'table-data-skill'){
 					var tableStr = reportPage.Pupil.constructDataTable('skill');
-					$('#pupil_skill_percentile').html(reportPage.PupilData.data.skill.base.grade_percentile);
+					$('#pupil_skill_percentile').html(reportPage.baseFn.formatValue(reportPage.PupilData.data.skill.base.grade_percentile));
 					$('#skill_data_table').html(tableStr);
 				}else if($dataId == 'table-data-ability'){
 					var tableStr = reportPage.Pupil.constructDataTable('ability');
-					$('#pupil_ability_percentile').html(reportPage.PupilData.data.ability.base.grade_percentile);
+					$('#pupil_ability_percentile').html(reportPage.baseFn.formatValue(reportPage.PupilData.data.ability.base.grade_percentile));
 					$('#ability_data_table').html(tableStr);
 				}else if($dataId == 'pupil-improve-suggestion'){
 					reportPage.Pupil.constructDiagnosisSuggestion();
