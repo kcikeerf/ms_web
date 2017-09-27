@@ -163,9 +163,13 @@ class Mongodb::BankQuizQiz
 
   def quiz_base_info
     result = {}
-    result[:id] = self._id.to_s
+    result[:uid] = self._id.to_s
     result[:text] = self.text
     result[:answer] = self.answer
+    result[:cat_cn] = Common::Locale::i18n("dict.#{self.cat}")
+    result[:levelword] = Common::Locale::i18n("dict.#{self.levelword2}")
+    result[:order] = self.order
+    result[:score] = self.score
     return result
   end
 

@@ -40,6 +40,30 @@ module ApiV12Tests
       end
 
 
+      desc "paper_quiz_ckps"
+      params do
+        requires :test_uid, type: String
+        requires :ckp_uid, type: String
+      end
+      post :paper_quiz_ckps do
+        bank_test = Mongodb::BankTest.where(id: params[:test_uid]).first
+        if bank_test 
+          paper = bank_test.bank_paper_pap
+          if paper
+            result = paper.get_ckp_quiz params
+            if result
+              result
+            else
+              error!(message_json("e40405"), 404)
+            end
+          else
+            error!(message_json("e40405"), 404)
+          end 
+        else
+          error!(message_json("e40405"), 404)
+        end
+      end
+
     end
   end
 end
