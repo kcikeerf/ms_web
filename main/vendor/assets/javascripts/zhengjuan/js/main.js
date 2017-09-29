@@ -1553,7 +1553,21 @@ $(function(){
         });*/
         $(".contentBody").html($(".template_part2").html());
         $("input.date_input").date_input();
-
+       // if (union_test_info_base){
+       //      paper.paperData.information.heading = union_test_info_base.heading;
+       //      paper.paperData.information.subheading = union_test_info_base.subheading;
+       //      paper.paperData.information.grade = {
+       //          name : union_test_info_base.grade,
+       //          label : union_test_info_base.grade_cn 
+       //      };
+       //      paper.paperData.information.term = {
+       //          name : union_test_info_base.term,
+       //          label : union_test_info_base.term_cn 
+       //      };
+       //      paper.paperData.information.quiz_type = union_test_info_base.quiz_type;
+       //      paper.paperData.information.tenants = union_test_info_base.tenants;
+       //      paper.paperData.information.union_test_id = union_test_info_base.uid
+       //  }
         if(paper.paperData.information){
             if(paper.paperData.information.subject){
                 var subject = paper.paperData.information.subject.name,
@@ -2152,7 +2166,7 @@ $(function(){
             $(body).find("div.my-timu").each(function(i){
                 if($(this).get(0) == node){
                     index = i;
-                    top = $(this).get(0).offsetTop - body.scrollTop;
+                    top = $(this).get(0).offsetTop - $(node.ownerDocument).scrollTop();
                 }
             });
 
@@ -2173,7 +2187,7 @@ $(function(){
                 body2.find("div.my-timu").each(function(i){
                     if(i == index){
                         //n.scrollIntoView();
-                        $(body2).scrollTop($(this).get(0).offsetTop - top);
+                        body2.scrollTop($(this).get(0).offsetTop - top);
                         $(this).addClass("my-active");
                     }
                 });
@@ -2188,8 +2202,8 @@ $(function(){
                 if(type=="click"){
                     var rect = node.getBoundingClientRect(),
                         body = node.ownerDocument.body,
-                        x = e.pageX - body.scrollLeft,
-                        y = e.pageY - body.scrollTop;
+                        x = e.pageX - $(node.ownerDocument).scrollLeft(),
+                        y = e.pageY - $(node.ownerDocument).scrollTop();
 
                     if(x <= rect.left  + 12){
                         var p=node.parentNode, curCNodes;
@@ -2317,9 +2331,8 @@ $(function(){
                 // 鼠标hover提示
                 else if (type=="mousemove"){
                     var rect = node.getBoundingClientRect(),
-                        body = node.ownerDocument.body,
-                        x = e.pageX - body.scrollLeft,
-                        y = e.pageY - body.scrollTop;
+                        x = e.pageX - $(node.ownerDocument).scrollLeft(),
+                        y = e.pageY - $(node.ownerDocument).scrollTop();
 
                     if(x <= rect.left + 12){
                         if(y >= rect.top -6 && y <= rect.top + 6 ){
@@ -2348,9 +2361,8 @@ $(function(){
             else if(node.tagName=="DIV" && /my-block/.test(node.className)){
                 if(type=="click"){
                     var rect = node.getBoundingClientRect(),
-                        body = node.ownerDocument.body,
-                        x = e.pageX - body.scrollLeft,
-                        y = e.pageY - body.scrollTop,
+                        x = e.pageX - $(node.ownerDocument).scrollLeft(),
+                        y = e.pageY - $(node.ownerDocument).scrollTop(),
                         totype;
 
                     if(x <= rect.left  + 32){
@@ -2400,9 +2412,8 @@ $(function(){
                 // 标识成题目或非题目
                 else if(type=="mousemove"){
                     var rect = node.getBoundingClientRect(),
-                        body = node.ownerDocument.body,
-                        x = e.pageX - body.scrollLeft,
-                        y = e.pageY - body.scrollTop;
+                        x = e.pageX - $(node.ownerDocument).scrollLeft(),
+                        y = e.pageY - $(node.ownerDocument).scrollTop();
 
                     if(x >= rect.right - 16){
                         if(y >= rect.top && y <= rect.top + 16 ){
@@ -2422,8 +2433,7 @@ $(function(){
             else if(node.tagName=="TABLE" && /table-answer/.test(node.className)){
                 if(type=="click"){
                     var rect = node.getBoundingClientRect(),
-                        body = node.ownerDocument.body,
-                        y = e.pageY - body.scrollTop;
+                        y = e.pageY - $(node.ownerDocument).scrollTop();
 
                     if(y <= rect.top + 1 ){
                         var l = node.rows.length,ll = l / 2, k=node.rows[0].cells.length;
