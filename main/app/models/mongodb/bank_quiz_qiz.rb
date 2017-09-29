@@ -169,6 +169,7 @@ class Mongodb::BankQuizQiz
     result[:cat_cn] = Common::Locale::i18n("dict.#{self.cat}")
     result[:levelword] = Common::Locale::i18n("dict.#{self.levelword2}")
     result[:order] = self.order
+    result[:custom_order] = self.custom_order.present? ? self.custom_order : nil
     result[:score] = self.score
     return result
   end
