@@ -766,10 +766,9 @@ class Mongodb::BankPaperPap
         # :qzps => include_qzps_uid,
         # :qzp_count => include_qzps_uid.size
       }
-      quiz_uid_list = Mongodb::BankQizpointQzp.where({id: {'$in'=> include_qzps_uid}}).map {|qzp| qzp.bank_quiz_qiz_id.to_s}
-      quizs = Mongodb::BankQuizQiz.where({id: {'$in'=> quiz_uid_list.uniq}})
-      result[:quizs] = quizs.map {|quiz| quiz.quiz_base_info }
-      result[:quizs_count] = quizs.size
+      qizpoints = Mongodb::BankQizpointQzp.where({id: {'$in'=> include_qzps_uid}})
+      result[:qzps] = qizpoints.map {|point| point.point_info }
+      result[:qzps_count] = qizpoints.size
       Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , result.to_json)
     end
 

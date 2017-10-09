@@ -131,6 +131,21 @@ class Mongodb::BankQizpointQzp
      return true
   end
 
+  def point_info
+    bank_quiz_qiz = self.bank_quiz_qiz
+    result = {}
+    result[:uid] = self._id.to_s
+    result[:text] = bank_quiz_qiz.text
+    result[:answer] = bank_quiz_qiz.answer
+    result[:cat_cn] = Common::Locale::i18n("dict.#{bank_quiz_qiz.cat}")
+    result[:levelword] = Common::Locale::i18n("dict.#{bank_quiz_qiz.levelword2}")
+    result[:order] = self.order
+    result[:custom_order] = self.custom_order.present? ? self.custom_order : nil
+    result[:asc_order] = self.asc_order.present? ? self.asc_order : nil
+    result[:score] = self.score
+    return result
+  end
+
   private
   def format_score
     # self.score = self.score.nil?? 0.0:("%.2f" % self.score).to_f
