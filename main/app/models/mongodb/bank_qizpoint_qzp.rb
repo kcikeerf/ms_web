@@ -136,7 +136,7 @@ class Mongodb::BankQizpointQzp
     result = {}
     result[:uid] = self._id.to_s
     result[:text] = bank_quiz_qiz.text
-    result[:answer] = bank_quiz_qiz.answer
+    result[:answer] = self.answer
     result[:cat_cn] = Common::Locale::i18n("dict.#{bank_quiz_qiz.cat}")
     result[:levelword] = Common::Locale::i18n("dict.#{bank_quiz_qiz.levelword2}")
     result[:order] = self.order

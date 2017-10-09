@@ -1571,7 +1571,7 @@ $(function(){
             paper.paperData.information.union_test_id = union_test_info_base.uid
         }
         if(paper.paperData.information){
-\            if(paper.paperData.information.subject){
+            if(paper.paperData.information.subject){
                 var subject = paper.paperData.information.subject.name,
                 s_active = $(".selectSubject .optionList li[nameid="+subject+"]");
                 s_active.addClass("active").parents(".selectWarp").find(".selectVal span").attr("values",subject).text(s_active.text());
