@@ -554,6 +554,11 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     get_nodes(parent_node_rid.size, parent_node_rid, subject, dimesion, category, checkpoint_system_rid).find_by(rid: parent_node_rid)
   end
 
+  def lv2_ckp
+    l2rid  = rid.slice(0, Common::SwtkConstants::CkpStep*2)
+    self.class.where('subject = ? and dimesion = ? and category = ? and checkpoint_system_rid = ? and rid = ?', subject, dimesion, category, checkpoint_system_rid, l2rid).first
+  end
+
   def parent_node_rid
     rid.slice(0, rid.size - Common::SwtkConstants::CkpStep)
   end

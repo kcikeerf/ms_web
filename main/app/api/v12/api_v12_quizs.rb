@@ -100,6 +100,7 @@ module ApiV12Quizs
                 #
             },
             # 预留，指标信息
+            :lv2_ckp => starget_qzp.lv2_checkpoint,
             :indices => {},
             # 预留，学习资料信息
             :learning_materials => {},
