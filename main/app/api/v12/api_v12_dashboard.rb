@@ -62,13 +62,15 @@ module ApiV12Dashboard
               report_data = school[1]["report_data"].present? ?  school[1]["report_data"] : {"basic" => {}, "data" => {}} 
               lastest_data["basic"] = report_data["basic"]
               school_data["basic"] = {
-                "school_name" => lastest_data["basic"]["school"]
+                "school_name" => lastest_data["basic"]["school"],
+                "school_uid" => school[1]["uid"]
               }
               lastest_data["basic"].delete("school")
               school_data["data"] = report_data["data"]
               lastest_data["school"] << school_data
             end
-          end 
+          end
+          lastest_data["school"].sort! {|p1,p2| p2["basic"]["school_uid"] <=> p1["basic"]["school_uid"]}
           if lastest_data["basic"].present?
             Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Cache, base_key
             Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
@@ -76,6 +78,28 @@ module ApiV12Dashboard
         end
         return lastest_data
       end
+
+
+      def get_union_test_datail_datagrid xue_duan, union_test_id
+        union_test = Mongodb::UnionTest.where(_id: union_test_id).first
+        result = {}
+        if union_test
+          bank_papers = union_test.bank_paper_paps
+          result["basic"] = { :bank_union_test_uid => union_test_id }
+          bank_papers.each { |pap|
+            subject_en = Common::Subject.get_subject_en pap.subject
+            bank_test = pap.bank_tests[0]
+            test_id = bank_test.id.to_s
+            test_ext_data_path = bank_test.ext_data_path
+            report_detail = get_test_detail_datagrid xue_duan, pap.subject, test_id
+            result[subject_en] = report_detail
+            result[subject_en]["basic"]["test_ext_data_path"] = test_ext_data_path
+
+          }
+        end
+        return result   
+      end
+
 
     end
 
@@ -98,7 +122,7 @@ module ApiV12Dashboard
         target_tenant_ids = target_user.accessable_tenants.map(&:uid).uniq.compact
         target_test_ids = Mongodb::BankTestTenantLink.where(tenant_uid: {"$in" => target_tenant_ids} ).map(&:bank_test_id).uniq.compact
         target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
-        target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids}, paper_status: "report_completed").only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score, :grade)
+        target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids}, paper_status: "report_completed").only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score, :grade, :union_test_id)
         target_papers.compact!
         target_papers.uniq!
         begin          
@@ -112,7 +136,6 @@ module ApiV12Dashboard
               rpt_type = _rpt_type || Common::Report::Group::Project
               rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
               report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
-
               paper_info_hash = {
                 :paper_uid => target_pap.id.to_s,
                 :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
@@ -122,6 +145,7 @@ module ApiV12Dashboard
                 :score => target_pap.score,
                 :test_ext_data_path => test_ext_data_path,
                 :test_id => test_id,
+                :union_test_uid => target_pap.union_test_id.to_s,
                 :paper_heading => target_pap.heading,
                 :subject => target_pap.subject,
                 :subject_cn => Common::Locale::i18n("dict.#{target_pap.subject}")
@@ -141,7 +165,6 @@ module ApiV12Dashboard
               paper_info_array << paper_info_hash
             }
             paper_info_array.sort! {|p1,p2| p2[:quiz_date] <=> p1[:quiz_date]}
-
             paper_sort_by_date = {}
             paper_sort_lastest = {}
             Common::Grade::XueDuan::List.keys.each {|xue_duan| 
@@ -221,17 +244,30 @@ module ApiV12Dashboard
               xue_duan_en_base = xue_duan_en + "_base"
               result["blocks"][xue_duan_en_base] = {}
               base_list = {}
-              xue_duan_obj[1].each { |subject_obj|
-                if subject_obj[1].present?
-                  subject_en = Common::Subject.get_subject_en subject_obj[0]
-                  report_detail = get_test_detail_datagrid xue_duan_obj[0], subject_obj[0], subject_obj[1][0][:test_id]
-                  result["blocks"][xue_duan_en_base][subject_en] = report_detail
-                end
-              }
+              xue_duan_pap_arr = paper_info_array.select {|pap| pap if pap[:xue_duan] == xue_duan_obj[0]}.sort! {|p1,p2| p2[:quiz_date] <=> p1[:quiz_date]}
+              last_union_test_uid = nil
+              if xue_duan_pap_arr[0]
+                last_union_test_uid = xue_duan_pap_arr[0][:union_test_uid]
+              end
+              if last_union_test_uid.present?
+                union_test_data = get_union_test_datail_datagrid xue_duan_obj[0], last_union_test_uid.to_s
+                result["blocks"][xue_duan_en_base] = union_test_data
+              else
+                result["blocks"][xue_duan_en_base]["basic"] = { :bank_union_test_uid => nil}
+                xue_duan_obj[1].each { |subject_obj|
+                  if subject_obj[1].present?
+                    subject_en = Common::Subject.get_subject_en subject_obj[0]
+                    report_detail = get_test_detail_datagrid xue_duan_obj[0], subject_obj[0], subject_obj[1][0][:test_id]
+                    result["blocks"][xue_duan_en_base][subject_en] = report_detail
+                    result["blocks"][xue_duan_en_base][subject_en]["basic"]["test_ext_data_path"] = subject_obj[1][0]["test_ext_data_path"]
+                  end
+                }
+              end
             } 
             result
           end
         rescue Exception => e
+          p e.backtrace
           error!({code: "e40003", message: I18n.t("api.#{'e40003'}", message: e.message)}, 500)
         end
       end  

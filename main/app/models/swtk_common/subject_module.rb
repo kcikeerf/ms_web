@@ -63,8 +63,8 @@ module SubjectModule
                     #   "geography"
                     # when :wu_li
                     #   "physics"
-                    # when :hua_xue
-                    #   "chemistry"
+                    when :hua_xue
+                      "chemistry"
                     # when :sheng_wu
                     #   "biology"
                     # else 
