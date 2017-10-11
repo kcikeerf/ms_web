@@ -99,8 +99,8 @@ module ApiV12Quizs
                 :hyt_snapshot_data => hyt_snapshot_data
                 #
             },
+            :lv2_ckp => target_qzp.lv2_checkpoint,
             # 预留，指标信息
-            :lv2_ckp => starget_qzp.lv2_checkpoint,
             :indices => {},
             # 预留，学习资料信息
             :learning_materials => {},
