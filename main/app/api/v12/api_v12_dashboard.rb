@@ -72,6 +72,13 @@ module ApiV12Dashboard
           end
           lastest_data["school"].sort! {|p1,p2| p2["basic"]["school_uid"] <=> p1["basic"]["school_uid"]}
           if lastest_data["basic"].present?
+            area_report = Dir[path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"]
+            # area_report = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"]
+            area_report.each do |ar|
+              area_report_data = File.open(ar, 'rb').read
+              area_json_data = JSON.parse(area_report_data)
+              lastest_data["basic"]["area_data"] = area_json_data["data"]["knowledge"]["base"]
+            end
             Common::SwtkRedis::del_keys Common::SwtkRedis::Ns::Cache, base_key
             Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , lastest_data.to_json)
           end 
