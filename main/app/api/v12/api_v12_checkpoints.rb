@@ -41,9 +41,9 @@ module ApiV12Checkpoints
         requires :subject, type: String
         requires :knowledge_uid, type: String 
         requires :accuracy, type: String, values: ["exact", "normal"]
+        requires :levelword, type: String
+        optional :cat_type, type: String
         given accuracy: ->(val) { val == 'exact' } do
-          optional :cat_type, type: String
-          requires :levelword, type: String
         end
         given accuracy: ->(val) {val == 'normal'} do
           optional :ability_uid, type: String

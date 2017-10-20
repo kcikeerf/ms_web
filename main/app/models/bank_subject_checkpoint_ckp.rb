@@ -39,8 +39,8 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         base_k_ckp = where(uid: params["knowledge_uid"]).first
         return "e45001",false if base_k_ckp.blank? 
         base_ckp = base_k_ckp
-        base_ckp = where(uid: params["ability_uid"]).first# if params["ability_uid"].present?
-        base_ckp = where(uid: params["skill_uid"]).first# if params["skill_uid"].present?
+        base_ckp = where(uid: params["ability_uid"]).first if params["ability_uid"].present?
+        base_ckp = where(uid: params["skill_uid"]).first  if params["skill_uid"].present?
         # return "e45001",false if base_ckp.blank? 
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_k_ckp
       end

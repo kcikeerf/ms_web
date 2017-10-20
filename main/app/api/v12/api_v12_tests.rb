@@ -81,6 +81,32 @@ module ApiV12Tests
         end
       end
 
+      desc "student error quiz list"
+      params do
+        requires :report_url, type: String
+      end
+
+      post :get_error_quiz_list do
+      report_path = params[:report_url]
+        report_data = {}
+        if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, report_path
+          target_report_j = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, report_path
+          report_data = JSON.parse(target_report_j)
+        else
+          target_report_f = Dir[report_path].first
+          return report_data if target_report_f.blank?
+          target_report_data = File.open(target_report_f, 'rb').read
+          return report_data if target_report_data.blank?
+          report_data = JSON.parse(target_report_data)
+          Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, report_path, report_data.to_json
+        end
+        paper_qzps = report_data["paper_qzps"]
+        paper_qzps = paper_qzps.select {|qzp| 
+          qzp if qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"]
+        }
+        paper_qzps
+      end
+
     end
   end
 end

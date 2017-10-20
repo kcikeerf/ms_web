@@ -119,6 +119,23 @@ class Mongodb::BankQizpointQzp
     return result
   end
 
+  def end_checkpoint
+    ckps = bank_checkpoint_ckps
+    result = {
+      Common::CheckpointCkp::Dimesion::Knowledge => [], 
+      Common::CheckpointCkp::Dimesion::Skill => [],
+      Common::CheckpointCkp::Dimesion::Ability => []
+    }
+    ckps.each{|ckp|
+      result[ckp.dimesion] << {
+        uid: ckp.uid,
+        checkpoint: ckp.checkpoint,
+        rid: ckp.rid
+      }
+    }
+    return result
+  end
+
   def format_paper_outline_json
     return {} if paper_outline.blank?
     outline_arr = [ paper_outline.ancestors, paper_outline ].flatten.compact!
