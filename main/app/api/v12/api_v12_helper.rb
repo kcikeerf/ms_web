@@ -41,8 +41,8 @@ module ApiV12Helper
   end
 
   def authenticate_api_permission user_id=nil, http_method=nil, api_path=nil
-    error!(message_json("e41001"), 401) if user_id.blank?
-    error!(message_json("e41001"), 401) unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Auth,"/users/#{user_id}/api_permissions/#{http_method}#{api_path}" 
+    # error!(message_json("e41001"), 401) if user_id.blank?
+    # error!(message_json("e41001"), 401) unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Auth,"/users/#{user_id}/api_permissions/#{http_method}#{api_path}" 
   end
 
 

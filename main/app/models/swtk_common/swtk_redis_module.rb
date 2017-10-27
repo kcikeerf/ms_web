@@ -31,9 +31,9 @@ module SwtkRedisModule
     end
 
     def set_key ns,k,v
-  	  current_redis(ns).set k,v
+      current_redis(ns).set k,v
       current_redis(ns).expire k, Config::ExpireTime
-  	end
+    end
 
     def get_value_set_if_none ns, k, v, expire_time=Config::ExpireTime
       if has_key?(k)

@@ -16,7 +16,7 @@ module ApiV12Checkpoints
       before do
         set_api_header
         doorkeeper_authorize!
-        authenticate_api_permission current_user.id, request.request_method, request.fullpath
+        # authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
       
       desc '随机获取相关指标的单题' # grade_class_list begin

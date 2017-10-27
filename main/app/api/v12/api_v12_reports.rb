@@ -98,6 +98,36 @@ module ApiV12Reports
 
       desc ''
       params do
+        requires :union_test_id, type: String, allow_blank: false
+        # requires :union_test_config, type: Hash, allow_blank: false
+      end
+      post :generate_union do
+        # p params[:union_test_config]
+        union_test = Mongodb::UnionTest.where(_id: params[:union_test_id]).first
+        error!(message_json("e42000"), 404) unless union_test
+        can_report = true
+        union_test.bank_paper_paps.each {|paper| can_report = can_report&&paper.is_report_completed? }
+        error!(message_json("e42001"), 403) unless union_test
+        union_test_config = (union_test.present?&&union_test.union_config.present?) ? JSON.parse(union_test.union_config) : {}
+        status_code, result = Common::template_tk_job_execution_in_controller {
+          TkJobConnector.new({
+            :version => "v1.2",
+            :api_name => "generate_union_tests_reports",
+            :http_method => "post",
+            :params => {
+              :union_test_id => union_test._id.to_s,
+              :union_test_config => union_test_config,
+              :user_id => nil#current_user.id
+            }
+          })
+        }
+        status status_code
+        result
+      end
+      ###########
+
+      desc ''
+      params do
         #
       end
       post :list do

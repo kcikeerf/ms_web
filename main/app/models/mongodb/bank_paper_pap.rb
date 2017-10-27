@@ -33,6 +33,7 @@ class Mongodb::BankPaperPap
   scope :by_keyword, ->(keyword) { any_of({heading: /#{keyword}/}, {subheading: /#{keyword}/}) if keyword.present? }
   scope :by_province, ->(province) { where(province: province) if province.present? }
   scope :by_city, ->(city) { where(city: city) if city.present? }
+  scope :is_available, -> (available) { where(paper_status: {'$in'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]}) if available.present? && available == true}
   scope :by_district, ->(district) { where(district: district) if district.present? }
   scope :by_tenant, ->(t_uid){ where(tenant_uid: t_uid) if t_uid.present? }
 
@@ -165,8 +166,11 @@ class Mongodb::BankPaperPap
       %w{paper_status grade subject term heading}.each{|attr|
          conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
        } 
+      p params["availbale"]
+      p params
       result =  self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
                     .where(conditions)
+                    .is_available(params["availbale"])
                     .order("dt_update desc")
                     .page(params[:page]).per(params[:rows])
       paper_result = []
@@ -189,7 +193,7 @@ class Mongodb::BankPaperPap
         h["has_bank_test"] = item.bank_tests.present?
         paper_result << h
       end
-      return paper_result, self.count
+      return paper_result, result.count
     end
 
     def ckp_weights_modification args={}

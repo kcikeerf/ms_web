@@ -103,9 +103,9 @@ class Mongodb::BankQuizQiz
         if bqq["bank_checkpoint_ckps"]
           bqq["bank_checkpoint_ckps"].each{|bcc|
             ckp = Mongodb::BankCkpQzp.new
-	    ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
+      ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
             #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
-	  }
+    }
         end
 
       } unless params["bank_qizpoint_qzps"].blank?
