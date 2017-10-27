@@ -101,6 +101,41 @@ class Mongodb::BankQizpointQzp
     update_attributes({ckps_json: result.to_json})
   end
 
+  def lv2_checkpoint
+    ckps = bank_checkpoint_ckps
+    result = {
+      Common::CheckpointCkp::Dimesion::Knowledge => [], 
+      Common::CheckpointCkp::Dimesion::Skill => [],
+      Common::CheckpointCkp::Dimesion::Ability => []
+    }
+    ckps.each{|ckp|
+      lv2_ckp = ckp.lv2_ckp
+      result[ckp.dimesion] << {
+        uid: lv2_ckp.uid,
+        checkpoint: lv2_ckp.checkpoint,
+        rid: lv2_ckp.rid
+      }
+    }
+    return result
+  end
+
+  def end_checkpoint
+    ckps = bank_checkpoint_ckps
+    result = {
+      Common::CheckpointCkp::Dimesion::Knowledge => [], 
+      Common::CheckpointCkp::Dimesion::Skill => [],
+      Common::CheckpointCkp::Dimesion::Ability => []
+    }
+    ckps.each{|ckp|
+      result[ckp.dimesion] << {
+        uid: ckp.uid,
+        checkpoint: ckp.checkpoint,
+        rid: ckp.rid
+      }
+    }
+    return result
+  end
+
   def format_paper_outline_json
     return {} if paper_outline.blank?
     outline_arr = [ paper_outline.ancestors, paper_outline ].flatten.compact!
@@ -126,10 +161,24 @@ class Mongodb::BankQizpointQzp
        self.paper_outline_id = params["paper_outline_id"] || nil 
        self.save!
      rescue Exception => ex
-        p ex.message
        return false
      end
      return true
+  end
+
+  def point_info
+    bank_quiz_qiz = self.bank_quiz_qiz
+    result = {}
+    result[:uid] = self._id.to_s
+    result[:text] = bank_quiz_qiz.text
+    result[:answer] = self.answer
+    result[:cat_cn] = Common::Locale::i18n("dict.#{bank_quiz_qiz.cat}")
+    result[:levelword] = Common::Locale::i18n("dict.#{bank_quiz_qiz.levelword2}")
+    result[:order] = self.order
+    result[:custom_order] = self.custom_order.present? ? self.custom_order : nil
+    result[:asc_order] = self.asc_order.present? ? self.asc_order : nil
+    result[:score] = self.score
+    return result
   end
 
   private

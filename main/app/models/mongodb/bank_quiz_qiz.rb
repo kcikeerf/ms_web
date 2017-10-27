@@ -30,6 +30,7 @@ class Mongodb::BankQuizQiz
   field :tpl_id, type: String
   field :ext1, type: Integer
   field :ext2, type: Integer
+  field :grade, type: String
   field :cat, type: String
   field :type, type: String
   field :optional, type: Boolean
@@ -72,6 +73,7 @@ class Mongodb::BankQuizQiz
         :tpl_id => params["tpl_id"] || "",
         :ext1 => params["ext1"] || 0,
         :ext2 => params["ext2"] || 0,
+        :grade => params["grade"] || "",
         :cat => params["cat"] || "",
         :type => params["type"] || "",
         :optional => params["optional"] || "",
@@ -101,9 +103,9 @@ class Mongodb::BankQuizQiz
         if bqq["bank_checkpoint_ckps"]
           bqq["bank_checkpoint_ckps"].each{|bcc|
             ckp = Mongodb::BankCkpQzp.new
-	    ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
+      ckp.save_ckp_qzp qiz_point._id, bcc["uid"]
             #self.bank_qizpoint_qzps[index].bank_ckp_qzp = ckp
-	  }
+    }
         end
 
       } unless params["bank_qizpoint_qzps"].blank?
@@ -161,9 +163,15 @@ class Mongodb::BankQuizQiz
 
   def quiz_base_info
     result = {}
-    result[:id] = self._id.to_s
+    result[:uid] = self._id.to_s
     result[:text] = self.text
     result[:answer] = self.answer
+    result[:cat_cn] = Common::Locale::i18n("dict.#{self.cat}")
+    result[:levelword] = Common::Locale::i18n("dict.#{self.levelword2}")
+    result[:order] = self.order
+    result[:custom_order] = self.custom_order.present? ? self.custom_order : nil
+    result[:asc_order] = self.asc_order.present? ? self.asc_order : nil
+    result[:score] = self.score
     return result
   end
 

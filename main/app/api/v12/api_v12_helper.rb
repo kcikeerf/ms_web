@@ -32,12 +32,19 @@ module ApiV12Helper
       target_user = child_user
     end
     error!(message_json("e40004"), 404) unless target_user
+    # target_user.create_user_auth_redis
     target_user
   end
 
   def not_user_token!
     error!(I18n.t("doorkeeper.errors.messages.invalid_token.unknown"),400) unless doorkeeper_token.user.blank?
   end
+
+  def authenticate_api_permission user_id=nil, http_method=nil, api_path=nil
+    # error!(message_json("e41001"), 401) if user_id.blank?
+    # error!(message_json("e41001"), 401) unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Auth,"/users/#{user_id}/api_permissions/#{http_method}#{api_path}" 
+  end
+
 
   def current_tenant
     tenant = nil

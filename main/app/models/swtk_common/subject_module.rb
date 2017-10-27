@@ -1,5 +1,6 @@
 module SubjectModule
   module Subject
+    module_function
     Abbrev = {
       :yu_wen          => "yw",
       :shu_xue         => "sx",
@@ -45,5 +46,30 @@ module SubjectModule
       :ji_shu => "12",
       :none => "10000"
     }
+
+    def get_subject_en subject
+      subject_en = case subject.to_sym
+                    when :yu_wen
+                      "chinese"
+                    when :shu_xue
+                      "math"
+                    when :ying_yu
+                      "english"
+                    # when :li_shi
+                    #   "history"
+                    # when :zheng_zhi
+                    #   "politics"
+                    # when :di_li
+                    #   "geography"
+                    # when :wu_li
+                    #   "physics"
+                    when :hua_xue
+                      "chemistry"
+                    # when :sheng_wu
+                    #   "biology"
+                    # else 
+                    #   "other"
+                    end
+    end
   end
 end
