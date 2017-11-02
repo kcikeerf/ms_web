@@ -45,7 +45,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
             tag_quiz_uid_list << t.bank_quiz_ids
           }
         end
-        tag_quiz_uid_list = tag_quiz_uid_list.uniq.compact
+        tag_quiz_uid_list = tag_quiz_uid_list.flatten.uniq.compact
       end
       case params["accuracy"]
       when "exact"
