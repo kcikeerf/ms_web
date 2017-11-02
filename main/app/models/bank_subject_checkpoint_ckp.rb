@@ -33,7 +33,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       tag_quiz_uid_list = []
       if params["quiz_tags"] 
         quiz_tag_str_arr = params["quiz_tags"]
-        tags = Mongodb::BankTag.where({content: {"$in" => quiz_tag_str_arr})
+        tags = Mongodb::BankTag.where({content: {"$in" => quiz_tag_str_arr}})
         if params["tag_method"] && params["tag_method"] == "and"
           base_quiz = []
           tags.each_with_index { |t,index|
