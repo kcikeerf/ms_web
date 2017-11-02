@@ -83,6 +83,7 @@ module ApiV12Quizs
               :id => target_qzp.id.to_s,
               :quiz_cat => target_quiz.cat,
               :quiz_body => target_quiz.text,
+              :quiz_uid => target_quiz._id.to_s,
               :qzp_order => target_qzp.order,
               :qzp_asc_order => target_qzp_asc_order,
               :qzp_custom_order => target_qzp.custom_order,
