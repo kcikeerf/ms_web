@@ -144,9 +144,12 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .information .infoText{float: left;font-weight: 700;padding-top:8px;}
 .information1{float: left;margin-left: 66px;}
 .information1 .selectWarp p{color: #999;}
-.testQuestions, .testAnswer, .analyze{padding:25px 50px 0;}
+.testQuestions, .textTagDetail,.testAnswer, .analyze{padding:25px 50px 0;}
 .textLabel{font-weight: 700;float: left;padding-top:6px;}
 .textEditor {float: right;width: 640px;}
+.textTagDetail input{float: right;width: 640px;height: 36px;border:1px solid #dcdcdc;border-radius: 3px;padding: 0 10px;}
+.score input{float: right;width: 100%;height: 36px;border:1px solid #dcdcdc;border-radius: 3px;padding: 0 10px;}
+
 .remarks{display: block;width: 100%;resize:none;border:1px solid #dcdcdc;border-radius: 4px;height: 60px;padding:10px 15px;}
 .textLabelWarp{position: relative;float: right;width: 640px;margin-bottom: 20px;border:1px solid #dcdcdc;border-radius: 4px;padding: 20px 0;}
 .textLabelWarp:last-child{margin-bottom: 0;}

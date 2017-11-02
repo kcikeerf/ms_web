@@ -17,6 +17,7 @@ class Mongodb::BankQizpointQzp
   belongs_to :bank_quiz_qiz, class_name: "Mongodb::BankQuizQiz"
   has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   has_many :bank_ckp_qzps, class_name: "Mongodb::BankCkpQzp", foreign_key: "qzp_uid", dependent: :delete
+  has_many :bank_quiz_tag_links, class_name: "Mongodb::BankQuizTagLink", foreign_key: "qzp_uid", dependent: :delete
 
   field :quz_uid, type: String
   field :pap_uid, type: String
@@ -149,22 +150,39 @@ class Mongodb::BankQizpointQzp
 
   def save_qizpoint params
      begin
-       self.quz_uid = params["quz_uid"] || ""
-       self.pap_uid = params["pap_uid"] || ""
-       self.tbs_sid = params["tbs_sid"] || ""
-       self.type = params["type"] || ""
-       self.answer = params["answer"] || ""
-       self.desc = params["desc"] || ""
-       self.score = params["score"] || 0.00
-       self.order = params["order"] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
-       self.custom_order = params["custom_order"] || ""
-       self.paper_outline_id = params["paper_outline_id"] || nil 
-       self.save!
+        self.quz_uid = params["quz_uid"] || ""
+        self.pap_uid = params["pap_uid"] || ""
+        self.tbs_sid = params["tbs_sid"] || ""
+        self.type = params["type"] || ""
+        self.answer = params["answer"] || ""
+        self.desc = params["desc"] || ""
+        self.score = params["score"] || 0.00
+        self.order = params["order"] || '0'#).ljust(Common::Paper::Constants::OrderWidth, '0')
+        self.custom_order = params["custom_order"] || ""
+        self.paper_outline_id = params["paper_outline_id"] || nil 
+        self.save!
+        if params["qzp_tags"]
+          save_qzp_tags params["qzp_tags"]
+        end
      rescue Exception => ex
        return false
      end
      return true
   end
+
+  def save_qzp_tags tags_str
+    bank_quiz_tag_links.destroy_all
+    tag_arr = tags_str.split("|")
+    tag_arr.each { |str|
+      tag = Mongodb::BankTag.where(content: str).first
+      unless tag
+        tag = Mongodb::BankTag.new(content: str)
+        tag.save
+      end
+      Mongodb::BankQuizTagLink.new.save_ins nil, self._id.to_s, tag._id.to_s
+    }
+  end
+
 
   def point_info
     bank_quiz_qiz = self.bank_quiz_qiz
@@ -179,6 +197,14 @@ class Mongodb::BankQizpointQzp
     result[:asc_order] = self.asc_order.present? ? self.asc_order : nil
     result[:score] = self.score
     return result
+  end
+
+  def bank_tag_ids
+    bank_quiz_tag_links.map(&:tag_uid)
+  end
+
+  def bank_tags
+    Mongodb::BankTag.where({id: {"$in" => bank_tag_ids }})
   end
 
   private

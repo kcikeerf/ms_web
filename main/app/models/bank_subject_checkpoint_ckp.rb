@@ -30,6 +30,23 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       base_condition["levelword2"] = Regexp.new(params["levelword"]) if params["levelword"].present?
       qzp_list = []
       quiz_uid_list = []
+      tag_quiz_uid_list = []
+      if params["quiz_tags"] 
+        quiz_tag_str_arr = params["quiz_tags"]
+        tags = Mongodb::BankTag.where({content: {"$in" => quiz_tag_str_arr})
+        if params["tag_method"] && params["tag_method"] == "and"
+          base_quiz = []
+          tags.each_with_index { |t,index|
+            tag_quiz_uid_list = t.bank_quiz_ids if index < 1
+            tag_quiz_uid_list = tag_quiz_uid_list & t.bank_quiz_ids
+          }        
+        else
+          tags.each { |t|
+            tag_quiz_uid_list << t.bank_quiz_ids
+          }
+        end
+        tag_quiz_uid_list = tag_quiz_uid_list.uniq.compact
+      end
       case params["accuracy"]
       when "exact"
         base_ckp = where(uid: params["knowledge_uid"]).first
@@ -45,6 +62,9 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_k_ckp
       end
       quiz_uid_list.delete(params["quiz_uid"]) if params["quiz_uid"] && quiz_uid_list.include?(params["quiz_uid"])
+      if tag_quiz_uid_list.present?
+        quiz_uid_list = tag_quiz_uid_list & quiz_uid_list
+      end
       base_condition["id"] = {'$in' => quiz_uid_list}
       quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params["amount"].to_i).map {|quiz|
         quiz.quiz_base_info
