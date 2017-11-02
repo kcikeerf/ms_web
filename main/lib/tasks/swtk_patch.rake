@@ -195,6 +195,30 @@ namespace :swtk_patch do
         ApiPermission.new(name: row[0], method: row[1], path: row[2], description: row[3]).save!
       end
     end
-    
+
+    desc "set tag to all quiz with test paper"
+    task :set_tag_to_all_quiz_with_test_paper, [:test_uid] => :environment do |t,args|
+      p args
+      if args[:test_uid].nil?
+        puts "Need set_tag_to_all_quiz_with_test_paper, Usage: #rake swtk_patch:v1_2_1:set_tag_to_all_quiz_with_test_paper[test_uid]"
+        exit
+      end
+      bank_test = Mongodb::BankTest.where(_id: args[:test_uid]).first
+      paper = bank_test.bank_paper_pap
+      bank_quiz_qizs = paper.bank_quiz_qizs
+      tag_uids = []
+      ["111","222","333"].each do |str|
+        tag = Mongodb::BankTag.new(content: str)
+        tag.save
+        tag_uids << tag._id.to_s
+      end
+      bank_quiz_qizs.each {|quiz|
+        tag_uids.each { |t|
+          quiz.bank_quiz_tag_links.new(tag_uid: t).save 
+        }
+      }
+    end
+
+
   end
 end
