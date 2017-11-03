@@ -61,10 +61,14 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         # return "e45001",false if base_ckp.blank? 
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_k_ckp
       end
-      quiz_uid_list.delete(params["quiz_uid"]) if params["quiz_uid"] && quiz_uid_list.include?(params["quiz_uid"])
-      if tag_quiz_uid_list.present?
+      if params["quiz_tags"] 
         quiz_uid_list = tag_quiz_uid_list & quiz_uid_list
+      else
+        if tag_quiz_uid_list.present?
+          quiz_uid_list = tag_quiz_uid_list & quiz_uid_list
+        end
       end
+      quiz_uid_list.delete(params["quiz_uid"]) if params["quiz_uid"] && quiz_uid_list.include?(params["quiz_uid"])
       base_condition["id"] = {'$in' => quiz_uid_list}
       quizs_info = Mongodb::BankQuizQiz.where(base_condition).sample(params["amount"].to_i).map {|quiz|
         quiz.quiz_base_info
