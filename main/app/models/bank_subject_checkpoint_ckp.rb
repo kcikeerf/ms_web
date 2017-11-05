@@ -31,10 +31,10 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       qzp_list = []
       quiz_uid_list = []
       tag_quiz_uid_list = []
-      if params["quiz_tags"] 
+      if params["quiz_tags"].present?
         quiz_tag_str_arr = params["quiz_tags"]
         tags = Mongodb::BankTag.where({content: {"$in" => quiz_tag_str_arr}})
-        if params["tag_method"] && params["tag_method"] == "and"
+        if params["tag_method"].present? && params["tag_method"] == "and"
           base_quiz = []
           tags.each_with_index { |t,index|
             tag_quiz_uid_list = t.bank_quiz_ids if index < 1
@@ -61,7 +61,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
         # return "e45001",false if base_ckp.blank? 
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_k_ckp
       end
-      if params["quiz_tags"] 
+      if params["quiz_tags"].present? 
         quiz_uid_list = tag_quiz_uid_list & quiz_uid_list
       else
         if tag_quiz_uid_list.present?
