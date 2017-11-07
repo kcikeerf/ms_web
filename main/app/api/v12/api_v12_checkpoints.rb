@@ -43,6 +43,7 @@ module ApiV12Checkpoints
         requires :accuracy, type: String, values: ["exact", "normal"]
         requires :levelword, type: String
         optional :cat_type, type: String
+        optional :quiz_tags, type: Array
         given accuracy: ->(val) { val == 'exact' } do
         end
         given accuracy: ->(val) {val == 'normal'} do

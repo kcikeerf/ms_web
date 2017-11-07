@@ -20,7 +20,8 @@ class Mongodb::BankQuizQiz
   # has_many :bank_quizlogs,  class_name: "Mongodb::BankQuizlog"
   # has_many :bank_qiz_qtgs,  class_name: "Mongodb::BankQizQtg"
   has_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp", dependent: :delete
-  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap" 
+  has_and_belongs_to_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
+  has_many :bank_quiz_tag_links, class_name: "Mongodb::BankQuizTagLink", foreign_key: "quiz_uid", dependent: :delete
 
   #field :uid, type: String
   field :subject, type: String
@@ -95,6 +96,10 @@ class Mongodb::BankQuizQiz
         :paper_outline_id => params["paper_outline_id"] || nil
       })
       self.save!
+
+      if params["quiz_tags"]
+        save_quiz_tags params["quiz_tags"]
+      end
 =begin
       params["bank_qizpoint_qzps"].each_with_index{|bqq, index|
         qiz_point = Mongodb::BankQizpointQzp.new
@@ -143,8 +148,19 @@ class Mongodb::BankQuizQiz
       ckp = Mongodb::BankCkpQzp.new
       ckp.save_ckp_qzp qiz_point._id.to_s, bcc["uid"], bcc["ckp_source"]
     }
+  end
 
-
+  def save_quiz_tags tags_str
+    bank_quiz_tag_links.destroy_all
+    tag_arr = tags_str.split("|")
+    tag_arr.each { |str|
+      tag = Mongodb::BankTag.where(content: str).first
+      unless tag
+        tag = Mongodb::BankTag.new(content: str)
+        tag.save
+      end
+      Mongodb::BankQuizTagLink.new.save_ins self._id.to_s, nil, tag._id.to_s
+    }
   end
 
   def destroy_quiz
@@ -211,6 +227,13 @@ class Mongodb::BankQuizQiz
     result
   end
 
+  def bank_tag_ids
+    bank_quiz_tag_links.map(&:tag_uid)
+  end
+
+  def bank_tags
+    Mongodb::BankTag.where({id: {"$in" => bank_tag_ids }})
+  end
 
   private 
 
