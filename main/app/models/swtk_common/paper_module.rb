@@ -83,6 +83,7 @@ module PaperModule
       shi_yan_xuan_ze_ti
       shi_yan_jie_da_ti
       shi_yan_tan_jiu_ti
+      ke_pu_yue_du_ti
       jian_da_ti
       ji_suan_ti
     }.each{|item| QuizType[:wu_li][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
