@@ -26,6 +26,81 @@ function url_to_blank(url){
   window.open(url);
 }
 
+function getCookie(cname) {
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') {
+          c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+          return c.substring(name.length,c.length);
+      }
+  }
+  return '';
+}
+
+// function removeCookie(cname) {
+//     let value = '';
+//     let days = -1;
+//     let date, expires;
+//     if (days) {
+//         date = new Date();
+//         date.setTime(date.getTime() + (days*24*60*60*1000));
+//         expires = '; expires=' + date.toUTCString();
+//     }
+//     else {
+//         expires = '';
+//     }
+//     document.cookie = cname + '=' + value + expires + '; path=/';
+// }
+
+function refreshToken(){
+  var refresh_token = getCookie('refresh_token');
+  if (refresh_token == '' || refresh_token == undefined){
+    url_to('/users/logout')
+  }else{
+    data = {
+      "grant_type" : "refresh_token",
+      "refresh_token" : refresh_token
+    }
+    $.ajax({
+        type:"POST",
+        url:"/oauth/token",
+        data: data,//{'node_uid':$nodeUid},//咱不做更改，只是用此参数
+        // contentType: 'application/json; charset=utf-8',  
+        // dataType: 'json',
+        async:true,
+        success:function(data){
+          setCookie('user_token',data.access_token,1);
+          setCookie('refresh_token',data.refresh_token,1);
+        },
+        error:function(data){
+          url_to('/users/logout')
+        }
+      });
+    }
+}
+
+function setCookie(name,value,days){ 
+  // console.log(name);
+  // console.log(value);
+  // console.log(days);
+  var date, expires;
+  if (days) {
+    date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    expires = '; expires=' + date.toUTCString();
+  }
+  else {
+      expires = '';
+  }
+  document.cookie = name + '=' + value + expires + '; path=/';
+  // document.cookie = "user_token=" + escape(data.access_token)
+  // document.cookie = "refresh_token=" + escape(data.refresh_token)
+}
+
 function go_back(){
   window.history.go(-1)
 }

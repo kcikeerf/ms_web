@@ -36,6 +36,9 @@ class Mongodb::BankPaperPap
   scope :is_available, -> (available) { where(paper_status: {'$in'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]}) if available.present? && available == true}
   scope :by_district, ->(district) { where(district: district) if district.present? }
   scope :by_tenant, ->(t_uid){ where(tenant_uid: t_uid) if t_uid.present? }
+  scope :available, -> { where(paper_status: {'$in'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]})}
+  scope :unavailable, -> { where(paper_status: {'$nin'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]})}
+
 
   #validates :caption, :region, :school,:chapter,length: {maximum: 200}
   #validates :subject, :type, :version,:grade, :purpose, :levelword, length: {maximum: 50}
@@ -166,13 +169,17 @@ class Mongodb::BankPaperPap
       %w{paper_status grade subject term heading}.each{|attr|
          conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
        } 
-      p params["availbale"]
-      p params
       result =  self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
                     .where(conditions)
                     .is_available(params["availbale"])
                     .order("dt_update desc")
                     .page(params[:page]).per(params[:rows])
+
+      total_count =  self.only(:_id,:heading,:tenant_uid,:school,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                    .where(conditions)
+                    .order("dt_update desc")
+                    .count
+
       paper_result = []
       result.each_with_index do |item|
         h = {
@@ -193,7 +200,43 @@ class Mongodb::BankPaperPap
         h["has_bank_test"] = item.bank_tests.present?
         paper_result << h
       end
-      return paper_result, result.count
+      return paper_result, total_count
+    end
+
+    def get_list_plus params
+      params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
+      params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
+      result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                    .available
+                    .by_keyword(params[:keyword])
+                    .by_grade(params[:grade])
+                    .by_subject(params[:category])
+                    .order("dt_update desc")
+                    .page(params[:page]).per(params[:rows])
+
+      paper_result = []
+      result.each_with_index {|item, index|
+        h = item.attributes
+        h["uid"] = item._id.to_s
+        h.delete(:_id)
+        h["subject_label"] = Common::Locale::i18n("dict.#{h["subject"]}")
+        h["grade_label"] = Common::Locale::i18n("dict.#{h["grade"]}")
+        h["term_label"] = Common::Locale::i18n("dict.#{h["term"]}")
+        h["status_label"] = Common::Locale::i18n("papers.status.#{h["paper_status"]}")
+        h["bank_test_count"] = item.bank_tests.count
+        paper_result << h
+      }
+      return paper_result
+    end
+
+    def get_count params
+      count = self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+        .available
+        .by_keyword(params[:keyword])
+        .by_grade(params[:grade])
+        .by_subject(params[:category])
+        .count
+      return count
     end
 
     def ckp_weights_modification args={}
@@ -321,6 +364,17 @@ class Mongodb::BankPaperPap
 
   end
   ########类方法定义：end#######
+  def paper_info
+    info = self.attributes
+    info[:uid] = self._id.to_s
+    info.delete(:_id)
+    info.delete(:bank_quiz_qiz_ids)
+    info[:bank_quiz_qizs] = bank_quiz_qizs.map { |quiz|
+      quiz.detail_info
+    }
+    return info
+  end
+
 
   def save_pap params
     result = false
@@ -1713,7 +1767,7 @@ class Mongodb::BankPaperPap
         qizpoint_order_arr = params["bank_quiz_qizs"].map{|qiz| qiz["bank_qizpoint_qzps"] }.flatten.map{|qzp| qzp["order"]}
         params["bank_quiz_qizs"].each_with_index{|quiz,index|
           # store quiz
-          qzp_arr = []
+          qzp_arr, op_arr = [], []
           qiz = Mongodb::BankQuizQiz.new
           quiz["subject"] = subject
           quiz["grade"] = grade
@@ -1721,13 +1775,19 @@ class Mongodb::BankPaperPap
           quiz["asc_order"] = index + 1
           # 所有得分点的题顺数组
           quiz["qizpoint_order_arr"] = qizpoint_order_arr
-          qzp_arr = qiz.save_quiz quiz, self.paper_status
+          qzp_arr, op_arr = qiz.save_quiz quiz, self.paper_status
           if qiz.errors.messages.empty?
             params["bank_quiz_qizs"][index]["id"] = qiz._id.to_s
             unless qzp_arr.empty?
               qzp_arr.each_with_index{|qzp_uid,qzp_index|
                 params["bank_quiz_qizs"][index]["bank_qizpoint_qzps"][qzp_index]["id"] = qzp_uid
               }
+            end
+            unless  op_arr.empty?
+              op_arr.each_with_index {|op_uid, op_index|
+                params["bank_quiz_qizs"][index]["option_details"][op_index]["id"] = op_uid
+              }
+              
             end
           else
             raise qiz.errors.messges

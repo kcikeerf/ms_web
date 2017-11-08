@@ -137,6 +137,21 @@ class Mongodb::BankQizpointQzp
     return result
   end
 
+  def level1_levle2_info
+    ckps = bank_checkpoint_ckps
+    result = {
+      Common::CheckpointCkp::Dimesion::Knowledge => [], 
+      Common::CheckpointCkp::Dimesion::Skill => [],
+      Common::CheckpointCkp::Dimesion::Ability => []
+    }
+    ckps.each {|ckp|
+      lv2_ckp = ckp.lv2_ckp
+      lv1_ckp = lv2_ckp.parent
+      result[ckp.dimesion] << "#{lv1_ckp.checkpoint}/#{lv2_ckp.checkpoint}"
+    }
+    return result
+  end
+
   def format_paper_outline_json
     return {} if paper_outline.blank?
     outline_arr = [ paper_outline.ancestors, paper_outline ].flatten.compact!

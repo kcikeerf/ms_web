@@ -74,6 +74,9 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .paperTitle{line-height: 40px;margin-bottom: 10px;}
 .paperTitle label{display: inline-block;width: 90px;}
 .paperTitle input{height: 36px;padding: 0 10px;border:1px solid #dcdcdc;width: 708px;border-radius: 3px;}
+.quizDetailOptions, .originalQuiz, .quizPoints {border:1px solid #dcdcdc;margin: 5px;}
+.optionDetailWarp {border: 1px solid #dcdcdc; margin-left: 55px; position: relative; margin-bottom:20px; padding:10px;}
+.optionDetailWarp .optionDetailParent{padding:10px 0px 0px 10px; margin:0px; overflow:auto}
 .infoList{font-size: 0;margin-top: 15px;}
 .infoList > li{display: inline-block;font-size: 14px;margin-left: 39px;vertical-align: top;}
 .infoList > li:first-child{margin-left: 0;}
@@ -153,7 +156,8 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .remarks{display: block;width: 100%;resize:none;border:1px solid #dcdcdc;border-radius: 4px;height: 60px;padding:10px 15px;}
 .textLabelWarp{position: relative;float: right;width: 640px;margin-bottom: 20px;border:1px solid #dcdcdc;border-radius: 4px;padding: 20px 0;}
 .textLabelWarp:last-child{margin-bottom: 0;}
-.textLabelWarp .deleteIcon {position: absolute;right: -35px;top: 90px;width: 24px;height: 24px;border-radius: 50%;background:#efefef url(/images/zhengjuan/icon.png) no-repeat 6px -109px;}
+.textLabelWarp .deleteIcon, .optionDetailWarp .deleteOption {position: absolute;right: -35px;top: 90px;width: 24px;height: 24px;border-radius: 50%;background:#efefef url(/images/zhengjuan/icon.png) no-repeat 6px -109px;}
+.optionDetailWarp .deleteOption {top: 20px;}
 .textLabelWarp:first-of-type .deleteIcon{display: none;}
 //.score{font-size: 0;padding:0 12px;}
 //.score label{display: inline-block;font-size: 13px;font-weight: 700;padding-top: 8px;vertical-align: top}
@@ -185,8 +189,9 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .threeDimensional .typeList li label{font-weight: 700;font-size: 13px;}
 .threeDimensional .typeList li input{width: 482px;height: 34px;padding:0 10px; border:none;border-radius: 3px;background-color: #f9f9f9;}
 .addWarp{padding:25px 50px;}
-.addWarp .addScore{display: block;width: 90px;margin-left: 70px;border:1px solid #dcdcdc;border-radius: 3px;color: #666;line-height: 28px;text-align: center;font-size: 12px;}
-.addWarp .addScore:hover{background-color: #15a993;color: #fff;border-color: #15a993;}
+.addWarp .addScore, .addWarp .addOptional{display: block;width: 90px;margin-left: 70px;border:1px solid #dcdcdc;border-radius: 3px;color: #666;line-height: 28px;text-align: center;font-size: 12px;}
+
+.addWarp .addScore:hover,.addWarp .addOptional:hover{background-color: #15a993;color: #fff;border-color: #15a993;}
 .attribute .historyBtn{padding-top: 30px;}
 .saveWarp{padding:0 50px 25px;border-bottom:1px solid #dcdcdc;text-align: right;}
 .saveWarp .saveBtn{display: inline-block;width: 90px;border:1px solid #dcdcdc;border-radius: 3px;color: #666;line-height: 28px;text-align: center;font-size: 12px;}

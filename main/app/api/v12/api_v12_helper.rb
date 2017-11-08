@@ -131,4 +131,11 @@ module ApiV12Helper
     }
   end
 
+  def success_message_json code, data
+    {
+      code: code,
+      message: I18n.t("api.#{code}")
+    }.merge(data)
+  end
+
 end

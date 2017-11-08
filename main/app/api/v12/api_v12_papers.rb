@@ -235,11 +235,89 @@ module ApiV12Papers
         requires :pap_uid, type: String
       end
       post :ckps_qzps_mapping do
-        @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-        @paper.associated_checkpoints
+        paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+        paper.associated_checkpoints
       end
 
+      desc "获取试题列表"
+      params do
+        optional :page, type: Integer
+        optional :rows, type: Integer
+        optional :keyword, type: String
+        optional :grade, type: String
+        optional :category, type: String
+      end
+      get :get_list do
+        papers = Mongodb::BankPaperPap.get_list_plus params
+        total_count = Mongodb::BankPaperPap.get_count params
+        result = {data: papers, total_count: total_count}
+        if papers
+          success_message_json("i00000", result)
+        else
+          error!(message_json("e40000"),500)
+        end
+      end
 
+      
+      desc "获取试题信息信息"
+      params do
+        requires :pap_uid, type: String
+      end
+      get :detail do
+        paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+        if paper
+          result = {
+            :paper_structure => JSON.parse(paper.paper_json)
+          }
+          success_message_json("i00000", result)
+        else
+          error!(message_json("e40000"),500)
+        end 
+      end
+
+      desc "获取试卷详细信息"
+      params do        
+      end
+      get :stat do
+        subject_data = Common::Subject::List.keys.map {|subject|
+          count =  Mongodb::BankPaperPap.by_subject(subject).count
+          {Common::Locale::i18n("dict.#{subject}") => count } if count > 0
+        }.compact!
+        subject_code = {}
+        subject_data.each {|s| subject_code.merge!(s)}
+        result = {:stat => {
+                    :total => Mongodb::BankPaperPap.count,
+                    :by_status => {
+                      :available => Mongodb::BankPaperPap.available.count,
+                      :unavailable => Mongodb::BankPaperPap.unavailable.count,
+                    },
+                    :by_subject => subject_code
+                    }
+                  }
+        if result[:stat][:total] > 0
+          success_message_json("i00000", result)
+        else
+          error!(message_json("e40000"),500)
+        end            
+      end
+
+      desc '删除试卷.'
+      params do
+        requires :pap_uid, type: String, desc: '试卷ID.'
+      end
+      delete ':pap_uid' do
+        # authenticate!
+        paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+        if paper.present?
+          # if paper#.destroy
+            message_json("i43000")
+          # else
+          #   error!(message_json("e43500"),500)
+          # end
+        else
+          error!(message_json("e43404"),404)
+        end
+      end
     end
   end
 end

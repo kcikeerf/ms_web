@@ -109,19 +109,41 @@ class ApplicationController < ActionController::Base
   ########
   #override devise after login path
   def after_sign_in_path_for(resource)
+    if current_user
+      target_token = Doorkeeper::AccessToken.where(resource_owner_id: current_user.id,  created_at: (Time.now - 2.hour)..Time.now, revoked_at: nil).order(:created_at).last
+      if target_token
+        user_token_session = {
+            :access_token => target_token.token,
+            :token_type => "bear",
+            :expires_in => target_token.expires_in,
+            :refresh_token => target_token.refresh_token,
+            :scope => "",
+            :created_at => target_token.created_at.to_i
+          } 
+      else
+        user_token_session = current_user.fresh_access_token
+      end
+      cookies[:user_token] = user_token_session[:access_token]
+      cookies[:refresh_token] = user_token_session[:refresh_token]
+    end
     @url_after_login = root_path
     case resource
     when :user, User
       if current_user.is_project_administrator?
-       @url_after_login = my_home_project_administrators_path
+       # @url_after_login = my_home_project_administrators_path
+        @url_after_login = my_home_users_path
       elsif current_user.is_tenant_administrator?
-       @url_after_login = my_home_tenant_administrators_path
+       # @url_after_login = my_home_tenant_administrators_path
+        @url_after_login = my_home_users_path
       elsif current_user.is_analyzer?
-       @url_after_login = my_home_analyzers_path
+       # @url_after_login = my_home_analyzers_path
+        @url_after_login = my_home_users_path
       elsif current_user.is_teacher?
-       @url_after_login = my_home_teachers_path
+       # @url_after_login = my_home_teachers_path
+        @url_after_login = my_home_users_path
       elsif current_user.is_pupil?
-       @url_after_login = my_home_pupils_path
+       # @url_after_login = my_home_pupils_path
+        @url_after_login = my_home_users_path
       else
        @url_after_login = root_path
       end
@@ -138,6 +160,8 @@ class ApplicationController < ActionController::Base
 
   #override devise after logout path
   def after_sign_out_path_for(resource)
+    cookies.delete(:user_token)
+    cookies.delete(:refresh_token)
      case resource
      when :user, User
        root_path

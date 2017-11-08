@@ -21,8 +21,10 @@ $(function(){
         modalLastUrl: "",
         ckeditor_params: {
             quiz_split: Object.assign({}, ckeditor_common_params, {contentsCss : "/assets/zhengjuan/css/paper.css"}),
-            quiz_edit: Object.assign({}, ckeditor_common_params, {height : 250 }),
-            qzp_edit: Object.assign({}, ckeditor_common_params, {height : 100 })
+            quiz_edit:  Object.assign({}, ckeditor_common_params, {height : 150 }),//ckeditor_common_params,
+            qzp_edit: Object.assign({}, ckeditor_common_params, {height : 100 }),
+            hidden_tool: Object.assign({}, ckeditor_common_params, {height: 100,toolbarCanCollapse: true, toolbarStartupExpanded: false}),
+            hidden_mini_tool: Object.assign({}, ckeditor_common_params, {height: 50,toolbarCanCollapse: true, toolbarStartupExpanded: false})
         },
         // getSubject : "/node_structures/get_subjects",        //请求科目
         // getGrade : "/node_structures/get_grades",        //请求年级
@@ -56,7 +58,7 @@ $(function(){
                         if(data.status == 200){
                             paper.paperData = typeof data.data=="string" ? JSON.parse(data.data) : data.data;
                             // 初始状态禁止编辑试卷大纲；
-                            paper.paperData.information.paper_outline_edittable = false;                            
+                            paper.paperData.information.paper_outline_edittable = false;
                             paper.judge(paper.paperData);
                         }else{
                            alert(data.data.mesg);
@@ -616,6 +618,18 @@ $(function(){
                 paper.changeState = true;
             }
         });
+        //判断是否是选做题，如果是显示选项拆分功能
+        doc.on("click",".selectCategory .optionList li",function(){
+            checkQuestionType($(this).attr("values"));
+        });
+        function checkQuestionType(questionType){
+            if(["dan_xiang_xuan_ze", "xuan_ze_ti"].indexOf(questionType) > -1){
+                $(".quizDetailOptions").show();
+            }else{
+                $(".quizDetailOptions").hide();
+            }
+        }
+
         //普通下拉选择
         doc.on("click",".optionList li",function(){
             //科目学期等单独绑定
@@ -839,6 +853,7 @@ $(function(){
         });
         //单题得分选择题目
         doc.on("click",".subNav li.li_describe",function(){
+
             var that = $(this);
             if(that.hasClass("active")) return;
             if(paper.changeState){
@@ -871,6 +886,7 @@ $(function(){
                 $(".part4 .analyze ").html(part4_html.find(".analyze ").html());
                 paper.min_question.setData(question.addClass("analysis").get(0).outerHTML);
                 paper.min_answer.setData(answer.addClass("analysis").get(0).outerHTML);
+
                 $(".systemQuizOrderDisplay").text(num);
 
                 paper.currentQuizOrder = num;
@@ -919,7 +935,6 @@ $(function(){
                         var thisNode = cloneNode.clone(true);
                         thisNode.find(".systemScoreOrderDisplay").text( paper.currentQuiz.order + "(" + (k+1) + ")");
                         thisNode.find(".scoreTestAnswer").val(paper.currentQuiz.bank_qizpoint_qzps[k].test_answer||"");
-
                         //是否主观题
                         paper.currentQuiz.bank_qizpoint_qzps[k].type=="主观" &&  thisNode.find(".is_subjective .textCheckbox").addClass("active");
                         //答案是否图片
@@ -944,6 +959,15 @@ $(function(){
                         qzp_editor.setData(paper.currentQuiz.bank_qizpoint_qzps[k].answer);
                     }
 
+                    
+                    //还原选项拆分
+
+                    checkQuestionType(paper.currentQuiz.cat);
+                    if(["dan_xiang_xuan_ze", "xuan_ze_ti"].indexOf(paper.currentQuiz.cat) > -1){
+                        restoreOptionDetail(paper.currentQuiz.question_body, paper.currentQuiz.option_details)
+                    }else{
+                        gotoQuizDetailOptions();
+                    }
                     // paper.baseFn.update_paper_outline_list(".selectScorePaperOutline", function(){
                     //     for(var index in paper.currentQuiz.bank_qizpoint_qzps){
                     //         $(".selectScorePaperOutline")[index].value = paper.currentQuiz.bank_qizpoint_qzps[index].paper_outline_id;
@@ -951,6 +975,9 @@ $(function(){
                     // });
                 }else{     
                     CKEDITOR.replace('scoreAnswerText0', paper.ckeditor_params.qzp_edit);
+                    //拆分选项页面初始化
+                    checkQuestionType($(".selectCategory .optionWarp .selectVal span").attr("values"));
+                    gotoQuizDetailOptions();
                 }
                 $(".subNav li").removeClass("active");
                 that.addClass("active");
@@ -958,6 +985,38 @@ $(function(){
                 paper.changeState = false;
             }
         });
+        
+        //选项拆分，处理题目数据，将数据拆分成题干和选questionBobyData项
+        function gotoQuizDetailOptions(){
+            var index = $(".subNav li.active").attr("num");
+            question = $(".hide_question").find("[timuindex="+index+"]").clone(false);
+            answer = $(".hide_answer").find("[timuindex="+index+"]").clone(false);
+            restoreOptionDetail(question.html(), [{isAnswer:0, optionContent:""}, {isAnswer:0, optionContent:""}]);
+        }
+        //还原选项拆分的数据
+        function restoreOptionDetail(questionBobyData, questionOptionData){
+            CKEDITOR.instances["question_body"].setData(questionBobyData);
+            var currentOptionDomCount = $(".OptionDetail .optionDetailWarp").length; 
+            for(var i=0; i<questionOptionData.length; i++){
+                if(i > currentOptionDomCount-1){
+                    $("#addOptional").trigger("click");
+                }
+                // console.log(questionOptionData[i].optionContent)
+                CKEDITOR.instances["quiz_option_"+i].setData(questionOptionData[i].optionContent);
+                if(questionOptionData[i].isAnswer){
+                    $(".OptionDetail .optionDetailWarp .textCheckbox").eq(i).addClass("active");
+                }else{
+                    $(".OptionDetail .optionDetailWarp .textCheckbox").eq(i).removeClass("active");
+                }
+             }
+            if(currentOptionDomCount > questionOptionData.length){
+                $(".OptionDetail .optionDetailWarp").each(function(index, element){
+                    if(index > questionOptionData.length-1){
+                        $(this).remove();
+                    }
+                })   
+            }
+        }
         //单题解析选择题目
         doc.on("click",".subNav li.li_analysis",function(){
             var that = $(this);
@@ -1074,12 +1133,19 @@ $(function(){
             cloneNode.find("#cke_" + "scoreAnswerText0").remove();
             CKEDITOR.replace(qzp_ckeditor_id, paper.ckeditor_params.qzp_edit);
             window.scrollTo(0, scroll_top);
+
         });
         //删除得分点
         doc.on("click",".analyze .deleteIcon",function(){
             $(this).parents(".textLabelWarp").remove();
             $(".saveWarp .saveBtn").addClass("active");
             paper.changeState = true;
+
+            $(".analyze .textLabelWarp").each(function(index, elemtn){
+                var qzp_ckeditor_id = "scoreAnswerText" + index;
+                $(this).find("textarea").attr("id", qzp_ckeditor_id)
+                $(this).find(".systemScoreOrderDisplay").text( paper.currentQuizOrder + "(" + (index+1) + ")");
+            });
         });
         //点击保存按钮
         doc.on("click",".saveWarp .saveBtn",function(){
@@ -1266,7 +1332,26 @@ $(function(){
 
         doc.on("click", ".clear_check_all_tenants", function(e){
             paper.baseFn.clear_check_all_tenants();
-        });    
+        });
+        //添加一个拆题选项
+        doc.on("click", "#addOptional", function(){
+            var optionEdotorId = "quiz_option_"+$(".OptionDetail .optionDetailWarp").length;
+            var newOption = $("#demo .optionDetailWarp").eq(0).clone();
+            newOption.find("textarea").attr("id", optionEdotorId)
+            $(".OptionDetail").append(newOption);
+            paper[optionEdotorId] = CKEDITOR.replace(optionEdotorId, paper.ckeditor_params.hidden_mini_tool);
+        });
+        //删除一个拆题选项
+        doc.on("click", ".deleteOption", function(){
+            $(this).parents(".optionDetailWarp").remove();
+            $(".saveWarp .saveBtn").addClass("active");
+            paper.changeState = true;
+            //
+            $(".OptionDetail .optionDetailWarp").each(function(index, elemtn){
+                var optionEdotorId = "quiz_option_" + index;
+                $(this).find("textarea").attr("id", optionEdotorId);
+            });
+         })
     }
     //生成loading
     paper.createLoading = function(){
@@ -1458,6 +1543,26 @@ $(function(){
         paper.paperData.paper_html = $(".hide_question").html();
         paper.paperData.answer_html = $(".hide_answer").html();
         $(".subNav li.active").addClass("dispose");
+
+        //保存选项拆分数据
+        if(["dan_xiang_xuan_ze", "xuan_ze_ti"].indexOf(itemObj.cat) > -1 ){
+            itemObj.question_body = CKEDITOR.instances["question_body"].getData();
+            itemObj.option_details = [];
+            itemObj.is_II_quiz = true;
+            $(".OptionDetail .optionDetailWarp").each(function(index, elemtn){
+                var newOptionData = {};
+                newOptionData.optionContent = CKEDITOR.instances["quiz_option_"+index].getData();
+                newOptionData.isAnswer = $(this).find(".textCheckbox").hasClass("active") || false;;
+                itemObj.option_details.push(newOptionData);
+            })
+
+
+            // console.log(itemObj.question_body, itemObj.OptionDetail)
+        }else{
+            itemObj.question_body = "";
+            itemObj.OptionDetail = []; 
+        }
+        
     }
     //单题 题目和答案的html确保div套p
     paper.itemFilter = function(html){
@@ -1803,6 +1908,7 @@ $(function(){
                 paper.editorControl.editor_update_handler(e.type, e.target, paper.questionEditor);
             });  
         });
+
         var divDom = $("<div></div>").html(paper.paperData.paper_html);
         if(divDom.find("div.my-timu").length){
             paper.questionEditor.setData(paper.paperData.paper_html);
@@ -1835,6 +1941,11 @@ $(function(){
         // };
         paper.min_question = CKEDITOR.replace('min_question', paper.ckeditor_params.quiz_edit);
         paper.min_answer = CKEDITOR.replace('min_answer', paper.ckeditor_params.quiz_edit);
+        paper.question_body = CKEDITOR.replace('question_body', paper.ckeditor_params.hidden_tool);
+        $("#addOptional").trigger("click");
+        $("#addOptional").trigger("click");
+        $(".OptionDetail .optionDetailWarp .deleteOption").remove();
+
         CKEDITOR.instances["min_question"].on("instanceReady", function(){   
             $(this.document).on("keyup", function(e){
                 paper.changeState = true;
@@ -1970,7 +2081,7 @@ $(function(){
 
             // 去掉多余的 div 层
             domObj.find("div > div:not([class~='my-block'])").each(function(o){
-                var o=$(this).get(0);
+                var o=$(thisNode).get(0);
                 if(o.childElementCount==1 && o.firstElementChild.tagName=="DIV" && /my-block/.test(o.firstElementChild.className)){
                     $(o).before(o.firstElementChild);
                     $(o).remove();
