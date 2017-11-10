@@ -298,35 +298,57 @@ class Mongodb::BankQuizQiz
     result
   end
 
-  def exercise
-    content = {
-      uid: self._id.to_s,
-      text: self.text,
-      order:  self.order,
-      custom_order: self.custom_order,
-      ckps: {
-        knowledge: [],
-        skill: [],
-        ability: []
-      }
-    }
-    answer = {
-      uid: self._id.to_s,
-      answer: [],
-      order:  self.order,
-      custom_order: self.custom_order
-    }
-    qzps = self.bank_qizpoint_qzps
-    qzps.each { |qzp|
-      answer[:answer] << qzp.answer 
-      result_ckp = qzp.level1_levle2_info.deep_symbolize_keys
-      content[:ckps][:knowledge] += result_ckp[:knowledge] if result_ckp[:knowledge]
-      content[:ckps][:skill] += result_ckp[:skill] if result_ckp[:skill]
-      content[:ckps][:ability] += result_ckp[:ability] if result_ckp[:ability]
-    }
-    return content, answer
-  end
+  # def exercise
+  #   content = {
+  #     uid: self._id.to_s,
+  #     text: self.text,
+  #     order:  self.order,
+  #     custom_order: self.custom_order,
+  #     ckps: {
+  #       knowledge: [],
+  #       skill: [],
+  #       ability: []
+  #     }
+  #   }
+  #   answer = {
+  #     uid: self._id.to_s,
+  #     answer: [],
+  #     order:  self.order,
+  #     custom_order: self.custom_order
+  #   }
+  #   qzps = self.bank_qizpoint_qzps
+  #   qzps.each { |qzp|
+  #     answer[:answer] << qzp.answer 
+  #     result_ckp = qzp.level1_levle2_info.deep_symbolize_keys
+  #     content[:ckps][:knowledge] += result_ckp[:knowledge] if result_ckp[:knowledge]
+  #     content[:ckps][:skill] += result_ckp[:skill] if result_ckp[:skill]
+  #     content[:ckps][:ability] += result_ckp[:ability] if result_ckp[:ability]
+  #   }
+  #   return content, answer
+  # end
 
+  def exercise
+    result ={}
+    qzps = self.bank_qizpoint_qzps
+    result[:quiz_uid] = self._id.to_s
+    result[:subject] = self.subject
+    # result[:grade]= self.grade
+    result[:text] = self.text
+    result[:answer] = self.answer
+    result[:desc] = self.desc
+    result[:levelword2] = self.levelword2
+    result[:bank_qizpoint_qzps] = qzps.map{|qzp|
+      { 
+        "type" => qzp.type,
+        "type_label" => Common::Locale::i18n("dict.#{qzp.type}"),
+        "answer" => qzp.answer,
+        "desc" => qzp.desc,
+        "score" => qzp.score,
+        "bank_checkpoint_ckps" => qzp.level1_levle2_info_plus
+      }
+    } 
+    result
+  end
 
 
   private 

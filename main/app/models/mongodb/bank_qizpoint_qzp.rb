@@ -152,6 +152,35 @@ class Mongodb::BankQizpointQzp
     return result
   end
 
+  def level1_levle2_info_plus
+    result = {
+      Common::CheckpointCkp::Dimesion::Knowledge => [], 
+      Common::CheckpointCkp::Dimesion::Skill => [],
+      Common::CheckpointCkp::Dimesion::Ability => []
+    }
+    ckpJson = JSON.parse(self.ckps_json)
+    ckpJson.each {|key,value|
+      ckp_uid_str_arr =  value[0].keys
+      ckp_uid_str_arr.each {|tt| 
+        ckp_uid_arr = tt.split("/").delete_if {|item| item == ""}
+        dimesion_ckps = []
+        ckp_uid_arr.each {|ckp_uid|
+          ckp = BankSubjectCheckpointCkp.where(uid: ckp_uid).first
+          if ckp.present?
+            dimesion_ckps.push(ckp)
+          end
+        }
+        result[key] << {
+          uid: dimesion_ckps.map(&:uid).join("/"),
+          rid: dimesion_ckps.map(&:rid).join("/"),
+          name: dimesion_ckps.map(&:checkpoint).join("/")
+        }
+        # result[key] = []
+      }
+    }
+    result
+  end
+
   def format_paper_outline_json
     return {} if paper_outline.blank?
     outline_arr = [ paper_outline.ancestors, paper_outline ].flatten.compact!

@@ -21,10 +21,26 @@ module ApiV12Tests
           target_report_data = File.open(target_report_f, 'rb').read
           return report_data if target_report_data.blank?
           report_data = JSON.parse(target_report_data)
-          Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, report_path, report_data.to_json
+          # Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, report_path, report_data.to_json
         end
-        return report_data["paper_qzps"]        
+        return report_data
       end
+
+      def sort_quiz_with_answer paper_qzps
+        mistakes_list = []
+        corectly_list = []
+        paper_qzps.each {|qzp| 
+          taget_qzp = Mongodb::BankQizpointQzp.where(_id: qzp["qzp_id"]).first
+          if (qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"])
+            mistakes_list << taget_qzp.bank_quiz_qiz_id.to_s
+          else
+            corectly_list << taget_qzp.bank_quiz_qiz_id.to_s
+          end
+        }
+        return mistakes_list, corectly_list
+      end
+
+
     end
 
     params do
@@ -72,7 +88,8 @@ module ApiV12Tests
           if paper
             result = paper.get_ckp_quiz params
             if params[:report_url]
-              result["paper_qzps"] = get_pupil_report_data params[:report_url]
+              data =  get_pupil_report_data params[:report_url]
+              result["paper_qzps"] = data["paper_qzps"]
             end
             if result
               result
@@ -92,13 +109,115 @@ module ApiV12Tests
         requires :report_url, type: String
       end
       post :get_error_quiz_list do        
-        paper_qzps = get_pupil_report_data params[:report_url]
+        data = get_pupil_report_data params[:report_url]
+        paper_qzps = data["paper_qzps"]
         paper_qzps = paper_qzps.select {|qzp| 
           qzp if qzp &&  (qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"])
         }
         paper_qzps
       end
 
+      # desc "获取学生的习题列表"
+      # params do
+      #   requires :test_uid, type: String
+      # end
+      # post :get_stu_quiz_list do
+      #   loc = "/Users/shuai/workspace/tk_main/main" 
+      #   path = "/reports_warehouse/tests/"
+      #   user_uid = current_user.role_obj.uid
+      #   file_path = Dir[loc + path + params[:test_uid] + "/project/" + params[:test_uid] + "/**/" + user_uid + ".json"]
+      #   if file_path.size > 0
+      #     paper_qzps = get_pupil_report_data file_path.first
+      #     m_list, c_list = sort_quiz_with_answer paper_qzps
+
+      #     # mistakes_list = []
+      #     # corectly_list = []
+      #     # mistakes_list << m_list
+      #     # corectly_list << c_list
+      #     # mistakes_list.flatten!
+      #     # corectly_list.flatten!
+
+      #   else
+
+      #   end
+      # end
+
+      desc "download_able_list"
+      params do
+      end
+      post :download_able_list do
+        user = current_user
+        if user.children.size > 0
+
+          children = user.children
+          pupil_users = []
+          children.each {|c| 
+            pupil_users << c if c.is_pupil?
+          }
+          if pupil_users.size > 0
+            test_list = []
+            pupil_users.each { |u|
+              # pupil = u.role_obj
+              bank_tests = u.bank_tests
+              bank_tests.each {|b_test|
+                _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(u)
+                rpt_type = _rpt_type || Common::Report::Group::Project
+                rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
+                report_url = Common::Report::get_test_report_url(b_test._id.to_s, rpt_type, rpt_id)
+                if report_url.present?
+                  test_list << {
+                    uid: b_test._id.to_s,
+                    name: b_test.name,
+                    report_url: report_url
+                  }
+                end
+              }
+            }
+            success_message_json("i00000",{test_list: test_list.uniq})
+          else
+            message_json("e44404",404)
+          end
+        else
+          message_json("e44404",500)
+        end
+      end
+
+      desc "获取学生的错题列表"
+      params do
+        requires :report_url_list, type: Array 
+      end
+      post :incorrect_item do
+        begin         
+          time_day = Time.now.strftime('%Y/%m/%d')  
+          base = "/Users/shuai/workspace/tk_main/main"
+          collection = {"test_list" => []}
+          params[:report_url_list].each {|_url|
+            test_info = {}
+            data = get_pupil_report_data (base+_url)
+            test_info["basic"] = data["basic"] 
+            m_list, c_list = sort_quiz_with_answer data["paper_qzps"]
+            mistakes_list = m_list.uniq
+            # corectly_list << c_list
+            incorrect_item = []
+            mistakes_list.each {|quiz_uid|
+              quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
+              unless test_info["basic"]["title"]
+                test_info["basic"]["title"] = quiz.bank_paper_paps[0].heading if quiz.bank_paper_paps
+                test_info["basic"]["title"] = "#{time_day}错题本" unless quiz.bank_paper_paps
+              end
+              if quiz.present?
+                incorrect_item << quiz.exercise
+              end
+            }
+            test_info["incorrect_item"] = incorrect_item
+            collection["test_list"] << test_info
+          }
+          # corectly_list.flatten!
+          success_message_json("i00000",{collection: collection})
+        rescue Exception => e
+          message_json("e50000",500)
+        end
+      end
     end
   end
 end
