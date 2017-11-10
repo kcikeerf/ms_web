@@ -33,6 +33,10 @@ module ApiV12Helper
     end
     error!(message_json("e40004"), 404) unless target_user
     # target_user.create_user_auth_redis
+    if target_user && target_user.tk_token.blank?
+      target_user.generate_token
+      target_user.save
+    end
     target_user
   end
 
