@@ -194,24 +194,26 @@ module ApiV12Tests
           params[:report_url_list].each {|_url|
             test_info = {}
             # data = get_pupil_report_data (base+_url) #本地获取
-            data = get_pupil_report_data _url #服务器方式            
-            test_info["basic"] = data["basic"] 
-            m_list, c_list = sort_quiz_with_answer data["paper_qzps"]
-            mistakes_list = m_list.uniq
-            # corectly_list << c_list
-            incorrect_item = []
-            mistakes_list.each {|quiz_uid|
-              quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
-              unless test_info["basic"]["title"]
-                test_info["basic"]["title"] = quiz.bank_paper_paps[0].heading if quiz.bank_paper_paps
-                test_info["basic"]["title"] = "#{time_day}错题本" unless quiz.bank_paper_paps
-              end
-              if quiz.present?
-                incorrect_item << quiz.exercise
-              end
-            }
-            test_info["incorrect_item"] = incorrect_item
-            collection["test_list"] << test_info
+            data = get_pupil_report_data _url #服务器方式
+            if data["paper_qzps"].present?            
+              test_info["basic"] = data["basic"] 
+              m_list, c_list = sort_quiz_with_answer data["paper_qzps"]
+              mistakes_list = m_list.uniq
+              # corectly_list << c_list
+              incorrect_item = []
+              mistakes_list.each {|quiz_uid|
+                quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
+                unless test_info["basic"]["title"]
+                  test_info["basic"]["title"] = quiz.bank_paper_paps[0].heading if quiz.bank_paper_paps
+                  test_info["basic"]["title"] = "#{time_day}错题本" unless quiz.bank_paper_paps
+                end
+                if quiz.present?
+                  incorrect_item << quiz.exercise
+                end
+              }
+              test_info["incorrect_item"] = incorrect_item
+              collection["test_list"] << test_info
+            end
           }
           # corectly_list.flatten!
           success_message_json("i00000",{collection: collection})
