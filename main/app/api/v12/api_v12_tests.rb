@@ -189,11 +189,12 @@ module ApiV12Tests
       post :incorrect_item do
         begin         
           time_day = Time.now.strftime('%Y/%m/%d')  
-          base = "/Users/shuai/workspace/tk_main/main"
+          # base = "/Users/shuai/workspace/tk_main/main"
           collection = {"test_list" => []}
           params[:report_url_list].each {|_url|
             test_info = {}
-            data = get_pupil_report_data (base+_url)
+            # data = get_pupil_report_data (base+_url) #本地获取
+            data = get_pupil_report_data _url #服务器方式            
             test_info["basic"] = data["basic"] 
             m_list, c_list = sort_quiz_with_answer data["paper_qzps"]
             mistakes_list = m_list.uniq
