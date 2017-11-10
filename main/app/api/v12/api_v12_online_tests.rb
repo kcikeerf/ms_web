@@ -74,7 +74,7 @@ module ApiV12OnlineTests
           end
 
           report_url = Common::Report::get_test_report_url(_test_id, _rpt_type, _rpt_id)
-
+          latest_job = TaskList.find(item.task_uid).job_lists.order(dt_update: :desc).first
           {
             :id => _test_id,
             :name => target_test.name,
@@ -84,6 +84,7 @@ module ApiV12OnlineTests
             :start_date => target_test.start_date,
             :end_date => target_test.quiz_date,
             :is_public => target_test.is_public,
+            :latest_job_process => latest_job.process,
             :task_uid => item.task_uid,
             :report_url => report_url
           }
@@ -127,7 +128,6 @@ module ApiV12OnlineTests
         #     :message => tkc_data#I18n.t("scores.messages.error.upload_failed")
         #   }
         # end
-
 
         status_code, result = Common::template_tk_job_execution_in_controller {
           TkJobConnector.new({

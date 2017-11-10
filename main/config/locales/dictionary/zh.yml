@@ -208,6 +208,12 @@ zh:
     yue_du_biao_da: "阅读表达"
     shu_mian_biao_da: "书面表达"
     duan_wen_gai_cuo: "短文改错"
+    duo_xiang_xuan_ze_ti: "多项选择题"
+    shi_yan_xuan_ze_ti: "实验选择题"
+    shi_yan_jie_da_ti: "实验解答题"
+    shi_yan_tan_jiu_ti: "实验探究题"
+    ke_pu_yue_du_ti: "科普阅读题"
+
     #分册
     quan_yi_ce: "全一册"
     shang_ce: "春季"
