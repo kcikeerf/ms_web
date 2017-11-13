@@ -36,6 +36,7 @@ class Mongodb::BankTest
   field :checkpoint_system_rid, type: String
   field :is_public, type: Boolean
   field :area_rid, type: String
+  field :test_status, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
