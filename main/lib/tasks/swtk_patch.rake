@@ -153,6 +153,75 @@ namespace :swtk_patch do
       end
     end
 
+    desc "migrate paper pupil teacher to bank_test"
+    task migrate_paper_pupil_teacher_to_bank_test: :environment do
+      Mongodb::BankPupPap.all.each do |pup_pap|
+        bank_test = pup_pap.bank_paper_pap.bank_tests[0] if pup_pap.bank_paper_pap
+        p bank_test
+
+        user = pup_pap.pupil.user if pup_pap.pupil
+        if bank_test.present? && user.present?
+          bank_test.update(test_status: "report_completed")
+          bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+          unless bank_test_user.present?            
+            bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+          end
+          p bank_test_user
+          bank_test_user.save!
+        end
+      end
+      p '--------------------------------------'
+      Mongodb::BankTeaPap.all.each do |tea_pap|
+        p tea_pap
+        bank_test = tea_pap.bank_paper_pap.bank_tests[0] if tea_pap.bank_paper_pap
+        user = tea_pap.teacher.user if tea_pap.teacher
+        if bank_test.present? && user.present?
+          bank_test.update(test_status: "report_completed")
+          bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+          unless bank_test_user.present?            
+            bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+          end
+          p bank_test_user
+          bank_test_user.save!
+        end
+      end
+    end
+
+    # desc "check report data"
+    # task :check_report_data, [:test_uid,:stu_name_index,:stu_num_index,:begin_data_index] => :environment do |t,args|
+    #   if args[:test_uid].nil? || args[:stu_name_index].nil? || args[:stu_num_index].nil? || args[:begin_data_index].nil? 
+    #     puts "Need test_uid,stu_name_index,stu_num_index,begin_data_index Usage: #rake swtk_patch:v1_2:check_report_data[test_uid,stu_name_index,stu_num_index,begin_data_index]"
+    #     exit 
+    #   end      
+    #   bank_test = Mongodb::BankTest.where(_id: args[:test_uid]).first
+    #   stu_name_index = args[:stu_name_index].to_i
+    #   stu_num_index = args[:stu_num_index].to_i
+    #   begin_data_index = args[:begin_data_index].to_i
+    #   bank_test.score_uploads.each do |su|
+    #     bank_qizpoint_qzps = []
+    #     target_tenant = Tenant.where(uid: su.tenant_uid).first
+    #     base_path = Rails.root.to_s + '/public'
+    #     file_path = base_path + su.filled_file.current_path
+    #     user_info_xlsx = Roo::Excelx.new(file_path)
+    #     out_excel = Axlsx::Package.new
+    #     wb = out_excel.workbook
+    #     user_info_xlsx.sheet(5).each_with_index do |row, index|
+    #       if index < 1 || (index > 1 && index < 4)
+    #         next
+    #       elsif index == 1
+    #         bank_qizpoint_qzps = row[8..-1]
+    #       else
+    #         user_name = [
+    #           target_tenant.number,
+    #           #Common::Subject::Abbrev[@target_paper.subject.to_sym],
+    #           row[stu_num_index],
+    #           Common::Locale.hanzi2abbrev(row[stu_name_index])
+    #         ].join("")
+    #         p User.where("name LIKE :u_name", {u_name: "%#{user_name}%"}).first
+    #       end
+    #     end
+    #   end
+    # end
   end
 
   namespace :v1_2_1 do
