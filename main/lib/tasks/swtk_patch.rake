@@ -156,32 +156,30 @@ namespace :swtk_patch do
     desc "migrate paper pupil teacher to bank_test"
     task migrate_paper_pupil_teacher_to_bank_test: :environment do
       Mongodb::BankPupPap.all.each do |pup_pap|
-        bank_test = pup_pap.bank_paper_pap.bank_tests[0] if pup_pap.bank_paper_pap
-        p bank_test
-
+        paper = pup_pap.bank_paper_pap
+        bank_test = paper.bank_tests[0] if paper
         user = pup_pap.pupil.user if pup_pap.pupil
         if bank_test.present? && user.present?
-          bank_test.update(test_status: "report_completed")
+          test_name = paper.heading.to_s + "_测试"
+          bank_test.update(test_status: "report_completed",name: test_name)
           bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
           unless bank_test_user.present?            
             bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
           end
-          p bank_test_user
           bank_test_user.save!
         end
       end
-      p '--------------------------------------'
       Mongodb::BankTeaPap.all.each do |tea_pap|
-        p tea_pap
-        bank_test = tea_pap.bank_paper_pap.bank_tests[0] if tea_pap.bank_paper_pap
+        paper = pup_pap.bank_paper_pap
+        bank_test = paper.bank_tests[0] if paper
         user = tea_pap.teacher.user if tea_pap.teacher
         if bank_test.present? && user.present?
-          bank_test.update(test_status: "report_completed")
+          test_name = paper.heading.to_s + "_测试"
+          bank_test.update(test_status: "report_completed",name: test_name)
           bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
           unless bank_test_user.present?            
             bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
           end
-          p bank_test_user
           bank_test_user.save!
         end
       end
