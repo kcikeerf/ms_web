@@ -218,6 +218,7 @@ module ApiV12Tests
           # corectly_list.flatten!
           success_message_json("i00000",{collection: collection})
         rescue Exception => e
+          Rails.logger.info e.backtrace.inspect
           message_json("e50000",500)
         end
       end

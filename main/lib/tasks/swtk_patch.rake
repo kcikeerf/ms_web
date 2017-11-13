@@ -157,8 +157,7 @@ namespace :swtk_patch do
     task migrate_paper_pupil_teacher_to_bank_test: :environment do
       Mongodb::BankPupPap.all.each do |pup_pap|
         bank_test = pup_pap.bank_paper_pap.bank_tests[0] if pup_pap.bank_paper_pap
-        p bank_test
-
+        # p bank_test
         user = pup_pap.pupil.user if pup_pap.pupil
         if bank_test.present? && user.present?
           bank_test.update(test_status: "report_completed")
@@ -166,13 +165,13 @@ namespace :swtk_patch do
           unless bank_test_user.present?            
             bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
           end
-          p bank_test_user
+          # p bank_test_user
           bank_test_user.save!
         end
       end
-      p '--------------------------------------'
+      # p '--------------------------------------'
       Mongodb::BankTeaPap.all.each do |tea_pap|
-        p tea_pap
+        # p tea_pap
         bank_test = tea_pap.bank_paper_pap.bank_tests[0] if tea_pap.bank_paper_pap
         user = tea_pap.teacher.user if tea_pap.teacher
         if bank_test.present? && user.present?
@@ -181,7 +180,7 @@ namespace :swtk_patch do
           unless bank_test_user.present?            
             bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
           end
-          p bank_test_user
+          # p bank_test_user
           bank_test_user.save!
         end
       end
