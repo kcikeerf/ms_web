@@ -160,24 +160,30 @@ class Mongodb::BankQizpointQzp
     }
     ckpJson = JSON.parse(self.ckps_json)
     ckpJson.each {|key,value|
-      ckp_uid_str_arr =  value[0].keys
-      if ckp_uid_str_arr.present?
-        ckp_uid_str_arr.each {|tt| 
-          ckp_uid_arr = tt.split("/").delete_if {|item| item == ""}
-          dimesion_ckps = []
-          ckp_uid_arr.each {|ckp_uid|
-            ckp = BankSubjectCheckpointCkp.where(uid: ckp_uid).first
-            if ckp.present?
-              dimesion_ckps.push(ckp)
-            end
+      Rails.logger.info '---------'
+      Rails.logger.info key
+      Rails.logger.info value
+      Rails.logger.info '-----------'
+      if value.present?
+        ckp_uid_str_arr =  value[0].keys 
+        if ckp_uid_str_arr.present?
+          ckp_uid_str_arr.each {|tt| 
+            ckp_uid_arr = tt.split("/").delete_if {|item| item == ""}
+            dimesion_ckps = []
+            ckp_uid_arr.each {|ckp_uid|
+              ckp = BankSubjectCheckpointCkp.where(uid: ckp_uid).first
+              if ckp.present?
+                dimesion_ckps.push(ckp)
+              end
+            }
+            result[key] << {
+              uid: dimesion_ckps.map(&:uid).join("/"),
+              rid: dimesion_ckps.map(&:rid).join("/"),
+              name: dimesion_ckps.map(&:checkpoint).join("/")
+            }
+            # result[key] = []
           }
-          result[key] << {
-            uid: dimesion_ckps.map(&:uid).join("/"),
-            rid: dimesion_ckps.map(&:rid).join("/"),
-            name: dimesion_ckps.map(&:checkpoint).join("/")
-          }
-          # result[key] = []
-        }
+        end
       end
     }
     result
