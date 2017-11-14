@@ -181,7 +181,6 @@ class Mongodb::BankQizpointQzp
               rid: dimesion_ckps.map(&:rid).join("/"),
               name: dimesion_ckps.map(&:checkpoint).join("/")
             }
-            # result[key] = []
           }
         end
       end
