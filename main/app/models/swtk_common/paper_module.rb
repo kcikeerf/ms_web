@@ -25,7 +25,9 @@ module PaperModule
       #英语
       :ying_yu => {},
       #物理
-      :wu_li => {}
+      :wu_li => {},
+      #生物
+      :sheng_wu => {}
     }
 
     #语文题型
@@ -87,6 +89,13 @@ module PaperModule
       jian_da_ti
       ji_suan_ti
     }.each{|item| QuizType[:wu_li][item.to_sym] = Common::Locale::i18n("dict.#{item}")}
+
+    %W{
+      dan_xiang_xuan_ze_ti
+      shi_yan_tan_jiu_ti
+      ke_pu_yue_du_ti
+      jian_da_ti
+    }.each{|item| QuizType[:sheng_wu][item.to_sym] = Common::Locale::i18n("dict.#{item}")} 
 
     Difficulty = {
       #难度
