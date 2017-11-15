@@ -596,10 +596,9 @@ namespace :swtk do
               bank_qizpoint_qzps = row[begin_data_index..-1]
             else
               user_name = [
-                target_tenant.number,
-                #Common::Subject::Abbrev[@target_paper.subject.to_sym],
-                row[stu_num_index],
-                Common::Locale.hanzi2abbrev(row[stu_name_index])
+                target_tenant.number.strip,
+                row[stu_num_index].strip,
+                Common::Locale.hanzi2abbrev(row[stu_name_index]).strip
               ].join("")
               user = User.where("name LIKE :u_name", {u_name: "%#{user_name}%"}).first
               if user.present?
