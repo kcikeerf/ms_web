@@ -3,6 +3,10 @@
 require 'ox'
 require 'roo'
 require 'axlsx'
+require 'bigdecimal'
+require 'bigdecimal/util'
+require 'fileutils'
+
 
 namespace :swtk do
   namespace :report do
@@ -488,10 +492,10 @@ namespace :swtk do
           stu_name_index = args[:stu_name_index].to_i
           stu_num_index = args[:stu_num_index].to_i
           begin_data_index = args[:begin_data_index].to_i
-
+          FileUtils.mkdir_p("./tmp/#{args[:test_uid]}") unless File.exists?("./tmp/#{args[:test_uid]}")  
           tenant_uid_arr = bank_test.score_uploads.to_a
-
-          th_number = 2
+          # 线程数量
+          th_number = 3
           num_per_th = tenant_uid_arr.size/th_number
 
           p "线程数量: #{th_number}, 每个最大数量: #{num_per_th+1}"
@@ -578,8 +582,8 @@ namespace :swtk do
           # p su.filled_file.current_path
 
           target_tenant = Tenant.where(uid: su.tenant_uid).first
-          # base_path = Rails.root.to_s + '/public'
-          base_path = ""
+          base_path = Rails.root.to_s + '/public'
+          # base_path = ""
           file_path = base_path + su.filled_file.current_path
           user_info_xlsx = Roo::Excelx.new(file_path)
           out_excel = Axlsx::Package.new
@@ -605,8 +609,8 @@ namespace :swtk do
                 report_url = Common::Report::get_test_report_url(bank_test._id.to_s, rpt_type, rpt_id)
                 # p report_url
                 # p bank_qizpoint_qzps
-                # base_path = "/Users/shuai/workspace/tk_main/main"
-                base_path = ""                 
+                base_path = "/Users/shuai/workspace/tk_main/main"
+                # base_path = ""                 
                 report_path = base_path + report_url
                 target_report_f = Dir[report_path].first
                 if target_report_f.present?
@@ -614,7 +618,6 @@ namespace :swtk do
                   if target_report_data.present?
                     report_data = JSON.parse(target_report_data)
                     pap_qzp_data = report_data["paper_qzps"]
-
                     if pap_qzp_data.present?
                       pap_qzp_data.each { |qzp_obj|
                         qzp_id = qzp_obj["qzp_id"]
@@ -627,7 +630,7 @@ namespace :swtk do
                           else
                             next
                           end
-                        elsed
+                        else
                           base_file_sheet.add_row(row + ["报告内容缺失: 得分点uid#{qzp_id},得分点顺序#{qzp_obj["qzp_order"]}"])
                           break
                         end
@@ -647,7 +650,7 @@ namespace :swtk do
             end
           end
           out_file_name = target_tenant.name_cn
-          out_excel.serialize('./tmp/' + out_file_name + '_error.xlsx')
+          out_excel.serialize("./tmp/" + bank_test._id.to_s + "/" + out_file_name + '_error.xlsx')
         end
       end
 
