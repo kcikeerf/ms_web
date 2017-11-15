@@ -20,7 +20,8 @@ namespace :check_report do
         # p su.filled_file.current_path
 
         target_tenant = Tenant.where(uid: su.tenant_uid).first
-        base_path = Rails.root.to_s + '/public'
+        # base_path = Rails.root.to_s + '/public'
+        base_path = ""
         file_path = base_path + su.filled_file.current_path
         user_info_xlsx = Roo::Excelx.new(file_path)
         out_excel = Axlsx::Package.new
@@ -46,8 +47,8 @@ namespace :check_report do
               report_url = Common::Report::get_test_report_url(bank_test._id.to_s, rpt_type, rpt_id)
               # p report_url
               # p bank_qizpoint_qzps
-              base_path = "/Users/shuai/workspace/tk_main/main"
-              # base_path = ""                 
+              # base_path = "/Users/shuai/workspace/tk_main/main"
+              base_path = ""                 
               report_path = base_path + report_url
               target_report_f = Dir[report_path].first
               if target_report_f.present?
