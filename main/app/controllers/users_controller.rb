@@ -52,6 +52,18 @@ class UsersController < ApplicationController
 
   end
 
+  def my_test
+    if current_user.is_project_administrator?
+      @tests_data = Mongodb::BankTest.where(user_id: current_user.id)
+    else
+      bank_test_ids = Mongodb::BankTestUserLink.where(user_id: current_user.id).pluck(:bank_test_id)
+      @tests_data = Mongodb::BankTest.where(id: bank_test_ids)
+    end
+    @bank_tests = @tests_data.by_name(params[:keyword])
+      .page(params[:page])
+      .per(10)
+  end
+
   def my_pupil
     if current_user.is_teacher?
     pupils = current_user.teacher.pupils
@@ -111,6 +123,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def my_exam
+    if current_user.is_project_administrator?
+      # union_test_ids = Mongodb::UnionTestUserLink.only(:union_test_id).where(user_id: current_user.id).map{ |li| li.union_test_id.to_s}
+      union_tests = Mongodb::UnionTest.where({user_id: current_user.id })
+      grade_arr = union_tests.map {|t| t.grade if t.grade}.uniq.compact.sort{|a,b| Common::Locale.mysort(Common::Grade::Order[a.nil?? "":a.to_sym],Common::Grade::Order[b.nil?? "":b.to_sym]) }
+      @grades = deal_label('dict', grade_arr)
+      @union_tests = union_tests.by_grade(params[:grade])
+      .by_keyword(params[:keyword])
+      .page(params[:page])
+      .per(10)
+    else
+      redirect_to my_home_users_path 
+    end
+  end
+
   private
 
   def set_tenant
@@ -122,15 +149,16 @@ class UsersController < ApplicationController
     if current_user.is_analyzer?
       @papers_data = Mongodb::BankPaperPap.by_user(current_user.id).order({dt_update: :desc})
     else
-      #查询关联测试列表
-      tests = Mongodb::BankTest.by_user(current_user.id)
-      #查看相关试卷id
-      pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s if (t && t.bank_paper_pap) }.compact
-      #初步过滤试卷范围
-      @papers_filter = { 
-        id: {'$in'=>pap_ids} 
-      }
-      @papers_data = Mongodb::BankPaperPap.where(@papers_filter).order({dt_update: :desc})
+      # #查询关联测试列表
+      # tests = Mongodb::BankTest.by_user(current_user.id)
+      # #查看相关试卷id
+      # pap_ids = tests.map{|t| t.bank_paper_pap.id.to_s if (t && t.bank_paper_pap) }.compact
+      # #初步过滤试卷范围
+      # @papers_filter = { 
+      #   id: {'$in'=>pap_ids} 
+      # }
+      # @papers_data = Mongodb::BankPaperPap.where(@papers_filter).order({dt_update: :desc})
+      @papers_data = Mongodb::BankPaperPap.where(user_id: current_user.id).order({dt_update: :desc})
     end
   end
 

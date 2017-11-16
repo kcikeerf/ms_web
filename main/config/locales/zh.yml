@@ -232,7 +232,12 @@ zh:
       score_importing: "成绩导入中"
       score_imported: "成绩已导入"
       report_generating: "报告生成中"
-      report_completed: "报告生成完毕" 
+      report_completed: "报告生成完毕"
+    messages:
+      save_test:
+        success: "试卷（标题：%{heading}）保存成功!"
+        fail: "试卷（原因：%{message}）保存失败!"
+        debug: "保存试卷过程中发生异常: %{message}"
 
   swtk_errors:
     parameter_invalid_error: "参数无效！"
@@ -546,6 +551,8 @@ zh:
       personal_center: '个人中心'
       account_setting: '账号设置'
       my_home: '我的主页'
+      my_exam: '考试管理'
+      my_test: '我的测试'
       my_analyzer: "我的分析员"
       my_teacher: "我的老师"
       my_report: "我的报告"
@@ -586,6 +593,8 @@ zh:
       score: '成绩表'
       tenant_range: "Tenant范围"
       test_range: "参评学校"
+    bank_test:
+      add_test: "添加测试"
     pupil:
       basic_info: '个人信息'
 

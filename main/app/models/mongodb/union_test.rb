@@ -15,9 +15,8 @@ class Mongodb::UnionTest
   has_many :union_test_task_links, class_name: "Mongodb::UnionTestTaskLink", dependent: :delete
   has_many :union_test_tenant_links, class_name: "Mongodb::UnionTestTenantLink", dependent: :delete
   has_many :union_test_location_links, class_name: "Mongodb::UnionTestLocationLink", dependent: :delete
-
   has_many :union_test_user_links, class_name: "Mongodb::UnionTestUserLink", dependent: :delete
-  has_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"#, dependent: :delete
+
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
   scope :by_keyword, ->(keyword) { any_of({heading: /#{keyword}/}, {subheading: /#{keyword}/}) if keyword.present? }
 
@@ -99,9 +98,8 @@ class Mongodb::UnionTest
     }
   end
 
-
   def u_test_info
-    paper_report_completed = true
+    test_report_completed = true
     {
       :id => self._id.to_s,
       :name => self.name,
@@ -121,22 +119,36 @@ class Mongodb::UnionTest
           :area_uid => t.area_uid
         } if t
       },
-      :bank_paper_paps => self.bank_paper_paps.map { |t|
-        paper_report_completed = paper_report_completed&&(t.is_report_completed?)
+      # :bank_paper_paps => self.bank_tests.map{ |t|
+      #   {
+      #     :test_uid => t._id.to_s,
+      #     :pap_uid => t.bank_paper_pap._id.to_s,
+      #     :subject => t.bank_paper_pap.subject,
+      #     :subject_cn => I18n.t("dict.#{t.bank_paper_pap.subject}"),
+      #     :paper_status => t.bank_paper_pap.paper_status,
+      #     :status => I18n.t("papers.status.#{t.bank_paper_pap.paper_status}"),
+      #     :quiz_date => t.bank_paper_pap.quiz_date.present? ? t.bank_paper_pap.quiz_date.strftime("%Y-%m-%d") : ""
+      #   } if t
+      # },
+      :bank_tests => self.bank_tests.map{ |t|
+        test_report_completed = test_report_completed&&(t.is_report_completed?)
         {
-          :pap_uid => t._id.to_s,
-          :subject => t.subject,
-          :subject_cn => I18n.t("dict.#{t.subject}"),
-          :paper_status => t.paper_status,
-          :status => I18n.t("papers.status.#{t.paper_status}"),
-          :quiz_date => t.quiz_date.present? ? t.quiz_date.strftime("%Y-%m-%d") : ""
+          :test_uid => t._id.to_s,
+          :pap_uid => t.bank_paper_pap._id.to_s,
+          :subject => t.bank_paper_pap.subject,
+          :subject_cn => I18n.t("dict.#{t.bank_paper_pap.subject}"),
+          :paper_heading => t.bank_paper_pap.heading,
+          :test_status => t.test_status,
+          :status => I18n.t("papers.status.#{t.test_status}"),
+          :quiz_date => t.bank_paper_pap.quiz_date.present? ? t.bank_paper_pap.quiz_date.strftime("%Y-%m-%d") : ""
         } if t
       },
-      :paper_report_completed => paper_report_completed,
+      :paper_report_completed => test_report_completed,
       :union_status => self.union_status.present? ? self.union_status : "",
       :union_config => self.union_config.present? ? eval(self.union_config) : nil,
       :task_uid => self.union_test_report_task.present? ? self.union_test_report_task : nil
     }
+    
   end
 
   def area_uids 

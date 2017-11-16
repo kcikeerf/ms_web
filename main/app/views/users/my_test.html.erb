@@ -1,0 +1,51 @@
+<% content_for :work_field do %>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="home">
+            <div class="panel">
+                <!-- 个人信息 -->
+                <h1 class="panel-heading clearfix">
+                  <div class="col-lg-4 input-group pull-right">
+                    <%= text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: '请输入测试名称搜索' %>
+                    <span class="input-group-btn" id='keyword_filter'>
+                      <button class="btn btn-default" type="button"><i class="fa fa-search search"></i></button>
+                    </span>
+                  </div>
+                  我的测试
+                </h1>                   
+                <!--列表-->
+                <div class="panel-body">
+                  <div class="matches">
+                    
+                  </div>
+                  <table id="testtable" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>名称</th>
+                        <th class="title">试卷名称</th>
+                        <th class="subject">学科</th>
+                        <th class="updated">状态</th>
+                        <th class="show">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <% @bank_tests.each do |btest| %>
+                      <tr>
+                        <td class="title">
+                        <%= btest.name %>
+                        </td>
+                        <td><%= btest.bank_paper_pap.heading%></td>
+                        <td><%= btest.bank_paper_pap.subject.blank? ? '' : t("dict.#{btest.bank_paper_pap.subject}")%></td>
+                        <td><%= t("tests.status.#{btest.test_status}") %></td>
+                        <td><a href="/bank_tests/show_test?test_uid=<%=btest._id%>">进入测试</a></td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                  <nav class="text-center">
+                    <%= paginate @bank_tests %>
+                  </nav>
+                </div>
+            </div>
+        </div>
+    </div> 
+<% end %>

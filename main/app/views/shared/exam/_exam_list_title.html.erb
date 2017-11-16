@@ -1,0 +1,10 @@
+<!-- 标题区 -->
+<h1 class="panel-heading clearfix">
+	<%= link_to "新建考试", new_union_test_path, :class => "btn zy-btn-utest btn-info"%>
+  <div class="col-lg-4 input-group pull-right">
+    <%= text_field_tag :keyword, params[:keyword], class: 'form-control', placeholder: '请输入考试名搜索' %>
+    <span class="input-group-btn" id='keyword_filter'>
+      <button class="btn btn-default" type="button"><i class="fa fa-search search"></i></button>
+    </span>
+  </div>
+</h1>

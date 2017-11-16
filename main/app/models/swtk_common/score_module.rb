@@ -35,10 +35,10 @@ module ScoreModule
     end
 
     def upload_filled_result params
-      fs = ScoreUpload.where({:test_id => params[:test_id], :tenant_uid => params[:tenant_uid]}).first
+      fs = ScoreUpload.where({:test_id => params[:test_uid], :tenant_uid => params[:tenant_uid]}).first
       fs = ScoreUpload.new unless fs
       fs.filled_file = params[:file]
-      fs.test_id = params[:test_id]
+      fs.test_id = params[:test_uid]
       fs.tenant_uid = params[:tenant_uid]
       fs.save!
       return fs

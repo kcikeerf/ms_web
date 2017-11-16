@@ -1,0 +1,116 @@
+
+<div class="zhengjuang">
+  <div class="container" >
+    <div class="contentBody">
+      <div class="paperDetails">
+
+        <h2 class="top_title ellipsis"></h2>
+        <h4 class="sub_title ellipsis"></h4>
+
+        <div class="detailAll clearfix">
+          <div class="detailWarp detailLeft">
+            <ul class="info_list">
+              <li class="info_city">
+                <label>区域：</label>
+                <p></p>
+              </li>
+              <li class="info_type">
+                <label>测试类型：</label>
+                <p></p>
+              </li>
+              <li class="info_grade">
+                <label>年级：</label>
+                <p></p>
+              </li>
+              <li class="info_time">
+                <label>测试时长：</label>
+                <p></p>
+              </li>
+              <li class="info_difficulty">
+                <label>难度预估：</label>
+                <p></p>
+              </li>
+              <li class="info_score">
+                <label>满分：</label>
+                <p></p>
+              </li>
+            </ul>
+          </div>
+          <div class="detailWarp detailRight">
+            <ul class="info_list">
+              <li class="info_school">
+                <label>学校：</label>
+                <p></p>
+              </li>
+              <li class="info_subject">
+                <label>科目：</label>
+                <p></p>
+              </li>
+              <li class="info_term">
+                <label>学期：</label>
+                <p></p>
+              </li>
+              <li class="info_version">
+                <label>教材版本：</label>
+                <p></p>
+              </li>
+              <li class="info_testTime">
+                <label>考试时间：</label>
+                <p></p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <!--项目管理员增加Tenant范围选择域：begin-->
+        <% if @bank_test.bank_paper_pap.is_avaliable? %>
+          <%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "tenant", edittable: false} %>
+        <% end %>
+            <!-- <a href="javascript:;" class="paper_editor">修订试卷</a> -->
+            <div class="paper_about clearfix">
+              <div class="about_left">
+                <a class="download_list" geturl="/bank_tests/download_page?type=modified_paper_answer_emptyscore" href="javascript:;">下载试卷、答案、录入表（空）</a>
+              </div>
+            </div>
+
+            <div class="createReport">
+              <a href="javascript:;" class="active">生成报告</a>
+              <!--div class="progress">
+                <div class="finish"></div>
+              </div-->
+              <p class="error"></p>
+            </div>
+
+        <% if !@bank_test || @bank_test.report_version.blank? %>  
+            <div class="lookReport">
+              <a href="/reports/new_square" class="active" target="_blank" >在线查看报告</a>
+            </div>
+        <% elsif  @bank_test.report_version == "1.1" %>
+            <div class="lookReport">
+              <a href="/reports/square_v1_1" class="active" target="_blank">在线查看报告</a>
+            </div>
+        <% end %>
+
+        <div class="progress createReport" style="float: center; width: 120px; height:20px; display: none;">
+          <div class="progress-bar progress-bar-success" 
+            job-uid="<%=@current_create_report_job_uid%>"
+            role="progressbar" 
+            aria-valuenow="0" 
+            aria-valuemin="0" 
+            aria-valuemax="100" 
+            style="width: 0; font-size: 10px;color: #000000;">
+            0
+          </div>
+        </div>
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  var test_uid = '<%= @bank_test.id%>'
+  var data = <%= raw @result_h.to_json %>
+</script>

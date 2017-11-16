@@ -55,7 +55,7 @@
 			</tbody>
 	<% else %>
 			<tbody class="tenant_range_display_list">
-	    <% unless (target_tenants.blank? && @current_test && @current_test.tenants.blank?) %>
+	    <% unless (target_tenants.blank? && @bank_test && @bank_test.tenants.blank?) %>
 			<% @current_test_tenant_list.each_with_index do |t,index| %>
 	 			<tr class="tenant_result_list">
 					<td><%=index+1%></td>
@@ -81,23 +81,23 @@
 						<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
 							<div style="font-size: 10px;">
 								<a href="javascript:;" 
-									geturl="/papers/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" 
+									geturl="/bank_tests/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" 
 									class="download_link link_grade" 
 									style="font-size: 14px;">
 								学生成绩表下载</a>
 							</div>
 							<div style="font-size: 10px;">
 								<a href="javascript:;" 
-									geturl="/papers/download_page?type=user_password_reporturl&tenant_uid=<%= t[:tenant_uid]%>" 
+									geturl="/bank_tests/download_page?type=user_password_reporturl&tenant_uid=<%= t[:tenant_uid]%>" 
 									class="download_link link_user"
 									style="font-size: 14px;">
 								用户名、密码、报告链接汇总表下载</a>
 							</div>
-						<% elsif [Common::Test::Status::Analyzed].include?(t[:tenant_status]) %>
+						<% elsif [Common::Test::Status::Analyzed,Common::Test::Status::New].include?(t[:tenant_status]) %>
 							<div style="float: left;">
 								<button type="button" 
 										class="btn btn-default btn-xs" 
-										geturl="/papers/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
+										geturl="/bank_tests/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
 										href="javascript:;">
 								导入成绩表
 								</button>
@@ -107,7 +107,7 @@
 						<% end %>
 					</td>
 				</tr>
-			<% end if @current_test%>
+			<% end if @bank_test%>
 		<% end %>
 			</tbody>
 	<% end %>

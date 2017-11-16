@@ -104,8 +104,11 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .submitInfoWarp{margin: 0 auto;width: 800px;font-size: 12px;padding-bottom: 30px}
 .submitInfoWarp p{float: left;width: 300px;line-height: 30px;color: #666;font-size: 14px;}
 .submitInfoWarp p i{display: inline-block;width: 30px;height: 30px;vertical-align: top;background: url(/images/zhengjuan/icon.png) no-repeat 7px -73px;}
-.submitInfoWarp .infoBtn{display:block;float: right; width: 90px;border:1px solid #dfdfdf;margin:0 2px 0 0;line-height: 30px;background-color: transparent;text-align: center;color: #333;border-radius: 3px;}
+.submitInfoWarp .infoBtn, .submitInfoWarp .backTo{display:block;float: right; width: 90px;border:1px solid #dfdfdf;margin:0 2px 0 0;line-height: 30px;background-color: transparent;text-align: center;color: #333;border-radius: 3px;}
+
 .submitInfoWarp .infoBtn:hover{background-color: #4FB393;color: #fff;border-color: #4FB393;}
+.submitInfoWarp .backTo:hover{background-color: #5bc0de;color: #fff;border-color: #4FB393;}
+
 /* 单题切分 */
 .part3, .part4{background:url(/images/zhengjuan/bg.jpg) repeat center center;}
 .paperModify{padding: 25px 0;text-align: center;background-color: #fff;border-top-left-radius: 5px;border-top-right-radius: 5px;}
@@ -181,6 +184,10 @@ a.download_link{display: none; color: #666;text-decoration: underline;margin-bot
 .tenant_range_item_checkbox {float: left;line-height: 36px;cursor: pointer;}
 .tenant_range_item_checkbox span{display: inline-block;vertical-align: top;position: relative;top: 11px;margin-right: 8px; width: 14px;height: 14px;border:1px solid #e1e1e1;border-radius: 2px;}
 .tenant_range_item_checkbox.active span{background-color: #59cfff;border-color: #59cfff;}
+
+.paper_item_checkbox {float: left;line-height: 36px;cursor: pointer;}
+.paper_item_checkbox span{display: inline-block;vertical-align: top;position: relative;top: 11px;margin-right: 8px; width: 14px;height: 14px;border:1px solid #e1e1e1;border-radius: 2px;}
+.paper_item_checkbox.active span{background-color: #59cfff;border-color: #59cfff;}
 
 .threeDimensional{padding:18px 12px 0;}
 .threeDimensional .dimensional{float: left; border-right:1px dotted #dcdcdc;font-size: 13px;font-weight: 700;padding: 36px 9px 36px 0;margin-top: 16px;}
