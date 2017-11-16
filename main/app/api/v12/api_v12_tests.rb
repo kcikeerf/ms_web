@@ -162,7 +162,7 @@ module ApiV12Tests
               bank_tests.each {|b_test|
                 _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(u)
                 rpt_type = _rpt_type || Common::Report::Group::Project
-                rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
+                rpt_id = (_rpt_type == Common::Report::Group::Project)? b_test._id.to_s : _rpt_id
                 report_url = Common::Report::get_test_report_url(b_test._id.to_s, rpt_type, rpt_id)
                 if report_url.present?
                   test_list << {
@@ -190,33 +190,32 @@ module ApiV12Tests
         begin         
           time_day = Time.now.strftime('%Y/%m/%d')  
           # base = "/Users/shuai/workspace/tk_main/main"
-          collection = {"test_list" => []}
+          mistakes_list = []
+          incorrect_info = {}
           params[:report_url_list].each {|_url|
-            test_info = {}
             # data = get_pupil_report_data (base+_url) #本地获取
             data = get_pupil_report_data _url #服务器方式
             if data["paper_qzps"].present?            
-              test_info["basic"] = data["basic"] 
+              incorrect_info["basic"] = data["basic"] 
               m_list, c_list = sort_quiz_with_answer data["paper_qzps"]
-              mistakes_list = m_list.uniq
+              mistakes_list << m_list
               # corectly_list << c_list
-              incorrect_item = []
-              mistakes_list.each {|quiz_uid|
-                quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
-                unless test_info["basic"]["title"]
-                  test_info["basic"]["title"] = quiz.bank_paper_paps[0].heading if quiz.bank_paper_paps
-                  test_info["basic"]["title"] = "#{time_day}错题本" unless quiz.bank_paper_paps
-                end
-                if quiz.present?
-                  incorrect_item << quiz.exercise
-                end
-              }
-              test_info["incorrect_item"] = incorrect_item
-              collection["test_list"] << test_info
             end
           }
+          incorrect_item = []
+          mistakes_list.flatten!
+          mistakes_list.each {|quiz_uid|
+            quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
+            if quiz.present?
+              incorrect_item << quiz.exercise
+            end
+          }
+          if incorrect_item.present?
+            incorrect_item = incorrect_item.sort { |x,y| y["quiz_cat"] <=> x["quiz_cat"] }
+          end
+          incorrect_info["incorrect_item"] = incorrect_item
           # corectly_list.flatten!
-          success_message_json("i00000",{collection: collection})
+          success_message_json("i00000",{collection: incorrect_info})
         rescue Exception => e
           Rails.logger.info e.backtrace.inspect
           message_json("e50000",500)

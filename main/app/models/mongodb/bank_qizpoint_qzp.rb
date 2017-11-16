@@ -160,10 +160,10 @@ class Mongodb::BankQizpointQzp
     }
     ckpJson = JSON.parse(self.ckps_json)
     ckpJson.each {|key,value|
-      Rails.logger.info '---------'
-      Rails.logger.info key
-      Rails.logger.info value
-      Rails.logger.info '-----------'
+      # Rails.logger.info '---------'
+      # Rails.logger.info key
+      # Rails.logger.info value
+      # Rails.logger.info '-----------'
       if value.present?
         ckp_uid_str_arr =  value[0].keys 
         if ckp_uid_str_arr.present?

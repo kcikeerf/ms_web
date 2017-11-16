@@ -335,6 +335,8 @@ class Mongodb::BankQuizQiz
     # result[:grade]= self.grade
     result[:text] = self.text
     result[:answer] = self.answer
+    result[:quiz_cat] = self.cat.present? ? self.cat : "other"
+    result[:quiz_cat_cn] = self.cat.present? ? Common::Locale::i18n("dict.#{self.cat}") : Common::Locale::i18n("dict.other")
     result[:desc] = self.desc
     result[:levelword2] = self.levelword2
     result[:bank_qizpoint_qzps] = qzps.map{|qzp|
