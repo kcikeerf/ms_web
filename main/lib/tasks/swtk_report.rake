@@ -582,8 +582,8 @@ namespace :swtk do
           # p su.filled_file.current_path
 
           target_tenant = Tenant.where(uid: su.tenant_uid).first
-          base_path = Rails.root.to_s + '/public'
-          # base_path = ""
+          # base_path = Rails.root.to_s + '/public'
+          base_path = ""
           file_path = base_path + su.filled_file.current_path
           user_info_xlsx = Roo::Excelx.new(file_path)
           out_excel = Axlsx::Package.new
@@ -596,20 +596,19 @@ namespace :swtk do
               bank_qizpoint_qzps = row[begin_data_index..-1]
             else
               user_name = [
+                "u",
                 target_tenant.number.strip,
                 row[stu_num_index].strip,
                 Common::Locale.hanzi2abbrev(row[stu_name_index]).strip
               ].join("")
-              user = User.where("name LIKE :u_name", {u_name: "%#{user_name}%"}).first
+              user = User.where(name: user_name).first
               if user.present?
                 _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(user)
                 rpt_type = _rpt_type || Common::Report::Group::Project
                 rpt_id = (_rpt_type == Common::Report::Group::Project)? bank_test._id.to_s : _rpt_id
                 report_url = Common::Report::get_test_report_url(bank_test._id.to_s, rpt_type, rpt_id)
-                # p report_url
-                # p bank_qizpoint_qzps
-                base_path = "/Users/shuai/workspace/tk_main/main"
-                # base_path = ""                 
+                # base_path = "/Users/shuai/workspace/tk_main/main"
+                base_path = ""                 
                 report_path = base_path + report_url
                 target_report_f = Dir[report_path].first
                 if target_report_f.present?
