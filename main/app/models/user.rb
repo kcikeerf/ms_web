@@ -696,6 +696,13 @@ class User < ActiveRecord::Base
   end
 
 
+  def generate_token
+    self.tk_token = loop do
+      random_token = SecureRandom.urlsafe_base64(nil, false)
+      break random_token unless self.class.exists?(tk_token: random_token)
+    end
+  end
+
   ########私有方法: begin#######
   private
 
@@ -719,12 +726,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def generate_token
-      self.tk_token = loop do
-        random_token = SecureRandom.urlsafe_base64(nil, false)
-        break random_token unless self.class.exists?(tk_token: random_token)
-      end
-    end
+
 
     def set_resource_owner_id
       oauth_access_tokens.update_all(resource_owner_id: nil)
