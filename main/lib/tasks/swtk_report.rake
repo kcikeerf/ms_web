@@ -609,7 +609,7 @@ namespace :swtk do
                 # base_path = "/Users/shuai/workspace/tk_main/main"
                 base_path = ""                 
                 report_path = base_path + report_url
-                target_report_f = Dir[report_path].first
+                target_report_f = Dir[report_path.split("?")[0]].first
                 if target_report_f.present?
                   target_report_data = File.open(target_report_f, 'rb').read
                   if target_report_data.present?
