@@ -35,6 +35,28 @@ Rails.application.routes.draw do
     post 'single_quiz_save'
   end
 
+  resources :union_tests do
+    member do
+      get "show_test"
+    end
+    collection do
+      post "save_union"
+    end
+  end
+
+  resources :bank_tests do
+    collection do
+      match 'import_filled_result', via: [:get, :post, :patch]
+      get 'download_page'
+      get "get_test"
+      get "del_test"
+      get 'show_test'
+      get "add_test"
+      post "create_test"
+      post "get_pap_api"
+    end
+  end
+
   resources :checkpoints do 
     collection do 
       post 'get_nodes'
@@ -132,6 +154,7 @@ Rails.application.routes.draw do
     member do
       post 'generate_all_reports'
       post 'generate_reports'
+      post 'generate_union_reports'
       get 'class_report'
       get 'pupil_report'
       get 'get_grade_report'
@@ -209,6 +232,8 @@ Rails.application.routes.draw do
       get 'my_pupil'
       get 'region'
       get 'test_report'
+      get 'my_exam'
+      get 'my_test'
     end 
   end
 

@@ -14,7 +14,9 @@ Rails.application.config.assets.precompile += [
 	'default/users.css', 
 	'users.js',
 #整卷解析
-	'zhengjuan.css', 
+	'zhengjuan.css',
+	'union_test.js', 
+	'bank_test.js',
 	'init_zhengjuan.js', 
 	'ztree.js', 
 	'ztree.css',

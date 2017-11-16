@@ -61,17 +61,17 @@ class PapersController < ApplicationController
 
     #Version1.1，临时代码
     # 默认是一个试卷对应一个测试，之后对改成1对多
-    @current_test = current_pap.bank_tests[0]
-    tenant_uids = current_user.accessable_tenants.map(&:uid)
-    @current_test_tenant_list = @current_test.tenant_list.find_all{|t| tenant_uids.include?(t[:tenant_uid])}.compact
-    # 生成报告ID
-    if current_pap.paper_status == Common::Paper::Status::ReportGenerating
-      create_report_task = @current_test.tasks.by_task_type("create_report").first
-      create_report_job = create_report_task.job_lists.blank?? nil : create_report_task.job_lists.order({:dt_update => :desc}).first
-      @current_create_report_job_uid = create_report_job.uid
-    else 
-      @current_create_report_job_uid = nil
-    end
+    # @current_test = current_pap.bank_tests[0]
+    # tenant_uids = current_user.accessable_tenants.map(&:uid)
+    # @current_test_tenant_list = @current_test.tenant_list.find_all{|t| tenant_uids.include?(t[:tenant_uid])}.compact
+    # # 生成报告ID
+    # if current_pap.paper_status == Common::Paper::Status::ReportGenerating
+    #   create_report_task = @current_test.tasks.by_task_type("create_report").first
+    #   create_report_job = create_report_task.job_lists.blank?? nil : create_report_task.job_lists.order({:dt_update => :desc}).first
+    #   @current_create_report_job_uid = create_report_job.uid
+    # else 
+    #   @current_create_report_job_uid = nil
+    # end
     render "zhengjuan"
   end
 

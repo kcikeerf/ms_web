@@ -38,15 +38,17 @@ module UsersHelper
       menus[:my_pupil] = my_pupil_users_path
       menus[:test_report] = test_report_users_path
     elsif current_user.is_analyzer?
+      menus[:my_test] = my_test_users_path
       menus[:my_paper] = my_paper_users_path
     elsif current_user.is_tenant_administrator?
       menus[:my_analyzer] = my_analyzer_users_path
       menus[:my_teacher] = my_teacher_users_path
+      menus[:my_test] = my_test_users_path
       menus[:my_paper] = my_paper_users_path
     elsif current_user.is_project_administrator?
-      # menus[:my_exam] = my_exam_users_path
+      menus[:my_exam] = my_exam_users_path
+      menus[:my_test] = my_test_users_path
       menus[:my_paper] = my_paper_users_path
-
     end
     return menus
   end

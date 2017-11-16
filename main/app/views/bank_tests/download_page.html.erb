@@ -1,0 +1,23 @@
+<div id="modal-header">
+	<button type="button" class="close" 
+	data-dismiss="modal" aria-hidden="true">
+		&times;
+	</button>
+	<h4 class="dialog-title">
+		<%= t('page.paper.download') %>
+	</h4>
+</div>
+<div class="modal-body">
+	<ul>
+	<% download_list(params[:type]).each do |item| %>
+		<li>
+			<%= link_to item[:file_name], download_papers_path(item), :target => "_blank"%>
+		</li>
+	<% end %>	
+	</ul>
+</div>
+<div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">
+		<%= t("page.close") %>
+	</button>
+</div>

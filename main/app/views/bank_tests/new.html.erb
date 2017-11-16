@@ -1,0 +1,187 @@
+<div class="zhengjuang">
+  <div class="container" >
+    <div class="contentBody">
+      <div class="part2">
+        <div class="wordUpdate">
+          <div class="updateTitle"> 测试 - 基本信息</div>
+          <div class="infoWarp">
+          
+            <div class="paperTitle unionTitle1">
+
+              <label>测试名称&nbsp;:&nbsp;</label><input type="text" id="test_name">
+
+              <ul class="infoList">
+                <li>
+                  <!-- 科目 -->
+                  <!-- <div class="selectWarp selectSubject different clearfix">
+                    <p>科目&nbsp;:</p>
+                    <div class="optionWarp">
+                      <div class="selectVal">
+                        <span>请选择</span>
+                        <i class="icon"></i>
+                      </div>
+                      <ol class="optionList">
+                        <% subject_list.each do |k,v|%>
+                            <li nameid="<%=k%>"><%=v%></li>
+                        <% end %>
+                      </ol>
+                    </div>
+                  </div> -->
+                  <!-- 开始时间 -->
+                  <div class="selectWarp selectTestdate clearfix">
+                    <p>开始时间&nbsp;:</p>
+                    <input class="date_input" type="text" id="start_date" />
+                  </div>
+                </li>
+                <li>
+                  <!-- 年级 -->
+                  <!-- <div class="selectWarp selecGrade different clearfix">
+                    <p>年级&nbsp;:</p>
+                    <div class="optionWarp">
+                      <div class="selectVal">
+                        <span>请选择</span>
+                        <i class="icon"></i>
+                      </div>
+                      <ol class="optionList">
+                        <% grade_list.each do |k,v|%>
+                            <li nameid="<%=k%>"><%=v%></li>
+                        <% end %>
+                      </ol>
+                    </div>
+                  </div> -->
+                  <!-- 结束时间 -->
+                  <div class="selectWarp selectTestdate clearfix">
+                    <p>结束时间&nbsp;:</p>
+                    <input class="date_input" type="text" id="quiz_date" />
+                  </div>
+                </li>
+                <li> 
+                  <div class="selectWarp selecGrade different clearfix">
+                    <p>测试类型&nbsp;:</p>
+                    <div class="optionWarp">
+                      <div class="selectVal">
+                        <span id="test_type">请选择</span>
+                        <i class="icon"></i>
+                      </div>
+                      <ol class="optionList">
+                        <li nameid="li_xian_ce_shi">离线测试</li>
+                        <li nameid="zai_xian_ce_shi">在线测试</li>
+                      </ol>
+                    </div>
+                  </div>
+                  <!-- 学期 -->
+                  <!-- <div class="selectWarp selecTerm different clearfix">
+                    <p>适用学期&nbsp;:</p>
+                    <div class="optionWarp">
+                      <div class="selectVal">
+                        <span>请选择</span>
+                        <i class="icon"></i>
+                      </div>
+                      <ol class="optionList">
+                        <% term_list.each do |k,v|%>
+                            <li nameid="<%=k%>"><%=v%></li>
+                        <% end %>
+                      </ol>
+                    </div>
+                  </div> -->
+                </li>
+              </ul>
+
+              <div class="selectWarp selecGrade different clearfix">
+                <p>选择试卷&nbsp;:</p>
+                <div class="optionWarp" id="select_paper" paper_uid="">
+                  <div class="selectVal">
+                    <span>请选择</span>
+                    <i class="icon"></i>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <%=render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "source school", edittable: true} %>
+          </div>
+
+
+        </div>
+
+        <div class="submitInfoWarp clearfix">
+          <a class="backTo" href="javascript:void(0);" id="add_test">确定</a>
+          <%= link_to "取消", union_test_path(@union_test._id), :class => "backTo" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="paper_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h2 class="modal-title">选择试卷</h2>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th><%= %></th>
+                <th><%= "试卷名称" %></th>
+                <th><%= "学校" %></th>
+                <th><%= "状态" %></th>
+                <th><%= "科目" %></th>
+              </tr>
+            </thead>
+            
+            <tbody class="paper_list">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="paper_selected">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+  var data = null
+  var target_tenant_uids = <%= raw @union_test.tenant_uids %>
+  //添加测试按钮
+  $(document).on("click","#add_test",function(){
+    var paper_uid = $("#select_paper").attr("paper_uid")
+    var name = $('#test_name').val()
+    var test_type = $('#test_type').attr("values")
+    if(paper_uid){}else{
+      alert('请先选择试卷')
+    }
+    if(name){}else{
+      alert('请填写测试名称')
+    }
+    $.ajax({
+      url: '/bank_tests/create_test',
+      type: 'post',
+      data: {
+        name: $('#test_name').val(),
+        start_date: $('#start_date').val(),
+        quiz_date: $('#quiz_date').val(),
+        paper_uid: paper_uid,
+        test_type: test_type,
+        authenticity_token: $('meta[name="csrf-token"]')[0].content,
+        id: '<%= @union_test._id %>',
+      },
+      success: function(){
+        window.location.href= '/union_tests/<%= @union_test._id %>'
+      },
+      error: function(rs){
+        alert(rs.responseJSON.messages)
+      }
+    })
+  });
+
+</script> 

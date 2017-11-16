@@ -1,0 +1,31 @@
+<%= javascript_include_tag 'jquery.remotipart', 'data-turbolinks-track' => true  %>
+<div id="modal-header">
+	<button type="button" class="close"
+	data-dismiss="modal" aria-hidden="true">
+		&times;
+	</button>
+	<h4 class="dialog-title">
+		<%= t('page.paper.upload_score') %>
+	</h4>
+</div>
+<div class="modal-body">
+	
+	<div id="file_upload_result" class='bg-success'></div>
+
+  	<%= form_tag import_filled_result_bank_tests_path, remote: true, :multipart => true do %>
+		<div class="form-group">
+			<!--label><%#= t('page.paper.score') %></label-->
+			<input type="file" name='file' id="">
+			<%#= hidden_field_tag 'pap_uid', @paper.id %>
+			<input type="hidden" name='test_uid' value="<%=params[:test_uid]%>">
+			<input type="hidden" name='tenant_uid' value="<%=params[:tenant_uid]%>">
+			<p class="help-block"><%= t('page.paper.select_score_tip') %></p>
+		</div>
+		<button type="submit" class="btn btn-default"><%= t("page.submit") %></button>
+	<% end %>
+</div>
+<!-- <div class="modal-footer">
+	<button class="btn" data-dismiss="modal" aria-hidden="true">
+		<%#= LABEL("page.close")%>
+	</button>
+</div> -->

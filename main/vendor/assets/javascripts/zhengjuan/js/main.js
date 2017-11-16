@@ -299,83 +299,87 @@ $(function(){
                     $(".link_paper").css("display","block");
                     break;
                 case "analyzed":
+                case "score_importing":
+                case "score_imported":
+                case "report_generating":
+                case "report_completed":
                     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
                     $(".link_paper").css("display","block");
                     // if($(".tenant_result_list")){
                         //$(".tenant_result_list .progress").show();
                     // }
                     break;
-                case "score_importing":
-                    $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
-                    $(".link_paper").css("display","block");
-                    if($(".tenant_result_list")){
-                        $(".tenant_result_list .score_importing").show();
+                // case "score_importing":
+                //     $(".lookPaperInfo, .paper_about").show().find(".edit_sanwei").hide();
+                //     $(".link_paper").css("display","block");
+                //     if($(".tenant_result_list")){
+                //         $(".tenant_result_list .score_importing").show();
 
-                        var monitoring_all_tenants = new MonitorMultipleUpdaters();
-                        $.each($(".tenant_result_list .score_importing .progress-bar"),function(i,item){
-                            var target_task_uid = data.information.tasks.import_result;
-                            var target_job_uid = item.getAttribute("job-uid");
-                            window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
-                            monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
-                            $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].run());
-                            $.Topic("tenant_score_importing").publish();
-                        });
-                        if($(".tenant_result_list .score_importing .progress-bar").length > 0 ){
-                            monitoring_all_tenants.run(); 
-                        }
-                    }
-                    else{
-                        $(".paperDetails > .progress").show();
-                        paper.setInterVal();
-                    }
+                //         var monitoring_all_tenants = new MonitorMultipleUpdaters();
+                //         $.each($(".tenant_result_list .score_importing .progress-bar"),function(i,item){
+                //             var target_task_uid = data.information.tasks.import_result;
+                //             var target_job_uid = item.getAttribute("job-uid");
+                //             window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                //             monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
+                //             $.Topic("tenant_score_importing").subscribe(window["job_updater"+target_job_uid].run());
+                //             $.Topic("tenant_score_importing").publish();
+                //         });
+                //         if($(".tenant_result_list .score_importing .progress-bar").length > 0 ){
+                //             monitoring_all_tenants.run(); 
+                //         }
+                //     }
+                //     else{
+                //         $(".paperDetails > .progress").show();
+                //         paper.setInterVal();
+                //     }
 
-                    break;
-                case "score_imported":
-                    $.Topic("tenant_score_importing").destroy();
-                    $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
-                    $(".lookPaperInfo, .createReport:first").show();
-                    //project administrator tenant action
-                    if($(".tenant_result_list")){
-                        $(".tenant_result_list .score_importing").show();
-                    }
-                    //
-                    break
-                case "report_generating":
-                    $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
-                    $(".lookPaperInfo, .createReport").show();
-                    $(".paperDetails > .progress.createReport").show();
-                    $(".createReport a").removeClass("active");
-                    $(".createReport a").html("报告生成中...");
-                    //project administrator tenant action
-                    if($(".tenant_result_list")){
-                        $(".tenant_result_list .score_importing").show();
-                    }
-                    //
-                    //paper.setInterVal();
-                    var monitoring_all_tenants = new MonitorMultipleUpdaters();
-                     $.each($(".progress.createReport > .progress-bar"),function(i,item){
-                        var target_task_uid = data.information.tasks.create_report;
-                        var target_job_uid = item.getAttribute("job-uid");
-                        window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
-                        monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
-                        $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].run());
-                        $.Topic("paper_report_generating").publish();
-                    });
-                    monitoring_all_tenants.run();
+                //     break;
+                // case "score_imported":
+                //     $.Topic("tenant_score_importing").destroy();
+                //     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
+                //     $(".lookPaperInfo, .createReport:first").show();
+                //     //project administrator tenant action
+                //     if($(".tenant_result_list")){
+                //         $(".tenant_result_list .score_importing").show();
+                //     }
+                //     //
+                //     break
+                // case "report_generating":
+                //     $(".link_paper, .link_form, .link_grade, .link_user").css("display","block");
+                //     $(".lookPaperInfo, .createReport").show();
+                //     $(".paperDetails > .progress.createReport").show();
+                //     $(".createReport a").removeClass("active");
+                //     $(".createReport a").html("报告生成中...");
+                //     //project administrator tenant action
+                //     if($(".tenant_result_list")){
+                //         $(".tenant_result_list .score_importing").show();
+                //     }
+                //     //
+                //     //paper.setInterVal();
+                //     var monitoring_all_tenants = new MonitorMultipleUpdaters();
+                //      $.each($(".progress.createReport > .progress-bar"),function(i,item){
+                //         var target_task_uid = data.information.tasks.create_report;
+                //         var target_job_uid = item.getAttribute("job-uid");
+                //         window["job_updater"+target_job_uid] = new ProgressBarUpdater(item, target_task_uid, target_job_uid);
+                //         monitoring_all_tenants.updater_objs.push(window["job_updater"+target_job_uid]);
+                //         $.Topic("paper_report_generating").subscribe(window["job_updater"+target_job_uid].run());
+                //         $.Topic("paper_report_generating").publish();
+                //     });
+                //     monitoring_all_tenants.run();
 
-                    break;
-                case "report_completed":
-                    $.Topic("paper_report_generating").destroy();
-                    $(".download_link").css("display","block");
-                    $(".lookPaperInfo, .lookReport").show();
-                    //project administrator tenant action
-                    if($(".tenant_result_list")){
-                        $(".tenant_result_list .score_importing").show();
-                    }
-                    //
-                    var pap_uid = paper.getQueryString(location.href,"pap_uid");
-                        pap_uid && $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?pap_uid="+pap_uid);
-                    break;
+                //     break;
+                // case "report_completed":
+                //     $.Topic("paper_report_generating").destroy();
+                //     $(".download_link").css("display","block");
+                //     $(".lookPaperInfo, .lookReport").show();
+                //     //project administrator tenant action
+                //     if($(".tenant_result_list")){
+                //         $(".tenant_result_list .score_importing").show();
+                //     }
+                //     //
+                //     var pap_uid = paper.getQueryString(location.href,"pap_uid");
+                //         pap_uid && $(".lookReport a").attr("href",$(".lookReport a").attr("href")+"?pap_uid="+pap_uid);
+                //     break;
                 default:
                     $(".paper_editor").css("display","block");
                     break;

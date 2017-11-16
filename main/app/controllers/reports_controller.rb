@@ -2,9 +2,9 @@
 
 class ReportsController < ApplicationController
   # use job queue to create every report
-  before_action :set_paper, only: [:generate_all_reports, :generate_reports, :new_square, :square_v1_1]
+  before_action :set_test, only: [:generate_all_reports, :generate_reports, :new_square, :square_v1_1]
   before_action do
-    check_resource_tenant(@paper) if @paper
+    check_resource_tenant(@bank_test.bank_paper_pap) if @bank_test
   end
 
   # def generate_all_reports
@@ -43,7 +43,7 @@ class ReportsController < ApplicationController
   def generate_reports
     params.permit!
     status, result = nil, nil
-    if ![Common::Paper::Status::ScoreImported].include?( @paper.paper_status )
+    if ![Common::Paper::Status::ScoreImported].include?( @bank_test.test_status )
       status = 403
       result[:message] = "not suitable operation!"
     end
@@ -53,11 +53,49 @@ class ReportsController < ApplicationController
         :api_name => "reports_generate_xy_reports",
         :http_method => "post",
         :params => {
-          :test_id => @paper.bank_tests[0].id.to_s,
+          :test_id => params[:test_uid],
           :user_id => current_user.id
         }
       })
     }
+    render common_json_response(status_code, result)
+    # task = @bank_test.tasks.by_task_type("create_report").first
+    # #创建job
+    # job = Common::Job::create_job_tracker "generate reports",task.uid
+    # @bank_test.update(test_status: Common::Test::Status::ReportGenerating)
+    # render common_json_response(200, job)
+  end
+
+  def generate_union_reports
+    union_test = Mongodb::UnionTest.where(_id: params[:union_test_id]).first
+    status_code, result = nil, nil
+    if union_test
+      can_report = true
+      # union_test.bank_paper_paps.each {|paper| can_report = can_report&&paper.is_report_completed? }
+      union_test.bank_tests.each {|test| can_report = can_report&&test.is_report_completed?}
+      if can_report
+        union_test_config = (union_test.present?&&union_test.union_config.present?) ? eval(union_test.union_config) : {}
+        status_code,result = Common::template_tk_job_execution_in_controller(status_code, result) {
+          TkJobConnector.new({
+            :version => "v1.2",
+            :api_name => "generate_union_tests_reports",
+            :http_method => "post",
+            :params => {
+              :union_test_id => union_test.id.to_s,
+              :union_test_config => union_test_config
+            }
+          })
+        }
+        # union_test.union_status = Common::Paper::UnionStatus::ReportGenerating
+        # union_test.save!
+      else
+      status_code = 403
+      result = {message: I18n.t("reports.messages.union_test.cannot_report")}
+      end
+    else
+      status_code = 500
+      result = {message: I18n.t("reports.messages.union_test.not_found")}
+    end
     render common_json_response(status_code, result)
   end
 
@@ -149,7 +187,8 @@ class ReportsController < ApplicationController
   def new_square
     params.permit!
 
-    current_paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+    current_paper = @bank_test.bank_paper_pap#Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
+
 
     loc_h = {
       :province => Common::Locale.hanzi2pinyin(current_tenant.area_pcd[:province_name_cn]),
@@ -188,7 +227,7 @@ class ReportsController < ApplicationController
     Common::method_template_log_only(__method__.to_s()) {
       params.permit!
 
-      @test_id = @paper.bank_tests[0].id.to_s
+      @test_id = @bank_test.id.to_s
       render :layout => '00016110/report'
     }
   end
@@ -211,8 +250,11 @@ class ReportsController < ApplicationController
 
   private
 
-  def set_paper
-    @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
-    @paper.current_user_id = 4651#current_user.id
-  end
+  # def set_paper
+  #   @paper = Mongodb::BankPaperPap.find(params[:pap_uid])
+  #   @paper.current_user_id = 4651#current_user.id
+  # end
+    def set_test
+      @bank_test = Mongodb::BankTest.find(params[:test_uid])
+    end
 end
