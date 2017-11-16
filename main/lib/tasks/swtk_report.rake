@@ -505,7 +505,6 @@ namespace :swtk do
             end_num = (th+1)*(num_per_th + 1) - 1
             end_num =  -1 if((th + 1) == th_number)#为保证读取到最后一行，最后一组不减一
             new_su = tenant_uid_arr[start_num..end_num]
-            p new_su
             threads << Thread.new do
               check_report_method(bank_test, new_su, stu_name_index, stu_num_index, begin_data_index)
             end
@@ -578,8 +577,8 @@ namespace :swtk do
           stu_num_index = args[1].to_i
           begin_data_index = args[2].to_i      
           bank_qizpoint_qzps = []
-          # p su.tenant_uid
-          # p su.filled_file.current_path
+          p su.tenant_uid
+          p su.filled_file.current_path
 
           target_tenant = Tenant.where(uid: su.tenant_uid).first
           # base_path = Rails.root.to_s + '/public'
@@ -597,9 +596,9 @@ namespace :swtk do
             else
               user_name = [
                 "u",
-                target_tenant.number.strip,
-                row[stu_num_index].strip,
-                Common::Locale.hanzi2abbrev(row[stu_name_index]).strip
+                target_tenant.number.to_s.strip,
+                row[stu_num_index].to_s.strip,
+                Common::Locale.hanzi2abbrev(row[stu_name_index]).to_s.strip
               ].join("")
               user = User.where(name: user_name).first
               if user.present?
@@ -616,16 +615,58 @@ namespace :swtk do
                   if target_report_data.present?
                     report_data = JSON.parse(target_report_data)
                     pap_qzp_data = report_data["paper_qzps"]
+                    err_code = []
+                    check_key = %w{
+                      klass_rank
+                      klass_percentile
+                      grade_rank
+                      grade_percentile
+                      project_rank
+                      project_percentile
+                    }
+                    dimesion_key = %w{
+                      knowledge
+                      skill
+                      ability
+                    }
+                    if report_data["data"].present?
+                      dimesion_key.each do |dimesion|
+                        if report_data["data"][dimesion].present? && report_data["data"][dimesion]["base"].present? 
+                          check_key.each do |c_key|
+                            if(report_data["data"][dimesion]["base"][c_key].class.to_s == "Fixnum")
+
+                            else
+                              err_code << "报告中#{dimesion}-#{c_key}中数据不存在或不是整数"
+                            end
+                          end
+                        else
+                          err_code << "报告中不存在#{dimesion}-base的数据"
+                        end
+                      end
+                    else
+                      err_code << "报告中不存在data的数据"
+                    end
+                    err_code = err_code.uniq
+                    # p err_code
                     if pap_qzp_data.present?
-                      pap_qzp_data.each { |qzp_obj|
+                      pap_qzp_data.each_with_index {|qzp_obj,obj_index|
                         qzp_id = qzp_obj["qzp_id"]
                         stu_score = row[begin_data_index..-1]
                         qzp_index = bank_qizpoint_qzps.index(qzp_id)
                         if qzp_obj["value"].present? && qzp_obj["value"]["total_real_score"].present?
                           if qzp_obj["value"]["total_real_score"].to_d != stu_score[qzp_index].to_d
-                            base_file_sheet.add_row(row + ["学生成绩有误: 得分点uid#{qzp_id},报告分数: #{qzp_obj["total_real_score"]},成绩表分数:#{stu_score[qzp_index].to_d}"])
+                            all_error = ["学生成绩有误: 得分点uid#{qzp_id},报告分数: #{qzp_obj["total_real_score"]},成绩表分数:#{stu_score[qzp_index].to_d}"]
+                            if err_code.present?
+                              all_error << err_code.join("&&")
+                            end
+                            base_file_sheet.add_row(row + all_error)
                             break
                           else
+                            if obj_index == (pap_qzp_data.size - 1)
+                              if err_code.present?
+                               base_file_sheet.add_row(row + [nil, err_code.join("&&")])
+                              end
+                            end
                             next
                           end
                         else
