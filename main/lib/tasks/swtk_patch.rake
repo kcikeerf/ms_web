@@ -185,6 +185,40 @@ namespace :swtk_patch do
         end
       end
     end
+
+    desc "试卷指标体系添加patch"
+    task :add_ckp_system_to_paper_patch => :environment do
+      p "begin"
+      Mongodb::BankTest.all.each do |b_t|
+        if b_t.quiz_type == "zh_fzqn"
+          ckp_sys = CheckpointSystem.where(sys_type: "zh_fzqn").first
+          pap = b_t.bank_paper_pap
+          if pap.present?
+            p pap.checkpoint_system_rid
+            pap.checkpoint_system_rid = ckp_sys.rid
+            pap.save!
+          end
+        elsif b_t.quiz_type.blank?
+          b_t.quiz_type = "xy_default"
+          ckp_sys = CheckpointSystem.where(sys_type: "xy_default").first
+          pap = b_t.bank_paper_pap
+          if pap.present?
+            # p pap._id
+            pap.checkpoint_system_rid = ckp_sys.rid
+            pap.save!
+          end
+          b_t.save!
+        end
+      end
+      ckp_sys = CheckpointSystem.where(sys_type: "xy_default").first
+      Mongodb::BankPaperPap.all.each do |pap|
+        if pap.checkpoint_system_rid.blank?
+          pap.checkpoint_system_rid = ckp_sys.rid
+          pap.save!
+        end
+      end
+      p "end"
+    end
   end
 
   namespace :v1_2_1 do
