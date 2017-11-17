@@ -349,7 +349,7 @@ class Mongodb::BankQuizQiz
         "bank_checkpoint_ckps" => qzp.level1_levle2_info_plus
       }
     } 
-    result
+    return result.deep_stringify_keys
   end
 
 
