@@ -992,8 +992,8 @@ $(function(){
                         html += '<div class="score_list clearfix" style="margin-bottom: 15px;"><div class="score_data analysis_score clearfix"><div class="info_left">得分点'+(k+1)+'：</div><div class="info_right"><ul>';
                         html += '<li class="info_score_system_order"><label>系统顺序：</label><span>' + quiz.bank_qizpoint_qzps[k].order + '</span></li>';
                         html += '<li class="info_score_custom_order"><label>自定义顺序：</label><span>' + quiz.bank_qizpoint_qzps[k].custom_order + '</span></li>';
-                        html += '<li class="info_score_answer"><label>得分点</label><span>' + quiz.bank_qizpoint_qzps[k].answer + '</span></li>';
-                        html += '<li class="info_score_answer"><label>测试答案</label><span>' + quiz.bank_qizpoint_qzps[k].test_answer + '</span></li>';
+                        html += '<li class="info_score_answer"><label>得分点:</label><span>' + quiz.bank_qizpoint_qzps[k].answer + '</span></li>';
+                        html += '<li class="info_score_answer"><label>测试答案:</label><span>' + quiz.bank_qizpoint_qzps[k].test_answer + '</span></li>';
                         html += '<li class="info_score_point"><label>分数：</label><span>' + (quiz.bank_qizpoint_qzps[k].score ? quiz.bank_qizpoint_qzps[k].score+"分" : "") + '</span></li>';
                         html += '<li class="info_score_zhu_ke_guan"><label>主客观：</label><span>' + quiz.bank_qizpoint_qzps[k].type + '</span></li>';
                         html += '</ul></div></div>';
