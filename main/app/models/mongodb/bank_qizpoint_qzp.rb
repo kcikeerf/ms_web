@@ -110,12 +110,16 @@ class Mongodb::BankQizpointQzp
       Common::CheckpointCkp::Dimesion::Ability => []
     }
     ckps.each{|ckp|
-      lv2_ckp = ckp.lv2_ckp
-      result[ckp.dimesion] << {
-        uid: lv2_ckp.uid,
-        checkpoint: lv2_ckp.checkpoint,
-        rid: lv2_ckp.rid
-      }
+      if ckp.present?
+        lv2_ckp = ckp.lv2_ckp
+        if lv2_ckp.present?
+          result[ckp.dimesion] << {
+            uid: lv2_ckp.uid,
+            checkpoint: lv2_ckp.checkpoint,
+            rid: lv2_ckp.rid
+          }
+        end
+      end
     }
     return result
   end
