@@ -12,12 +12,11 @@ class Mongodb::UnionTest
 
   has_many :bank_tests, class_name: "Mongodb::BankTest", dependent: :delete
   has_many :union_test_area_links, class_name: "Mongodb::UnionTestAreaLink", dependent: :delete
-  has_many :union_test_task_links, class_name: "Mongodb::UnionTestTaskLink", dependent: :delete
   has_many :union_test_tenant_links, class_name: "Mongodb::UnionTestTenantLink", dependent: :delete
   has_many :union_test_location_links, class_name: "Mongodb::UnionTestLocationLink", dependent: :delete
-
+  has_many :union_test_user_links, class_name: "Mongodb::UnionestUserLink", dependent: :delete
   has_many :union_test_user_links, class_name: "Mongodb::UnionTestUserLink", dependent: :delete
-  has_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"#, dependent: :delete
+  has_many :bank_paper_paps, class_name: "Mongodb::BankPaperPap"
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
   scope :by_keyword, ->(keyword) { any_of({heading: /#{keyword}/}, {subheading: /#{keyword}/}) if keyword.present? }
 
@@ -34,11 +33,8 @@ class Mongodb::UnionTest
   field :report_top_group, type: String #取几个联考测试的最低值
   field :ext_data_path, type: String # 外挂码
   field :user_id, type: String
-  field :union_status, type: String
-  field :union_config, type: String
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
-
 
   index({_id: 1}, {background: true})
 
@@ -46,28 +42,28 @@ class Mongodb::UnionTest
     def get_list params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      conditions = {}
-      %w{ name quiz_type term grade school heading}.each{|attr|
-        conditions[attr] = Regexp.new(params[attr]) unless params[attr].blank? 
-      }
-      result = self.where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
-      union_test_result = []
+      conditions = []
+      # conditions << self.send(:sanitize_sql, ["name LIKE ?", "%#{params[:name]}%"]) unless params[:name].blank?
+      # conditions << self.send(:sanitize_sql, ["email LIKE ?", "%#{params[:email]}%"]) unless params[:email].blank?
+      # conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
+      # result = self.where(conditions).order("dt_update desc").page(params[:page]).per(params[:rows])
+      result = self.all.page(params[:page]).per(params[:rows])
       result.each_with_index{|item, index|
         h = {
-          :id => item._id.to_s,
+          :id => item.id,
+          :name => item.name,
           :heading => item.heading,
+          :subheading => item.subheading,
           :school => item.school,
-          :grade_cn => Common::Locale::i18n("dict.#{item.grade}"),
-          :term_cn => Common::Locale::i18n("dict.#{item.term}"),
-          :quiz_type_cn => Common::Locale::i18n("dict.#{item.quiz_type}"),
-          :quiz_date => item.quiz_date.blank? ? nil : item.quiz_date.strftime("%Y-%m-%d %H:%M"),
-          :dt_update => item.dt_update.strftime("%Y-%m-%d %H:%M"),
-          :subject_cn => item.bank_paper_paps.map{|paper_pap| Common::Locale::i18n("dict.#{paper_pap.subject}")} 
+          :grade => item.grade,
+          :term => item.term,
+          :quiz_type => item.quiz_type.strftime("%Y-%m-%d %H:%M"),
+          :quiz_date => item.quiz_date.strftime("%Y-%m-%d %H:%M"),
+          :dt_update => item.updated_at.strftime("%Y-%m-%d %H:%M")
         }
-        union_test_result[index] = h
+        result[index] = h
       }
-      return union_test_result, self.count
-
+      return result
     end
   end
 
@@ -75,6 +71,7 @@ class Mongodb::UnionTest
     target_area_ird = params[:province_rid] if params[:province_rid].present?
     target_area_rid = params[:city_rid] if params[:city_rid].present?
     target_area_rid = params[:district_rid] if params[:district_rid].present?
+    
     paramsh = {
       :name => params[:name],
       :school => params[:school],
@@ -85,9 +82,7 @@ class Mongodb::UnionTest
       :quiz_type => params[:quiz_type],
       :quiz_date => params[:quiz_date],
       :start_date => params[:start_date],
-      :user_id => current_user_id,
-      :union_config => params[:union_config].to_json,
-      :union_status => params[:union_status] || Common::Paper::UnionStatus::New
+      :user_id => current_user_id
     }
     paramsh.merge!({:area_rid => target_area_rid})
     update_attributes(paramsh)
@@ -101,7 +96,6 @@ class Mongodb::UnionTest
 
 
   def u_test_info
-    paper_report_completed = true
     {
       :id => self._id.to_s,
       :name => self.name,
@@ -122,20 +116,15 @@ class Mongodb::UnionTest
         } if t
       },
       :bank_paper_paps => self.bank_paper_paps.map { |t|
-        paper_report_completed = paper_report_completed&&(t.is_report_completed?)
         {
           :pap_uid => t._id.to_s,
           :subject => t.subject,
           :subject_cn => I18n.t("dict.#{t.subject}"),
           :paper_status => t.paper_status,
           :status => I18n.t("papers.status.#{t.paper_status}"),
-          :quiz_date => t.quiz_date.present? ? t.quiz_date.strftime("%Y-%m-%d") : ""
+          :quiz_date => t.quiz_date
         } if t
-      },
-      :paper_report_completed => paper_report_completed,
-      :union_status => self.union_status.present? ? self.union_status : "",
-      :union_config => self.union_config.present? ? eval(self.union_config) : nil,
-      :task_uid => self.union_test_report_task.present? ? self.union_test_report_task : nil
+      }
     }
   end
 
@@ -169,20 +158,6 @@ class Mongodb::UnionTest
 
   def users
     User.where(id: user_ids)
-  end
-
-  def task_uids
-    union_test_task_links.map(&:task_uid)
-  end
-
-  def tasks
-    TaskList.where(uid: task_uids).order("dt_add DESC")
-  end
-
-  def union_test_report_task
-    condition = Common::Job::Type::GenerateUnionTestReports
-    task = self.tasks.by_task_type(condition).first
-    task.present? ? task.uid : ""
   end
 
 end

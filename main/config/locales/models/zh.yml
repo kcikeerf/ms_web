@@ -3,7 +3,7 @@ zh:
   activerecord:
     models:
       area: "地区"
-      area_administrator: "地区管理员"
+      area_administrator: "区领导"
       bank_checkpoint_ckp: "测评点表"
       bank_ckp_comment: "测评点评价模版表"
       bank_ckp_cube: "测评点立体交叉表"
@@ -21,7 +21,7 @@ zh:
       pupil: "学生"
       teacher: "教师"
       tenant: "Tenant"
-      tenant_administrator: "Tenant管理员"
+      tenant_administrator: "校领导"
       project_administrator: "项目管理员"
       permission: "权限"
       bank_paper_pap: "试卷"

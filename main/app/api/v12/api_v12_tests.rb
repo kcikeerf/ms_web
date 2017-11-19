@@ -58,7 +58,7 @@ module ApiV12Tests
         end
       end
 
-
+      #获取某个指标的试题
       desc "paper_quiz_ckps"
       params do
         requires :test_uid, type: String

@@ -51,5 +51,16 @@ module TaskJobModule
       job_tracker.update(process: process_value/_total_phases)  
       return true
     end
+
+    def create_job_tracker name, task_uid=nil
+      job_tracker = JobList.new({
+        :name => name,
+        :task_uid => task_uid,
+        :status => Common::Job::Status::NotInQueue,
+        :process => 0
+      })
+      job_tracker.save!
+      return job_tracker
+    end
   end
 end

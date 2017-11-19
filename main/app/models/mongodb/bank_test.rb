@@ -11,6 +11,7 @@ class Mongodb::BankTest
 
   belongs_to :bank_paper_pap, class_name: "Mongodb::BankPaperPap"
   belongs_to :paper_question, class_name: "Mongodb::PaperQuestion"
+  belongs_to :union_test, class_name: "Mongodb::UnionTest"
 
   has_many :bank_test_task_links, class_name: "Mongodb::BankTestTaskLink", dependent: :delete
   has_many :bank_test_area_links, class_name: "Mongodb::BankTestAreaLink", dependent: :delete
@@ -36,7 +37,6 @@ class Mongodb::BankTest
   field :checkpoint_system_rid, type: String
   field :is_public, type: Boolean
   field :area_rid, type: String
-  field :test_status, type: String
 
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
@@ -70,43 +70,96 @@ class Mongodb::BankTest
 
   #获取用户绑定情况
   def get_user_binded_stat
+    #获取学生报告的路径
     _report_warehouse_path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/"
-    
-    # target_pupil_urls = find_all_pupil_report_urls(reportbasepath, reportwarehousepath + self._id, [])
     target_pupil_urls = Dir[_report_warehouse_path + self._id + "/**/pupil/*.json"]
-    target_pupil_uids = []
-    target_klass_uids = []
+    #树形ID hash
+    target_hash = {}
+    #遍历学生的报告路径，将获取的id进行分类，结构为{学校uid:{班级uid:学生uid}}
     target_pupil_urls.map{|url| 
       target_path = url.split(".json")[0]
       target_path_arr = target_path.split("/")
-      target_pupil_uids << target_path_arr[-1]
-      target_klass_uids << target_path_arr[-3]
+      target_pupil_uid = target_path_arr[-1]#学生uid
+      target_klass_uid = target_path_arr[-3]#班级uid
+      target_tenant_uid = target_path_arr[-5]#学校uid
+
+      if target_hash.has_key?(target_tenant_uid)
+        if target_hash[target_tenant_uid].has_key?(target_klass_uid)
+          target_hash[target_tenant_uid][target_klass_uid] << target_pupil_uid
+        else
+          target_hash[target_tenant_uid][target_klass_uid] = []
+          target_hash[target_tenant_uid][target_klass_uid] << target_pupil_uid
+        end
+      else
+        target_hash[target_tenant_uid] = {}
+        if target_hash[target_tenant_uid].has_key?(target_klass_uid)
+          target_hash[target_tenant_uid][target_klass_uid] << target_pupil_uid
+        else
+          target_hash[target_tenant_uid][target_klass_uid] = []
+          target_hash[target_tenant_uid][target_klass_uid] << target_pupil_uid
+        end
+      end
     }.compact
-    target_klass_uids = target_klass_uids.uniq.compact
 
-    # target_loc_uids = Location.joins(:pupils).where("pupils.uid in (?)",target_pupil_uids).pluck("locations.uid")
-    # target_loc_uids = target_loc_uids.uniq.compact
-    result = {}
-    binded_pupil_number = Pupil.joins(user: :wx_users).where(uid: target_pupil_uids).select(:user_id).distinct.size
-    result['total_pupils'] = target_pupil_uids.size
-    result['binded_pupils'] = binded_pupil_number
+    
+    #父表格数据，各个学校内的绑定情况
+    result_arr = []#内容为[{name:学校名,total_tenant:校长数量,binded_tenant:校长绑定数量,total_teacher:教师数量,..}]
+    #子表格数据,内容为key是学校名称，value是学校内各班级绑定情况
+    result_hash = {}#内容为{学校名:[{name:班级名,total_teacher:教师数量,binded_teacher:教师绑定数量,total_pupil:学生数量,..}]}
+    #遍历id hash获取结果
+    target_hash.each{|k,v|
+      tenant_hash = {}#每个学校内的绑定情况hash
+      tena = Tenant.where(uid: k).first#根据学校uid获取学校
+      tenant_name = tena.blank? ? k : tena.name_cn
+      tenant_hash['name'] = tenant_name
+      tenant_hash['total_pupils'] = 0#初始化数量为0
+      tenant_hash['binded_pupils'] = 0
+      tenant_hash['total_teachers'] = 0
+      tenant_hash['binded_teachers'] = 0
+      result_hash[tenant_name] = []#key为学校名称，value为各个班级的绑定情况组成的数组
+      tenant_teacher_ids = []#学校的老师id为各个班级的老师id加在一起再去除重复
+      v.map{|k1,v1|
+        class_hash = {}#每个班级内的绑定情况
+        loc = Location.where(uid: k1).first#根据班级uid获取班级
+        class_hash['name'] = loc.blank? ? k1 : Common::Locale::i18n("dict.#{loc.classroom}")
 
-    target_locations = Location.where(uid: target_klass_uids)
+        target_pupil_ids = Pupil.joins(:user).where(uid: v1).pluck(:id).uniq#根据学生uid获取学生的user_id
+        target_teacher_ids = loc.blank? ? [] : loc.teachers.map{|item| item[:teacher].user_id.to_i}.uniq#班级内所有老师的user_id
+        tenant_teacher_ids += target_teacher_ids
 
-    target_tenants = target_locations.map{|loc| loc.tenant }
-    target_teachers = target_locations.map{|loc| loc.teachers.map{|item| item[:teacher]} }.flatten
-    binded_teacher_number = target_teachers.map{|tea| tea.user.wx_users.blank? ? 0 : 1 }.sum
+        binded_pupil_number = get_binded_num(target_pupil_ids)#获取绑定的学生数量
+        binded_teacher_number = get_binded_num(target_teacher_ids)#获取绑定的老师数量
 
-    result['total_teachers'] = target_teachers.size
-    result['binded_teachers'] = binded_teacher_number
+        class_hash["total_pupils"] = v1.length
+        tenant_hash['total_pupils'] += v1.length
+        class_hash["binded_pupils"] = binded_pupil_number
+        tenant_hash['binded_pupils'] += binded_pupil_number
 
-    target_tenant_administrators = target_tenants.map{|tnt| tnt.tenant_administrators }.flatten.uniq.compact
-    binded_tenant_administrators_number = target_tenant_administrators.map{|tnt_admin| tnt_admin.user.wx_users.blank? ? 0 : 1 }.sum
+        class_hash["total_teachers"] = target_teacher_ids.size
+        class_hash["binded_teachers"] = binded_teacher_number
+        result_hash[tenant_name] << class_hash
+      }
+      target_tenant_ids = TenantAdministrator.where(tenant_uid: k).pluck(:user_id).uniq
+      binded_tenant_number = get_binded_num(target_tenant_ids)
 
-    result['total_tenant'] = target_tenant_administrators.size
-    result['binded_tenant'] = binded_tenant_administrators_number
+      binded_tenant_teacher_number = get_binded_num(tenant_teacher_ids.uniq)
 
-    return result
+      tenant_hash['total_teachers'] = tenant_teacher_ids.uniq.size
+      tenant_hash['binded_teachers'] = binded_tenant_teacher_number
+      tenant_hash['total_tenant'] = target_tenant_ids.size
+      tenant_hash['binded_tenant'] = binded_tenant_number
+      result_arr << tenant_hash
+    }
+    return result_hash,result_arr
+  end
+
+  def get_binded_num(user_ids)
+    #两个join找到所有绑定微信的主账号，where是满足身份账号在user_ids内的主账号
+    master_ids = User.joins(:wx_user_mappings, :groups_as_child).where("user_links.child_id in (:child_ids) ", child_ids: user_ids).pluck(:id)
+    #这批主账号绑定的子账号
+    binded_wx_user = UserLink.where(parent_id: master_ids).pluck(:child_id)
+    #身份账号与绑定主账号的子账号的交集，就是这批所绑定的账号
+    return (user_ids&binded_wx_user).size
   end
 
   #统计测试报告情况
@@ -137,13 +190,16 @@ class Mongodb::BankTest
       # nav_arr += Dir[Common::Report::WareHouse::ReportLocation + Dir::pwd + path + self._id + '/nav.json']
 
       nav_arr.each{|nav_path|
+        group_state_hash = {
+          :area_rid => self.area_rid,
+          :bank_test_id => self._id,
+        }
         target_nav_h = get_report_hash(nav_path)
         target_nav_count = target_nav_h.values[0].size
         target_path = nav_path.split("/nav.json")[0]
         target_path_arr = target_path.split("/")
         target_group = (Common::Report::Group::ListArr[0..index] - target_path_arr)[-1]
-        state_hash.delete(:total_num)
-        group_hash = state_hash.merge!({"#{target_group}_num".to_sym => target_nav_count})
+        group_hash = group_state_hash.merge!({"#{target_group}_num".to_sym => target_nav_count})
         if target_group == 'klass'
           group_hash.merge!({:tenant_uid => target_path_arr[-1]})
         end
