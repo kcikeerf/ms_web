@@ -23,7 +23,7 @@ class Mongodb::BankPaperPap
   has_many :bank_tnt_paps, class_name: "Mongodb::BankTntPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
-
+  belongs_to :union_test, class_name: "Mongodb::UnionTest"
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
@@ -745,29 +745,31 @@ class Mongodb::BankPaperPap
       qzps = bank_quiz_qizs.map{|qiz| qiz.bank_qizpoint_qzps }.flatten
       paper_qzp_uids = qzps.map{|qzp| qzp._id.to_s}
       ckp_uid_arr = []
-      if ckp.children.size > 0
-        ckp_uid_arr = ckp.children.where(is_entity: true).select(:uid).map(&:uid)
-      else
-        ckp_uid_arr.push(ckp.uid)
+      if ckp.present?
+        if ckp.children.size > 0
+          ckp_uid_arr = ckp.children.where(is_entity: true).select(:uid).map(&:uid)
+        else
+          ckp_uid_arr.push(ckp.uid)
+        end
+        ckp_qzp_uids =  Mongodb::BankCkpQzp.where({ckp_uid: {'$in'=> ckp_uid_arr}}).map(&:qzp_uid)
+        include_qzps_uid = ckp_qzp_uids&paper_qzp_uids
+        result = {
+          :uid => ckp.uid,
+          :order => ckp.sort,
+          :rid => ckp.rid,
+          :dimesion => ckp.dimesion,
+          :checkpoint => ckp.checkpoint,
+          :high_level => ckp.high_level,
+          :advice => ckp.advice,
+          :is_entity => ckp.is_entity,
+          # :qzps => include_qzps_uid,
+          # :qzp_count => include_qzps_uid.size
+        }
+        qizpoints = Mongodb::BankQizpointQzp.where({id: {'$in'=> include_qzps_uid}})
+        result[:qzps] = qizpoints.map {|point| point.point_info }
+        result[:qzps_count] = qizpoints.size
+        Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , result.to_json)
       end
-      ckp_qzp_uids =  Mongodb::BankCkpQzp.where({ckp_uid: {'$in'=> ckp_uid_arr}}).map(&:qzp_uid)
-      include_qzps_uid = ckp_qzp_uids&paper_qzp_uids
-      result = {
-        :uid => ckp.uid,
-        :order => ckp.sort,
-        :rid => ckp.rid,
-        :dimesion => ckp.dimesion,
-        :checkpoint => ckp.checkpoint,
-        :high_level => ckp.high_level,
-        :advice => ckp.advice,
-        :is_entity => ckp.is_entity,
-        # :qzps => include_qzps_uid,
-        # :qzp_count => include_qzps_uid.size
-      }
-      qizpoints = Mongodb::BankQizpointQzp.where({id: {'$in'=> include_qzps_uid}})
-      result[:qzps] = qizpoints.map {|point| point.point_info }
-      result[:qzps_count] = qizpoints.size
-      Common::SwtkRedis::set_key(Common::SwtkRedis::Ns::Cache, redis_key_prefix , result.to_json)
     end
 
     result
