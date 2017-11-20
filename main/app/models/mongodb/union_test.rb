@@ -12,11 +12,10 @@ class Mongodb::UnionTest
 
   has_many :bank_tests, class_name: "Mongodb::BankTest", dependent: :delete
   has_many :union_test_area_links, class_name: "Mongodb::UnionTestAreaLink", dependent: :delete
-  has_many :union_test_task_links, class_name: "Mongodb::UnionTestTaskLink", dependent: :delete
+  has_many :union_test_task_links, class_name: "Mongodb::UnionTestTaskLink", dependent: :delete 
   has_many :union_test_tenant_links, class_name: "Mongodb::UnionTestTenantLink", dependent: :delete
   has_many :union_test_location_links, class_name: "Mongodb::UnionTestLocationLink", dependent: :delete
   has_many :union_test_user_links, class_name: "Mongodb::UnionTestUserLink", dependent: :delete
-
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
   scope :by_keyword, ->(keyword) { any_of({heading: /#{keyword}/}, {subheading: /#{keyword}/}) if keyword.present? }
 
@@ -37,7 +36,6 @@ class Mongodb::UnionTest
   field :union_config, type: String
   field :dt_add, type: DateTime
   field :dt_update, type: DateTime
-
 
   index({_id: 1}, {background: true})
 
@@ -66,14 +64,13 @@ class Mongodb::UnionTest
         union_test_result[index] = h
       }
       return union_test_result, self.count
-
     end
   end
 
   def save_ins params
     target_area_ird = params[:province_rid] if params[:province_rid].present?
     target_area_rid = params[:city_rid] if params[:city_rid].present?
-    target_area_rid = params[:district_rid] if params[:district_rid].present?
+    target_area_rid = params[:district_rid] if params[:district_rid].present?    
     paramsh = {
       :name => params[:name],
       :school => params[:school],

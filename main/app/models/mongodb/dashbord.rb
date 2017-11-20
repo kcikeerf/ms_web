@@ -92,6 +92,70 @@ class Mongodb::Dashbord
     end
   end
 
+  #地区人数dashbord更新
+  #需要更新
+  def area_user_update
+    #根据total_tp获取父级地区
+    parent = Area.where("name_cn like '#{self.total_tp}%' and is_deleted = ?",false).first
+    #根据父级地区和branch_tp获取所有子级地区
+    areas = Area.where("area_type = ? and is_deleted = ? and rid like '#{parent.rid}%'",self.branch_tp,false)
+
+    pupil_arr = []
+    teacher_arr = []
+    teacher_arr1 = []
+    analyser_arr = []
+    tenant_admin_arr = []
+    area_admin_arr = []
+    areas.each  do |area|
+      area_name = area.name_cn
+      area_name = (area_name.delete "省").delete "市" if self.branch_tp == 'province'
+      pupil_num = 0
+      teacher_num = 0
+      analyser_num = 0 
+      tenant_admin_num = 0
+      pupil_hash = {}
+      teacher_hash = {}
+      analyser_hash = {}
+      tenant_admin_hash = {}
+      area_admin_hash = {}
+
+      tenants = Tenant.where("area_rid like '#{area.rid}%'")
+      tenants.each do |tenant|
+        loc_uids = tenant.locations.map(&:uid)
+        pupil_num += Pupil.where(loc_uid: loc_uids).count
+        teacher_num += tenant.teachers.size
+        analyser_num += tenant.analyzers.size 
+        tenant_admin_num += tenant.tenant_administrators.size
+      end
+      area_admin_num = AreaAdministrator.where("area_rid like '#{area.rid}%'").size
+
+      pupil_hash["name"] = area_name
+      pupil_hash["value"] = pupil_num
+      teacher_hash["name"] = area_name
+      teacher_hash["value"] = teacher_num
+      analyser_hash["name"] = area_name
+      analyser_hash["value"] = analyser_num
+      tenant_admin_hash["name"] = area_name
+      tenant_admin_hash["value"] = tenant_admin_num
+      area_admin_hash["name"] = area_name
+      area_admin_hash["value"] = area_admin_num
+
+      pupil_arr << pupil_hash
+      teacher_arr << teacher_hash
+      analyser_arr << analyser_hash
+      tenant_admin_arr << tenant_admin_hash
+      area_admin_arr << area_admin_hash
+    end
+    self.data = {}
+    self.data['pupil'] = pupil_arr
+    self.data['teacher'] = teacher_arr
+    self.data['analyser'] = analyser_arr
+    self.data['tenant_admin'] = tenant_admin_arr
+    self.data['area_admin'] = area_admin_arr
+    self.save
+    return self
+  end
+
   #更新报告数量情况
   # to be implemented using MapReduce
   def update_report_overall_stat
