@@ -186,6 +186,17 @@ namespace :swtk_patch do
       end
     end
 
+    desc "增加测试的状态 从试卷获取状态信息"
+    task :add_test_status_from_paper => :environment do
+      Mongodb::BankTest.all.each do |bank_test|
+        bank_paper_pap = bank_test.bank_paper_pap
+        if bank_paper_pap.present?
+          bank_test.test_status = bank_paper_pap.paper_status
+          bank_test.save!
+        end
+      end
+    end 
+
     desc "试卷指标体系添加patch"
     task :add_ckp_system_to_paper_patch => :environment do
       p "begin"
