@@ -1,5 +1,6 @@
 // JavaScript Document
 $(function(){
+    var ke_chai_ti_xing = ["dan_xiang_xuan_ze", "xuan_ze_ti","dan_xiang_xuan_ze_ti"];
     var paper_interval;
     var ckeditor_common_params = {
             toolbar : [
@@ -627,7 +628,7 @@ $(function(){
             checkQuestionType($(this).attr("values"));
         });
         function checkQuestionType(questionType){
-            if(["dan_xiang_xuan_ze", "xuan_ze_ti"].indexOf(questionType) > -1){
+            if(ke_chai_ti_xing.indexOf(questionType) > -1){
                 $(".quizDetailOptions").show();
             }else{
                 $(".quizDetailOptions").hide();
@@ -967,7 +968,7 @@ $(function(){
                     //还原选项拆分
 
                     checkQuestionType(paper.currentQuiz.cat);
-                    if(["dan_xiang_xuan_ze", "xuan_ze_ti"].indexOf(paper.currentQuiz.cat) > -1){
+                    if(ke_chai_ti_xing.indexOf(paper.currentQuiz.cat) > -1){
                         restoreOptionDetail(paper.currentQuiz.question_body, paper.currentQuiz.option_details)
                     }else{
                         gotoQuizDetailOptions();
@@ -1549,7 +1550,7 @@ $(function(){
         $(".subNav li.active").addClass("dispose");
 
         //保存选项拆分数据
-        if(["dan_xiang_xuan_ze", "xuan_ze_ti"].indexOf(itemObj.cat) > -1 ){
+        if(ke_chai_ti_xing.indexOf(itemObj.cat) > -1 ){
             itemObj.question_body = CKEDITOR.instances["question_body"].getData();
             itemObj.option_details = [];
             itemObj.is_II_quiz = true;
