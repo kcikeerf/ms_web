@@ -232,6 +232,7 @@ class Mongodb::BankTest
     union_test = Mongodb::UnionTest.where(_id: params[:id]).first
     params[:tenant_uids] = union_test.tenant_uids
     params[:paper_uid] = paper._id.to_s
+    params[:checkpoint_system_rid] = paper.checkpoint_system_rid
     params[:union_test_id] = union_test.id
 
     phase_arr = %w{ phase1 phase2 phase3 }
@@ -274,6 +275,7 @@ class Mongodb::BankTest
         :quiz_date => params[:quiz_date]||Time.now,
         :union_test_id => params[:union_test_id],
         :test_type => params[:test_type],
+        :checkpoint_system_rid => params[:checkpoint_system_rid],
         :bank_paper_pap_id => params[:paper_uid],
         :test_status => Common::Test::Status::New
       })
@@ -332,7 +334,7 @@ class Mongodb::BankTest
         return false
       else
         #删除报告文件
-        del_report_file
+        # del_report_file
         #去除资源锁
         del_lock
         #删除job_lists
@@ -349,7 +351,7 @@ class Mongodb::BankTest
     when Common::Test::Status::ScoreImported
       if [Common::Test::Status::ReportGenerating,Common::Test::Status::ReportCompleted].include?(self.test_status)
         #删除报告文件
-        del_report_file
+        # del_report_file
         #去除资源锁
         del_lock
         #删除job_lists
