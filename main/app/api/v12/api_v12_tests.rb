@@ -164,12 +164,19 @@ module ApiV12Tests
                 rpt_type = _rpt_type || Common::Report::Group::Project
                 rpt_id = (_rpt_type == Common::Report::Group::Project)? b_test._id.to_s : _rpt_id
                 report_url = Common::Report::get_test_report_url(b_test._id.to_s, rpt_type, rpt_id)
-                if report_url.present?
-                  test_list << {
-                    uid: b_test._id.to_s,
-                    name: b_test.name,
-                    report_url: report_url
-                  }
+                if bank_test.quiz_type == "xy_default"
+                  if report_url.present?
+                    target_pap = bank_test.bank_paper_pap
+                    if target_pap.present?
+                      test_list << {
+                        uid: b_test._id.to_s,
+                        name: b_test.name,
+                        report_url: report_url,
+                        subject: target_pap.subject,
+                        subject_cn: Common::Locale::i18n("dict.#{target_pap.subject}")
+                      }
+                    end
+                  end
                 end
               }
             }
