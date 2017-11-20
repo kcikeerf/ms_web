@@ -83,7 +83,7 @@ module ApiV12Tests
       end
       post :paper_quiz_ckps do
         bank_test = Mongodb::BankTest.where(id: params[:test_uid]).first
-        if bank_test 
+        if bank_test.present?
           paper = bank_test.bank_paper_pap
           if paper
             result = paper.get_ckp_quiz params
@@ -158,15 +158,16 @@ module ApiV12Tests
             test_list = []
             pupil_users.each { |u|
               # pupil = u.role_obj
+              p u
               bank_tests = u.bank_tests
               bank_tests.each {|b_test|
                 _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(u)
                 rpt_type = _rpt_type || Common::Report::Group::Project
                 rpt_id = (_rpt_type == Common::Report::Group::Project)? b_test._id.to_s : _rpt_id
                 report_url = Common::Report::get_test_report_url(b_test._id.to_s, rpt_type, rpt_id)
-                if bank_test.quiz_type == "xy_default"
+                if b_test.quiz_type == "xy_default"
                   if report_url.present?
-                    target_pap = bank_test.bank_paper_pap
+                    target_pap = b_test.bank_paper_pap
                     if target_pap.present?
                       test_list << {
                         uid: b_test._id.to_s,
