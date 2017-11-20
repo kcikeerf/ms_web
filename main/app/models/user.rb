@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   validate do
 #    self.errors.add(:base, '不能为空') if (!email.present? || !phone.present?)
-#  	 self.errors.add(:base, '用户已存在') if self.class.find_user(email.presence || phone, {})
+#    self.errors.add(:base, '用户已存在') if self.class.find_user(email.presence || phone, {})
     self.errors.add(:email, '已存在') if email.presence && self.class.where.not(id: id).find_by(email: email)
     self.errors.add(:phone, '已存在') if phone.presence && self.class.where.not(id: id).find_by(phone: phone)    
   end
@@ -496,13 +496,6 @@ class User < ActiveRecord::Base
     !wx_users.blank?
   end
 
-  def generate_token
-    self.tk_token = loop do
-      random_token = SecureRandom.urlsafe_base64(nil, false)
-      break random_token unless self.class.exists?(tk_token: random_token)
-    end
-  end
-
   ########私有方法: begin#######
   private
 
@@ -526,7 +519,12 @@ class User < ActiveRecord::Base
       end
     end
 
-
+    def generate_token
+      self.tk_token = loop do
+        random_token = SecureRandom.urlsafe_base64(nil, false)
+        break random_token unless self.class.exists?(tk_token: random_token)
+      end
+    end
 
     def set_resource_owner_id
       oauth_access_tokens.update_all(resource_owner_id: nil)

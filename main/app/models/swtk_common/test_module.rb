@@ -16,7 +16,7 @@ module TestModule
         
     module Status
       None = "none"
-      New = "new"    	
+      New = "new"     
       NotStarted = "not_started"
       NoScore = "no_score"
       Editting = "editting"
@@ -28,6 +28,11 @@ module TestModule
       ReportGenerating = "report_generating"
       ReportCompleted = "report_completed" 
     end
+
+    RollbackStatus = {
+      Status::New => I18n.t("tests.status.#{Status::New}"),
+      Status::ScoreImported => I18n.t("tests.status.#{Status::ScoreImported}"),
+    }
 
     ExtDataCodeArr = Common::SwtkConstants::AlphabetDownCaseArr + Common::SwtkConstants::AlphabetUpCaseArr + Common::SwtkConstants::NumberArr
     ExtDataPathLength = 6

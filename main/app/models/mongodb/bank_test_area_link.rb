@@ -7,6 +7,7 @@ class Mongodb::BankTestAreaLink
   belongs_to :bank_test, class_name: "Mongodb::BankTest"
 
   field :area_uid, type: String
+  field :area_rid, type: String
 
   index({bank_test_id: 1, area_uid: 1}, {unique: true, background: true})
 

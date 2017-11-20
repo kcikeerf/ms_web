@@ -59,7 +59,7 @@ class Mongodb::UnionTest
           :quiz_type_cn => Common::Locale::i18n("dict.#{item.quiz_type}"),
           :quiz_date => item.quiz_date.blank? ? nil : item.quiz_date.strftime("%Y-%m-%d %H:%M"),
           :dt_update => item.dt_update.strftime("%Y-%m-%d %H:%M"),
-          :subject_cn => item.bank_paper_paps.map{|paper_pap| Common::Locale::i18n("dict.#{paper_pap.subject}")} 
+          :subject_cn => item.bank_tests.map{|bank_test| Common::Locale::i18n("dict.#{bank_test.bank_paper_pap.subject}")} 
         }
         union_test_result[index] = h
       }
