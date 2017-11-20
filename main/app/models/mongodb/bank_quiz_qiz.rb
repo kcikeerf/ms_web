@@ -347,7 +347,7 @@ class Mongodb::BankQuizQiz
         "desc" => qzp.desc,
         "score" => qzp.score,
         "bank_checkpoint_ckps" => qzp.level1_levle2_info_plus
-      }
+      } if qzp.present?
     } 
     return result.deep_stringify_keys
   end

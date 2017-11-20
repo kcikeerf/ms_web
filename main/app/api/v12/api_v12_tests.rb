@@ -195,7 +195,8 @@ module ApiV12Tests
         requires :report_url_list, type: Array 
       end
       post :incorrect_item do
-        begin         
+        begin
+          not_included_quiz = %W{shu_mian_biao_da xie_zuo}        
           time_day = Time.now.strftime('%Y/%m/%d')  
           # base = "/Users/shuai/workspace/tk_main/main"
           mistakes_list = []
@@ -215,11 +216,14 @@ module ApiV12Tests
           mistakes_list.each {|quiz_uid|
             quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
             if quiz.present?
-              incorrect_item << quiz.exercise
+              quiz_body =  quiz.exercise
+              if quiz_body.present? && !not_included_quiz.include?(quiz_body["quiz_cat"]) 
+                incorrect_item << quiz_body
+              end
             end
           }
           if incorrect_item.present?
-            incorrect_item = incorrect_item.sort { |x,y| y["quiz_cat"] <=> x["quiz_cat"] }
+            incorrect_item = incorrect_item.sort { |x,y| Common::Paper::QuizTypeKey[x["subject"].to_sym].index(x["quiz_cat"]) <=> Common::Paper::QuizTypeKey[y["subject"].to_sym].index(y["quiz_cat"]) }
           end
           incorrect_info["incorrect_item"] = incorrect_item
           # corectly_list.flatten!
