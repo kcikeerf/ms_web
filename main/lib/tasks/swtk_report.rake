@@ -617,13 +617,15 @@ namespace :swtk do
                       report_data = JSON.parse(target_report_data)
                       pap_qzp_data = report_data["paper_qzps"]
                       err_code = []
-                      check_key = %w{
+                      rank_key = %w{
                         klass_rank
-                        klass_percentile
                         grade_rank
-                        grade_percentile
                         project_rank
-                        project_percentile
+                      }
+                      percentile_key = %{
+                        klass_percentile
+                        grade_percentile
+                        project_percentile                        
                       }
                       dimesion_key = %w{
                         knowledge
@@ -633,11 +635,18 @@ namespace :swtk do
                       if report_data["data"].present?
                         dimesion_key.each do |dimesion|
                           if report_data["data"][dimesion].present? && report_data["data"][dimesion]["base"].present? 
-                            check_key.each do |c_key|
+                            rank_key.each do |c_key|
                               if(report_data["data"][dimesion]["base"][c_key].class.to_s == "Fixnum")
 
                               else
                                 err_code << "报告中#{dimesion}-#{c_key}中数据不存在或不是整数"
+                              end
+                            end
+                            percentile_key.each do |c_key|
+                              if(["Fixnum", "Float"].include?(report_data["data"][dimesion]["base"][c_key].class.to_s))
+
+                              else
+                                err_code << "报告中#{dimesion}-#{c_key}中数据出错"
                               end
                             end
                           else
