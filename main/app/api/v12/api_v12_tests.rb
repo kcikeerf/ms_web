@@ -12,6 +12,7 @@ module ApiV12Tests
     helpers do
       def get_pupil_report_data report_path
         report_data = {}
+
         if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, report_path
           target_report_j = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, report_path
           report_data = JSON.parse(target_report_j)
@@ -21,20 +22,27 @@ module ApiV12Tests
           target_report_data = File.open(target_report_f, 'rb').read
           return report_data if target_report_data.blank?
           report_data = JSON.parse(target_report_data)
-          # Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, report_path, report_data.to_json
+          Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, report_path, report_data.to_json
         end
-        return report_data
+        bank_test_uid = report_path.split("reports_warehouse/tests")[1].split("/")[1]
+        unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + bank_test_uid
+          bank_test = Mongodb::BankTest.where(_id: bank_test_uid).first
+          if bank_test.present?
+            Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + bank_test_uid, bank_test.name
+          end
+        end
+        return bank_test_uid, report_data
       end
 
-      def sort_quiz_with_answer paper_qzps
+      def sort_quiz_with_answer paper_qzps, bank_test_uid
         mistakes_list = []
         corectly_list = []
         paper_qzps.each {|qzp| 
           taget_qzp = Mongodb::BankQizpointQzp.where(_id: qzp["qzp_id"]).first
           if (qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"])
-            mistakes_list << taget_qzp.bank_quiz_qiz_id.to_s
+            mistakes_list << [taget_qzp.bank_quiz_qiz_id.to_s,bank_test_uid]
           else
-            corectly_list << taget_qzp.bank_quiz_qiz_id.to_s
+            corectly_list << [taget_qzp.bank_quiz_qiz_id.to_s,bank_test_uid]
           end
         }
         return mistakes_list, corectly_list
@@ -88,7 +96,7 @@ module ApiV12Tests
           if paper
             result = paper.get_ckp_quiz params
             if params[:report_url]
-              data =  get_pupil_report_data params[:report_url]
+              _test, data =  get_pupil_report_data params[:report_url]
               result["paper_qzps"] = data["paper_qzps"]
             end
             if result
@@ -108,8 +116,8 @@ module ApiV12Tests
       params do
         requires :report_url, type: String
       end
-      post :get_error_quiz_list do        
-        data = get_pupil_report_data params[:report_url]
+      post :get_error_quiz_list do
+        _test, data = get_pupil_report_data params[:report_url]
         paper_qzps = data["paper_qzps"]
         paper_qzps = paper_qzps.select {|qzp| 
           qzp if qzp &&  (qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"])
@@ -158,7 +166,7 @@ module ApiV12Tests
             test_list = []
             pupil_users.each { |u|
               # pupil = u.role_obj
-              p u
+              # p u
               bank_tests = u.bank_tests
               bank_tests.each {|b_test|
                 _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(u)
@@ -196,28 +204,34 @@ module ApiV12Tests
       end
       post :incorrect_item do
         begin
-          not_included_quiz = %W{shu_mian_biao_da xie_zuo}        
+          not_included_quiz = %W{shu_mian_biao_da xie_zuo}
           time_day = Time.now.strftime('%Y/%m/%d')  
-          # base = "/Users/shuai/workspace/tk_main/main"
+          base = "/Users/shuai/workspace/tk_main/main"
           mistakes_list = []
           incorrect_info = {}
           params[:report_url_list].each {|_url|
-            # data = get_pupil_report_data (base+_url) #本地获取
-            data = get_pupil_report_data _url #服务器方式
-            if data["paper_qzps"].present?            
+            _test, data = get_pupil_report_data (base+_url) #本地获取
+            # _test, data = get_pupil_report_data _url #服务器方式
+            if data["paper_qzps"].present?
               incorrect_info["basic"] = data["basic"] 
-              m_list, c_list = sort_quiz_with_answer data["paper_qzps"]
+              m_list, c_list = sort_quiz_with_answer data["paper_qzps"], _test
               mistakes_list << m_list
               # corectly_list << c_list
             end
           }
           incorrect_item = []
-          mistakes_list.flatten!
-          mistakes_list.each {|quiz_uid|
-            quiz = Mongodb::BankQuizQiz.where(_id: quiz_uid).first
+          mistakes_list = mistakes_list.flatten(1)
+          mistakes_list.each {|quiz_bank_uids|
+            quiz = Mongodb::BankQuizQiz.where(_id: quiz_bank_uids[0]).first
             if quiz.present?
               quiz_body =  quiz.exercise
-              if quiz_body.present? && !not_included_quiz.include?(quiz_body["quiz_cat"]) 
+              if quiz_body.present? && !not_included_quiz.include?(quiz_body["quiz_cat"])
+                if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + quiz_bank_uids[1]
+                  # quiz_body["test_name"] = bank_test.name
+                  quiz_body["bank_test_name"] = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + quiz_bank_uids[1]
+                else
+                  quiz_body["bank_test_name"] = "由于时间太久，暂时不确定试题时哪次测试中的错题"
+                end
                 incorrect_item << quiz_body
               end
             end
