@@ -622,7 +622,7 @@ namespace :swtk do
                         grade_rank
                         project_rank
                       }
-                      percentile_key = %{
+                      percentile_key = %w{
                         klass_percentile
                         grade_percentile
                         project_percentile                        
