@@ -184,6 +184,26 @@ namespace :swtk_patch do
         end
       end
     end
+
+    desc "晋安数学临时命令"
+    tash add_jinan201711_to_jinan: :environment do
+      paper_uids = ["5a0d2379fa3318763fe45678","5a0d51dbfa3318763ce4591b", "5a0d68a6fa33183f5be4549d", "5a0d5c0ffa3318734de45474"]
+      tag = Mongodb::BankTag.where(content: "jinan2017").first
+      unless tag.present?
+        tag = Mongodb::BankTag.new(content: "jinan2017").save
+      end
+      paper_uids.each do |puid|
+        paper = Mongodb::BankPaperPap.where(_id: puid).first
+        if paper.present?
+          bank_quiz_qizs = paper.bank_quiz_qizs
+          if bank_quiz_qizs.present?
+            bank_quiz_qizs.each {|quiz|
+              quiz.bank_quiz_tag_links.new(tag_uid: tag._id.to_s).save 
+            }
+          end
+        end
+      end
+    end
   end
 
   namespace :v1_2_1 do
