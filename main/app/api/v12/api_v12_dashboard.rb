@@ -24,8 +24,8 @@ module ApiV12Dashboard
           lastest_data["school"] = []
           path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/"
           top_group = bank_test.report_top_group.blank? ? "project" : bank_test.report_top_group
-          optional_file = Dir[path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
-          # optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
+          optional_file = Dir[path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"] #官网
+          # optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"] #本地
           optional_file.each do |op|
 
             target_report_data = File.open(op, 'rb').read
@@ -72,8 +72,8 @@ module ApiV12Dashboard
           end
           lastest_data["school"].sort! {|p1,p2| p2["basic"]["school_uid"] <=> p1["basic"]["school_uid"]}
           if lastest_data["basic"].present?
-            area_report = Dir[path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"]
-            # area_report = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"]
+            area_report = Dir[path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"] #官网
+            # area_report = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"] #本地
             area_report.each do |ar|
               area_report_data = File.open(ar, 'rb').read
               area_json_data = JSON.parse(area_report_data)
@@ -159,13 +159,23 @@ module ApiV12Dashboard
               }
               bank_test_state = bank_test.bank_test_state
               stats =  {}
-              stats = {
+              if bank_test_state
+                stats = {
                   total: bank_test_state.total_num,
                   project: bank_test_state.project_num,
                   grade: bank_test_state.grade_num,
                   klass: bank_test_state.klass_num,
                   pupil: bank_test_state.pupil_num
-              } if bank_test_state
+                } 
+              else
+                stats = {
+                  total: 0,
+                  project: 0,
+                  grade: 0,
+                  klass: 0,
+                  pupil: 0
+                } 
+              end
               paper_info_hash[:xue_duan] = Common::Grade.judge_xue_duan target_pap.grade if target_pap.grade
               paper_info_hash[:xue_duan_cn] = Common::Locale::i18n("checkpoints.subject.category.#{ Common::Grade.judge_xue_duan target_pap.grade }") if target_pap.grade
               paper_info_hash[:stats] = stats
@@ -207,21 +217,21 @@ module ApiV12Dashboard
                 report_list[subject_en] = subject_obj[1]
                 if subject_obj[1]
                   subject_obj[1].each do |pap| 
-                    stats_hash =  pap[:stats] 
-                    total_all += stats_hash[:total]
-                    project_all += stats_hash[:project]
-                    grade_all += stats_hash[:grade]
-                    klass_all += stats_hash[:klass]
-                    pupil_all += stats_hash[:pupil]
+                    stats_hash =  pap[:stats] || 0
+                    total_all += stats_hash[:total] || 0
+                    project_all += stats_hash[:project] || 0
+                    grade_all += stats_hash[:grade] || 0
+                    klass_all += stats_hash[:klass] || 0
+                    pupil_all += stats_hash[:pupil] || 0
                   end
                   if subject_obj[1][-1]
                     last = subject_obj[1][-1][:stats]
                     # p last
-                    total_lastest += last[:total]
-                    project_lastest += last[:project]
-                    grade_lastest += last[:grade]
-                    klass_lastest += last[:klass]
-                    pupil_lastest += last[:pupil]
+                    total_lastest += last[:total] || 0
+                    project_lastest += last[:project] || 0
+                    grade_lastest += last[:grade] || 0
+                    klass_lastest += last[:klass] || 0
+                    pupil_lastest += last[:pupil] || 0
                   end
                 end
                 # report_list
@@ -274,7 +284,7 @@ module ApiV12Dashboard
             result
           end
         rescue Exception => e
-          p e.backtrace
+          Rails.logger.info e.backtrace
           error!({code: "e40003", message: I18n.t("api.#{'e40003'}", message: e.message)}, 500)
         end
       end  
