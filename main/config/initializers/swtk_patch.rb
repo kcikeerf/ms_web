@@ -1,31 +1,6 @@
 #swtk user patch
 require 'openssl'
 
-class Hash
-  def insert_before(key, arr)
-    arr = to_a
-    pos = arr.index(arr.assoc(key))
-    if pos
-      arr.insert(pos, arr)
-    else
-      arr << arr
-    end
-    replace Hash[arr]
-  end
-end
-
-class Array
-  def insert_before(key, kvpair)
-    pos = index(assoc(key))
-    if pos
-      insert(pos, kvpair)
-    else
-      self << kvpair
-    end
-  end
-end
-
-
 class String
   $pass_phrase = "7cdcde8c-fe3b-11e6-afd0-00163e321126"
   $salt = "tksecret"
