@@ -135,7 +135,7 @@ module ApiV12Helper
     }
   end
 
-  def success_message_json code, data
+  def message_json_data code, data
     {
       code: code,
       message: I18n.t("api.#{code}")

@@ -249,14 +249,34 @@ module ApiV12Papers
       end
       get :get_list do
         papers = Mongodb::BankPaperPap.get_list_plus params
-        total_count = Mongodb::BankPaperPap.get_count params
-        result = {data: papers, total_count: total_count}
+        result = {data: papers}
         if papers
-          success_message_json("i00000", result)
+          message_json_data("i00000", result)
         else
           error!(message_json("e40000"),500)
         end
       end
+
+      desc "获取试题列表"
+      params do
+        optional :page, type: Integer
+        optional :rows, type: Integer
+        optional :keyword, type: String
+        optional :grade, type: String
+        optional :category, type: String
+      end
+      get :get_count do
+        # total_count = Mongodb::BankPaperPap.get_count params
+        # papers = Mongodb::BankPaperPap.get_list_plus params
+        total_count = Mongodb::BankPaperPap.get_count params
+        result = {total_count: total_count}
+        if papers
+          message_json_data("i00000", result)
+        else
+          error!(message_json("e40000"),500)
+        end
+      end
+        
 
       
       desc "获取试题信息信息"
@@ -269,7 +289,7 @@ module ApiV12Papers
           result = {
             :paper_structure => JSON.parse(paper.paper_json)
           }
-          success_message_json("i00000", result)
+          message_json_data("i00000", result)
         else
           error!(message_json("e40000"),500)
         end 
@@ -295,7 +315,7 @@ module ApiV12Papers
                     }
                   }
         if result[:stat][:total] > 0
-          success_message_json("i00000", result)
+          message_json_data("i00000", result)
         else
           error!(message_json("e40000"),500)
         end            
@@ -309,11 +329,11 @@ module ApiV12Papers
         # authenticate!
         paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
         if paper.present?
-          # if paper#.destroy
+          if paper.destroy
             message_json("i43000")
-          # else
-          #   error!(message_json("e43500"),500)
-          # end
+          else
+            error!(message_json("e43500"),500)
+          end
         else
           error!(message_json("e43404"),404)
         end

@@ -82,6 +82,54 @@ module ApiV12Tests
         end
       end
 
+      desc '上传学业报告的成绩'
+      params do
+        # requires :test_id, type: String, allow_blank: false
+        requires :basic, type: Hash do
+          requires :test_id, type: String
+          requires :pap_uid, type: String
+          requires :province, type: String
+          requires :province_id, type: String
+          requires :city, type: String
+          requires :city_id, type: String
+          requires :district, type: String
+          requires :district_id, type: String
+          requires :tenant, type: String
+          requires :tenant_uid, type: String
+          requires :grade, type: String
+          requires :grade_uid, type: String
+          requires :klass, type: String
+          requires :klass_uid, type: String
+          requires :name, type: String
+          requires :id, type: String
+          requires :gender, type: String
+          requires :student_number, type: String
+        end
+        optional :result, type: Array do 
+          requires :qzp_uid, type: String
+          requires :order, type: Integer
+          requires :full_score, type: String
+          requires :real_score, type: String
+        end
+      end
+      post :rc_import_results do
+        begin
+          bank_test = Mongodb::BankTest.where(_id: params[:basic][:test_id]).first
+          if bank_test.present?
+            rc_test_user_house = Mongodb::RcTestUserHouse.new()
+            rc_test_user_house.save_ins params
+            Mongodb::BankTestScore.save_all_qzp(params[:result], rc_test_user_house._id.to_s)
+            message_json("i00000")
+          else
+            error!(message_json_data("e40000",{error_message: "测试不存在"}),404)
+          end
+        rescue Exception => ex
+          error!(message_json_data("e40000",{error_message: ex.message}),500)
+          return
+        end
+      end
+
+
       #获取某个指标的试题
       desc "paper_quiz_ckps"
       params do
@@ -189,7 +237,7 @@ module ApiV12Tests
                 end
               }
             }
-            success_message_json("i00000",{test_list: test_list.uniq})
+            message_json_data("i00000",{test_list: test_list.uniq})
           else
             message_json("e44404",404)
           end
@@ -241,7 +289,7 @@ module ApiV12Tests
           end
           incorrect_info["incorrect_item"] = incorrect_item
           # corectly_list.flatten!
-          success_message_json("i00000",{collection: incorrect_info})
+          message_json_data("i00000",{collection: incorrect_info})
         rescue Exception => e
           Rails.logger.info e.backtrace.inspect
           message_json("e50000",500)

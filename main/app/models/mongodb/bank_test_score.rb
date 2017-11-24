@@ -24,6 +24,7 @@ class Mongodb::BankTestScore
   field :wx_user_id, type: String
   ###
 
+  field :rc_test_user_house_id
   field :pap_uid, type: String
   field :qzp_uid, type: String
   field :order, type: String
@@ -37,5 +38,24 @@ class Mongodb::BankTestScore
   index({dt_update:-1},{background: true})
   index({test_id: 1, pup_uid: 1}, {background: true})
 
+  class << self
+    def save_all_qzp qzps, rc_user_id
+      qzps.each do |params|
+        test_score = self.new
+        params.merge({:rc_test_user_house_id => rc_user_id})
+        test_score.save_ins(params.to_hash)
+      end      
+    end
+  end
+
+  def save_ins params
+    self.pap_uid = params[:pap_uid] if params[:pap_uid].present?
+    self.qzp_uid = params[:qzp_uid] if params[:qzp_uid].present?
+    self.order = params[:order] if params[:order].present?
+    self.real_score = params[:real_score] if params[:real_score].present?
+    self.full_score = params[:full_score] if params[:full_score].present?
+    self.rc_test_user_house_id = params[:rc_user_id] if params[:rc_user_id].present?
+    self.save!
+  end
 end
 
