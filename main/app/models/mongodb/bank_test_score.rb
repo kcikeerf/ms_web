@@ -42,8 +42,8 @@ class Mongodb::BankTestScore
     def save_all_qzp qzps, rc_user_id
       qzps.each do |params|
         test_score = self.new
-        params.merge({:rc_test_user_house_id => rc_user_id})
-        test_score.save_ins(params.to_hash)
+        params = params.merge({:rc_test_user_house_id => rc_user_id})
+        test_score.save_ins(params.to_hash.deep_symbolize_keys)
       end      
     end
   end
@@ -54,7 +54,7 @@ class Mongodb::BankTestScore
     self.order = params[:order] if params[:order].present?
     self.real_score = params[:real_score] if params[:real_score].present?
     self.full_score = params[:full_score] if params[:full_score].present?
-    self.rc_test_user_house_id = params[:rc_user_id] if params[:rc_user_id].present?
+    self.rc_test_user_house_id = params[:rc_test_user_house_id] if params[:rc_test_user_house_id].present?
     self.save!
   end
 end

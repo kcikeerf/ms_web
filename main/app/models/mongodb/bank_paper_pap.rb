@@ -2152,7 +2152,7 @@ class Mongodb::BankPaperPap
       file_path = ""
       file_name = ""
       category = Common::Grade.judge_xue_duan self.grade
-      bank_subject_checkpoint_ckps = BankSubjectCheckpointCkp.where(checkpoint_system_rid: self.checkpoint_system_rid,subject: self.subject,category: category).order("rid ASC")
+      bank_subject_checkpoint_ckps = BankSubjectCheckpointCkp.with_deleted.where(checkpoint_system_rid: self.checkpoint_system_rid,subject: self.subject,category: category).order("rid ASC")
       ckp_hash = {}
       if export_type == "xlsx"
         bank_subject_checkpoint_ckps.each do |ckp|

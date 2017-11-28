@@ -22,7 +22,7 @@ GIT
       rubyzip (~> 1.2)
 
 GEM
-  remote: https://ruby.taobao.org/
+  remote: https://gems.ruby-china.org/
   specs:
     actionmailer (4.2.0)
       actionpack (= 4.2.0)
@@ -75,6 +75,9 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    acts_as_paranoid (0.5.0)
+      activerecord (>= 4.0, < 5.1)
+      activesupport (>= 4.0, < 5.1)
     aliyun-sdk (0.3.7)
       nokogiri (~> 1.6)
       rest-client (~> 1.8)
@@ -380,6 +383,7 @@ PLATFORMS
 DEPENDENCIES
   actionpack-action_caching
   activeadmin (~> 1.0.0.pre2)
+  acts_as_paranoid (~> 0.5.0)
   aliyun-sdk (~> 0.3.0)
   axlsx!
   cancancan

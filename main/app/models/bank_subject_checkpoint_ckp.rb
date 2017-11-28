@@ -1,4 +1,6 @@
 class BankSubjectCheckpointCkp < ActiveRecord::Base
+  acts_as_paranoid
+
   self.primary_key = 'uid'
 
   #concerns
@@ -49,15 +51,15 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       end
       case params["accuracy"]
       when "exact"
-        base_ckp = where(uid: params["knowledge_uid"]).first
+        base_ckp = self.with_deleted.where(uid: params["knowledge_uid"]).first
         return "e45001",false if base_ckp.blank?
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_ckp
       else
-        base_k_ckp = where(uid: params["knowledge_uid"]).first
+        base_k_ckp = self.with_deleted.where(uid: params["knowledge_uid"]).first
         return "e45001",false if base_k_ckp.blank? 
         base_ckp = base_k_ckp
-        base_ckp = where(uid: params["ability_uid"]).first if params["ability_uid"].present?
-        base_ckp = where(uid: params["skill_uid"]).first  if params["skill_uid"].present?
+        base_ckp = self.with_deleted.where(uid: params["ability_uid"]).first if params["ability_uid"].present?
+        base_ckp = self.with_deleted.where(uid: params["skill_uid"]).first  if params["skill_uid"].present?
         # return "e45001",false if base_ckp.blank? 
         quiz_uid_list = get_bank_quiz_qiz_id base_ckp, base_k_ckp
       end
@@ -83,7 +85,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     def get_bank_quiz_qiz_id base_ckp, base_k_ckp
       quiz_uid_list = []   
       child_uids = [base_ckp.uid] if base_ckp.is_entity
-      child_uids = base_ckp.children.where(is_entity: true).pluck(:uid) unless base_ckp.is_entity
+      child_uids = base_ckp.children.with_deleted.where(is_entity: true).pluck(:uid) unless base_ckp.is_entity
       qzp_list = Mongodb::BankCkpQzp.where({ckp_uid: {'$in'=> child_uids}}).map(&:qzp_uid).uniq.compact
       qzp_filter = {
         id: {'$in'=> qzp_list} 
@@ -124,7 +126,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
       nodes[:children] = []
 
       # node_structure = BankNodestructure.find(node_uid)
-      #all_nodes = node_structure.bank_subject_checkpoint_ckps.where(dimesion: dimesion)
+      #all_nodes = node_structure.bank_subject_checkpoint_ckps.with_deleted.where(dimesion: dimesion)
       target_subject, target_category = BankCheckpointCkp.get_subject_ckp_params params
       dim_all_nodes = self.where(:subject => target_subject, :category => target_category, :dimesion => dimesion,  :checkpoint_system_rid => checkpoint_system_rid)
       node_level_first = level_config.first
@@ -543,7 +545,7 @@ class BankSubjectCheckpointCkp < ActiveRecord::Base
     quiz_uid_list = []
     ckp_uid_arr = []
     if self.children.size > 0
-      ckp_uid_arr = children.where(is_entity: true).select(:uid).map(&:uid)
+      ckp_uid_arr = children.with_deleted.where(is_entity: true).select(:uid).map(&:uid)
     else
       ckp_uid_arr.push(self.uid)
     end

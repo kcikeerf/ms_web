@@ -45,7 +45,7 @@ class Mongodb::BankQizpointQzp
     ckps.each{|ckp|
       ckp_source = ckp.source_type.blank?? "BankCheckpointCkp":ckp.source_type
       ckp_klass = ckp_source.constantize
-      result_arr << ckp_klass.where(uid: ckp.ckp_uid).first
+      result_arr << ckp_klass.with_deleted.where(uid: ckp.ckp_uid).first
     }
     return result_arr
   end

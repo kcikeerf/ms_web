@@ -1,4 +1,4 @@
-source 'https://ruby.taobao.org'
+source 'https://gems.ruby-china.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -107,6 +107,13 @@ gem 'net-ssh', :github => "net-ssh/net-ssh"
 #ali oss
 gem 'aliyun-sdk', '~>0.3.0'
 
+# gem 'odyssey'
+
+# gem 'html_to_plain_text', '~> 1.0', '>= 1.0.5'
+
+# gem 'flesch_kincaid'
+
+gem 'acts_as_paranoid', '~> 0.5.0'
 # api gem
 gem 'grape'
 

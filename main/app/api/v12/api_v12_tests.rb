@@ -117,8 +117,8 @@ module ApiV12Tests
           bank_test = Mongodb::BankTest.where(_id: params[:basic][:test_id]).first
           if bank_test.present?
             rc_test_user_house = Mongodb::RcTestUserHouse.new()
-            rc_test_user_house.save_ins params
-            Mongodb::BankTestScore.save_all_qzp(params[:result], rc_test_user_house._id.to_s)
+            rc_test_user_house.save_ins params[:basic].to_hash.deep_symbolize_keys
+            Mongodb::BankTestScore.save_all_qzp(params[:result], rc_test_user_house._id)
             message_json("i00000")
           else
             error!(message_json_data("e40000",{error_message: "测试不存在"}),404)

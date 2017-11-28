@@ -6,7 +6,7 @@ $(function(){
             toolbar : [
                 { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Subscript', 'Superscript', 'SpecialChar', 'RemoveFormat'] },
                 { name: 'paragraph', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Undo', 'Redo'] },
-                { name: 'styles', items: ['Font', 'FontSize', 'lineheight', 'TextColor', 'BGColor', 'Source'] }
+                { name: 'styles', items: ['Font', 'FontSize', 'lineheight', 'TextColor', 'BGColor','-','base64image','-', 'Source'] }
             ],
             resize_enabled : false,
             allowedContent: true,
