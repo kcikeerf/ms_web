@@ -28,7 +28,7 @@ module ApiV12Tests
         unless Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + bank_test_uid
           bank_test = Mongodb::BankTest.where(_id: bank_test_uid).first
           if bank_test.present?
-            Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + bank_test_uid, bank_test.name
+            Common::SwtkRedis::set_key Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + bank_test_uid, [bank_test.name, bank_test.quiz_date.strftime('%Y-%m-%d')]
           end
         end
         return bank_test_uid, report_data
@@ -254,12 +254,12 @@ module ApiV12Tests
         begin
           not_included_quiz = %W{shu_mian_biao_da xie_zuo}
           time_day = Time.now.strftime('%Y/%m/%d')  
-          base = "/Users/shuai/workspace/tk_main/main"
+          # base = "/Users/shuai/workspace/tk_main/main"
           mistakes_list = []
           incorrect_info = {}
           params[:report_url_list].each {|_url|
-            _test, data = get_pupil_report_data (base+_url) #本地获取
-            # _test, data = get_pupil_report_data _url #服务器方式
+            # _test, data = get_pupil_report_data (base+_url) #本地获取
+            _test, data = get_pupil_report_data _url #服务器方式
             if data["paper_qzps"].present?
               incorrect_info["basic"] = data["basic"] 
               m_list, c_list = sort_quiz_with_answer data["paper_qzps"], _test
@@ -276,9 +276,13 @@ module ApiV12Tests
               if quiz_body.present? && !not_included_quiz.include?(quiz_body["quiz_cat"])
                 if Common::SwtkRedis::has_key? Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + quiz_bank_uids[1]
                   # quiz_body["test_name"] = bank_test.name
-                  quiz_body["bank_test_name"] = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + quiz_bank_uids[1]
+                  test_info = Common::SwtkRedis::get_value Common::SwtkRedis::Ns::Cache, "/cache/bank_test_name/" + quiz_bank_uids[1]
+                  test_info = eval(test_info)
+                  quiz_body["bank_test_name"] = test_info[0]
+                  quiz_body["bank_test_time"] = test_info[1]
                 else
                   quiz_body["bank_test_name"] = "由于时间太久，暂时不确定试题时哪次测试中的错题"
+                  quiz_body["bank_test_time"] = "-"
                 end
                 incorrect_item << quiz_body
               end
