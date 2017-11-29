@@ -34,7 +34,10 @@ module ApiV12Helper
     error!(message_json("e40004"), 404) unless target_user
     # target_user.create_user_auth_redis
     if target_user && target_user.tk_token.blank?
-      target_user.generate_token
+      target_user.tk_token = loop do
+        random_token = SecureRandom.urlsafe_base64(nil, false)
+        break random_token unless target_user.class.exists?(tk_token: random_token)
+      end
       target_user.save
     end
     target_user

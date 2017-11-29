@@ -125,7 +125,6 @@ module ApiV12Tests
           end
         rescue Exception => ex
           error!(message_json_data("e40000",{error_message: ex.message}),500)
-          return
         end
       end
 
@@ -203,46 +202,33 @@ module ApiV12Tests
       end
       post :download_able_list do
         user = current_user
-        if user.children.size > 0
-
-          children = user.children
-          pupil_users = []
-          children.each {|c| 
-            pupil_users << c if c.is_pupil?
-          }
-          if pupil_users.size > 0
-            test_list = []
-            pupil_users.each { |u|
-              # pupil = u.role_obj
-              # p u
-              bank_tests = u.bank_tests
-              bank_tests.each {|b_test|
-                _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(u)
-                rpt_type = _rpt_type || Common::Report::Group::Project
-                rpt_id = (_rpt_type == Common::Report::Group::Project)? b_test._id.to_s : _rpt_id
-                report_url = Common::Report::get_test_report_url(b_test._id.to_s, rpt_type, rpt_id)
-                if b_test.quiz_type == "xy_default"
-                  if report_url.present?
-                    target_pap = b_test.bank_paper_pap
-                    if target_pap.present?
-                      test_list << {
-                        uid: b_test._id.to_s,
-                        name: b_test.name,
-                        report_url: report_url,
-                        subject: target_pap.subject,
-                        subject_cn: Common::Locale::i18n("dict.#{target_pap.subject}")
-                      }
-                    end
-                  end
+        if user.is_pupil?
+          test_list = []
+          bank_tests = user.bank_tests
+          bank_tests.each {|b_test|
+            _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(user)
+            rpt_type = _rpt_type || Common::Report::Group::Project
+            rpt_id = (_rpt_type == Common::Report::Group::Project)? b_test._id.to_s : _rpt_id
+            report_url = Common::Report::get_test_report_url(b_test._id.to_s, rpt_type, rpt_id)
+            if b_test.quiz_type == "xy_default"
+              if report_url.present?
+                target_pap = b_test.bank_paper_pap
+                if target_pap.present?
+                  test_list << {
+                    uid: b_test._id.to_s,
+                    name: b_test.name,
+                    report_url: report_url,
+                    subject: target_pap.subject,
+                    subject_cn: Common::Locale::i18n("dict.#{target_pap.subject}"),
+                    user_name: user.role_obj.present? ? user.role_obj.name : "--"
+                  }
                 end
-              }
-            }
-            message_json_data("i00000",{test_list: test_list.uniq})
-          else
-            message_json("e44404",404)
-          end
+              end
+            end
+          }
+          message_json_data("i00000",{test_list: test_list.uniq})
         else
-          message_json("e44404",500)
+          error!(message_json("e44404"),404)
         end
       end
 
@@ -296,7 +282,7 @@ module ApiV12Tests
           message_json_data("i00000",{collection: incorrect_info})
         rescue Exception => e
           Rails.logger.info e.backtrace.inspect
-          message_json("e50000",500)
+          error!(message_json("e50000"),500)
         end
       end
     end

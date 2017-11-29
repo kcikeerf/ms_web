@@ -9,9 +9,12 @@ class Role < ActiveRecord::Base
 
 
   def self.get_role_id(name)
-  	find_by(name: name).try(:id) || 0
+    role = where(name: name).first
+    unless role.present?
+      role = self.new(name: name)
+      role.save
+    end
+    role.try(:id)
   end
-
-
 
 end
