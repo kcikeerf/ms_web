@@ -1,5 +1,5 @@
 <% @page_title = t('page.user_left_menu.my_report') %>
-
+<!-- 学生角色进入时查看试卷列表 -->
 <section>
 	<div class="container clearfix">
 		<!-- Nav tabs -->
@@ -35,7 +35,7 @@
                                   <tr>
 									  <td class="text-left">
 
-
+<!-- 查看报告链接需要删除 -->
 <% if ["report_completed"].include?(paper.paper_status) %>
 	<% if !paper.bank_tests[0] || paper.bank_tests[0].report_version.blank? %>					
 						<%= link_to paper.heading, new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>

@@ -216,7 +216,7 @@ class PapersController < ApplicationController
     end
   end
 
-  #下载试卷的相关文件
+  #下载试卷的相关文件 已迁移
   def download
     type = params[:type]
     return render nothing: true unless %w{paper answer revise_paper revise_answer empty_file empty_result filled_file usr_pwd_file}.include?(type)
@@ -251,6 +251,7 @@ class PapersController < ApplicationController
       if @paper.score_file_id
         file = ScoreUpload.find(@paper.score_file_id) 
       else
+        #下载的相关方法已经迁移在bank_test中了
         file = @paper.bank_tests[0].score_uploads.by_tenant_uid(params[:tenant_uid]).first
       end
     elsif %w{paper answer revise_paper revise_answer empty_result}.include?(type)
@@ -350,6 +351,7 @@ class PapersController < ApplicationController
   #   render layout: false
   # end
 
+  #已迁移
   def import_filled_result
     # params.permit!
 
@@ -405,6 +407,7 @@ class PapersController < ApplicationController
 
     params.permit!
     if request.post?
+      #方法已迁移到学科测试中
       raise SwtkErrors::ParameterInvalidError.new(Common::Locale::i18n("swtk_errors.parameter_invalid_error", :message => "no file")) if params[:file].blank?
       params[:test_id] = @paper.bank_tests[0].nil?? "" : @paper.bank_tests[0].id.to_s
       score_file = Common::Score.upload_filled_result(params)

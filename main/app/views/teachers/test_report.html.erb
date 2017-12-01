@@ -1,5 +1,5 @@
 <% @page_title = t('page.user_left_menu.my_report') %>
-
+<!-- 老师查看报告的列表 -->
 <section>
 	<div class="container clearfix">
 		<!-- Nav tabs -->
@@ -34,6 +34,7 @@
 							  <% @papers.each do |paper| %>
 							  <tr>
 								  <td class="text-left">
+								  	<!-- 老师的查看报告入口也需要修改 -->
 <% if ["report_completed"].include?(paper.paper_status) %>
 	<% if !paper.bank_tests[0] || paper.bank_tests[0].report_version.blank? %>					
 						<%= link_to paper.heading, new_square_reports_path(pap_uid: paper.id), class: 'viewreport' if paper.is_completed? %>

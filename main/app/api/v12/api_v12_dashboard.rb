@@ -24,8 +24,8 @@ module ApiV12Dashboard
           lastest_data["school"] = []
           path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/"
           top_group = bank_test.report_top_group.blank? ? "project" : bank_test.report_top_group
-          optional_file = Dir[path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
-          # optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"]
+          optional_file = Dir[path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"] #服务器
+          # optional_file = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/*optional_abstract.json"] #本地
           optional_file.each do |op|
 
             target_report_data = File.open(op, 'rb').read
@@ -72,8 +72,8 @@ module ApiV12Dashboard
           end
           lastest_data["school"].sort! {|p1,p2| p2["basic"]["school_uid"] <=> p1["basic"]["school_uid"]}
           if lastest_data["basic"].present?
-            area_report = Dir[path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"]
-            # area_report = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"]
+            area_report = Dir[path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"] #服务器
+            # area_report = Dir[Dir::pwd + path + bank_test._id.to_s + '/' + top_group + "/" + bank_test._id.to_s + ".json"] #本地
             area_report.each do |ar|
               area_report_data = File.open(ar, 'rb').read
               area_json_data = JSON.parse(area_report_data)
@@ -91,17 +91,17 @@ module ApiV12Dashboard
         union_test = Mongodb::UnionTest.where(_id: union_test_id).first
         result = {}
         if union_test
-          bank_papers = union_test.bank_paper_paps
+          bank_papers = union_test.bank_tests
           result["basic"] = { :bank_union_test_uid => union_test_id }
-          bank_papers.each { |pap|
+          bank_tests.each { |bank_test|
+            pap = bank_test.bank_paper_pap
             subject_en = Common::Subject.get_subject_en pap.subject
-            bank_test = pap.bank_tests[0]
+            # bank_test = pap.bank_tests[0]
             test_id = bank_test.id.to_s
             test_ext_data_path = bank_test.ext_data_path
             report_detail = get_test_detail_datagrid xue_duan, pap.subject, test_id
             result[subject_en] = report_detail
             result[subject_en]["basic"]["test_ext_data_path"] = test_ext_data_path
-
           }
         end
         return result   
@@ -121,28 +121,31 @@ module ApiV12Dashboard
         doorkeeper_authorize!
         # authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
-
+      #获取局长的报告内容
       params do
       end
       post :get_overall_info do
         target_user = current_user
         target_tenant_ids = target_user.accessable_tenants.map(&:uid).uniq.compact
         target_test_ids = Mongodb::BankTestTenantLink.where(tenant_uid: {"$in" => target_tenant_ids} ).map(&:bank_test_id).uniq.compact
-        target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
-        target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids}, paper_status: "report_completed").only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score, :grade, :union_test_id)
-        target_papers.compact!
-        target_papers.uniq!
+        target_tests = Mongodb::BankTest.where(_id: {"$in" => target_test_ids}).where(test_status: "report_completed")
+        # target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
+        # target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids}, paper_status: "report_completed").only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score, :grade, :union_test_id)
+        # target_papers.compact!
+        # target_papers.uniq!
         begin          
-          unless target_papers.blank?
+          # unless target_papers.blank?
             _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
             paper_info_array = []
-            target_papers.each {|target_pap|
-              bank_test = target_pap.bank_tests[0]
-              test_id = bank_test.id.to_s
-              test_ext_data_path = target_pap.bank_tests[0].ext_data_path
+            target_tests.each {|bank_test|
+              # bank_test = target_pap.bank_tests[0]
+              test_id = bank_test._id.to_s
+              test_ext_data_path = bank_test.ext_data_path
               rpt_type = _rpt_type || Common::Report::Group::Project
               rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
               report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)
+              target_pap = bank_test.bank_paper_pap
+              next if target_pap.blank?
               paper_info_hash = {
                 :paper_uid => target_pap.id.to_s,
                 :quiz_date => target_pap.quiz_date.strftime('%Y/%m/%d'),
@@ -152,7 +155,7 @@ module ApiV12Dashboard
                 :score => target_pap.score,
                 :test_ext_data_path => test_ext_data_path,
                 :test_id => test_id,
-                :union_test_uid => target_pap.union_test_id.to_s,
+                :union_test_uid => bank_test.union_test_id.to_s,
                 :paper_heading => target_pap.heading,
                 :subject => target_pap.subject,
                 :subject_cn => Common::Locale::i18n("dict.#{target_pap.subject}")
@@ -160,12 +163,12 @@ module ApiV12Dashboard
               bank_test_state = bank_test.bank_test_state
               stats =  {}
               stats = {
-                  total: bank_test_state.total_num,
-                  project: bank_test_state.project_num,
-                  grade: bank_test_state.grade_num,
-                  klass: bank_test_state.klass_num,
-                  pupil: bank_test_state.pupil_num
-              } if bank_test_state
+                  total: bank_test_state.total_num || 0,
+                  project: bank_test_state.project_num || 0,
+                  grade: bank_test_state.grade_num || 0,
+                  klass: bank_test_state.klass_num || 0,
+                  pupil: bank_test_state.pupil_num || 0
+              }
               paper_info_hash[:xue_duan] = Common::Grade.judge_xue_duan target_pap.grade if target_pap.grade
               paper_info_hash[:xue_duan_cn] = Common::Locale::i18n("checkpoints.subject.category.#{ Common::Grade.judge_xue_duan target_pap.grade }") if target_pap.grade
               paper_info_hash[:stats] = stats
@@ -272,7 +275,7 @@ module ApiV12Dashboard
               end
             } 
             result
-          end
+          # end
         rescue Exception => e
           p e.backtrace
           error!({code: "e40003", message: I18n.t("api.#{'e40003'}", message: e.message)}, 500)

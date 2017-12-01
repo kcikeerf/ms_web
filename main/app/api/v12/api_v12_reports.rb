@@ -103,24 +103,32 @@ module ApiV12Reports
       post :list do
         target_user = current_user
         if target_user.is_pupil? || target_user.is_teacher? || target_user.is_analyzer? 
-          target_papers = target_user.role_obj.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
+          target_tests = target_user.bank_tests
+          # target_papers = target_user.role_obj.papers.only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         elsif target_user.is_tenant_administrator? || target_user.is_project_administrator? || target_user.is_area_administrator?
           target_tenant_ids = target_user.accessable_tenants.map(&:uid).uniq.compact
           target_test_ids = Mongodb::BankTestTenantLink.where(tenant_uid: {"$in" => target_tenant_ids} ).map(&:bank_test_id).uniq.compact
-          target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
-          target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids} ).only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
+          target_tests = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).where(test_status: "report_completed")
+          # target_pap_ids = Mongodb::BankTest.where(id: {"$in" => target_test_ids} ).map(&:bank_paper_pap_id).uniq.compact
+          # target_papers = Mongodb::BankPaperPap.where(id: {"$in" => target_pap_ids} ).only(:id,:heading,:paper_status,:subject,:quiz_type,:quiz_date,:score)
         else
-          target_papers = []          
+          # target_papers = []
+          target_tests = []          
         end
-        target_papers.compact!
-        target_papers.uniq!
+        # target_papers.compact!
+        # target_papers.uniq!
+        target_tests = target_tests.compact
+        target_tests = target_tests.uniq
 
-        unless target_papers.blank?
+        # unless target_papers.blank?
+        unless target_tests.blank?
           _rpt_type, _rpt_id = Common::Uzer::get_user_report_type_and_id_by_role(target_user)
 
-          target_papers.map{|target_pap|
+          # target_papers.map{|target_pap|
+          target_tests.map {|bank_test|
+            target_pap = bank_test.bank_paper_pap
             next unless target_pap
-            next if target_pap.paper_status != Common::Paper::Status::ReportCompleted
+            # next if target_pap.paper_status != Common::Paper::Status::ReportCompleted
             if target_pap.bank_tests.blank? #兼容旧，适时删除掉
               if target_user.is_pupil? 
                 target_report = Mongodb::PupilReport.where(pup_uid: target_user.role_obj.uid).first
@@ -140,8 +148,10 @@ module ApiV12Reports
                 }
               end
             else
-              test_id = target_pap.bank_tests[0].id.to_s
-              test_ext_data_path = target_pap.bank_tests[0].ext_data_path
+              # test_id = target_pap.bank_tests[0].id.to_s
+              # test_ext_data_path = target_pap.bank_tests[0].ext_data_path
+              test_id = bank_test.id.to_s
+              test_ext_data_path = bank_test.ext_data_path
               rpt_type = _rpt_type || Common::Report::Group::Project
               rpt_id = (_rpt_type == Common::Report::Group::Project)? test_id : _rpt_id
               report_url = Common::Report::get_test_report_url(test_id, rpt_type, rpt_id)

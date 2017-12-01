@@ -4,9 +4,45 @@ require 'ox'
 require 'roo'
 require 'axlsx'
 require 'find'
+require "thwait"
+
 
 namespace :swtk_patch do
   namespace :v1_2 do
+
+    def migrate_test_user paper_uids
+      paper_uids.each do |paper_id|
+        p paper_id
+        paper = Mongodb::BankPaperPap.where(_id: paper_id).first
+        if paper.present?
+          bank_test = paper.bank_tests[0] 
+          if bank_test.present?
+            test_name = paper.heading.to_s + "_测试"
+            bank_test.update(test_status: "report_completed",name: test_name)
+            paper.bank_pup_paps.each do |pup_pap|
+              user = pup_pap.pupil.user if pup_pap.pupil
+              if user.present?
+                bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+                unless bank_test_user.present?            
+                  bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+                end
+                bank_test_user.save!
+              end
+            end
+            paper.bank_tea_paps.each do |tea_pap|
+              user = tea_pap.teacher.user if tea_pap.teacher
+              if user.present?
+                bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+                unless bank_test_user.present?            
+                  bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+                end
+                bank_test_user.save!
+              end
+            end
+          end
+        end 
+      end     
+    end
 
     desc "get wechat openid excel"
     task get_wechat_openid_excel: :environment do      
@@ -155,37 +191,15 @@ namespace :swtk_patch do
 
     desc "migrate paper pupil teacher to bank_test"
     task migrate_paper_pupil_teacher_to_bank_test: :environment do
-      Mongodb::BankPaperPap.all.order("dt_update DESC").each_with_index do |paper, index|
-        bank_test = paper.bank_tests[0] if paper
-        p paper._id
-        p "================#{index}==============="
-        if bank_test.present?
-          test_name = paper.heading.to_s + "_测试"
-          bank_test.update(test_status: "report_completed",name: test_name)
-          paper.bank_pup_paps.each do |pup_pap|
-            user = pup_pap.pupil.user if pup_pap.pupil
-            if user.present?
-              bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
-              unless bank_test_user.present?            
-                p "-------------new pupil-----------------" 
-                bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
-              end
-              bank_test_user.save!
-            end
-          end
-          paper.bank_tea_paps.each do |tea_pap|
-            user = tea_pap.teacher.user if tea_pap.teacher
-            if user.present?
-              bank_test_user = Mongodb::BankTestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
-              unless bank_test_user.present?            
-                p "-------------new teacher-----------------" 
-                bank_test_user = Mongodb::BankTestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
-              end
-              bank_test_user.save!
-            end
-          end
+      pap_uids = Mongodb::BankPaperPap.all.order("dt_update DESC").map {|pap| pap._id.to_s}
+      pap_uids_list = pap_uids.each_slice(10).to_a
+      threads = []
+      pap_uids_list.each do |paper_uids|
+        threads << Thread.new do
+          migrate_test_user(paper_uids)
         end
       end
+      ThreadsWait.all_waits(*threads)
     end
 
     desc "增加测试的状态 从试卷获取状态信息"
