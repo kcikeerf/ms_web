@@ -252,6 +252,31 @@ module ApiV12Users
         end
       end
 
+      desc '二维码绑定用户'
+      params do
+        requires :test_id, type: String
+        requires :code, type: String
+      end
+      post :code_bind do
+        identity_mapping = IdentityMapping.where(test_id: params[:test_id],code: params[:code]).first
+        if identity_mapping
+          if identity_mapping.expire_date > Time.now
+            target_user = User.find(identity_mapping.user_id)
+            code, status = current_user.slave_user(target_user)
+          else
+            code, status = "e41104", 500
+          end
+        else
+          code, status = "e41105", 500
+        end
+
+        if [200,201].include?(status)
+          result = message_json(code)
+        else
+          error!(message_json(code), status)
+        end  
+      end
+
       desc '解绑子用户账号信息'
       params do
         requires :user_names, type: Array

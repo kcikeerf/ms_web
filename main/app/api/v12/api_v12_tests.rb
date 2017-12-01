@@ -62,6 +62,61 @@ module ApiV12Tests
         authenticate_api_permission current_user.id, request.request_method, request.fullpath
       end
 
+      desc "创建测试"
+      params do
+        requires :name, type: String
+        requires :start_date, type: String
+        requires :quiz_date, type: String
+        requires :paper_uid, type: String
+        requires :test_type, type: String
+        requires :id, type: String
+      end
+      post :create_test do
+        current_test = Mongodb::BankTest.new
+
+        begin
+          params[:user_id] = current_user.id
+          current_test.save_test params
+        rescue Exception => ex
+          error!(message_json_data("e50000",{error_message: ex.message}),500)
+        end
+
+      end
+
+      desc "学校状态回退"
+      params do
+        requires :test_uid, type: String
+        requires :tenant_uid, type: String 
+      end
+      get :rollback_tenant do
+        begin
+          bank_test = Mongodb::BankTest.where(id: params[:test_uid]).first
+          bank_test.rollback_tenant params[:tenant_uid]
+        rescue Exception => ex
+          error!(message_json_data("e50000",{error_message: ex.message}),500)
+        end
+      end
+
+      desc "忽略该学校"
+      params do
+        requires :test_uid, type: String
+        requires :tenant_uid, type: String 
+      end
+      get :ignore_tenant do
+        begin
+          bank_test = Mongodb::BankTest.where(id: params[:test_uid]).first
+          bank_test.ignore_tenant params[:tenant_uid]
+        rescue Exception => ex
+          error!(message_json_data("e50000",{error_message: ex.message}),500)
+        end
+      end
+
+      desc "获取当前用户已经三维解析完成的试卷"
+      params do
+      end
+      get :get_pap do
+        papers = Mongodb::BankPaperPap.get_list_api current_user.id
+      end
 
       desc '"试卷指标题mapping" post /api/v1.2/tests/paper_ckps_qzps_mapping' # submit_analyze begin
       params do

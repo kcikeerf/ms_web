@@ -78,23 +78,41 @@
 						<% end %>
 					</td>
 					<td>
-						<% if [Common::Test::Status::ScoreImported].include?(t[:tenant_status]) %>
-							<div style="font-size: 10px;">
+						<% case t[:tenant_status]%>
+						<% when Common::Test::Status::ScoreImported,Common::Test::Status::ScoreImporting %>
+							<div style="font-size: 10px;" class="download_button">
 								<a href="javascript:;" 
 									geturl="/bank_tests/download_page?type=imported_score&tenant_uid=<%= t[:tenant_uid] %>" 
 									class="download_link link_grade" 
 									style="font-size: 14px;">
 								学生成绩表下载</a>
 							</div>
-							<div style="font-size: 10px;">
+							<div style="font-size: 10px;" class="download_button">
 								<a href="javascript:;" 
 									geturl="/bank_tests/download_page?type=user_password_reporturl&tenant_uid=<%= t[:tenant_uid]%>" 
 									class="download_link link_user"
 									style="font-size: 14px;">
 								用户名、密码、报告链接汇总表下载</a>
 							</div>
-						<% elsif [Common::Test::Status::Analyzed,Common::Test::Status::New].include?(t[:tenant_status]) %>
-							<div style="float: left;">
+							<div style="font-size: 10px" class="tenant_state_update">
+								<button type="button" 
+									class="btn btn-default btn-xs" 
+									geturl="/api/v1.2/tests/rollback_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
+									href="javascript:;">
+									状态回退
+								</button>
+							</div>
+						<% when Common::Test::Status::Ignore %>
+							<div style="font-size: 10px" class="tenant_state_update">
+								<button type="button" 
+									class="btn btn-default btn-xs" 
+									geturl="/api/v1.2/tests/rollback_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
+									href="javascript:;">
+									状态回退
+								</button>
+							</div>
+						<% else %>
+							<div style="float: left;" class="download_button">
 								<button type="button" 
 										class="btn btn-default btn-xs" 
 										geturl="/bank_tests/import_filled_result?tenant_uid=<%= t[:tenant_uid] %>" 
@@ -102,9 +120,15 @@
 								导入成绩表
 								</button>
 							</div>
-							<div style="float: left; width: 20px;display: block;">&nbsp;
+							<div style="float: left; width: 20px;display: block;" class="tenant_state_update">
+								<button type="button" 
+									class="btn btn-default btn-xs" 
+									geturl="/api/v1.2/tests/ignore_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
+									href="javascript:;">
+									忽略该学校
+								</button>
 							</div>
-						<% end %>
+						<% end %>	 
 					</td>
 				</tr>
 			<% end if @bank_test%>

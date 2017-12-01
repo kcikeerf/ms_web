@@ -16,6 +16,7 @@ module TestModule
         
     module Status
       None = "none"
+      Ignore = "ignore"
       New = "new"     
       NotStarted = "not_started"
       NoScore = "no_score"

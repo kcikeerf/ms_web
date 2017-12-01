@@ -142,10 +142,10 @@ $(document).on('ready page:load', function (){
   $(document).on("click","#select_paper",function(){
     $(".paper_list").html('');
     $.ajax({
-      url: '/bank_tests/get_pap_api',
-      type: 'post',
+      url: '/api/v1.2/tests/get_pap',
+      type: 'get',
       data: {
-        authenticity_token: $('meta[name="csrf-token"]')[0].content,
+        access_token: getCookie('access_token'),
       },
       success: function(rs){
         var paper_html = "";
@@ -159,7 +159,7 @@ $(document).on('ready page:load', function (){
         $(".paper_list").html(paper_html);
       },
       error: function(rs){
-
+        error(rs)
       }
     })
     $("#paper_list").modal("show")
@@ -208,7 +208,7 @@ $(document).on('ready page:load', function (){
 
   //下载链接点击
   var modalLastUrl = ""
-  $(".download_link, .load_list, .download_list, .tenant_result_list button").on("click",function(){
+  $(".download_link, .load_list, .download_list, .tenant_result_list .download_button button").on("click",function(){
       var getUrl = $(this).attr("geturl") || "",
         parame = getUrl.indexOf("?") < 0 ? "?test_uid="+test_uid : "&test_uid="+test_uid;
       if(modalLastUrl != (getUrl+parame)&& modalLastUrl != "" ){
@@ -217,6 +217,28 @@ $(document).on('ready page:load', function (){
       modalLastUrl = getUrl+parame;
       $("#commonDialog").modal({remote: modalLastUrl},"show");
       // console.log(modalLastUrl)
+  });
+
+  //学校状态更改：状态回退，忽略学校
+  $(".tenant_state_update button").on("click",function(){
+    var url = $(this).attr("geturl")
+    if(url){
+      $.ajax({
+        url: url,
+        type: 'get',
+        data: {
+          access_token: getCookie('access_token'),
+        },
+        success: function(rs){
+          setTimeout(function(){
+            location.reload();
+          },1000);
+        },
+        error: function(rs){
+          error(rs)
+        }
+      })
+    }
   });
 
   //生成报告
@@ -254,3 +276,17 @@ $(document).on('ready page:load', function (){
     });
   });
 });
+
+function error(rs){
+  switch(rs.status){
+    case 401:
+    case 403:
+      alert('token无效，请重新登录')
+      break;
+    case 404:
+      break;
+    case 500:
+      alert(rs.error_message)
+      break;
+  }
+}

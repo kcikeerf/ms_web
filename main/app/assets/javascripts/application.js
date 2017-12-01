@@ -73,7 +73,7 @@ function refreshToken(){
         // dataType: 'json',
         async:true,
         success:function(data){
-          setCookie('user_token',data.access_token,1);
+          setCookie('access_token',data.access_token,1);
           setCookie('refresh_token',data.refresh_token,1);
         },
         error:function(data){

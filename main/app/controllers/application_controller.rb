@@ -123,7 +123,7 @@ class ApplicationController < ActionController::Base
       else
         user_token_session = current_user.fresh_access_token
       end
-      cookies[:user_token] = user_token_session[:access_token]
+      cookies[:access_token] = user_token_session[:access_token]
       cookies[:refresh_token] = user_token_session[:refresh_token]
     end
     @url_after_login = root_path

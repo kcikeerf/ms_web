@@ -164,7 +164,7 @@
       alert('请填写测试名称')
     }
     $.ajax({
-      url: '/bank_tests/create_test',
+      url: '/api/v1.2/tests/create_test',
       type: 'post',
       data: {
         name: $('#test_name').val(),
@@ -172,14 +172,14 @@
         quiz_date: $('#quiz_date').val(),
         paper_uid: paper_uid,
         test_type: test_type,
-        authenticity_token: $('meta[name="csrf-token"]')[0].content,
+        access_token: getCookie('access_token'),
         id: '<%= @union_test._id %>',
       },
       success: function(){
         window.location.href= '/union_tests/<%= @union_test._id %>'
       },
       error: function(rs){
-        alert(rs.responseJSON.messages)
+        error(rs)
       }
     })
   });

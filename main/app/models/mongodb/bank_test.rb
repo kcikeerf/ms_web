@@ -333,6 +333,8 @@ class Mongodb::BankTest
       if [Common::Test::Status::New].include?(self.test_status)
         return false
       else
+        #删除身份验证表
+        IdentityMapping.where(test_id: self.id.to_s).destroy_all
         #删除报告文件
         # del_report_file
         #去除资源锁
@@ -367,7 +369,7 @@ class Mongodb::BankTest
 
   #删除报告文件
   def del_report_file
-    _report_warehouse_path = Dir::pwd + Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + self._id.to_s
+    _report_warehouse_path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + self._id.to_s
     FileUtils.rm_rf(_report_warehouse_path)
   end
 
@@ -376,6 +378,35 @@ class Mongodb::BankTest
     Common::TkLock::force_release_lock_paper_test_qzp_ckp self.id
   end
 
+  #回退单个学校
+  def rollback_tenant tenant_uid
+    tenant_link = Mongodb::BankTestTenantLink.where(bank_test_id: self.id,tenant_uid: tenant_uid).first
+    tenant_link.update(tenant_status: Common::Test::Status::New)
+    if self.test_status == Common::Test::Status::ScoreImported
+      self.update(test_status: Common::Test::Status::ScoreImporting)
+    end 
+  end
+
+  #忽略单个学校
+  def ignore_tenant tenant_uid
+    tenant_link = Mongodb::BankTestTenantLink.where(bank_test_id: self.id,tenant_uid: tenant_uid).first
+    tenant_link.update(tenant_status: Common::Test::Status::Ignore)
+  end
+
+  #生成二维码
+  def create_rqrcode
+    file_path = Common::Report::WareHouse::ReportLocation + "reports_warehouse/tests/" + self._id.to_s + '/'
+    FileUtils.mkdir_p(file_path) unless File.exists?(file_path)  
+    file_name = self._id.to_s + '.png'
+    code_hash = {
+      test_id: self.id.to_s,
+      time: (Time.now + 30.days).strftime("%Y-%m-%d")
+    }
+    qrcode = RQRCode::QRCode.new(code_hash.to_json.to_s)
+    
+    qrcode.to_img.resize(400, 400).save(file_path + file_name)
+    return file_path + file_name
+  end
   #删除上传的成绩文件以及相关信息
   # def delete_score_uploads
   #   score_path = ""

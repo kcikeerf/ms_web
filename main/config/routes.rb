@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       get "del_test"
       get 'show_test'
       get "add_test"
+      get "get_rqrcode"
       post "create_test"
       post "get_pap_api"
     end

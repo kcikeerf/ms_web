@@ -7,6 +7,7 @@ class BankTestsController < ApplicationController
     :show_test,
     :download_page,
     :import_filled_result,
+    :get_rqrcode,
   ]
 
   #添加测试项目页面
@@ -34,6 +35,11 @@ class BankTestsController < ApplicationController
     end
   end
 
+  #下载二维码
+  def get_rqrcode
+    file_path = @bank_test.create_rqrcode
+    send_file file_path, filename: @bank_test.id.to_s + '.png'
+  end
 
   def del_test
     @bank_test.destroy
@@ -58,7 +64,7 @@ class BankTestsController < ApplicationController
     #根据关联学校的状态修改测试状态
     case @bank_test.test_status
     when Common::Test::Status::ScoreImporting
-      unless @bank_test.tenant_list.map{|a| a[:tenant_status] == Common::Test::Status::ScoreImported}.include?(false)
+      unless @bank_test.tenant_list.map{|a| [Common::Test::Status::ScoreImported,Common::Test::Status::Ignore].include?(a[:tenant_status])}.include?(false)
         @bank_test.update(test_status: Common::Test::Status::ScoreImported)
       end
     else
