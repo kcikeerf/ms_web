@@ -399,8 +399,7 @@ class Mongodb::BankTest
     FileUtils.mkdir_p(file_path) unless File.exists?(file_path)  
     file_name = self._id.to_s + '.png'
     code_hash = {
-      test_id: self.id.to_s,
-      time: (Time.now + 30.days).strftime("%Y-%m-%d")
+      test_id: self.id.to_s
     }
     qrcode = RQRCode::QRCode.new(code_hash.to_json.to_s)
     
