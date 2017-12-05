@@ -44,6 +44,61 @@ namespace :swtk_patch do
       end     
     end
 
+    def migrate_test_user_puls paper_uids
+      paper_uids.each do |paper_id|
+        p paper_id
+        paper = Mongodb::BankPaperPap.where(_id: paper_id).first
+        if paper.present?
+          bank_test = paper.bank_tests[0] 
+          if bank_test.present?
+            test_name = paper.heading.to_s + "_测试"
+            bank_test.update(test_status: "report_completed",name: test_name)
+            paper.bank_pup_paps.each do |pup_pap|
+              user = pup_pap.pupil.user if pup_pap.pupil
+              if user.present?
+                bank_test_user = TestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+                unless bank_test_user.present?            
+                  bank_test_user = TestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+                end
+                bank_test_user.save!
+              end
+            end
+            paper.bank_tea_paps.each do |tea_pap|
+              user = tea_pap.teacher.user if tea_pap.teacher
+              if user.present?
+                bank_test_user = TestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+                unless bank_test_user.present?            
+                  bank_test_user = TestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+                end
+                bank_test_user.save!
+              end
+            end
+          end
+        end 
+      end     
+    end
+
+    def migrate_mongodb_to_mysql test_ids
+      test_ids.each do |test_id|
+        p test_id
+        test_links = Mongodb::BankTestUserLink.where(bank_test_id: test_id)
+        test_links.each do |tlink|
+          tu_link = TestUserLink.where(:user_id => tlink.user_id, bank_test_id: tlink.bank_test_id).first
+          if tu_link.blank?
+            tu_link= TestUserLink.new            
+          end
+          tu_link.user_id = tlink.user_id
+          tu_link.bank_test_id = tlink.bank_test_id
+          tu_link.test_date = tlink.test_date
+          tu_link.test_duration = tlink.test_duration
+          tu_link.test_times = tlink.test_times
+          tu_link.test_status = tlink.test_status
+          tu_link.task_uid = tlink.task_uid
+          tu_link.save!          
+        end
+      end
+    end
+
     desc "get wechat openid excel"
     task get_wechat_openid_excel: :environment do      
       Axlsx::Package.new do |p|
@@ -199,6 +254,27 @@ namespace :swtk_patch do
           migrate_test_user(paper_uids)
         end
       end
+      ThreadsWait.all_waits(*threads)
+    end
+
+    desc "migrate_test_user_mongo_to_mysql"
+    task migrate_test_user_mongodb_to_mysql: :environment do
+      test_ids = Mongodb::BankTestUserLink.where({dt_add: nil}).collection.aggregate([{"$group" => {_id: "$bank_test_id"}}]).map {|t| t["_id"].to_s}
+      test_ids_list = test_ids.each_slice(10).to_a
+      threads = []
+      test_ids_list.each do |test_ids|
+        threads << Thread.new do
+          migrate_mongodb_to_mysql(test_ids)
+        end
+      end
+      pap_uids = Mongodb::BankPaperPap.all.order("dt_update DESC").map {|pap| pap._id.to_s}
+      pap_uids_list = pap_uids.each_slice(10).to_a
+      pap_uids_list.each do |paper_uids|
+        threads << Thread.new do
+          migrate_test_user_puls(paper_uids)
+        end
+      end
+
       ThreadsWait.all_waits(*threads)
     end
 

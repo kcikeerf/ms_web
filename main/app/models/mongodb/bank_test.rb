@@ -528,10 +528,14 @@ class Mongodb::BankTest
     Location.where(uid: loc_uids)
   end
 
-  def user_ids
-    bank_test_user_links.map(&:user_id)
+  def test_user_links
+    TestUserLink.where(bank_test_id: self._id.to_s)
   end
 
+  def user_ids
+    test_user_links.map(&:user_id)
+  end
+  
   def users
     User.where(id: user_ids)
   end

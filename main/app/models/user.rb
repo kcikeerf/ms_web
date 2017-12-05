@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   has_many :groups_as_child, :foreign_key => "parent_id", :class_name=>"UserLink"
   has_many :parents, :through=>:groups_as_parent
   has_many :children, :through=>:groups_as_child
+  has_many :bank_test_user_links, foreign_key: "user_id", class_name: "TestUserLink"
   scope :by_master, ->(val) { where(is_master: val) }
 
   before_create :set_role,:generate_token #, :check_existed?
@@ -353,8 +354,12 @@ class User < ActiveRecord::Base
     return rpt_type,rpt_id
   end
 
+  # def bank_tests
+  #   Mongodb::BankTestUserLink.by_user(self.id).map{|item| item.bank_test}.compact
+  # end
+
   def bank_tests
-    Mongodb::BankTestUserLink.by_user(self.id).map{|item| item.bank_test}.compact
+    bank_test_user_links.map {|item| item.bank_test}.compact.uniq
   end
 
   #当前用户绑定的用户列表
