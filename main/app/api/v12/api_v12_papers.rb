@@ -270,7 +270,7 @@ module ApiV12Papers
         # papers = Mongodb::BankPaperPap.get_list_plus params
         total_count = Mongodb::BankPaperPap.get_count params
         result = {total_count: total_count}
-        if papers
+        if total_count
           message_json_data("i00000", result)
         else
           error!(message_json("e40000"),500)
