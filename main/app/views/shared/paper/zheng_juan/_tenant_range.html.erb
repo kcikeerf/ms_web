@@ -94,23 +94,29 @@
 									style="font-size: 14px;">
 								用户名、密码、报告链接汇总表下载</a>
 							</div>
-							<div style="font-size: 10px" class="tenant_state_update">
-								<button type="button" 
-									class="btn btn-default btn-xs" 
-									geturl="/api/v1.2/tests/rollback_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
-									href="javascript:;">
-									状态回退
-								</button>
-							</div>
+							<% if [Common::Test::Status::ReportGenerating,Common::Test::Status::ReportCompleted].include?(@bank_test.test_status)%>
+							<% else %>
+								<div style="font-size: 10px" class="tenant_state_update">
+									<button type="button" 
+										class="btn btn-default btn-xs" 
+										geturl="/api/v1.2/tests/rollback_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
+										href="javascript:;">
+										状态回退
+									</button>
+								</div>
+							<% end %>
 						<% when Common::Test::Status::Ignore %>
-							<div style="font-size: 10px" class="tenant_state_update">
-								<button type="button" 
-									class="btn btn-default btn-xs" 
-									geturl="/api/v1.2/tests/rollback_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
-									href="javascript:;">
-									状态回退
-								</button>
-							</div>
+							<% if [Common::Test::Status::ReportGenerating,Common::Test::Status::ReportCompleted].include?(@bank_test.test_status)%>
+							<% else %>
+								<div style="font-size: 10px" class="tenant_state_update">
+									<button type="button" 
+										class="btn btn-default btn-xs" 
+										geturl="/api/v1.2/tests/rollback_tenant?test_uid=<%= @bank_test.id%>&tenant_uid=<%= t[:tenant_uid] %>" 
+										href="javascript:;">
+										状态回退
+									</button>
+								</div>
+							<% end %>
 						<% else %>
 							<div style="float: left;" class="download_button">
 								<button type="button" 
