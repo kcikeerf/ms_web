@@ -87,8 +87,21 @@ class BankTestsController < ApplicationController
   
   #关联试卷下载
   def download_page
-    @paper = @bank_test.bank_paper_pap
-    render layout: false
+    tenant_uid = params[:tenant_uid]
+    type = params[:type]
+    common_arr = [
+      @bank_test.bank_paper_pap.quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian'),
+      Common::Grade::List[@bank_test.bank_paper_pap.grade.to_sym],
+      Common::Subject::List[@bank_test.bank_paper_pap.subject.to_sym]
+    ]
+    common_info_str = common_arr.join("_")
+    target_tenant = Tenant.find(tenant_uid)
+    result = target_tenant.name_cn + '_' + common_info_str + "_"
+    result += Common::Locale::i18n("papers.name.#{type}")
+
+    file = @bank_test.score_uploads.by_tenant_uid(tenant_uid).first
+    file_path = file.send(type.to_sym).current_path
+    send_file file_path, filename: result, disposition: 'attachment'
   end
 
   #导入成绩

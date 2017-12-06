@@ -206,9 +206,9 @@ $(document).on('ready page:load', function (){
   });
 
 
-  //下载链接点击
+  //导入成绩链接点击
   var modalLastUrl = ""
-  $(".download_link, .load_list, .download_list, .tenant_result_list .download_button button").on("click",function(){
+  $(".import_button button").on("click",function(){
       var getUrl = $(this).attr("geturl") || "",
         parame = getUrl.indexOf("?") < 0 ? "?test_uid="+test_uid : "&test_uid="+test_uid;
       if(modalLastUrl != (getUrl+parame)&& modalLastUrl != "" ){
