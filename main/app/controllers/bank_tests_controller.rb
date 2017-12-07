@@ -97,7 +97,7 @@ class BankTestsController < ApplicationController
     common_info_str = common_arr.join("_")
     target_tenant = Tenant.find(tenant_uid)
     result = target_tenant.name_cn + '_' + common_info_str + "_"
-    result += Common::Locale::i18n("papers.name.#{type}")
+    result += Common::Locale::i18n("papers.name.#{type}") + '.xlsx'
 
     file = @bank_test.score_uploads.by_tenant_uid(tenant_uid).first
     file_path = file.send(type.to_sym).current_path
