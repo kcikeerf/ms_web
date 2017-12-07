@@ -25,7 +25,7 @@ class Mongodb::BankPaperPap
   has_many :bank_tea_paps, class_name: "Mongodb::BankTeaPap",foreign_key: "pap_uid", dependent: :delete
   has_many :bank_pup_paps, class_name: "Mongodb::BankPupPap",foreign_key: "pap_uid", dependent: :delete
   belongs_to :union_test, class_name: "Mongodb::UnionTest"
-  scope :by_user, ->(user_id) { where(user_id: user_id) }
+  scope :by_user, ->(user_id) { where(user_id: user_id) if user_id.present? }
   scope :by_subject, ->(subject) { where(subject: subject) if subject.present? }
   scope :by_grade, ->(grade) { where(grade: grade) if grade.present? }
   scope :by_status, ->(status) { where(paper_status: status) if status.present? }
@@ -37,7 +37,6 @@ class Mongodb::BankPaperPap
   scope :by_tenant, ->(t_uid){ where(tenant_uid: t_uid) if t_uid.present? }
   scope :available, -> { where(paper_status: {'$in'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]})}
   scope :unavailable, -> { where(paper_status: {'$nin'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]})}
-  # scope :has_tag, ->(tag) {self.bank_tags.where(content: tag) if tag.present?}
 
   #validates :caption, :region, :school,:chapter,length: {maximum: 200}
   #validates :subject, :type, :version,:grade, :purpose, :levelword, length: {maximum: 50}
@@ -241,16 +240,22 @@ class Mongodb::BankPaperPap
                       .where({id: {"$in" => tag_paper_ids}})
                       .by_keyword(params[:keyword])
                       .by_grade(params[:grade])
+                      .by_user(params[:user_id])
                       .available
                       .order("dt_update desc")
                       .page(params[:page]).per(params[:rows])
       else
-        result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
-                      .by_keyword(params[:keyword])
-                      .by_grade(params[:grade])
-                      .available
-                      .order("dt_update desc")
-                      .page(params[:page]).per(params[:rows])
+        if params[:category] || params[:tag]
+          result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                        .by_keyword(params[:keyword])
+                        .by_grade(params[:grade])
+                        .by_user(params[:user_id]) 
+                        .available
+                        .order("dt_update desc")
+                        .page(params[:page]).per(params[:rows])
+        else
+          result = []
+        end
       end
       paper_result = []
       result.each_with_index {|item, index|
@@ -271,21 +276,26 @@ class Mongodb::BankPaperPap
       tag = nil
       tag = Mongodb::BankTag.where(content: params[:category]).first if params[:category].present?
       tag = Mongodb::BankTag.where(content: params[:tag]).first if params[:tag].present?
-
       if tag
         tag_paper_ids = tag.bank_paper_pap_ids
         count =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
                       .where({id: {"$in" => tag_paper_ids}})
                       .available
                       .by_keyword(params[:keyword])
+                      .by_user(params[:user_id])
                       .by_grade(params[:grade])
                       .count
       else
-        count =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
-                      .available
-                      .by_keyword(params[:keyword])
-                      .by_grade(params[:grade])
-                      .count
+        if params[:category] || params[:tag]
+          count = 0
+        else
+          count =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                        .available
+                        .by_keyword(params[:keyword])
+                        .by_user(params[:user_id])
+                        .by_grade(params[:grade])
+                        .count
+        end
       end
       return count
     end

@@ -248,7 +248,8 @@ module ApiV12Papers
         optional :category, type: String
       end
       get :get_list do
-        papers = Mongodb::BankPaperPap.get_list_plus params
+        params_code =  params.to_hash.merge({user_id: current_user.id})
+        papers = Mongodb::BankPaperPap.get_list_plus params_code.deep_symbolize_keys
         result = {data: papers}
         if papers
           message_json_data("i00000", result)
@@ -266,9 +267,8 @@ module ApiV12Papers
         optional :category, type: String
       end
       get :get_count do
-        # total_count = Mongodb::BankPaperPap.get_count params
-        # papers = Mongodb::BankPaperPap.get_list_plus params
-        total_count = Mongodb::BankPaperPap.get_count params
+        params_code =  params.to_hash.merge({user_id: current_user.id})
+        total_count = Mongodb::BankPaperPap.get_count params_code.deep_symbolize_keys
         result = {total_count: total_count}
         if total_count
           message_json_data("i00000", result)
