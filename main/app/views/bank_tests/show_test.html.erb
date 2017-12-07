@@ -58,6 +58,10 @@
                 <label>考试时间：</label>
                 <p></p>
               </li>
+              <li class="">
+                <label>测试试卷：</label>
+                <p><a class="download_list" href="/papers/get_paper?pap_uid=<%= @bank_test.bank_paper_pap.id%>">试卷链接</a></p>
+              </li>
             </ul>
           </div>
         </div>
@@ -69,7 +73,7 @@
             <!-- <a href="javascript:;" class="paper_editor">修订试卷</a> -->
             <div class="paper_about clearfix">
               <div class="about_left">
-                <a class="download_list" geturl="/bank_tests/download_page?type=modified_paper_answer_emptyscore" href="javascript:;">下载试卷、答案、录入表（空）</a>
+                <a class="download_list" href="/bank_tests/download_page?type=empty_result&test_uid=<%= @bank_test.id%>" href="javascript:;">下载成绩录入表（空）</a>
               </div>
             </div>
 

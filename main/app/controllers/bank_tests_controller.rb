@@ -87,19 +87,26 @@ class BankTestsController < ApplicationController
   
   #关联试卷下载
   def download_page
-    tenant_uid = params[:tenant_uid]
     type = params[:type]
+    file = nil
     common_arr = [
       @bank_test.bank_paper_pap.quiz_date.strftime('%Y') + Common::Locale::i18n('dict.nian'),
       Common::Grade::List[@bank_test.bank_paper_pap.grade.to_sym],
       Common::Subject::List[@bank_test.bank_paper_pap.subject.to_sym]
     ]
     common_info_str = common_arr.join("_")
-    target_tenant = Tenant.find(tenant_uid)
-    result = target_tenant.name_cn + '_' + common_info_str + "_"
-    result += Common::Locale::i18n("papers.name.#{type}") + '.xlsx'
+    if type == "empty_result"
+      file = FileUpload.find(@bank_test.bank_paper_pap.orig_file_id)
+      result = @bank_test.bank_paper_pap.heading + '_' + common_info_str + "_"
+      result += Common::Locale::i18n("papers.name.#{type}") + '.xlsx'
+    else
+      tenant_uid = params[:tenant_uid]
+      target_tenant = Tenant.find(tenant_uid)
+      result = target_tenant.name_cn + '_' + common_info_str + "_"
+      result += Common::Locale::i18n("papers.name.#{type}") + '.xlsx'
 
-    file = @bank_test.score_uploads.by_tenant_uid(tenant_uid).first
+      file = @bank_test.score_uploads.by_tenant_uid(tenant_uid).first
+    end
     file_path = file.send(type.to_sym).current_path
     send_file file_path, filename: result, disposition: 'attachment'
   end
