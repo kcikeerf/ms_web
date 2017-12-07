@@ -37,7 +37,7 @@ class Mongodb::BankPaperPap
   scope :by_tenant, ->(t_uid){ where(tenant_uid: t_uid) if t_uid.present? }
   scope :available, -> { where(paper_status: {'$in'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]})}
   scope :unavailable, -> { where(paper_status: {'$nin'=> [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted]})}
-
+  # scope :has_tag, ->(tag) {self.bank_tags.where(content: tag) if tag.present?}
 
   #validates :caption, :region, :school,:chapter,length: {maximum: 200}
   #validates :subject, :type, :version,:grade, :purpose, :levelword, length: {maximum: 50}
@@ -232,14 +232,26 @@ class Mongodb::BankPaperPap
     def get_list_plus params
       params[:page] = params[:page].blank?? Common::SwtkConstants::DefaultPage : params[:page]
       params[:rows] = params[:rows].blank?? Common::SwtkConstants::DefaultRows : params[:rows]
-      result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
-                    .available
-                    .by_keyword(params[:keyword])
-                    .by_grade(params[:grade])
-                    .by_subject(params[:category])
-                    .order("dt_update desc")
-                    .page(params[:page]).per(params[:rows])
-
+      tag = nil
+      tag = Mongodb::BankTag.where(content: params[:category]).first if params[:category].present?
+      tag = Mongodb::BankTag.where(content: params[:tag]).first if params[:tag].present?
+      if tag
+        tag_paper_ids = tag.bank_paper_pap_ids
+        result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                      .where({id: {"$in" => tag_paper_ids}})
+                      .by_keyword(params[:keyword])
+                      .by_grade(params[:grade])
+                      .available
+                      .order("dt_update desc")
+                      .page(params[:page]).per(params[:rows])
+      else
+        result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                      .by_keyword(params[:keyword])
+                      .by_grade(params[:grade])
+                      .available
+                      .order("dt_update desc")
+                      .page(params[:page]).per(params[:rows])
+      end
       paper_result = []
       result.each_with_index {|item, index|
         h = item.attributes
@@ -256,12 +268,25 @@ class Mongodb::BankPaperPap
     end
 
     def get_count params
-      count = self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
-        .available
-        .by_keyword(params[:keyword])
-        .by_grade(params[:grade])
-        .by_subject(params[:category])
-        .count
+      tag = nil
+      tag = Mongodb::BankTag.where(content: params[:category]).first if params[:category].present?
+      tag = Mongodb::BankTag.where(content: params[:tag]).first if params[:tag].present?
+
+      if tag
+        tag_paper_ids = tag.bank_paper_pap_ids
+        count =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                      .where({id: {"$in" => tag_paper_ids}})
+                      .available
+                      .by_keyword(params[:keyword])
+                      .by_grade(params[:grade])
+                      .count
+      else
+        count =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
+                      .available
+                      .by_keyword(params[:keyword])
+                      .by_grade(params[:grade])
+                      .count
+      end
       return count
     end
 
