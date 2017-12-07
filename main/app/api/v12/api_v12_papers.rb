@@ -286,10 +286,14 @@ module ApiV12Papers
       get :detail do
         paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
         if paper
-          result = {
-            :paper_structure => JSON.parse(paper.paper_json)
-          }
-          message_json_data("i00000", result)
+          if paper.user_id = current_user.id
+            result = {
+              :paper_structure => JSON.parse(paper.paper_json)
+            }
+            message_json_data("i00000", result)
+          else
+            error!(message_json("e43401"),500)
+          end
         else
           error!(message_json("e40000"),500)
         end 
@@ -329,10 +333,14 @@ module ApiV12Papers
         # authenticate!
         paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
         if paper.present?
-          if paper.destroy
-            message_json("i43000")
+          if paper.user_id = current_user.id
+            if paper.destroy
+              message_json("i43000")
+            else
+              error!(message_json("e43500"),500)
+            end
           else
-            error!(message_json("e43500"),500)
+            error!(message_json("e43403"),403)
           end
         else
           error!(message_json("e43404"),404)
