@@ -43,13 +43,4 @@ class Mongodb::BankQuizTagLink
   #   Mongodb::BankTag.where(_id: self.tag_uid).first
   # end
 
-  def destroy_ckp_qzp
-    begin
-      self.destroy!
-    rescue Exception=>ex
-      return false
-    end
-    return true
-  end
-
 end

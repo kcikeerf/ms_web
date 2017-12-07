@@ -31,13 +31,16 @@ class Mongodb::BankTag
     Mongodb::BankQuizQiz.where({id: {"$in" => bank_quiz_ids}})
   end
 
-  def destroy_ckp_qzp
-    begin
-      self.destroy!
-    rescue Exception=>ex
-      return false
-    end
-    return true
+  def paper_tag_links
+    PaperTagLink.where(tag_id: self._id.to_s)
+  end
+
+  def bank_paper_pap_ids
+    paper_tag_links.map(&:paper_id)
+  end
+
+  def bank_paper_paps
+    Mongodb::BankPaperPap.where({id: {"$in" => bank_paper_pap_ids}})
   end
 
 end

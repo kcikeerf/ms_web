@@ -688,6 +688,7 @@ $(function(){
                 subheading : $(".paperTitle2 input").val(), //副标题
                 school : $(".source .school input").val(),  //学校
                 quiz_date : $(".selectTestdate input").val(),   //考试时间
+                tags : $(".paperTags input").val(),
                 // province : $(".selectProvince .selectVal span").attr("values") || "",   //省
                 // city : $(".selectCity .selectVal span").attr("values") || "",   //市
                 // district : $(".selectCounty .selectVal span").attr("values") || "", //县
@@ -1800,6 +1801,7 @@ $(function(){
         if(paper.paperData.information){
             $(".paperTitle1 input").val(paper.paperData.information.heading);
             $(".paperTitle2 input").val(paper.paperData.information.subheading);
+            $(".paperTags input").val(paper.paperData.information.tags);
             $(".source .school label.school_name").html(paper.paperData.information.school);
             $(".selectTestdate input").val(paper.paperData.information.quiz_date);
             var tempObj = {

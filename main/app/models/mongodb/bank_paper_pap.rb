@@ -11,7 +11,7 @@ class Mongodb::BankPaperPap
 
   before_create :set_create_time_stamp
   before_save :set_update_time_stamp
-    before_destroy :delete_paper_pap  
+  before_destroy :delete_paper_pap  
 
   # has_many :bank_paperlogs, class_name: "Mongodb::BankPaperlog"
   # has_many :bank_pap_ptgs, class_name: "Mongodb::BankPapPtg"
@@ -1722,9 +1722,10 @@ class Mongodb::BankPaperPap
     begin 
        #########
        # part 1 根据params 修改paper信息
-       #########
+       #########x
       params = JSON.parse(self.paper_json)
-
+      tag_str = params["information"]["tags"]
+      save_quiz_tags tag_str
       self.update_attributes({
         :order => params["order"] || "",
         :heading => params["information"]["heading"] || "",
@@ -2379,6 +2380,37 @@ class Mongodb::BankPaperPap
   def is_avaliable?
     [Common::Paper::Status::Analyzed, Common::Paper::Status::ScoreImporting,Common::Paper::Status::ScoreImported,Common::Paper::Status::ReportGenerating,Common::Paper::Status::ReportCompleted].include?(self.paper_status)
   end
+
+  def paper_tag_links
+  	PaperTagLink.where(paper_id: self._id.to_s)
+  end
+
+  def bank_tag_ids
+  	paper_tag_links.map(&:tag_id)
+  end
+
+  def bank_tags
+  	Mongodb::BankTag({id: {"$in" => bank_tag_ids}})
+  end
+
+  def save_quiz_tags tags_str
+    paper_tag_links.destroy_all
+    tag_arr = tags_str.split("|")
+    tag_arr.each { |str|
+      tag = Mongodb::BankTag.where(content: str).first
+      unless tag
+        tag = Mongodb::BankTag.new(content: str)
+        tag.save
+      end
+      link_file = {paper_id: self._id.to_s, tag_id: tag._id.to_s}
+      link = PaperTagLink.where(link_file).first
+      unless link.present?
+      	link = PaperTagLink.new(link_file)
+      end
+      link.save
+    }
+  end
+
 
   private
   #删除相关试卷的上传文件，删除试卷及依赖
