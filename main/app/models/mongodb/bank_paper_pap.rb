@@ -245,7 +245,9 @@ class Mongodb::BankPaperPap
                       .order("dt_update desc")
                       .page(params[:page]).per(params[:rows])
       else
-        if params[:category] || params[:tag]
+        if params[:category].present? || params[:tag].present?
+          result = []
+        else
           result =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
                         .by_keyword(params[:keyword])
                         .by_grade(params[:grade])
@@ -253,8 +255,6 @@ class Mongodb::BankPaperPap
                         .available
                         .order("dt_update desc")
                         .page(params[:page]).per(params[:rows])
-        else
-          result = []
         end
       end
       paper_result = []
@@ -286,7 +286,7 @@ class Mongodb::BankPaperPap
                       .by_grade(params[:grade])
                       .count
       else
-        if params[:category] || params[:tag]
+        if params[:category].present? || params[:tag].present?
           count = 0
         else
           count =  self.only(:_id,:heading,:subject,:grade,:term,:dt_update,:paper_status, :is_empty)
