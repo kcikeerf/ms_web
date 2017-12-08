@@ -148,7 +148,7 @@ module ApiV12Dashboard
               next if target_pap.blank?
               paper_info_hash = {
                 :paper_uid => target_pap.id.to_s,
-                :quiz_date => target_pap.quiz_date.present? : target_pap.quiz_date.strftime('%Y/%m/%d') : "---/--/--",
+                :quiz_date => target_pap.quiz_date.present? ? target_pap.quiz_date.strftime('%Y/%m/%d') : "---/--/--",
                 :quiz_type => Common::Locale::i18n("dict.#{target_pap.quiz_type}"),
                 :report_url => "/api/v1.2" + report_url,
                 :report_version => "00016110",
