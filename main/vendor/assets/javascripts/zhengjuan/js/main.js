@@ -970,7 +970,11 @@ $(function(){
 
                     checkQuestionType(paper.currentQuiz.cat);
                     if(ke_chai_ti_xing.indexOf(paper.currentQuiz.cat) > -1){
-                        restoreOptionDetail(paper.currentQuiz.question_body, paper.currentQuiz.option_details)
+                        if(paper.currentQuiz.question_body) {
+                            restoreOptionDetail(paper.currentQuiz.question_body, paper.currentQuiz.option_details)
+                        }else{
+                             gotoQuizDetailOptions();
+                        }
                     }else{
                         gotoQuizDetailOptions();
                     }
