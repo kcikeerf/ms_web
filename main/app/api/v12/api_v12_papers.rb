@@ -248,7 +248,7 @@ module ApiV12Papers
         optional :category, type: String
       end
       get :get_list do
-        params_code =  params.to_hash.merge({user_id: current_user.id})
+        params_code =  params.to_hash#.merge({user_id: current_user.id})
         papers = Mongodb::BankPaperPap.get_list_plus params_code.deep_symbolize_keys
         result = {data: papers}
         if papers
@@ -267,7 +267,7 @@ module ApiV12Papers
         optional :category, type: String
       end
       get :get_count do
-        params_code =  params.to_hash.merge({user_id: current_user.id})
+        params_code =  params.to_hash#.merge({user_id: current_user.id})
         total_count = Mongodb::BankPaperPap.get_count params_code.deep_symbolize_keys
         result = {total_count: total_count}
         if total_count
@@ -286,14 +286,14 @@ module ApiV12Papers
       get :detail do
         paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
         if paper
-          if paper.user_id = current_user.id
+          # if paper.user_id = current_user.id
             result = {
               :paper_structure => JSON.parse(paper.paper_json)
             }
             message_json_data("i00000", result)
-          else
-            error!(message_json("e43401"),500)
-          end
+          # else
+          #   error!(message_json("e43401"),500)
+          # end
         else
           error!(message_json("e40000"),500)
         end 
@@ -333,15 +333,15 @@ module ApiV12Papers
         # authenticate!
         paper = Mongodb::BankPaperPap.where(_id: params[:pap_uid]).first
         if paper.present?
-          if paper.user_id = current_user.id
+          # if paper.user_id = current_user.id
             if paper.destroy
               message_json("i43000")
             else
               error!(message_json("e43500"),500)
             end
-          else
-            error!(message_json("e43403"),403)
-          end
+          # else
+          #   error!(message_json("e43403"),403)
+          # end
         else
           error!(message_json("e43404"),404)
         end
