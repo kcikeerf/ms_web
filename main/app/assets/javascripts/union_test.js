@@ -34,7 +34,7 @@ $(document).on('ready page:load', function (){
     $(".paper_new").attr("href", "/bank_tests/new?union_test_id=" + union_test_info.id);
     var paper_html = "";
     if (union_test_info.bank_tests){
-      $.map(union_test_info.bank_tests, function(v){ paper_html += ("<tr><td>" + v.paper_heading  + "</td><td>"+ v.subject_cn +"</td><td>"+ v.status + "</td><td>"+ v.quiz_date + "</td><td><a href='/bank_tests/show_test?test_uid=" + v.test_uid + "'>进入测试</a></td>"+"<td><a href='/bank_tests/del_test?test_uid="+v.test_uid+"&union_test_id=" + union_test_info.id+"'>删除测试</a></td>") });
+      $.map(union_test_info.bank_tests, function(v){ paper_html += ("<tr><td>" + v.test_name  + "</td><td>" + v.paper_heading + "</td><td>"+ v.subject_cn +"</td><td>"+ v.status + "</td><td>"+ v.quiz_date + "</td><td><a href='/bank_tests/show_test?test_uid=" + v.test_uid + "'>进入测试</a></td>"+"<td><a href='/bank_tests/del_test?test_uid="+v.test_uid+"&union_test_id=" + union_test_info.id+"'>删除测试</a></td>") });
 
       // $.map(union_test_info.bank_paper_paps, function(v){ paper_html += ("<tr><td>" + v.subject_cn  + "</td><td>"+ v.status + "</td><td>"+ v.quiz_date + "</td><td><a href='/papers/get_paper?pap_uid=" + v.pap_uid + "'>进入试卷控制</a></td>") });
       $(".paper_list").html(paper_html);
@@ -103,6 +103,7 @@ $(document).on('ready page:load', function (){
   });
 
   doc.on("click",".infoBtn",function(){
+    $(this).removeClass("active");
     var errors = [];
     var allowSubmit = true; //允许提交
     var union_test = {

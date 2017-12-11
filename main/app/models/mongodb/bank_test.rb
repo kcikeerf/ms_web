@@ -275,6 +275,7 @@ class Mongodb::BankTest
         :quiz_date => params[:quiz_date]||Time.now,
         :union_test_id => params[:union_test_id],
         :test_type => params[:test_type],
+        :ext_data_path => params[:ext_data_path],
         :checkpoint_system_rid => params[:checkpoint_system_rid],
         :bank_paper_pap_id => params[:paper_uid],
         :test_status => Common::Test::Status::New
