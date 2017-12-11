@@ -235,10 +235,12 @@ zh:
       report_generating: "报告生成中"
       report_completed: "报告生成完毕"
     messages:
+      debug: "保存测试过程中发生异常: %{message}"
+      cannot_rollback: "无法回到目标状态"
       save_test:
-        success: "试卷（标题：%{heading}）保存成功!"
-        fail: "试卷（原因：%{message}）保存失败!"
-        debug: "保存试卷过程中发生异常: %{message}"
+        success: "测试（测试名：%{heading}）保存成功!"
+        fail: "测试（原因：%{message}）保存失败!"
+        debug: "保存测试过程中发生异常: %{message}"
 
   swtk_errors:
     parameter_invalid_error: "参数无效！"
@@ -376,6 +378,7 @@ zh:
       shi_juan_guan_li: "试卷管理"
       zhi_biao_xi_tong_guan_li: "指标系统管理"
       bank_test: "测试管理"
+      union_test: "考试管理"  
     messages:
       welcome: "欢迎访问三题库管理后台!"
       tenant:
@@ -552,8 +555,8 @@ zh:
       personal_center: '个人中心'
       account_setting: '账号设置'
       my_home: '我的主页'
-      my_exam: '考试管理'
       my_test: '我的测试'
+      union_test: "考试管理"
       my_analyzer: "我的分析员"
       my_teacher: "我的老师"
       my_report: "我的报告"

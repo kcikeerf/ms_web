@@ -124,7 +124,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def my_exam
+  def union_test
     if current_user.is_project_administrator?
       # union_test_ids = Mongodb::UnionTestUserLink.only(:union_test_id).where(user_id: current_user.id).map{ |li| li.union_test_id.to_s}
       union_tests = Mongodb::UnionTest.where({user_id: current_user.id })

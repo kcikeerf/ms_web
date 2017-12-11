@@ -233,7 +233,7 @@ Rails.application.routes.draw do
       get 'my_pupil'
       get 'region'
       get 'test_report'
-      get 'my_exam'
+      get 'union_test'
       get 'my_test'
     end 
   end
