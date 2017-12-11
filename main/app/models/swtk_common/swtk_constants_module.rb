@@ -8,8 +8,8 @@ module SwtkConstantsModule
     AlphabetUpCaseArr = [*'A'..'Z']
     NumberArr = [*'0'..'9']
     #UploadPrefix = Rails.root.to_s + "/uploads/"
-    UploadPrefix = "/Users/shuai" + "/paper_files_warehouse/"
-    ReportsLocationPrefix = "/Users/shuai" + "/"
+    UploadPrefix = "/paper_files_warehouse/"
+    ReportsLocationPrefix = "/"
     DefaultPage = 1
     DefaultRows = 10
     DefaultSheetPassword = "forbidden_by_k12ke"
