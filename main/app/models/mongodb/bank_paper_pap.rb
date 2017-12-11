@@ -1453,14 +1453,14 @@ class Mongodb::BankPaperPap
       #地理位置信息
       current_user = Common::Uzer.get_user current_user_id
       target_tenant = Common::Uzer.get_tenant current_user_id
-      test_associated_tenant_uids = []
+      # test_associated_tenant_uids = []
       if current_user.is_project_administrator?
         target_area = Area.where(rid: current_user.role_obj.area_rid).first
         params[:information][:province] = target_area.pcd_h[:province][:name_cn]
         params[:information][:city] = target_area.pcd_h[:city][:name_cn]
         params[:information][:district] = target_area.pcd_h[:district][:name_cn]
         params[:information][:school] = Common::Locale::i18n("tenants.types.xue_xiao_lian_he")
-        self.test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
+        # self.test_associated_tenant_uids = params[:information][:tenants].map{|item| item[:tenant_uid]} unless params[:information][:tenants].blank?
       else
         target_area = Area.get_area params[:information]
         if target_tenant
@@ -1468,10 +1468,10 @@ class Mongodb::BankPaperPap
           params[:information][:city] = target_tenant.area_pcd[:city_name_cn]
           params[:information][:district] = target_tenant.area_pcd[:district_name_cn]
           params[:information][:school] = target_tenant.name_cn
-          self.test_associated_tenant_uids = [target_tenant.uid]
+          # self.test_associated_tenant_uids = [target_tenant.uid]
         end
       end
-      raise if self.test_associated_tenant_uids.blank?
+      # raise if self.test_associated_tenant_uids.blank?
       ##############################
       phase_arr.each_with_index do |value,index|
         error_index = index

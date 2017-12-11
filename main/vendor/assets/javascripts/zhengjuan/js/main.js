@@ -722,12 +722,12 @@ $(function(){
                 levelword : $(".selectDifficulty .selectVal span").attr("values") || "",    //难度
                 quiz_duration : $(".selectTime .selectVal input").val() || "90分钟",  //考试时长
                 score : $(".selectScore .selectVal input").val() || "0",  //满分值
-                tenants: $.map($(".tenant_range_item_checkbox.active"), function(v,i){ 
-                    return {tenant_uid: v.getAttribute("tenant_uid"), 
-                            tenant_name: v.getAttribute("tenant_name"),
-                            tenant_status: "",
-                            tenant_status_label: ""}
-                }),
+                // tenants: $.map($(".tenant_range_item_checkbox.active"), function(v,i){ 
+                //     return {tenant_uid: v.getAttribute("tenant_uid"), 
+                //             tenant_name: v.getAttribute("tenant_name"),
+                //             tenant_status: "",
+                //             tenant_status_label: ""}
+                // }),
                 paper_outline: $(".paper_outline").val() || "",
                 paper_outline_edittable: paper.paperData.information.paper_outline_edittable
             };

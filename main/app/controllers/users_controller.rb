@@ -60,6 +60,7 @@ class UsersController < ApplicationController
       @tests_data = Mongodb::BankTest.where(id: bank_test_ids)
     end
     @bank_tests = @tests_data.by_name(params[:keyword])
+      .order("dt_update desc")
       .page(params[:page])
       .per(10)
   end

@@ -131,6 +131,7 @@ class Mongodb::UnionTest
         test_report_completed = test_report_completed&&(t.is_report_completed?)
         {
           :test_uid => t._id.to_s,
+          :test_name => t.name,
           :pap_uid => t.bank_paper_pap._id.to_s,
           :subject => t.bank_paper_pap.subject,
           :subject_cn => I18n.t("dict.#{t.bank_paper_pap.subject}"),
