@@ -150,7 +150,7 @@ $(document).on('ready page:load', function (){
             // dataType: "json",
             // // contentType : "application/json",
             success: function(data){
-              window.location.href="/users/my_exam"; 
+              window.location.href="/users/union_test"; 
             },
             error: function(data){
                 var resp_data = JSON.parse(data.responseText);

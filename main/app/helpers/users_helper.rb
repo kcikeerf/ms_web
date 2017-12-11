@@ -46,7 +46,7 @@ module UsersHelper
       menus[:my_test] = my_test_users_path
       menus[:my_paper] = my_paper_users_path
     elsif current_user.is_project_administrator?
-      menus[:my_exam] = my_exam_users_path
+      menus[:union_test] = union_test_users_path
       menus[:my_test] = my_test_users_path
       menus[:my_paper] = my_paper_users_path
     end
