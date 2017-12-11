@@ -6,6 +6,7 @@ module TaskJobModule
       CreateReport = "create_report"
       ImportResult = "import_result"
       SubmittingOnlineTestResult = "submitting_online_test_results"
+      OnlineTestGenerateGroupReports = "online_test_generate_group_reports"      
       GenerateUnionTestReports = "generate_union_report"
     end
 
@@ -32,6 +33,7 @@ module TaskJobModule
       ConstructReports = "construct_reports"
       Monitoring = "monitoring"
       SubmittingOnlineTestResult = "submitting_online_test_results"
+      OnlineTestGenerateGroupReports = "online_test_generate_group_reports"      
       GenerateUnionTestReports = "generate_union_report"
     end
 
@@ -50,7 +52,16 @@ module TaskJobModule
       return false unless target_task
       job_tracker = target_task.job_lists.order(dt_update: :desc).first
       return false unless job_tracker
-      job_tracker.update(process: process_value/_total_phases)  
+      job_tracker.update(process: process_value/(_total_phases))
+      return true
+    end
+
+    def update_job_complete _task_uid, _redis_ns, _redis_key
+      target_task = TaskList.where(uid: _task_uid).first
+      return false unless target_task
+      job_tracker = target_task.job_lists.order(dt_update: :desc).first
+      return false unless job_tracker
+      job_tracker.update(process: 1.0)  
       return true
     end
 

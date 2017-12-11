@@ -136,6 +136,22 @@ module UzerModule
       end
     end
 
+    def link_user_and_bank_test_plus(username,bank_test_id)
+      user = User.where(name: username).first
+      bank_test = Mongodb::BankTest.where(_id: bank_test_id).first
+      if user.present? && bank_test.present?
+        link_params = {
+          :bank_test_id => bank_test.id.to_s,
+          :user_id => user.id
+        }
+        target_link = TestUserLink.where(link_params)
+        if target_link.blank?
+          target_link = TestUserLink.new(link_params)
+          target_link.save!
+        end
+      end
+    end    
+
     def get_user_report_type_and_id_by_role _user
       _rpt_type, _rpt_id = nil, nil
       if _user.is_pupil?
