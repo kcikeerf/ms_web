@@ -1760,7 +1760,7 @@ class Mongodb::BankPaperPap
        #########x
       params = JSON.parse(self.paper_json)
       tag_str = params["information"]["tags"]
-      save_quiz_tags tag_str
+      save_quiz_tags tag_str if tag_str.present?
       self.update_attributes({
         :order => params["order"] || "",
         :heading => params["information"]["heading"] || "",
