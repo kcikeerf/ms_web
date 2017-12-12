@@ -28,7 +28,7 @@ class Mongodb::BankTest
   scope :by_name, ->(name) { where(name: /#{name}/) if name.present?}
 
   field :name, type: String
-  field :quiz_type, type: String  #测试类型：期中／期末
+  field :quiz_type, type: String  #测试类型：学业／多元智能。。。
   field :start_date, type: DateTime
   field :quiz_date, type: DateTime #默认为截止日期
   field :user_id, type: String
@@ -313,6 +313,7 @@ class Mongodb::BankTest
         :union_test_id => params[:union_test_id],
         :test_type => params[:test_type],
         :ext_data_path => params[:ext_data_path],
+        :quiz_type => 'xy_default',
         :checkpoint_system_rid => params[:checkpoint_system_rid],
         :bank_paper_pap_id => params[:paper_uid],
         :test_status => Common::Test::Status::New
