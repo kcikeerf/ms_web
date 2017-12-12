@@ -299,6 +299,7 @@ module ApiV12Tests
           mistakes_list = []
           incorrect_info = {}
           params[:report_url_list].each {|_url|
+            _url = _url.split("?")[0]
             # _test, data = get_pupil_report_data (base+_url) #本地获取
             _test, data = get_pupil_report_data _url #服务器方式
             if data["paper_qzps"].present?
