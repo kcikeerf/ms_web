@@ -72,6 +72,43 @@ class Mongodb::BankTest
 
   end
 
+  #用户密码以及验证码统一下载
+  def usr_pwd_download
+      out_excel = Axlsx::Package.new
+      wb = out_excel.workbook
+      teacher_sheet = wb.add_worksheet(name: "老师用户密码信息表")
+      pupil_sheet = wb.add_worksheet(name: "学生用户密码信息表")
+
+      teacher_sheet.add_row([ "学校","班级", "姓名","用户名", "密码","二维码验证码"])
+      pupil_sheet.add_row([ "学校","班级", "姓名","用户名", "密码","二维码验证码"])
+      identity_mappings = IdentityMapping.where(test_id: self.id.to_s)
+      identity_mappings.each{|identity_mapping|
+        user = User.where(id: identity_mapping.user_id).first
+        user_name = user.name
+        password = user.initial_password
+        code = identity_mapping.code
+
+        if user.is_pupil?
+          pupil = user.role_obj
+          classroom_name = Common::Klass::klass_label pupil.classroom
+          tenant = pupil.location.nil?? nil : pupil.location.tenant
+          tenant_name = tenant.nil?? "":tenant.name_cn
+          name_cn = pupil.name
+          pupil_sheet.add_row([tenant_name,classroom_name,name_cn,user_name,password,code])
+        else
+          teacher = user.role_obj
+          name_cn = teacher.name
+          tenant = teacher.tenant
+          tenant_name = tenant.nil?? "":tenant.name_cn
+          teacher_sheet.add_row([tenant_name,'',name_cn,user_name,password,code])
+        end
+      }
+    
+    file_path = Rails.root.to_s + "/tmp/用户扫码下载/" + self._id.to_s
+    FileUtils.mkdir_p(file_path) unless File.exists?(file_path) 
+    out_excel.serialize(file_path + "/#{self._id.to_s}_user_pwd_file.xlsx")
+  end
+
   #获取用户绑定情况
   def get_user_binded_stat
     #获取学生报告的路径
@@ -334,6 +371,9 @@ class Mongodb::BankTest
       if [Common::Test::Status::New].include?(self.test_status)
         return false
       else
+        #清除redis
+        _redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + self.id.to_s + "/*"
+        Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq,_redis_key_wildcard)
         #删除身份验证表
         IdentityMapping.where(test_id: self.id.to_s).destroy_all
         #删除报告文件
@@ -353,6 +393,9 @@ class Mongodb::BankTest
       end
     when Common::Test::Status::ScoreImported
       if [Common::Test::Status::ReportGenerating,Common::Test::Status::ReportCompleted].include?(self.test_status)
+        #清除redis
+        _redis_key_wildcard = Common::SwtkRedis::Prefix::Reports + "tests/" + self.id.to_s + "/*"
+        Common::SwtkRedis::del_keys(Common::SwtkRedis::Ns::Sidekiq,_redis_key_wildcard)
         #删除报告文件
         # del_report_file
         #去除资源锁

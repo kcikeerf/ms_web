@@ -251,5 +251,21 @@ namespace :swtk do
       p 'end'
     end
     
+    desc '导出测试所有学校老师与学生的用户名与密码表'
+    task :export_usr_pwd_download, [:test_uid] => :environment do |t, args|
+      if args[:test_uid].nil? 
+        puts "Command format not correct."
+        exit
+      end
+      test = Mongodb::BankTest.where(id: args[:test_uid]).first
+      if test.blank?
+        p '未找到该测试'
+        exit
+      else
+        test.usr_pwd_download
+      end
+      p 'done'
+    end
+    
   end
 end
