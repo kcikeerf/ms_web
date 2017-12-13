@@ -22,9 +22,9 @@
                       <tr>
                         <th>名称</th>
                         <th class="title">试卷名称</th>
-                        <th class="subject">学科</th>
+                        <th class="subject" style="width: 8%">学科</th>
                         <th class="updated">状态</th>
-                        <th class="subject">操作</th>
+                        <th class="subject" style="width: 15%">操作</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -36,7 +36,11 @@
                         <td><%= btest.bank_paper_pap.heading%></td>
                         <td><%= btest.bank_paper_pap.subject.blank? ? '' : t("dict.#{btest.bank_paper_pap.subject}")%></td>
                         <td><%= t("tests.status.#{btest.test_status}") %></td>
-                        <td><p><a href="/bank_tests/show_test?test_uid=<%=btest._id%>">进入测试</a></p><a href="/bank_tests/get_rqrcode?test_uid=<%=btest._id%>">下载二维码</a></td>
+                        <td><p><a href="/bank_tests/show_test?test_uid=<%=btest._id%>">进入测试</a></p><a href="/bank_tests/get_rqrcode?test_uid=<%=btest._id%>">下载二维码</a>
+                        <%if btest.test_status == 'report_completed'%>
+                          <p><a href="/reports/square_v1_1?test_uid=<%=btest._id%>" class="active" target="_blank">查看报告</a></p>
+                        <% end %>
+                        </td>
                       </tr>
                     <% end %>
                     </tbody>
