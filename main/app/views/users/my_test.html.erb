@@ -36,9 +36,10 @@
                         <td><%= btest.bank_paper_pap.heading%></td>
                         <td><%= btest.bank_paper_pap.subject.blank? ? '' : t("dict.#{btest.bank_paper_pap.subject}")%></td>
                         <td><%= t("tests.status.#{btest.test_status}") %></td>
-                        <td><p><a href="/bank_tests/show_test?test_uid=<%=btest._id%>">进入测试</a></p><a href="/bank_tests/get_rqrcode?test_uid=<%=btest._id%>">下载二维码</a>
+                        <td><a href="/bank_tests/show_test?test_uid=<%=btest._id%>" style="display:block;">进入测试</a>
+                        <a href="/bank_tests/get_rqrcode?test_uid=<%=btest._id%>" style="display:block;">下载二维码</a>
                         <%if btest.test_status == 'report_completed'%>
-                          <p><a href="/reports/square_v1_1?test_uid=<%=btest._id%>" class="active" target="_blank">查看报告</a></p>
+                          <a href="/reports/square_v1_1?test_uid=<%=btest._id%>" style="display:block;" target="_blank" >查看报告</a>
                         <% end %>
                         </td>
                       </tr>
