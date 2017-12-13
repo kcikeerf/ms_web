@@ -46,7 +46,7 @@ namespace :swtk_patch do
 
     def migrate_test_user_puls paper_uids
       paper_uids.each do |paper_id|
-        p paper_id
+        p "#{paper_id}--paper"
         paper = Mongodb::BankPaperPap.where(_id: paper_id).first
         if paper.present?
           bank_test = paper.bank_tests[0] 
@@ -80,7 +80,8 @@ namespace :swtk_patch do
 
     def migrate_mongodb_to_mysql test_ids
       test_ids.each do |test_id|
-        p test_id
+        p "#{test_id}--test"
+
         test_links = Mongodb::BankTestUserLink.where(bank_test_id: test_id)
         test_links.each do |tlink|
           tu_link = TestUserLink.where(:user_id => tlink.user_id, bank_test_id: tlink.bank_test_id).first
@@ -259,8 +260,9 @@ namespace :swtk_patch do
 
     desc "migrate_test_user_mongo_to_mysql"
     task migrate_test_user_mongodb_to_mysql: :environment do
+      t1 = Time.new
       test_ids = Mongodb::BankTestUserLink.where({dt_add: nil}).collection.aggregate([{"$group" => {_id: "$bank_test_id"}}]).map {|t| t["_id"].to_s}
-      test_ids_list = test_ids.each_slice(10).to_a
+      test_ids_list = test_ids.each_slice(100).to_a
       threads = []
       test_ids_list.each do |test_ids|
         threads << Thread.new do
@@ -268,7 +270,7 @@ namespace :swtk_patch do
         end
       end
       pap_uids = Mongodb::BankPaperPap.all.order("dt_update DESC").map {|pap| pap._id.to_s}
-      pap_uids_list = pap_uids.each_slice(10).to_a
+      pap_uids_list = pap_uids.each_slice(100).to_a
       pap_uids_list.each do |paper_uids|
         threads << Thread.new do
           migrate_test_user_puls(paper_uids)
@@ -276,6 +278,9 @@ namespace :swtk_patch do
       end
 
       ThreadsWait.all_waits(*threads)
+      t2 = Time.new
+
+      p (t2 - t1)
     end
 
     desc "增加测试的状态 从试卷获取状态信息"
