@@ -60,7 +60,9 @@
               </li>
               <li class="">
                 <label>测试试卷：</label>
-                <p><a class="download_list" href="/papers/get_paper?pap_uid=<%= @bank_test.bank_paper_pap.id%>">试卷链接</a></p>
+                <% if @bank_test.bank_paper_pap.present? %>
+                  <p><a class="download_list" href="/papers/get_paper?pap_uid=<%= @bank_test.bank_paper_pap.id%>">试卷链接</a></p>
+                <% end %>
               </li>
             </ul>
           </div>

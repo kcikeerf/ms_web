@@ -33,8 +33,8 @@
                         <td class="title">
                         <%= btest.name %>
                         </td>
-                        <td><%= btest.bank_paper_pap.heading%></td>
-                        <td><%= btest.bank_paper_pap.subject.blank? ? '' : t("dict.#{btest.bank_paper_pap.subject}")%></td>
+                        <td><%= btest.bank_paper_pap.present?&btest.bank_paper_pap.heading.present? ? btest.bank_paper_pap.heading : '-'%></td>
+                        <td><%= btest.bank_paper_pap.present?&btest.bank_paper_pap.subject.present? ? t("dict.#{btest.bank_paper_pap.subject}") : '' %></td>
                         <td><%= t("tests.status.#{btest.test_status}") %></td>
                         <td><a href="/bank_tests/show_test?test_uid=<%=btest._id%>" style="display:block;">进入测试</a>
                         <a href="/bank_tests/get_rqrcode?test_uid=<%=btest._id%>" style="display:block;">下载二维码</a>
