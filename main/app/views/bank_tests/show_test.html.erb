@@ -69,7 +69,7 @@
         </div>
         
         <!--项目管理员增加Tenant范围选择域：begin-->
-        <% if @bank_test.bank_paper_pap.is_avaliable? %>
+        <% if (@bank_test.bank_paper_pap.present? && @bank_test.bank_paper_pap.is_avaliable?) %>
           <%= render partial: "shared/paper/zheng_juan/tenant_range",locals: {label_klass: "tenant", edittable: false} %>
         <% end %>
             <!-- <a href="javascript:;" class="paper_editor">修订试卷</a> -->

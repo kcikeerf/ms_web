@@ -18,7 +18,7 @@ class Mongodb::BankPaperPap
   has_and_belongs_to_many :bank_quiz_qizs, class_name: "Mongodb::BankQuizQiz", dependent: :delete 
   has_and_belongs_to_many :bank_qizpoint_qzps, class_name: "Mongodb::BankQizpointQzp"
   has_many :bank_pap_cats, class_name: "Mongodb::BankPapCat", dependent: :delete 
-  has_many :bank_tests, class_name: "Mongodb::BankTest", dependent: :delete
+  has_many :bank_tests, class_name: "Mongodb::BankTest"#, dependent: :delete
   has_many :online_tests, class_name: "Mongodb::OnlineTest", dependent: :delete
   has_many :paper_outlines, class_name: "Mongodb::PaperOutline",dependent: :delete
   has_many :bank_tnt_paps, class_name: "Mongodb::BankTntPap",foreign_key: "pap_uid", dependent: :delete
