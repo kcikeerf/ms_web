@@ -44,10 +44,9 @@ namespace :swtk_patch do
       end     
     end
 
-    def migrate_test_user_puls paper_uids, index
-      p paper_uids
+    def migrate_test_user_puls paper_uids
       paper_uids.each_with_index do |paper_id, pindex|
-        p "#{index}----#{paper_id}--paper----#{pindex}"
+        p "----#{paper_id}--paper----#{pindex}"
         paper = Mongodb::BankPaperPap.where(_id: paper_id).first
         if paper.present?
           bank_test = paper.bank_tests[0] 
@@ -79,10 +78,10 @@ namespace :swtk_patch do
       end     
     end
 
-    def migrate_mongodb_to_mysql test_ids, index
+    def migrate_mongodb_to_mysql test_ids
       p test_ids
       test_ids.each_with_index do |test_id, tindex|
-        p "#{index}-------#{test_id}--test------#{tindex}"
+        p "-------#{test_id}--test------#{tindex}"
 
         test_links = Mongodb::BankTestUserLink.where(bank_test_id: test_id)
         test_links.each do |tlink|
@@ -263,23 +262,11 @@ namespace :swtk_patch do
     desc "migrate_test_user_mongo_to_mysql"
     task migrate_test_user_mongodb_to_mysql: :environment do
       t1 = Time.new
-      threads = []
       test_ids = Mongodb::BankTestUserLink.where({dt_add: nil}).collection.aggregate([{"$group" => {_id: "$bank_test_id"}}]).map {|t| t["_id"].to_s}
-      test_ids_list = test_ids.each_slice(100).to_a
-      test_ids_list.each_with_index do |test_ids,index|
-        threads << Thread.new do
-          migrate_mongodb_to_mysql(test_ids,index)
-        end
-      end
+      migrate_mongodb_to_mysql(test_ids)
       pap_uids = Mongodb::BankPaperPap.all.order("dt_update DESC").map {|pap| pap._id.to_s}
-      pap_uids_list = pap_uids.each_slice(100).to_a
-      pap_uids_list.each_with_index do |paper_uids,index|
-        threads << Thread.new do
-          migrate_test_user_puls(paper_uids,index)
-        end
-      end
+      migrate_test_user_puls(pap_uids)
 
-      ThreadsWait.all_waits(*threads)
       t2 = Time.new
 
       p (t2 - t1)
