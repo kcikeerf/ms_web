@@ -298,7 +298,9 @@ module ApiV12Tests
           # base = "/Users/shuai/workspace/tk_main/main"
           mistakes_list = []
           incorrect_info = {}
-          params[:report_url_list].each {|_url|
+          params[:report_url_list].to_a.each_with_index {|_url, index|
+            Rails.logger.info _url
+            Rails.logger.info index
             _url = _url.split("?")[0]
             # _test, data = get_pupil_report_data (base+_url) #本地获取
             _test, data = get_pupil_report_data _url #服务器方式
@@ -311,7 +313,9 @@ module ApiV12Tests
           }
           incorrect_item = []
           mistakes_list = mistakes_list.flatten(1)
-          mistakes_list.each {|quiz_bank_uids|
+          mistakes_list.each_with_index {|quiz_bank_uids, index|
+            Rails.logger.info _url
+            Rails.logger.info index
             quiz = Mongodb::BankQuizQiz.where(_id: quiz_bank_uids[0]).first
             if quiz.present?
               quiz_body =  quiz.exercise

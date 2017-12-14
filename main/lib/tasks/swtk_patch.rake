@@ -52,7 +52,7 @@ namespace :swtk_patch do
         if paper.present?
           bank_test = paper.bank_tests[0] 
           if bank_test.present?
-            test_name = paper.heading.to_s + "_测试"
+            test_name = paper.heading.to_s
             bank_test.update(test_status: paper.paper_status,name: test_name)
             paper.bank_pup_paps.each do |pup_pap|
               user = pup_pap.pupil.user if pup_pap.pupil
