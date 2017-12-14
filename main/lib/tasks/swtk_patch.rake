@@ -331,6 +331,47 @@ namespace :swtk_patch do
     end
   end
 
+  desc "迁移测试数据核查"
+  task :checkout_migrate_datas => :environment do
+    p "begin"
+    error_xlsx = Axlsx::Package.new 
+    esheet = error_xlsx.workbook.add_worksheet(:name => "错误列表")
+    test_ids = Mongodb::BankTestUserLink.where({dt_add: nil}).collection.aggregate([{"$group" => {_id: "$bank_test_id"}}]).map {|t| t["_id"].to_s}
+    test_ids.each {|t_id|
+      score_count = Mongodb::BankTestUserLink.where({bank_test_id: t_id}).map(&:user_id).uniq.count
+      target_count = TestUserLink.where(bank_test_id: t_id).map(&:user_id).uniq.count
+      if score_count != target_count
+        esheet.add_row(["测试ID#{t_id}", nil,"原始数量#{score_count}", "实迁移数量: #{target_count}","有误"])
+        p "error"
+      else
+        esheet.add_row(["测试ID#{t_id}", nil,"原始数量#{score_count}", "实迁移数量: #{target_count}","无误"])
+
+        p "无误"
+      end
+    }
+    Mongodb::BankPaperPap.all.each do |paper|
+      pup_count = paper.bank_pup_paps.map(&:pup_uid).uniq.count
+      tea_count = paper.bank_tea_paps.map(&:tea_uid).uniq.count
+      test = paper.bank_tests[0]
+      if test.present?
+        target_count = test.user_ids.uniq.count
+        if pup_count + tea_count != target_count
+          esheet.add_row(["测试ID#{test._id.to_s}", "学生数：#{pup_count}", "老师数量#{tea_count}", "已迁移数量#{target_count}", "有误"])
+          p "error"
+        else
+          esheet.add_row(["测试ID#{test._id.to_s}", "学生数：#{pup_count}", "老师数量#{tea_count}", "已迁移数量#{target_count}", "无误"])
+          p '无误'
+        end
+      else
+        p "error"
+        pid =  paper._id.to_s
+        esheet.add_row(["未找到测试","试卷id #{pid}"])
+      end
+    end
+    error_xlsx.serialize(Rails.root.to_s + '/tmp/迁移核查表.xlsx')
+    p "end"
+  end
+
   namespace :v1_2_1 do
     desc "match grade and subject to bank_quiz_qiz"
     task :match_grade_subject => :environment do
