@@ -331,7 +331,7 @@ module ApiV12Tests
             end
           }
           if incorrect_item.present?
-            incorrect_item = incorrect_item.sort { |x,y| Common::Paper::QuizTypeKey[x["subject"].to_sym].index(x["quiz_cat"]) <=> Common::Paper::QuizTypeKey[y["subject"].to_sym].index(y["quiz_cat"]) }
+            incorrect_item = incorrect_item.uniq.sort { |x,y| Common::Paper::QuizTypeKey[x["subject"].to_sym].index(x["quiz_cat"]) <=> Common::Paper::QuizTypeKey[y["subject"].to_sym].index(y["quiz_cat"]) }
           end
           incorrect_info["incorrect_item"] = incorrect_item
           # corectly_list.flatten!
