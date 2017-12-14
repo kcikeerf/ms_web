@@ -98,11 +98,11 @@ module PaperModule
     }.each{|item| QuizType[:sheng_wu][item.to_sym] = Common::Locale::i18n("dict.#{item}")} 
 
     QuizTypeKey = {
-      :yu_wen => ["xuan_ze_ti", "tian_kong_ti", "lian_xian_ti", "jian_da_ti", "lun_shu_ti", "xie_zuo"],
-      :shu_xue => ["dan_xiang_xuan_ze_ti", "tian_kong_ti", "pan_duan_ti", "ji_suan_ti", "cao_zuo_ti", "ying_yong_ti", "jie_da_ti", "tan_suo_gui_lv_ti", "tan_jiu_ti"], 
-      :ying_yu => ["ting_li_li_jie", "ting_li_li_jie_zi_mu", "ting_li_li_jie_dan_ci", "ting_li_li_jie_ju_zi", "ting_li_li_jie_dui_hua", "ting_li_li_jie_duan_wen", "yu_yin_zhi_shi", "zi_mu_pin_xie", "dan_ci_pin_xie", "ying_han_hu_yi", "pi_pei_ti", "gai_xie_ju_zi", "dan_xiang_xuan_ze", "wan_xing_tian_kong", "bu_quan_dui_hua", "yue_du_li_jie", "bu_quan_duan_wen", "ci_yu_yun_yong", "wan_cheng_ju_zi", "yue_du_biao_da", "shu_mian_biao_da", "duan_wen_gai_cuo"], 
-      :wu_li => ["dan_xiang_xuan_ze_ti", "duo_xiang_xuan_ze_ti", "shi_yan_xuan_ze_ti", "shi_yan_jie_da_ti", "shi_yan_tan_jiu_ti", "ke_pu_yue_du_ti", "jian_da_ti", "ji_suan_ti"], 
-      :sheng_wu => ["dan_xiang_xuan_ze_ti", "shi_yan_tan_jiu_ti", "ke_pu_yue_du_ti", "jian_da_ti"]
+      :yu_wen => ["xuan_ze_ti", "tian_kong_ti", "lian_xian_ti", "jian_da_ti", "lun_shu_ti", "xie_zuo","other"],
+      :shu_xue => ["dan_xiang_xuan_ze_ti", "tian_kong_ti", "pan_duan_ti", "ji_suan_ti", "cao_zuo_ti", "ying_yong_ti", "jie_da_ti", "tan_suo_gui_lv_ti", "tan_jiu_ti","other"], 
+      :ying_yu => ["ting_li_li_jie", "ting_li_li_jie_zi_mu", "ting_li_li_jie_dan_ci", "ting_li_li_jie_ju_zi", "ting_li_li_jie_dui_hua", "ting_li_li_jie_duan_wen", "yu_yin_zhi_shi", "zi_mu_pin_xie", "dan_ci_pin_xie", "ying_han_hu_yi", "pi_pei_ti", "gai_xie_ju_zi", "dan_xiang_xuan_ze", "wan_xing_tian_kong", "bu_quan_dui_hua", "yue_du_li_jie", "bu_quan_duan_wen", "ci_yu_yun_yong", "wan_cheng_ju_zi", "yue_du_biao_da", "shu_mian_biao_da", "duan_wen_gai_cuo","other"], 
+      :wu_li => ["dan_xiang_xuan_ze_ti", "duo_xiang_xuan_ze_ti", "shi_yan_xuan_ze_ti", "shi_yan_jie_da_ti", "shi_yan_tan_jiu_ti", "ke_pu_yue_du_ti", "jian_da_ti", "ji_suan_ti","other"], 
+      :sheng_wu => ["dan_xiang_xuan_ze_ti", "shi_yan_tan_jiu_ti", "ke_pu_yue_du_ti", "jian_da_ti","other"]
     }
     Difficulty = {
       #难度
