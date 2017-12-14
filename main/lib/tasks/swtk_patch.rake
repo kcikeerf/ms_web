@@ -53,26 +53,39 @@ namespace :swtk_patch do
           if bank_test.present?
             test_name = paper.heading.to_s
             bank_test.update(test_status: paper.paper_status,name: test_name)
-            paper.bank_pup_paps.each do |pup_pap|
-              user = pup_pap.pupil.user if pup_pap.pupil
-              if user.present?
-                bank_test_user = TestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+
+
+            user_ids1 = paper.bank_pup_paps.map{|item| item.pupil.user_id if item.pupil }.compact.uniq
+            user_ids2 = paper.bank_tea_paps.map{|item| item.teacher.user_id if item.teacher }.compact.uniq
+            user_ids = (user_ids1 + user_ids2).uniq
+            #paper.bank_pup_paps.each do |pup_pap|
+            #  user = pup_pap.pupil.user if pup_pap.pupil
+            #  if user.present?
+                # bank_test_user = TestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+                # unless bank_test_user.present?            
+                #   bank_test_user = TestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+                # end
+                # bank_test_user.save!
+            _bank_test_id = bank_test._id.to_s
+            user_ids.each{|user_id|
+                bank_test_user = TestUserLink.where(bank_test_id: _bank_test_id, user_id: user_id).first
                 unless bank_test_user.present?            
-                  bank_test_user = TestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+                  bank_test_user = TestUserLink.new(bank_test_id: _bank_test_id, user_id: user_id)
                 end
                 bank_test_user.save!
-              end
-            end
-            paper.bank_tea_paps.each do |tea_pap|
-              user = tea_pap.teacher.user if tea_pap.teacher
-              if user.present?
-                bank_test_user = TestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
-                unless bank_test_user.present?            
-                  bank_test_user = TestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
-                end
-                bank_test_user.save!
-              end
-            end
+            }
+            #  end
+            #end
+            # paper.bank_tea_paps.each do |tea_pap|
+            #   user = tea_pap.teacher.user if tea_pap.teacher
+            #   if user.present?
+            #     bank_test_user = TestUserLink.where(bank_test_id: bank_test._id.to_s, user_id: user.id).first
+            #     unless bank_test_user.present?            
+            #       bank_test_user = TestUserLink.new(bank_test_id: bank_test._id.to_s, user_id: user.id)
+            #     end
+            #     bank_test_user.save!
+            #   end
+            # end
           end
         end 
       end     
