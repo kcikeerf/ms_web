@@ -39,15 +39,16 @@ module ApiV12Tests
         corectly_list = []
         paper_qzps.each {|qzp| 
           taget_qzp = Mongodb::BankQizpointQzp.where(_id: qzp["qzp_id"]).first
-          if (qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"])
-            mistakes_list << [taget_qzp.bank_quiz_qiz_id.to_s,bank_test_uid]
-          else
-            corectly_list << [taget_qzp.bank_quiz_qiz_id.to_s,bank_test_uid]
+          if qzp["value"].present?
+            if (qzp["value"]["total_full_score"] != qzp["value"]["total_real_score"])
+              mistakes_list << [taget_qzp.bank_quiz_qiz_id.to_s,bank_test_uid] if taget_qzp.present?
+            else
+              corectly_list << [taget_qzp.bank_quiz_qiz_id.to_s,bank_test_uid] if taget_qzp.present?
+            end
           end
         }
         return mistakes_list, corectly_list
       end
-
 
     end
 
